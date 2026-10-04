@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="./.style/spec.css">
+<title>HSK network</title>
+<script defer src="./.viz/runtime.js"></script>
+</head>
+<body>
+<article class="spec" data-spec-version="1" data-spec-contract="shaped-sections-v1">
+
+<header data-anchor="header">
+<h1 data-anchor="title">HSK network</h1>
+<nav data-anchor="breadcrumbs">docs / specs / hsk-network.spec.html</nav>
+<p data-anchor="context">A public static website: a force-directed graph of the HSK 1 and HSK 2 vocabulary in Traditional characters.</p>
+<p data-anchor="context-2">Words that share a character cluster around that character; each word shows its Zhuyin and English definitions on hover or tap.</p>
+</header>
+
+<section data-spec-section="user-stories" data-anchor="user-stories">
+<h2>User stories</h2>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-explore">As a learner, I see every HSK 1 and HSK 2 word as a network in which words sharing a character gather around that character, so I learn characters through related words.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-inspect">As a learner, I hover or tap a word to see its Traditional form, Zhuyin, English definitions, and HSK level.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-search">As a learner, I type into a search box to find a word and the graph brings it into view.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-phone">As a learner on a phone, I can read, pan, zoom, and tap the graph as comfortably as on a desktop.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-sources">As a learner, I can see where the vocabulary and definitions come from and under which licenses.</p>
+<p data-user-story data-user-facing="false" data-anchor="story-maintain">As a maintainer, I rebuild the word data with one command, and an automated test suite proves the data correct on every pull request.</p>
+</section>
+
+<section data-spec-section="acceptance" data-acceptance-scope="hsk-network" data-anchor="acceptance">
+<h2>Acceptance criteria</h2>
+<div class="table-scroll" data-anchor="acceptance-table-scroll">
+<table data-anchor="acceptance-table">
+<thead><tr><th>Criterion</th><th>Scenario</th><th>Observable</th></tr></thead>
+<tbody>
+<tr data-acceptance-criterion data-anchor="acceptance-graph" data-story="story-explore"><td>Graph</td><td data-acceptance-scenario>Given a learner on a desktop browser. When the learner opens the public site and waits for the graph to settle.</td><td data-acceptance-observable>Then the whole graph fits the screen, each word is a labeled node in Traditional characters, and shared characters show as smaller hub nodes.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-cluster" data-story="story-explore"><td>Cluster</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner looks at the hub for the character 學.</td><td data-acceptance-observable>Then 學生, 學校, 學習, and 同學 are each linked to that hub and sit near it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-complete" data-story="story-explore story-maintain"><td>Complete</td><td data-acceptance-scenario>Given the built word data. When it is compared with both HSK lists.</td><td data-acceptance-observable>Then every listed entry is exactly one word node, with no extra word nodes, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-links" data-story="story-explore story-maintain"><td>Links</td><td data-acceptance-scenario>Given the built word data. When its links are checked against the words' characters.</td><td data-acceptance-observable>Then a hub exists exactly for each character used by two or more words, and each word links to the hub of each of its distinct characters and to nothing else, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hover" data-story="story-inspect"><td>Hover</td><td data-acceptance-scenario>Given a learner on a desktop browser viewing the graph. When the learner moves the pointer over a word node.</td><td data-acceptance-observable>Then a card shows the word in Traditional characters, its Zhuyin with tone marks, its English definitions, and its HSK level as text.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-tap" data-story="story-inspect story-phone"><td>Tap</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner taps a word node.</td><td data-acceptance-observable>Then the same word card opens at the bottom of the screen without covering the search box.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-dismiss" data-story="story-inspect story-phone"><td>Dismiss</td><td data-acceptance-scenario>Given a learner on a phone with a word card open. When the learner taps empty space in the graph.</td><td data-acceptance-observable>Then the card closes and the full graph is visible again.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hub-card" data-story="story-inspect"><td>Hub card</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a character hub.</td><td data-acceptance-observable>Then a card shows that character and lists the words that contain it, and those words are highlighted in the graph.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-data-known" data-story="story-inspect story-maintain"><td>Known words</td><td data-acceptance-scenario>Given the built word data. When the reference words in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected Traditional form, Zhuyin, and a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-search-hanzi" data-story="story-search"><td>Search by character</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's Traditional characters into the search box and picks it from the results.</td><td data-acceptance-observable>Then the graph pans and zooms to that word, highlights it and its neighbors, and opens its card.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-search-pinyin" data-story="story-search"><td>Search by pinyin</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's pinyin without tone marks into the search box.</td><td data-acceptance-observable>Then the results list includes that word, shown with its Traditional form and first English definition.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-search-english" data-story="story-search"><td>Search by English</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types an English word from a definition into the search box.</td><td data-acceptance-observable>Then the results list includes every word whose definitions contain it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-search-none" data-story="story-search"><td>No match</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types text that matches no word.</td><td data-acceptance-observable>Then the results list reads "No matching word" and the graph is unchanged.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-level" data-story="story-explore"><td>Level</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner reads the legend.</td><td data-acceptance-observable>Then the legend names the color for HSK 1 and the color for HSK 2, and every word node uses its level's color.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-phone-fit" data-story="story-phone"><td>Phone layout</td><td data-acceptance-scenario>Given a learner on a phone in portrait. When the learner opens the public site.</td><td data-acceptance-observable>Then the graph fills the screen below the search box, the page does not scroll sideways, and word labels are readable after zooming in.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-phone-zoom" data-story="story-phone"><td>Pinch and pan</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner pinches outward with two fingers, then drags one finger across the graph.</td><td data-acceptance-observable>Then the graph zooms in around the pinch and then pans with the finger, needing a two-finger pinch and a one-finger drag gesture.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, and credits the graph library and its license.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-static" data-story="story-explore story-maintain"><td>Static</td><td data-acceptance-scenario>Given the published site files. When their references are checked.</td><td data-acceptance-observable>Then the page loads only files from its own site, with no runtime API, key, or third-party request, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-ci" data-story="story-maintain"><td>CI</td><td data-acceptance-scenario>Given a maintainer with an open pull request. When the maintainer views its checks.</td><td data-acceptance-observable>Then a test check has run the full test suite and shows pass or fail.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hosted" data-story="story-explore"><td>Hosted</td><td data-acceptance-scenario>Given a learner with only the public address. When the learner opens it after a change merges to main.</td><td data-acceptance-observable>Then the site loads with the merged version of the graph.</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="acceptance-rules-note">Onboarding: not needed, the site is one screen whose search box and legend explain themselves.</p>
+</section>
+
+<section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
+<h2>Modular boundaries</h2>
+<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists and CC-CEDICT into the graph data: matching, Traditional forms, Zhuyin, definitions, hubs, and links.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file and the build's error list.</span></p>
+<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards, search, legend, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page.</span> <span data-boundary-dependency>Dependency direction: consumes the graph data file and the vendored graph library only; it holds no dictionary logic.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span> <span data-boundary-scope>Observable scope: check status and the live site.</span></p>
+</section>
+
+<section data-anchor="defaults">
+<div class="sec-head">
+<span class="sec-num">01</span>
+<h2 data-anchor="defaults-heading">Defaults</h2>
+<p class="sec-note" data-anchor="defaults-note">Chosen for v1; each may be changed at review.</p>
+</div>
+<div class="table-scroll" data-anchor="defaults-scroll">
+<table data-anchor="defaults-table">
+<thead><tr><th>Question</th><th>Default</th></tr></thead>
+<tbody>
+<tr data-anchor="default-lists"><td>Which HSK</td><td>HSK 2.0 levels 1 and 2: 150 + 150 = 300 list entries.</td></tr>
+<tr data-anchor="default-links"><td>What links words</td><td>A shared character; characters are small hub nodes, words never link directly.</td></tr>
+<tr data-anchor="default-script"><td>Script</td><td>Traditional characters everywhere on the page.</td></tr>
+<tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in the word card; pinyin is used for search only.</td></tr>
+<tr data-anchor="default-level"><td>Level cue</td><td>Color by HSK level, named in a legend and in the card.</td></tr>
+<tr data-anchor="default-data"><td>Data</td><td>Built once into a static file by a script in the repository; no runtime API and no keys.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section data-anchor="graph-model">
+<div class="sec-head">
+<span class="sec-num">02</span>
+<h2 data-anchor="graph-model-heading">Graph model</h2>
+<p class="sec-note" data-anchor="graph-model-note">Word nodes link only to character hubs.</p>
+</div>
+<p data-anchor="model-word">Each HSK list entry is one word node, so a character with two listed readings, such as 長 cháng and 長 zhǎng, is two word nodes told apart by their Zhuyin.</p>
+<p data-anchor="model-hub">A character hub exists for every Traditional character that appears in two or more word nodes, counting a single-character word as containing its character.</p>
+<p data-anchor="model-link">Each word links once to the hub of each distinct character it contains; a word whose characters are all unshared stays unlinked and floats near the center.</p>
+<p data-anchor="model-size">Word nodes are larger than hubs; hubs are gray and labeled with their character in a smaller size.</p>
+<figure data-anchor="model-figure">
+<div class="rail-wrap" data-anchor="model-figure-scroll">
+<svg viewBox="0 0 640 260" style="min-width: 480px" role="img" aria-label="Hub 學 in the center links to word nodes 學生, 學校, 學習 and 同學. 學生 also links to hub 生, which links to the HSK 2 word 生日.">
+<g stroke="#5b5f6b" stroke-width="1.5">
+<line x1="320" y1="130" x2="180" y2="60"></line>
+<line x1="320" y1="130" x2="460" y2="60"></line>
+<line x1="320" y1="130" x2="180" y2="200"></line>
+<line x1="320" y1="130" x2="460" y2="200"></line>
+<line x1="180" y1="60" x2="60" y2="60"></line>
+<line x1="60" y1="60" x2="60" y2="150"></line>
+</g>
+<circle cx="320" cy="130" r="18" fill="#d9dbe0" stroke="#5b5f6b"></circle>
+<text x="320" y="136" text-anchor="middle" font-size="16" fill="#171719">學</text>
+<circle cx="60" cy="60" r="14" fill="#d9dbe0" stroke="#5b5f6b"></circle>
+<text x="60" y="65" text-anchor="middle" font-size="14" fill="#171719">生</text>
+<g font-size="17" text-anchor="middle" fill="#ffffff">
+<rect x="140" y="42" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="180" y="66">學生</text>
+<rect x="420" y="42" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="460" y="66">學校</text>
+<rect x="140" y="182" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="180" y="206">學習</text>
+<rect x="420" y="182" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="460" y="206">同學</text>
+</g>
+<rect x="20" y="150" width="80" height="36" rx="18" fill="#a34a00"></rect>
+<text x="60" y="174" text-anchor="middle" font-size="17" fill="#ffffff">生日</text>
+<text x="20" y="250" font-size="13" fill="#171719">Blue pill: HSK 1 word. Orange pill: HSK 2 word. Gray circle: shared-character hub.</text>
+</svg>
+</div>
+<figcaption data-anchor="model-figure-caption">Words gather around the hubs of the characters they share; a word with several shared characters bridges clusters.</figcaption>
+</figure>
+</section>
+
+<section data-anchor="data">
+<div class="sec-head">
+<span class="sec-num">03</span>
+<h2 data-anchor="data-heading">Data</h2>
+<p class="sec-note" data-anchor="data-note">Built offline, committed, served as one static file.</p>
+</div>
+<div class="table-scroll" data-anchor="sources-scroll">
+<table data-anchor="sources-table">
+<thead><tr><th>Source</th><th>Provides</th><th>How it enters the repository</th><th>License and credit</th></tr></thead>
+<tbody>
+<tr data-anchor="source-hsk"><td>HSK 2.0 word lists, <a href="https://github.com/clem109/hsk-vocabulary">clem109/hsk-vocabulary</a> levels 1 and 2</td><td>Which words, their level, Simplified form, and toned pinyin</td><td>Copied unchanged into the repository with its source URL and commit noted beside it</td><td>MIT; cited in the Sources footer</td></tr>
+<tr data-anchor="source-cedict"><td><a href="https://www.mdbg.net/chinese/dictionary?page=cedict">CC-CEDICT</a></td><td>Traditional form, numbered pinyin, English definitions</td><td>Downloaded by the build command into an ignored cache; never committed</td><td>CC BY-SA 4.0; credited with links and release date in the Sources footer; the graph data file is shared under the same license</td></tr>
+</tbody>
+</table>
+</div>
+<h3 data-anchor="match-heading">Matching an entry to CC-CEDICT</h3>
+<ol data-anchor="match-rules">
+<li data-anchor="match-key">Candidates are CC-CEDICT entries whose Simplified form equals the list entry's and whose pinyin equals it after both are reduced to lowercase syllables with tone numbers, treating a missing tone as neutral (5) and ü as u:.</li>
+<li data-anchor="match-case">When both a capitalized (proper noun) and a lowercase candidate match, keep those whose capitalization matches the list entry.</li>
+<li data-anchor="match-merge">Remaining candidates sharing one Traditional form merge their definitions in dictionary order, de-duplicated.</li>
+<li data-anchor="match-drop">Definitions that only point elsewhere, those starting "variant of", "old variant of", "see ", or "surname ", are dropped unless nothing else remains.</li>
+<li data-anchor="match-fail">No candidate, or candidates with differing Traditional forms, fails the build and names each such entry.</li>
+<li data-anchor="match-override">A small committed override file resolves each failing entry by naming the CC-CEDICT Traditional form and pinyin to use, with a one-line reason per override.</li>
+</ol>
+<h3 data-anchor="zhuyin-heading">Zhuyin</h3>
+<p data-anchor="zhuyin-convert">Each numbered pinyin syllable converts to Zhuyin by a complete syllable table, keeping dictionary tones with no tone sandhi.</p>
+<p data-anchor="zhuyin-spacing">Syllables are separated by one space.</p>
+<div class="table-scroll" data-anchor="zhuyin-tones-scroll">
+<table data-anchor="zhuyin-tones">
+<thead><tr><th>Tone</th><th>Mark</th><th>Example</th></tr></thead>
+<tbody>
+<tr data-anchor="tone-1"><td>1</td><td>none</td><td>生 shēng: ㄕㄥ</td></tr>
+<tr data-anchor="tone-2"><td>2</td><td>ˊ after the syllable</td><td>學 xué: ㄒㄩㄝˊ</td></tr>
+<tr data-anchor="tone-3"><td>3</td><td>ˇ after the syllable</td><td>喜 xǐ: ㄒㄧˇ</td></tr>
+<tr data-anchor="tone-4"><td>4</td><td>ˋ after the syllable</td><td>是 shì: ㄕˋ</td></tr>
+<tr data-anchor="tone-5"><td>neutral</td><td>˙ before the syllable</td><td>們 men: ˙ㄇㄣ</td></tr>
+<tr data-anchor="tone-r"><td>erhua r</td><td>ㄦ with no mark</td><td>點兒 diǎnr: ㄉㄧㄢˇ ㄦ</td></tr>
+</tbody>
+</table>
+</div>
+<h3 data-anchor="schema-heading">Graph data file</h3>
+<p data-anchor="schema-what">One JSON file in the site directory; the pipeline writes it and the site reads it.</p>
+<pre data-anchor="schema-example"><code>{
+  "meta": {
+    "cedictRelease": "2026-10-01",
+    "hskSource": "https://github.com/clem109/hsk-vocabulary@&lt;commit&gt;"
+  },
+  "words": [
+    {
+      "id": "1-128",
+      "level": 1,
+      "trad": "學生",
+      "simp": "学生",
+      "pinyin": "xue2 sheng5",
+      "zhuyin": "ㄒㄩㄝˊ ˙ㄕㄥ",
+      "defs": ["student", "schoolchild"]
+    }
+  ],
+  "hubs": [
+    { "id": "c-學", "char": "學" }
+  ],
+  "links": [
+    { "word": "1-128", "hub": "c-學" }
+  ]
+}</code></pre>
+<p data-anchor="schema-id">A word id is its level and its position in that list, so both readings of one character stay distinct.</p>
+</section>
+
+<section data-anchor="page">
+<div class="sec-head">
+<span class="sec-num">04</span>
+<h2 data-anchor="page-heading">Page</h2>
+<p class="sec-note" data-anchor="page-note">One screen: search on top, graph filling the rest, card on demand.</p>
+</div>
+<figure data-anchor="page-figure">
+<div class="rail-wrap" data-anchor="page-figure-scroll">
+<svg viewBox="0 0 720 330" style="min-width: 600px" role="img" aria-label="Desktop layout: search box and legend across the top, graph below, word card floating beside the hovered node, Sources link bottom right. Phone layout: search box on top, graph fills the screen, word card as a bottom sheet.">
+<rect x="10" y="10" width="440" height="300" rx="8" fill="#ffffff" stroke="#5b5f6b"></rect>
+<text x="20" y="30" font-size="13" fill="#171719">Desktop</text>
+<rect x="24" y="40" width="220" height="30" rx="4" fill="#f3f4f6" stroke="#5b5f6b"></rect>
+<text x="34" y="60" font-size="13" fill="#3d4049">Search character, pinyin, English</text>
+<text x="262" y="60" font-size="13" fill="#171719">● HSK 1  ● HSK 2  ○ character</text>
+<rect x="24" y="80" width="412" height="200" fill="#f8f9fb" stroke="#c7cad1"></rect>
+<text x="150" y="185" font-size="13" fill="#3d4049">force-directed graph</text>
+<rect x="290" y="100" width="136" height="96" rx="6" fill="#ffffff" stroke="#2947c7" stroke-width="1.5"></rect>
+<text x="300" y="124" font-size="18" fill="#171719">學生</text>
+<text x="300" y="146" font-size="13" fill="#171719">ㄒㄩㄝˊ ˙ㄕㄥ</text>
+<text x="300" y="166" font-size="12" fill="#171719">student; schoolchild</text>
+<text x="300" y="186" font-size="12" fill="#171719">HSK 1</text>
+<text x="380" y="298" font-size="12" fill="#171719">Sources</text>
+<rect x="490" y="10" width="200" height="310" rx="16" fill="#ffffff" stroke="#5b5f6b"></rect>
+<text x="500" y="30" font-size="13" fill="#171719">Phone</text>
+<rect x="502" y="40" width="176" height="30" rx="4" fill="#f3f4f6" stroke="#5b5f6b"></rect>
+<text x="512" y="60" font-size="13" fill="#3d4049">Search</text>
+<rect x="502" y="78" width="176" height="140" fill="#f8f9fb" stroke="#c7cad1"></rect>
+<text x="540" y="150" font-size="13" fill="#3d4049">graph</text>
+<rect x="502" y="222" width="176" height="86" rx="8" fill="#ffffff" stroke="#2947c7" stroke-width="1.5"></rect>
+<text x="512" y="246" font-size="18" fill="#171719">學生</text>
+<text x="512" y="268" font-size="13" fill="#171719">ㄒㄩㄝˊ ˙ㄕㄥ</text>
+<text x="512" y="288" font-size="12" fill="#171719">student · HSK 1</text>
+</svg>
+</div>
+<figcaption data-anchor="page-figure-caption">Desktop shows the card beside the hovered node; a phone shows it as a bottom sheet that leaves the search box visible.</figcaption>
+</figure>
+<div class="table-scroll" data-anchor="interactions-scroll">
+<table data-anchor="interactions-table">
+<thead><tr><th>Input</th><th>Desktop</th><th>Phone</th></tr></thead>
+<tbody>
+<tr data-anchor="ix-word"><td>Word node</td><td>Hover opens the card; leaving closes it; click pins it</td><td>Tap opens the card as a bottom sheet</td></tr>
+<tr data-anchor="ix-hub"><td>Hub node</td><td>Click opens the hub card and highlights its words</td><td>Tap does the same</td></tr>
+<tr data-anchor="ix-empty"><td>Empty space</td><td>Click closes a pinned card and clears highlight</td><td>Tap closes the card and clears highlight</td></tr>
+<tr data-anchor="ix-move"><td>Zoom and pan</td><td>Wheel zooms, drag on empty space pans</td><td>Two-finger pinch zooms, one-finger drag pans</td></tr>
+<tr data-anchor="ix-drag"><td>Drag a node</td><td>Moves it; the layout follows</td><td>Same with one finger on the node</td></tr>
+<tr data-anchor="ix-search"><td>Search box</td><td colspan="2">Each keystroke lists up to 20 matches by Traditional or Simplified characters, toneless pinyin, or English, each row showing Traditional form and first definition; picking one focuses it</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="page-fit">On load, and on window resize, the view fits the whole settled graph.</p>
+<p data-anchor="page-focus">Focusing a word pans and zooms so it is centered at a readable size, highlights it with its hubs and the words sharing those hubs, and dims the rest.</p>
+<p data-anchor="page-color">HSK 1 and HSK 2 use a color pair distinguishable with common color blindness; the legend and the card both name the level in text.</p>
+<p data-anchor="page-touch">Every tappable control and the search box are at least 44px tall, and the search box text is at least 16px so phones do not zoom on focus.</p>
+<p data-anchor="page-sources">A "Sources" footer link opens the credits named in the Sources acceptance criterion.</p>
+</section>
+
+<section data-anchor="stack">
+<div class="sec-head">
+<span class="sec-num">05</span>
+<h2 data-anchor="stack-heading">Stack</h2>
+<p class="sec-note" data-anchor="stack-note">No build step for the site, no third-party Python packages.</p>
+</div>
+<div class="table-scroll" data-anchor="stack-scroll">
+<table data-anchor="stack-table">
+<thead><tr><th>Part</th><th>Choice</th><th>Why</th></tr></thead>
+<tbody>
+<tr data-anchor="stack-site"><td>Site</td><td>Plain HTML, CSS, and one JavaScript file</td><td>One screen needs no framework or bundler; GitHub Pages serves the files as they are.</td></tr>
+<tr data-anchor="stack-graph"><td>Graph library</td><td>D3 v7, one pinned minified file vendored in the site directory (ISC license)</td><td>d3-force does the layout and d3-zoom handles wheel, pinch, and drag; SVG gives crisp Chinese labels and native hover and tap targets, and about 450 nodes is well within SVG's comfortable size. Vendoring keeps the page free of third-party requests.</td></tr>
+<tr data-anchor="stack-rejected"><td>Rejected</td><td>Canvas force-graph libraries; Cytoscape.js</td><td>Canvas needs custom hit testing and blurs text when zoomed; Cytoscape is several times larger for features this page does not use.</td></tr>
+<tr data-anchor="stack-pipeline"><td>Pipeline and tests</td><td>Python 3 standard library only, tests with unittest</td><td>The download, parsing, and conversion need nothing more, so CI installs nothing.</td></tr>
+<tr data-anchor="stack-data"><td>Graph data</td><td>Committed in the site directory</td><td>Tests and Pages run with no network; refreshing the dictionary is a deliberate commit whose diff shows what changed.</td></tr>
+<tr data-anchor="stack-delivery"><td>CI and hosting</td><td>A GitHub Actions test workflow on every pull request and push to main; a GitHub Pages workflow that publishes the site directory on every push to main</td><td>Pages from a workflow publishes only the site, never the specs or scripts.</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="stack-agents">The repository's AGENTS.md names the build, test, and local preview commands and declares <code>Spec format: spec-chat</code>.</p>
+<h3 data-anchor="tests-heading">Test suite</h3>
+<ul data-anchor="tests-list">
+<li data-anchor="test-known">Known words: at least ten reference words, including 學生, 喜歡, 長 in both readings, 得 in both readings, 中國, and 女兒, each checked for Traditional form, exact Zhuyin, and an expected English gloss.</li>
+<li data-anchor="test-zhuyin">Zhuyin conversion: every tone, neutral tone, erhua, ü syllables, and zero-initial syllables such as yi, wu, and yu.</li>
+<li data-anchor="test-complete">Completeness: every entry of both committed HSK lists appears once, with its level, and nothing else.</li>
+<li data-anchor="test-links">Links: hubs and links recomputed from the words' Traditional forms equal the committed ones.</li>
+<li data-anchor="test-match">Matching: the match rules above, against a few fixture dictionary lines, including a failing entry and an override.</li>
+<li data-anchor="test-static">Static: no site file references an address outside the site.</li>
+</ul>
+</section>
+
+</article>
+</body>
+</html>
