@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/clem109/hsk-vocabulary",
+  "commit": "f3dc9d12ae00d04fa3676b0bd4c43cd58de2c264",
+  "files": {
+    "1": "hsk-vocab-json/hsk-level-1.json",
+    "2": "hsk-vocab-json/hsk-level-2.json"
+  },
+  "license": "MIT, see LICENSE in this directory",
+  "note": "Files copied unchanged from the commit above."
+}
