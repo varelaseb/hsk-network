@@ -1,0 +1,44 @@
+# QA capture target: HSK network static site (jev-capture.spec.html#jc-target).
+# Python stdlib only: no setup, rebuild, or env file. The site is served unchanged from site/.
+
+# Paths searched for a test naming a no-browser criterion's anchor.
+tests = ["tests"]
+
+[repos.hsk-network]
+url = "https://github.com/varelaseb/hsk-network.git"
+
+# Static preview of site/, as AGENTS.md Preview.
+[services.site]
+command = 'cd "$QA_REPO_HSK_NETWORK" && exec python3 -m http.server --bind 127.0.0.1 --directory site "$PORT"'
+url = "http://127.0.0.1:{port}"
+ready = "/"
+
+# The committed built word data the site loads (role: learner). Read-only, so reset only
+# confirms it is present.
+[fixture.graph-data]
+repo = "hsk-network"
+path = "site/data/graph.json"
+reset = 'test -s "$QA_FIXTURE"'
+
+# Desktop by default: every story starts at the site root.
+[entry]
+url = "{site}/"
+viewport = { width = 1280, height = 800 }
+
+# Phone in portrait, with touch, for pinch, pan, and tap.
+[entry.stories.story-phone]
+viewport = { width = 390, height = 844 }
+touch = true
+
+# Search fill values, all from site/data/graph.json.
+[entry.criteria.acceptance-search-hanzi]
+values = ["學生"]
+[entry.criteria.acceptance-search-pinyin]
+values = ["xuesheng"]
+[entry.criteria.acceptance-search-english]
+values = ["student"]
+[entry.criteria.acceptance-search-none]
+values = ["qzqzqz"]
+
+[entry.criteria.acceptance-hosted]
+cannot_host = "needs the public GitHub Pages address after a merge to main; this environment serves a local preview of the candidate head"
