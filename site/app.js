@@ -396,6 +396,7 @@
       card.appendChild(ul);
     }
     card.hidden = false;
+    card.scrollTop = 0;
     placeCard(d);
   }
 
