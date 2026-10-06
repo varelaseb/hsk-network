@@ -7,7 +7,7 @@ import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
   makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
   createGame, shoot, resolveShot, swap, completingChars, boardChars,
-  roundRows, roundShots, lowestRow, pronunciation,
+  roundRows, roundShots, lowestRow, pronunciation, lookupChar,
 } from "../../site/bubbles/rules.js";
 
 const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
@@ -346,4 +346,39 @@ test("acceptance-say-source: recording, else on-device Taiwan Mandarin voice, el
   // Pronunciation off: nothing is said.
   assert.equal(pronunciation(rec, false, [tw]), null);
   assert.equal(pronunciation(bare, false, [tw]), null);
+});
+
+// test-inspect
+const CHARS = {
+  // shared by several words, two readings
+  子: { readings: [{ pinyin: "zi3", zhuyin: "ㄗˇ", defs: ["son", "child"] }, { pinyin: "zi5", zhuyin: "˙ㄗ", defs: ["noun suffix"] }] },
+  學: { readings: [{ pinyin: "xue2", zhuyin: "ㄒㄩㄝˊ", defs: ["to learn", "to study"] }], meaning: "learn" },
+  // in only one word
+  杯: { readings: [{ pinyin: "bei1", zhuyin: "ㄅㄟ", defs: ["cup"] }] },
+};
+
+test("inspect: each character gives its own readings as Zhuyin with first definition (acceptance-inspect-rules)", () => {
+  assert.deepEqual(lookupChar("子", CHARS), { char: "子", readings: [{ zhuyin: "ㄗˇ", def: "son" }, { zhuyin: "˙ㄗ", def: "noun suffix" }] });
+  assert.deepEqual(lookupChar("學", CHARS), { char: "學", readings: [{ zhuyin: "ㄒㄩㄝˊ", def: "to learn" }] });
+  assert.deepEqual(lookupChar("杯", CHARS), { char: "杯", readings: [{ zhuyin: "ㄅㄟ", def: "cup" }] });
+});
+
+test("inspect: never pinyin", () => {
+  for (const ch of Object.keys(CHARS)) {
+    const text = JSON.stringify(lookupChar(ch, CHARS));
+    assert.ok(!/pinyin|[a-z]+[1-5]/.test(text), text);
+  }
+});
+
+test("inspect: missing table or entry gives the character alone", () => {
+  assert.deepEqual(lookupChar("京", CHARS), { char: "京", readings: [] });
+  assert.deepEqual(lookupChar("京", undefined), { char: "京", readings: [] });
+  assert.deepEqual(lookupChar("constructor", CHARS), { char: "constructor", readings: [] });
+});
+
+test("shoot events carry word entries with English definitions for the card", () => {
+  const game = createGame({ words: GRAPH.words, levels: [1, 2], seed: 1, board: parseBoard(["..學...."]), current: "生", next: "學" });
+  const { events } = resolveShot(game, { r: 0, c: 3 });
+  assert.equal(events.words[0].word, "學生");
+  for (const e of events.words[0].entries) assert.ok(Array.isArray(e.defs) && e.defs[0], "defs[0]");
 });
