@@ -68,7 +68,7 @@
 <tr data-acceptance-criterion data-anchor="acceptance-senses" data-story="story-read"><td>Senses</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a word that has several English senses and measure words.</td><td data-acceptance-observable>Then the card lists each sense on its own line, and a line labeled "Measure words" shows each measure word in Traditional characters with its Zhuyin, separated by dots, with no Simplified character, pinyin, colon code, or bracket.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-sense-ref" data-story="story-read"><td>Cross-reference</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a word whose sense names another Chinese word.</td><td data-acceptance-observable>Then that sense shows the other word in Traditional characters followed by its Zhuyin, with no vertical bar, Simplified form, or pinyin.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-sense-tag" data-story="story-read"><td>Usage tags</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a word whose sense carries a usage tag.</td><td data-acceptance-observable>Then the tag reads in full words, such as "colloquial" or "bound form", set apart in a smaller muted style before the sense.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-clean-data" data-story="story-read story-maintain"><td>Clean text</td><td data-acceptance-scenario>Given the built graph data. When every string the site or game shows from it is checked.</td><td data-acceptance-observable>Then none holds a Simplified-only character, pinyin with tone numbers, a "CL:" code, a vertical bar, square brackets, or the abbreviations "sb" and "sth", proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-clean-data" data-story="story-read story-maintain"><td>Clean text</td><td data-acceptance-scenario>Given the built graph data. When every sense, measure word, and reading is rendered in Traditional mode.</td><td data-acceptance-observable>Then nothing rendered contains a Simplified-only character, pinyin, a "CL:" code, a vertical bar, square brackets, or the abbreviations "sb" and "sth", while the data still holds each reference's Simplified form and pinyin, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-zhuyin-column" data-story="story-read story-look"><td>Zhuyin beside characters</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a two-character word whose second syllable has the neutral tone.</td><td data-acceptance-observable>Then the card's headword shows each character with its Zhuyin stacked in a column on its right, a tone mark to the right of the column's last symbol, and the neutral-tone dot above the second column.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-typeface" data-story="story-look"><td>Typefaces</td><td data-acceptance-scenario>Given a learner on a phone. When the learner opens the site and taps a word.</td><td data-acceptance-observable>Then characters and Zhuyin, on the graph and in the card, show in the site's kaishu typeface, and English text shows in its sans typeface, as on a desktop.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-fonts-files" data-story="story-look story-maintain"><td>Font files</td><td data-acceptance-scenario>Given the published site files. When the font files are checked.</td><td data-acceptance-observable>Then each typeface is served from the site with its license beside it, the kaishu font holds every character and Zhuyin symbol the site and game show, and the fonts stay within the size budget, proven by a unit test: no screen shows it.</td></tr>
@@ -197,22 +197,24 @@
 </table>
 </div>
 <h3 data-anchor="senses-heading">Senses and measure words</h3>
-<p data-anchor="senses-what">Every definition the site or game shows passes these rules in the pipeline, so the page renders text as it is and holds no dictionary parsing.</p>
+<p data-anchor="senses-what">Every definition passes these rules in the pipeline, which turns dictionary markup into structure and keeps every form it carried; the site and game only choose which forms to show and hold no dictionary parsing.</p>
+<p data-anchor="senses-mode">The site and game show Traditional mode only: Traditional characters with Zhuyin; Simplified forms and pinyin stay in the data, unshown, so a later script toggle changes rendering only.</p>
 <div class="table-scroll" data-anchor="senses-scroll">
 <table data-anchor="senses-table">
 <thead><tr><th>CC-CEDICT text</th><th>Rule</th><th>Shown as</th></tr></thead>
 <tbody>
 <tr data-anchor="sense-split"><td><code>/to love; to be fond of/affection/</code></td><td>Each slash-separated definition is one sense, kept in dictionary order; semicolons inside a sense stay.</td><td>One sense per line</td></tr>
-<tr data-anchor="sense-cl"><td><code>CL:塊|块[kuai4],隻|只[zhi1],個|个[ge4]</code></td><td>Every "CL:" list, a whole sense or in parentheses inside one, leaves the sense text and becomes the entry's measure words, in order, each once; a sense left empty is dropped.</td><td>Measure words 塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</td></tr>
-<tr data-anchor="sense-ref"><td><code>see 大夫[dai4 fu5]</code>, <code>used in 號脈|号脉[hao4 mai4]</code></td><td>A <code>Traditional|Simplified[pinyin]</code> or <code>Traditional[pinyin]</code> reference becomes the Traditional form, a space, and the pinyin converted to Zhuyin by the Zhuyin rules.</td><td>see 大夫 ㄉㄞˋ ˙ㄈㄨ</td></tr>
-<tr data-anchor="sense-pr"><td><code>(Taiwan pr. [ting4])</code>, <code>also pr. [shui2]</code></td><td>A bare bracketed pinyin becomes its Zhuyin; "Taiwan pr." reads "Taiwan reading", "pr." reads "pronounced".</td><td>(Taiwan reading ㄊㄧㄥˋ)</td></tr>
+<tr data-anchor="sense-cl"><td><code>CL:塊|块[kuai4],隻|只[zhi1],個|个[ge4]</code></td><td>Every "CL:" list, a whole sense or in parentheses inside one, leaves the sense text and becomes the entry's measure words, in order, each once, each a reference; a sense left empty is dropped.</td><td>Measure words 塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</td></tr>
+<tr data-anchor="sense-ref"><td><code>see 大夫[dai4 fu5]</code>, <code>used in 號脈|号脉[hao4 mai4]</code></td><td>A <code>Traditional|Simplified[pinyin]</code> or <code>Traditional[pinyin]</code> citation becomes a reference holding the Traditional form, the Simplified form (the Traditional one when none is given), the pinyin, and its Zhuyin by the Zhuyin rules; Traditional mode shows the Traditional form, a space, and the Zhuyin.</td><td>see 大夫 ㄉㄞˋ ˙ㄈㄨ</td></tr>
+<tr data-anchor="sense-pr"><td><code>(Taiwan pr. [ting4])</code>, <code>also pr. [shui2]</code></td><td>A bare bracketed pinyin becomes a reading reference holding the pinyin and its Zhuyin, shown as the Zhuyin; "Taiwan pr." reads "Taiwan reading", "pr." reads "pronounced".</td><td>(Taiwan reading ㄊㄧㄥˋ)</td></tr>
 <tr data-anchor="sense-tag"><td><code>(bound form)</code>, <code>(coll.)</code>, <code>(Tw)</code></td><td>A parenthesized tag that opens a sense becomes the sense's tag, its abbreviation spelled out: coll. colloquial, Tw Taiwan, lit. literally, fig. figuratively, math. mathematics, abbr. short for, onom. onomatopoeia.</td><td>bound form  root; stem</td></tr>
 <tr data-anchor="sense-abbr"><td><code>to see (sb) off</code></td><td>The abbreviations sb, sth, and esp. anywhere in a sense read someone, something, and especially.</td><td>to see (someone) off</td></tr>
 </tbody>
 </table>
 </div>
-<p data-anchor="sense-mw-store">A measure word refers to its character's entry in the character table, recording the character and the pinyin of the reading the "CL:" list names, so its Zhuyin is read through that reading as for any character; a measure word whose character has no reading with that pinyin fails the build and names the entry.</p>
-<p data-anchor="sense-fail">After cleaning, a sense that still holds a character CC-CEDICT knows only as a Simplified form, a tone-numbered syllable, a vertical bar, or a square bracket fails the build and names the entry, so a new CC-CEDICT pattern is caught before it ships.</p>
+<p data-anchor="sense-mw-store">Measure words and cross-references share one reference shape, Traditional, Simplified, pinyin, and Zhuyin; it records the dictionary's citation, the reading the entry names, and is not a character fact, so it sits beside the sense rather than in the character table.</p>
+<p data-anchor="sense-fail">After cleaning, a sense whose plain text, outside its references, still holds a character CC-CEDICT knows only as a Simplified form, a tone-numbered syllable, a vertical bar, or a square bracket fails the build and names the entry, so a new CC-CEDICT pattern is caught before it ships.</p>
+<p data-anchor="sense-render">One small sense-rendering module, shared by the network page and the game, turns a sense and its references into what Traditional mode shows.</p>
 <p data-anchor="sense-scope">The rules apply to word definitions and to character readings alike, so word cards, hub cards, search results, and every game card show the same cleaned text.</p>
 <h3 data-anchor="schema-heading">Graph data file</h3>
 <h3 data-anchor="audio-heading">Matching a word to a recording</h3>
@@ -236,8 +238,11 @@
       "simp": "学生",
       "pinyin": "xue2 sheng5",
       "zhuyin": "ㄒㄩㄝˊ ˙ㄕㄥ",
-      "defs": [{ "text": "student" }, { "text": "schoolchild" }],
-      "mw": [{ "char": "個", "pinyin": "ge4" }, { "char": "名", "pinyin": "ming2" }],
+      "defs": [{ "parts": ["student"] }, { "parts": ["schoolchild"] }],
+      "mw": [
+        { "trad": "個", "simp": "个", "pinyin": "ge4", "zhuyin": "ㄍㄜˋ" },
+        { "trad": "名", "simp": "名", "pinyin": "ming2", "zhuyin": "ㄇㄧㄥˊ" }
+      ],
       "audio": "audio/1-128.mp3"
     }
   ],
@@ -254,7 +259,7 @@
     { "word": "1-128", "hub": "c-學" }
   ]
 }</code></pre>
-<p data-anchor="schema-sense">A sense is an object with its cleaned text and, when it opened with a tag, the spelled-out tag, such as <code>{ "tag": "bound form", "text": "root; stem" }</code>; a word or reading with no measure words has no "mw" entry.</p>
+<p data-anchor="schema-sense">A sense is an object with its parts in reading order, each plain text or a reference, and, when it opened with a tag, the spelled-out tag, such as <code>{ "tag": "colloquial", "parts": ["see ", { "trad": "大夫", "simp": "大夫", "pinyin": "dai4 fu5", "zhuyin": "ㄉㄞˋ ˙ㄈㄨ" }] }</code>; a reading reference holds only pinyin and Zhuyin; a word or reading with no measure words has no "mw" entry.</p>
 <p data-anchor="schema-id">A word id is its level and its position in that list, so both readings of one character stay distinct.</p>
 </section>
 
@@ -464,7 +469,7 @@
 <li data-anchor="test-match">Matching: the match rules above, against a few fixture dictionary lines, including a failing entry and an override.</li>
 <li data-anchor="test-audio">Audio: every audio entry names an existing recording, every recording belongs to a word, and words sharing a Simplified form have none.</li>
 <li data-anchor="test-senses">Senses: the sense rules above against fixture dictionary lines, including a "CL:" sense, a parenthesized "CL:" list, a <code>Traditional|Simplified[pinyin]</code> reference, a "Taiwan pr." note, a leading tag, and sb and sth.</li>
-<li data-anchor="test-clean">Clean text: every string the site or game shows from the graph data file holds no character that the committed HSK lists write differently in Simplified than in Traditional, tone-numbered syllable, "CL:" code, vertical bar, square bracket, or sb and sth.</li>
+<li data-anchor="test-clean">Clean rendering: the shared sense-rendering module, run on every sense, measure word, and reading in the graph data file in Traditional mode, renders nothing containing a character the committed HSK lists write differently in Simplified than in Traditional, a tone-numbered or tone-marked pinyin syllable, a "CL:" code, a vertical bar, a square bracket, or sb and sth; every reference still carries its Simplified form and pinyin.</li>
 <li data-anchor="test-fonts">Fonts: the coverage list's hash matches the committed kaishu font, it covers every character in the graph data file and the pages' text plus all Zhuyin symbols and tone marks, each font has its license beside it, and the sizes stay within the budget.</li>
 <li data-anchor="test-static">Static: no site file references an address outside the site.</li>
 </ul>
