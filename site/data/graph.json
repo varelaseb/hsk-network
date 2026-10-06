@@ -1,0 +1,5081 @@
+{
+ "meta": {
+  "cedictRelease": "2026-10-04",
+  "hskSource": "https://github.com/clem109/hsk-vocabulary@f3dc9d12ae00d04fa3676b0bd4c43cd58de2c264"
+ },
+ "words": [
+  {
+   "id": "1-1",
+   "level": 1,
+   "trad": "愛",
+   "simp": "爱",
+   "pinyin": "ai4",
+   "zhuyin": "ㄞˋ",
+   "defs": [
+    "to love; to be fond of; to like",
+    "affection",
+    "to be inclined (to do sth); to tend to (happen)"
+   ]
+  },
+  {
+   "id": "1-2",
+   "level": 1,
+   "trad": "八",
+   "simp": "八",
+   "pinyin": "ba1",
+   "zhuyin": "ㄅㄚ",
+   "defs": [
+    "eight"
+   ]
+  },
+  {
+   "id": "1-3",
+   "level": 1,
+   "trad": "爸爸",
+   "simp": "爸爸",
+   "pinyin": "ba4 ba5",
+   "zhuyin": "ㄅㄚˋ ˙ㄅㄚ",
+   "defs": [
+    "(coll.) father; dad",
+    "CL:位[wei4]"
+   ]
+  },
+  {
+   "id": "1-4",
+   "level": 1,
+   "trad": "杯子",
+   "simp": "杯子",
+   "pinyin": "bei1 zi5",
+   "zhuyin": "ㄅㄟ ˙ㄗ",
+   "defs": [
+    "cup",
+    "glass",
+    "CL:個|个[ge4],隻|只[zhi1]"
+   ]
+  },
+  {
+   "id": "1-5",
+   "level": 1,
+   "trad": "北京",
+   "simp": "北京",
+   "pinyin": "bei3 jing1",
+   "zhuyin": "ㄅㄟˇ ㄐㄧㄥ",
+   "defs": [
+    "Beijing municipality, capital of the People's Republic of China (short name 京[Jing1])"
+   ]
+  },
+  {
+   "id": "1-6",
+   "level": 1,
+   "trad": "本",
+   "simp": "本",
+   "pinyin": "ben3",
+   "zhuyin": "ㄅㄣˇ",
+   "defs": [
+    "(bound form) root; stem",
+    "(bound form) origin; source",
+    "(bound form) one's own; this",
+    "(bound form) this; the current (year etc)",
+    "(bound form) original",
+    "(bound form) inherent",
+    "originally; initially",
+    "capital; principal",
+    "classifier for books, periodicals, files etc"
+   ]
+  },
+  {
+   "id": "1-7",
+   "level": 1,
+   "trad": "不客氣",
+   "simp": "不客气",
+   "pinyin": "bu4 ke4 qi5",
+   "zhuyin": "ㄅㄨˋ ㄎㄜˋ ˙ㄑㄧ",
+   "defs": [
+    "you're welcome",
+    "don't mention it",
+    "impolite",
+    "rude",
+    "blunt"
+   ]
+  },
+  {
+   "id": "1-8",
+   "level": 1,
+   "trad": "不",
+   "simp": "不",
+   "pinyin": "bu4",
+   "zhuyin": "ㄅㄨˋ",
+   "defs": [
+    "no; not so",
+    "(bound form) not; un-"
+   ]
+  },
+  {
+   "id": "1-9",
+   "level": 1,
+   "trad": "菜",
+   "simp": "菜",
+   "pinyin": "cai4",
+   "zhuyin": "ㄘㄞˋ",
+   "defs": [
+    "vegetable; greens (CL:棵[ke1])",
+    "dish (of food) (CL:樣|样[yang4],道[dao4],盤|盘[pan2])",
+    "(of one's skills etc) weak; poor",
+    "(coll.) (one's) type"
+   ]
+  },
+  {
+   "id": "1-10",
+   "level": 1,
+   "trad": "茶",
+   "simp": "茶",
+   "pinyin": "cha2",
+   "zhuyin": "ㄔㄚˊ",
+   "defs": [
+    "tea",
+    "tea plant",
+    "CL:杯[bei1],壺|壶[hu2]"
+   ]
+  },
+  {
+   "id": "1-11",
+   "level": 1,
+   "trad": "吃",
+   "simp": "吃",
+   "pinyin": "chi1",
+   "zhuyin": "ㄔ",
+   "defs": [
+    "to eat; to consume",
+    "to eat at (a cafeteria etc)",
+    "to eradicate; to destroy",
+    "to absorb",
+    "to suffer (shock, injury, defeat etc)"
+   ]
+  },
+  {
+   "id": "1-12",
+   "level": 1,
+   "trad": "出租車",
+   "simp": "出租车",
+   "pinyin": "chu1 zu1 che1",
+   "zhuyin": "ㄔㄨ ㄗㄨ ㄔㄜ",
+   "defs": [
+    "taxi",
+    "(Tw) rental car"
+   ]
+  },
+  {
+   "id": "1-13",
+   "level": 1,
+   "trad": "打電話",
+   "simp": "打电话",
+   "pinyin": "da3 dian4 hua4",
+   "zhuyin": "ㄉㄚˇ ㄉㄧㄢˋ ㄏㄨㄚˋ",
+   "defs": [
+    "to make a telephone call"
+   ]
+  },
+  {
+   "id": "1-14",
+   "level": 1,
+   "trad": "大",
+   "simp": "大",
+   "pinyin": "da4",
+   "zhuyin": "ㄉㄚˋ",
+   "defs": [
+    "big; large; great",
+    "older (than another person)",
+    "eldest (as in 大姐[da4 jie3])",
+    "greatly; freely; fully",
+    "(dialect) father",
+    "(dialect) uncle (father's brother)"
+   ]
+  },
+  {
+   "id": "1-15",
+   "level": 1,
+   "trad": "的",
+   "simp": "的",
+   "pinyin": "de5",
+   "zhuyin": "˙ㄉㄜ",
+   "defs": [
+    "of; ~'s (possessive particle)",
+    "(used after an attribute when it modifies a noun)",
+    "(used at the end of a declarative sentence for emphasis)",
+    "(used after a noun, verb or adjective to form a nominal expression, as in 皮革的[pi2 ge2 de5] \"one made of leather\" or 跑堂兒的|跑堂儿的[pao3 tang2 r5 de5] \"a waiter (literally, one who runs back and forth in a restaurant)\" or 新的[xin1 de5] \"new one\")",
+    "also pr. [di4] or [di5] in poetry and songs"
+   ]
+  },
+  {
+   "id": "1-16",
+   "level": 1,
+   "trad": "點",
+   "simp": "点",
+   "pinyin": "dian3",
+   "zhuyin": "ㄉㄧㄢˇ",
+   "defs": [
+    "to touch briefly; to tap",
+    "to mark with a dot; to check off (on a list)",
+    "to order (food etc); to select",
+    "to mention; to bring up (a topic or person)",
+    "to hint at; to imply",
+    "to administer (eye medicine etc) in drops",
+    "to light (a fire, a lamp etc); to ignite",
+    "to nod (one's head) in agreement; to beckon by moving (one's hand) up and down",
+    "point; dot; spot; speck",
+    "dot stroke in Chinese characters",
+    "(math.) decimal point",
+    "point in time or space",
+    "(after a number) o'clock",
+    "a small amount; a bit; (after a verb or adjective) a bit more",
+    "classifier for small amounts"
+   ]
+  },
+  {
+   "id": "1-17",
+   "level": 1,
+   "trad": "電腦",
+   "simp": "电脑",
+   "pinyin": "dian4 nao3",
+   "zhuyin": "ㄉㄧㄢˋ ㄋㄠˇ",
+   "defs": [
+    "computer",
+    "CL:臺|台[tai2]"
+   ]
+  },
+  {
+   "id": "1-18",
+   "level": 1,
+   "trad": "電視",
+   "simp": "电视",
+   "pinyin": "dian4 shi4",
+   "zhuyin": "ㄉㄧㄢˋ ㄕˋ",
+   "defs": [
+    "television; TV",
+    "CL:臺|台[tai2],部[bu4]"
+   ]
+  },
+  {
+   "id": "1-19",
+   "level": 1,
+   "trad": "電影",
+   "simp": "电影",
+   "pinyin": "dian4 ying3",
+   "zhuyin": "ㄉㄧㄢˋ ㄧㄥˇ",
+   "defs": [
+    "movie; film",
+    "CL:部[bu4]"
+   ]
+  },
+  {
+   "id": "1-20",
+   "level": 1,
+   "trad": "東西",
+   "simp": "东西",
+   "pinyin": "dong1 xi5",
+   "zhuyin": "ㄉㄨㄥ ˙ㄒㄧ",
+   "defs": [
+    "thing",
+    "stuff",
+    "person",
+    "CL:個|个[ge4],件[jian4]"
+   ]
+  },
+  {
+   "id": "1-21",
+   "level": 1,
+   "trad": "都",
+   "simp": "都",
+   "pinyin": "dou1",
+   "zhuyin": "ㄉㄡ",
+   "defs": [
+    "all; both; entirely",
+    "(used for emphasis) even",
+    "already",
+    "(not) at all"
+   ]
+  },
+  {
+   "id": "1-22",
+   "level": 1,
+   "trad": "讀",
+   "simp": "读",
+   "pinyin": "du2",
+   "zhuyin": "ㄉㄨˊ",
+   "defs": [
+    "to read out; to read aloud",
+    "to read",
+    "to attend (school); to study (a subject in school)",
+    "to pronounce"
+   ]
+  },
+  {
+   "id": "1-23",
+   "level": 1,
+   "trad": "對不起",
+   "simp": "对不起",
+   "pinyin": "dui4 bu5 qi3",
+   "zhuyin": "ㄉㄨㄟˋ ˙ㄅㄨ ㄑㄧˇ",
+   "defs": [
+    "I'm sorry; excuse me; I beg your pardon",
+    "to let (sb) down; to disappoint"
+   ]
+  },
+  {
+   "id": "1-24",
+   "level": 1,
+   "trad": "多",
+   "simp": "多",
+   "pinyin": "duo1",
+   "zhuyin": "ㄉㄨㄛ",
+   "defs": [
+    "many; much; more; a lot of",
+    "too many; in excess",
+    "(after a numeral) ... odd",
+    "how (to what extent) (Taiwan pr. [duo2])",
+    "(bound form) multi-; poly-"
+   ]
+  },
+  {
+   "id": "1-25",
+   "level": 1,
+   "trad": "多少",
+   "simp": "多少",
+   "pinyin": "duo1 shao5",
+   "zhuyin": "ㄉㄨㄛ ˙ㄕㄠ",
+   "defs": [
+    "how much?; how many?",
+    "(phone number, student ID etc) what number?"
+   ]
+  },
+  {
+   "id": "1-26",
+   "level": 1,
+   "trad": "兒子",
+   "simp": "儿子",
+   "pinyin": "er2 zi5",
+   "zhuyin": "ㄦˊ ˙ㄗ",
+   "defs": [
+    "son"
+   ]
+  },
+  {
+   "id": "1-27",
+   "level": 1,
+   "trad": "二",
+   "simp": "二",
+   "pinyin": "er4",
+   "zhuyin": "ㄦˋ",
+   "defs": [
+    "two",
+    "2",
+    "(Beijing dialect) stupid"
+   ]
+  },
+  {
+   "id": "1-28",
+   "level": 1,
+   "trad": "飯館",
+   "simp": "饭馆",
+   "pinyin": "fan4 guan3",
+   "zhuyin": "ㄈㄢˋ ㄍㄨㄢˇ",
+   "defs": [
+    "restaurant",
+    "CL:家[jia1]"
+   ]
+  },
+  {
+   "id": "1-29",
+   "level": 1,
+   "trad": "飛機",
+   "simp": "飞机",
+   "pinyin": "fei1 ji1",
+   "zhuyin": "ㄈㄟ ㄐㄧ",
+   "defs": [
+    "airplane",
+    "CL:架[jia4]"
+   ]
+  },
+  {
+   "id": "1-30",
+   "level": 1,
+   "trad": "分鐘",
+   "simp": "分钟",
+   "pinyin": "fen1 zhong1",
+   "zhuyin": "ㄈㄣ ㄓㄨㄥ",
+   "defs": [
+    "minute"
+   ]
+  },
+  {
+   "id": "1-31",
+   "level": 1,
+   "trad": "高興",
+   "simp": "高兴",
+   "pinyin": "gao1 xing4",
+   "zhuyin": "ㄍㄠ ㄒㄧㄥˋ",
+   "defs": [
+    "happy",
+    "glad",
+    "willing (to do sth)",
+    "in a cheerful mood"
+   ]
+  },
+  {
+   "id": "1-32",
+   "level": 1,
+   "trad": "個",
+   "simp": "个",
+   "pinyin": "ge4",
+   "zhuyin": "ㄍㄜˋ",
+   "defs": [
+    "(classifier used before a noun that has no specific classifier)",
+    "(bound form) individual"
+   ]
+  },
+  {
+   "id": "1-33",
+   "level": 1,
+   "trad": "工作",
+   "simp": "工作",
+   "pinyin": "gong1 zuo4",
+   "zhuyin": "ㄍㄨㄥ ㄗㄨㄛˋ",
+   "defs": [
+    "to work",
+    "(of a machine) to operate",
+    "job",
+    "work",
+    "task",
+    "CL:個|个[ge4],份[fen4],項|项[xiang4]"
+   ]
+  },
+  {
+   "id": "1-34",
+   "level": 1,
+   "trad": "狗",
+   "simp": "狗",
+   "pinyin": "gou3",
+   "zhuyin": "ㄍㄡˇ",
+   "defs": [
+    "dog",
+    "CL:隻|只[zhi1],條|条[tiao2]"
+   ]
+  },
+  {
+   "id": "1-35",
+   "level": 1,
+   "trad": "漢語",
+   "simp": "汉语",
+   "pinyin": "han4 yu3",
+   "zhuyin": "ㄏㄢˋ ㄩˇ",
+   "defs": [
+    "Chinese language"
+   ]
+  },
+  {
+   "id": "1-36",
+   "level": 1,
+   "trad": "好",
+   "simp": "好",
+   "pinyin": "hao3",
+   "zhuyin": "ㄏㄠˇ",
+   "defs": [
+    "good",
+    "appropriate; proper",
+    "all right!",
+    "(before a verb) easy to",
+    "(before a verb) good to",
+    "(before an adjective for exclamatory effect) so",
+    "(verb complement indicating completion)",
+    "(of two people) close; on intimate terms",
+    "(after a form of address) hello"
+   ]
+  },
+  {
+   "id": "1-37",
+   "level": 1,
+   "trad": "喝",
+   "simp": "喝",
+   "pinyin": "he1",
+   "zhuyin": "ㄏㄜ",
+   "defs": [
+    "to drink"
+   ]
+  },
+  {
+   "id": "1-38",
+   "level": 1,
+   "trad": "和",
+   "simp": "和",
+   "pinyin": "he2",
+   "zhuyin": "ㄏㄜˊ",
+   "defs": [
+    "(joining two nouns) and; together with; with (Taiwan pr. [han4])",
+    "(math.) sum",
+    "to make peace",
+    "(sports) to draw; to tie",
+    "(bound form) harmonious",
+    "(bound form) Japan; Japanese"
+   ]
+  },
+  {
+   "id": "1-39",
+   "level": 1,
+   "trad": "很",
+   "simp": "很",
+   "pinyin": "hen3",
+   "zhuyin": "ㄏㄣˇ",
+   "defs": [
+    "very; quite",
+    "(also, often used before an adjective without intensifying its meaning, i.e. as a meaningless syntactic element)"
+   ]
+  },
+  {
+   "id": "1-40",
+   "level": 1,
+   "trad": "後面",
+   "simp": "后面",
+   "pinyin": "hou4 mian5",
+   "zhuyin": "ㄏㄡˋ ˙ㄇㄧㄢ",
+   "defs": [
+    "the back; the rear; the last bit",
+    "behind; near the end; at the back",
+    "later; afterwards"
+   ]
+  },
+  {
+   "id": "1-41",
+   "level": 1,
+   "trad": "回",
+   "simp": "回",
+   "pinyin": "hui2",
+   "zhuyin": "ㄏㄨㄟˊ",
+   "defs": [
+    "to go back; to return; to turn back; to turn around",
+    "to reply; to answer",
+    "classifier for literary divisions (acts of a play, sections or chapters of a classic book)",
+    "classifier for occurrences or times"
+   ]
+  },
+  {
+   "id": "1-42",
+   "level": 1,
+   "trad": "會",
+   "simp": "会",
+   "pinyin": "hui4",
+   "zhuyin": "ㄏㄨㄟˋ",
+   "defs": [
+    "can; to have the skill; to know how to",
+    "to be likely to; to be sure to",
+    "to meet; to get together",
+    "meeting; gathering",
+    "(suffix) union; group; association",
+    "(bound form) a moment (Taiwan pr. [hui3])"
+   ]
+  },
+  {
+   "id": "1-43",
+   "level": 1,
+   "trad": "火車站",
+   "simp": "火车站",
+   "pinyin": "huo3 che1 zhan4",
+   "zhuyin": "ㄏㄨㄛˇ ㄔㄜ ㄓㄢˋ",
+   "defs": [
+    "train station"
+   ]
+  },
+  {
+   "id": "1-44",
+   "level": 1,
+   "trad": "幾",
+   "simp": "几",
+   "pinyin": "ji3",
+   "zhuyin": "ㄐㄧˇ",
+   "defs": [
+    "how many; how much",
+    "several; a few"
+   ]
+  },
+  {
+   "id": "1-45",
+   "level": 1,
+   "trad": "家",
+   "simp": "家",
+   "pinyin": "jia1",
+   "zhuyin": "ㄐㄧㄚ",
+   "defs": [
+    "home",
+    "family",
+    "(polite) my (sister, uncle etc)",
+    "classifier for families or businesses",
+    "refers to the philosophical schools of pre-Han China",
+    "noun suffix for a specialist in some activity, such as a musician or revolutionary, corresponding to English -ist, -er, -ary or -ian",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "1-46",
+   "level": 1,
+   "trad": "叫",
+   "simp": "叫",
+   "pinyin": "jiao4",
+   "zhuyin": "ㄐㄧㄠˋ",
+   "defs": [
+    "to shout",
+    "to call",
+    "to order",
+    "to ask",
+    "to be called",
+    "by (indicates agent in the passive mood)"
+   ]
+  },
+  {
+   "id": "1-47",
+   "level": 1,
+   "trad": "今天",
+   "simp": "今天",
+   "pinyin": "jin1 tian1",
+   "zhuyin": "ㄐㄧㄣ ㄊㄧㄢ",
+   "defs": [
+    "today",
+    "the present time; now"
+   ]
+  },
+  {
+   "id": "1-48",
+   "level": 1,
+   "trad": "九",
+   "simp": "九",
+   "pinyin": "jiu3",
+   "zhuyin": "ㄐㄧㄡˇ",
+   "defs": [
+    "nine",
+    "9"
+   ]
+  },
+  {
+   "id": "1-49",
+   "level": 1,
+   "trad": "開",
+   "simp": "开",
+   "pinyin": "kai1",
+   "zhuyin": "ㄎㄞ",
+   "defs": [
+    "to open (transitive or intransitive)",
+    "(of ships, vehicles, troops etc) to start",
+    "to turn on; to put in operation; to operate; to run",
+    "to boil",
+    "to write out (a prescription, check, invoice etc)",
+    "(directional complement) away; off",
+    "carat (gold)",
+    "abbr. for Kelvin, 開爾文|开尔文[Kai1 er3 wen2]",
+    "abbr. for 開本|开本[kai1 ben3], book format"
+   ]
+  },
+  {
+   "id": "1-50",
+   "level": 1,
+   "trad": "看",
+   "simp": "看",
+   "pinyin": "kan4",
+   "zhuyin": "ㄎㄢˋ",
+   "defs": [
+    "to see; to look at",
+    "to read",
+    "to watch",
+    "to visit; to call on",
+    "to consider; to regard as",
+    "to look after",
+    "to treat (a patient or illness)",
+    "to depend on",
+    "to feel (that)",
+    "(after a verb) to give it a try",
+    "to watch out for"
+   ]
+  },
+  {
+   "id": "1-51",
+   "level": 1,
+   "trad": "看見",
+   "simp": "看见",
+   "pinyin": "kan4 jian4",
+   "zhuyin": "ㄎㄢˋ ㄐㄧㄢˋ",
+   "defs": [
+    "to see; to catch sight of"
+   ]
+  },
+  {
+   "id": "1-52",
+   "level": 1,
+   "trad": "塊",
+   "simp": "块",
+   "pinyin": "kuai4",
+   "zhuyin": "ㄎㄨㄞˋ",
+   "defs": [
+    "lump; chunk; piece",
+    "classifier for pieces of cloth, cake, soap etc",
+    "(coll.) classifier for money and currency units"
+   ]
+  },
+  {
+   "id": "1-53",
+   "level": 1,
+   "trad": "來",
+   "simp": "来",
+   "pinyin": "lai2",
+   "zhuyin": "ㄌㄞˊ",
+   "defs": [
+    "to come",
+    "(used as a substitute for a more specific verb)",
+    "hither (directional complement for motion toward the speaker, as in 回來|回来[hui2 lai5])",
+    "ever since (as in 自古以來|自古以来[zi4 gu3 yi3 lai2])",
+    "for the past (amount of time)",
+    "(prefix) the coming ...; the next ... (as in 來世|来世[lai2 shi4])",
+    "(between two verbs) in order to",
+    "(after a round number) approximately",
+    "(used after 得[de2] to indicate possibility, as in 談得來|谈得来[tan2 de5 lai2], or after 不[bu4] to indicate impossibility, as in 吃不來|吃不来[chi1 bu5 lai2])"
+   ]
+  },
+  {
+   "id": "1-54",
+   "level": 1,
+   "trad": "老師",
+   "simp": "老师",
+   "pinyin": "lao3 shi1",
+   "zhuyin": "ㄌㄠˇ ㄕ",
+   "defs": [
+    "teacher"
+   ]
+  },
+  {
+   "id": "1-55",
+   "level": 1,
+   "trad": "了",
+   "simp": "了",
+   "pinyin": "le5",
+   "zhuyin": "˙ㄌㄜ",
+   "defs": [
+    "(completed action marker)",
+    "(modal particle indicating change of state, situation now)",
+    "(modal particle intensifying preceding clause)"
+   ]
+  },
+  {
+   "id": "1-56",
+   "level": 1,
+   "trad": "冷",
+   "simp": "冷",
+   "pinyin": "leng3",
+   "zhuyin": "ㄌㄥˇ",
+   "defs": [
+    "cold"
+   ]
+  },
+  {
+   "id": "1-57",
+   "level": 1,
+   "trad": "裡",
+   "simp": "里",
+   "pinyin": "li3",
+   "zhuyin": "ㄌㄧˇ",
+   "defs": [
+    "lining",
+    "interior",
+    "inside",
+    "internal",
+    "also written 裏|里[li3]"
+   ]
+  },
+  {
+   "id": "1-58",
+   "level": 1,
+   "trad": "零",
+   "simp": "零",
+   "pinyin": "ling2",
+   "zhuyin": "ㄌㄧㄥˊ",
+   "defs": [
+    "zero",
+    "nought",
+    "zero sign",
+    "fractional",
+    "fragmentary",
+    "odd (of numbers)",
+    "(placed between two numbers to indicate a smaller quantity followed by a larger one)",
+    "fraction",
+    "(in mathematics) remainder (after division)",
+    "extra",
+    "to wither and fall",
+    "to wither"
+   ]
+  },
+  {
+   "id": "1-59",
+   "level": 1,
+   "trad": "六",
+   "simp": "六",
+   "pinyin": "liu4",
+   "zhuyin": "ㄌㄧㄡˋ",
+   "defs": [
+    "six",
+    "6"
+   ]
+  },
+  {
+   "id": "1-60",
+   "level": 1,
+   "trad": "媽媽",
+   "simp": "妈妈",
+   "pinyin": "ma1 ma5",
+   "zhuyin": "ㄇㄚ ˙ㄇㄚ",
+   "defs": [
+    "mama",
+    "mommy",
+    "mother",
+    "CL:個|个[ge4],位[wei4]"
+   ]
+  },
+  {
+   "id": "1-61",
+   "level": 1,
+   "trad": "嗎",
+   "simp": "吗",
+   "pinyin": "ma5",
+   "zhuyin": "˙ㄇㄚ",
+   "defs": [
+    "(question particle for \"yes-no\" questions)"
+   ]
+  },
+  {
+   "id": "1-62",
+   "level": 1,
+   "trad": "買",
+   "simp": "买",
+   "pinyin": "mai3",
+   "zhuyin": "ㄇㄞˇ",
+   "defs": [
+    "to buy",
+    "to purchase"
+   ]
+  },
+  {
+   "id": "1-63",
+   "level": 1,
+   "trad": "貓",
+   "simp": "猫",
+   "pinyin": "mao1",
+   "zhuyin": "ㄇㄠ",
+   "defs": [
+    "cat (CL:隻|只[zhi1])",
+    "(dialect) to hide oneself",
+    "(loanword) (coll.) modem"
+   ]
+  },
+  {
+   "id": "1-64",
+   "level": 1,
+   "trad": "沒",
+   "simp": "没",
+   "pinyin": "mei2",
+   "zhuyin": "ㄇㄟˊ",
+   "defs": [
+    "(negative prefix for verbs) have not; not"
+   ]
+  },
+  {
+   "id": "1-65",
+   "level": 1,
+   "trad": "沒關係",
+   "simp": "没关系",
+   "pinyin": "mei2 guan1 xi5",
+   "zhuyin": "ㄇㄟˊ ㄍㄨㄢ ˙ㄒㄧ",
+   "defs": [
+    "it doesn't matter"
+   ]
+  },
+  {
+   "id": "1-66",
+   "level": 1,
+   "trad": "米飯",
+   "simp": "米饭",
+   "pinyin": "mi3 fan4",
+   "zhuyin": "ㄇㄧˇ ㄈㄢˋ",
+   "defs": [
+    "(cooked) rice"
+   ]
+  },
+  {
+   "id": "1-67",
+   "level": 1,
+   "trad": "明天",
+   "simp": "明天",
+   "pinyin": "ming2 tian1",
+   "zhuyin": "ㄇㄧㄥˊ ㄊㄧㄢ",
+   "defs": [
+    "tomorrow"
+   ]
+  },
+  {
+   "id": "1-68",
+   "level": 1,
+   "trad": "名字",
+   "simp": "名字",
+   "pinyin": "ming2 zi5",
+   "zhuyin": "ㄇㄧㄥˊ ˙ㄗ",
+   "defs": [
+    "name (of a person or thing)"
+   ]
+  },
+  {
+   "id": "1-69",
+   "level": 1,
+   "trad": "哪",
+   "simp": "哪",
+   "pinyin": "na3",
+   "zhuyin": "ㄋㄚˇ",
+   "defs": [
+    "how",
+    "which"
+   ]
+  },
+  {
+   "id": "1-70",
+   "level": 1,
+   "trad": "那",
+   "simp": "那",
+   "pinyin": "na4",
+   "zhuyin": "ㄋㄚˋ",
+   "defs": [
+    "(specifier) that; the; those (colloquial pr. [nei4])",
+    "(pronoun) that (referring to persons, things or situations)",
+    "then (in that case)"
+   ]
+  },
+  {
+   "id": "1-71",
+   "level": 1,
+   "trad": "呢",
+   "simp": "呢",
+   "pinyin": "ne5",
+   "zhuyin": "˙ㄋㄜ",
+   "defs": [
+    "(sentence-final particle) used in questions to link back to prior discourse or context (\"what about...?\", \"and...?\")",
+    "(sentence-final particle) indicating that a state or situation still holds",
+    "(discourse particle) used to mark a slight pause or emphasis in speech"
+   ]
+  },
+  {
+   "id": "1-72",
+   "level": 1,
+   "trad": "能",
+   "simp": "能",
+   "pinyin": "neng2",
+   "zhuyin": "ㄋㄥˊ",
+   "defs": [
+    "can",
+    "to be able to",
+    "might possibly",
+    "ability",
+    "(physics) energy"
+   ]
+  },
+  {
+   "id": "1-73",
+   "level": 1,
+   "trad": "你",
+   "simp": "你",
+   "pinyin": "ni3",
+   "zhuyin": "ㄋㄧˇ",
+   "defs": [
+    "you (informal, as opposed to courteous 您[nin2])"
+   ]
+  },
+  {
+   "id": "1-74",
+   "level": 1,
+   "trad": "年",
+   "simp": "年",
+   "pinyin": "nian2",
+   "zhuyin": "ㄋㄧㄢˊ",
+   "defs": [
+    "year",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "1-75",
+   "level": 1,
+   "trad": "女兒",
+   "simp": "女儿",
+   "pinyin": "nu:3 er2",
+   "zhuyin": "ㄋㄩˇ ㄦˊ",
+   "defs": [
+    "daughter"
+   ]
+  },
+  {
+   "id": "1-76",
+   "level": 1,
+   "trad": "朋友",
+   "simp": "朋友",
+   "pinyin": "peng2 you5",
+   "zhuyin": "ㄆㄥˊ ˙ㄧㄡ",
+   "defs": [
+    "friend",
+    "CL:個|个[ge4],位[wei4]"
+   ]
+  },
+  {
+   "id": "1-77",
+   "level": 1,
+   "trad": "漂亮",
+   "simp": "漂亮",
+   "pinyin": "piao4 liang5",
+   "zhuyin": "ㄆㄧㄠˋ ˙ㄌㄧㄤ",
+   "defs": [
+    "pretty; beautiful"
+   ]
+  },
+  {
+   "id": "1-78",
+   "level": 1,
+   "trad": "蘋果",
+   "simp": "苹果",
+   "pinyin": "ping2 guo3",
+   "zhuyin": "ㄆㄧㄥˊ ㄍㄨㄛˇ",
+   "defs": [
+    "apple",
+    "CL:個|个[ge4],顆|颗[ke1]"
+   ]
+  },
+  {
+   "id": "1-79",
+   "level": 1,
+   "trad": "七",
+   "simp": "七",
+   "pinyin": "qi1",
+   "zhuyin": "ㄑㄧ",
+   "defs": [
+    "seven",
+    "7"
+   ]
+  },
+  {
+   "id": "1-80",
+   "level": 1,
+   "trad": "錢",
+   "simp": "钱",
+   "pinyin": "qian2",
+   "zhuyin": "ㄑㄧㄢˊ",
+   "defs": [
+    "coin",
+    "money",
+    "CL:筆|笔[bi3]",
+    "unit of weight, one tenth of a tael 兩|两[liang3]"
+   ]
+  },
+  {
+   "id": "1-81",
+   "level": 1,
+   "trad": "前面",
+   "simp": "前面",
+   "pinyin": "qian2 mian4",
+   "zhuyin": "ㄑㄧㄢˊ ㄇㄧㄢˋ",
+   "defs": [
+    "ahead",
+    "in front",
+    "preceding",
+    "above",
+    "also pr. [qian2 mian5]"
+   ]
+  },
+  {
+   "id": "1-82",
+   "level": 1,
+   "trad": "請",
+   "simp": "请",
+   "pinyin": "qing3",
+   "zhuyin": "ㄑㄧㄥˇ",
+   "defs": [
+    "to ask",
+    "to invite",
+    "please (do sth)",
+    "to treat (to a meal etc)",
+    "to request"
+   ]
+  },
+  {
+   "id": "1-83",
+   "level": 1,
+   "trad": "去",
+   "simp": "去",
+   "pinyin": "qu4",
+   "zhuyin": "ㄑㄩˋ",
+   "defs": [
+    "to go",
+    "to go to (a place)",
+    "(of a time etc) last",
+    "just passed",
+    "to send",
+    "to remove",
+    "to get rid of",
+    "to reduce",
+    "to be apart from in space or time",
+    "to die (euphemism)",
+    "to play (a part)",
+    "(when used either before or after a verb) to go in order to do sth",
+    "(after a verb of motion indicates movement away from the speaker)",
+    "(used after certain verbs to indicate detachment or separation)"
+   ]
+  },
+  {
+   "id": "1-84",
+   "level": 1,
+   "trad": "熱",
+   "simp": "热",
+   "pinyin": "re4",
+   "zhuyin": "ㄖㄜˋ",
+   "defs": [
+    "to warm up",
+    "to heat up",
+    "hot (of weather)",
+    "heat",
+    "fervent"
+   ]
+  },
+  {
+   "id": "1-85",
+   "level": 1,
+   "trad": "人",
+   "simp": "人",
+   "pinyin": "ren2",
+   "zhuyin": "ㄖㄣˊ",
+   "defs": [
+    "person; people",
+    "CL:個|个[ge4],位[wei4],名[ming2]"
+   ]
+  },
+  {
+   "id": "1-86",
+   "level": 1,
+   "trad": "認識",
+   "simp": "认识",
+   "pinyin": "ren4 shi5",
+   "zhuyin": "ㄖㄣˋ ˙ㄕ",
+   "defs": [
+    "to know",
+    "to recognize",
+    "to be familiar with",
+    "to get acquainted with sb",
+    "knowledge",
+    "understanding",
+    "awareness",
+    "cognition"
+   ]
+  },
+  {
+   "id": "1-87",
+   "level": 1,
+   "trad": "日",
+   "simp": "日",
+   "pinyin": "ri4",
+   "zhuyin": "ㄖˋ",
+   "defs": [
+    "(bound form) sun",
+    "day",
+    "day of the month",
+    "(bound form) Japan (abbr. for 日本[Ri4 ben3])",
+    "(vulgar) to fuck; to have sex with"
+   ]
+  },
+  {
+   "id": "1-88",
+   "level": 1,
+   "trad": "三",
+   "simp": "三",
+   "pinyin": "san1",
+   "zhuyin": "ㄙㄢ",
+   "defs": [
+    "three",
+    "3"
+   ]
+  },
+  {
+   "id": "1-89",
+   "level": 1,
+   "trad": "商店",
+   "simp": "商店",
+   "pinyin": "shang1 dian4",
+   "zhuyin": "ㄕㄤ ㄉㄧㄢˋ",
+   "defs": [
+    "store; shop",
+    "CL:家[jia1]"
+   ]
+  },
+  {
+   "id": "1-90",
+   "level": 1,
+   "trad": "上",
+   "simp": "上",
+   "pinyin": "shang4",
+   "zhuyin": "ㄕㄤˋ",
+   "defs": [
+    "(bound form) up; upper; above; previous",
+    "first (of multiple parts)",
+    "to climb; to get onto; to go up",
+    "to attend (class or university)",
+    "(directional complement) up",
+    "(noun suffix) on; above"
+   ]
+  },
+  {
+   "id": "1-91",
+   "level": 1,
+   "trad": "上午",
+   "simp": "上午",
+   "pinyin": "shang4 wu3",
+   "zhuyin": "ㄕㄤˋ ㄨˇ",
+   "defs": [
+    "morning"
+   ]
+  },
+  {
+   "id": "1-92",
+   "level": 1,
+   "trad": "少",
+   "simp": "少",
+   "pinyin": "shao3",
+   "zhuyin": "ㄕㄠˇ",
+   "defs": [
+    "few",
+    "less",
+    "to lack",
+    "to be missing",
+    "to stop (doing sth)",
+    "seldom"
+   ]
+  },
+  {
+   "id": "1-93",
+   "level": 1,
+   "trad": "誰",
+   "simp": "谁",
+   "pinyin": "shei2",
+   "zhuyin": "ㄕㄟˊ",
+   "defs": [
+    "who",
+    "also pr. [shui2]"
+   ]
+  },
+  {
+   "id": "1-94",
+   "level": 1,
+   "trad": "什麼",
+   "simp": "什么",
+   "pinyin": "shen2 me5",
+   "zhuyin": "ㄕㄣˊ ˙ㄇㄜ",
+   "defs": [
+    "what?",
+    "something; anything"
+   ]
+  },
+  {
+   "id": "1-95",
+   "level": 1,
+   "trad": "十",
+   "simp": "十",
+   "pinyin": "shi2",
+   "zhuyin": "ㄕˊ",
+   "defs": [
+    "ten",
+    "10"
+   ]
+  },
+  {
+   "id": "1-96",
+   "level": 1,
+   "trad": "時候",
+   "simp": "时候",
+   "pinyin": "shi2 hou5",
+   "zhuyin": "ㄕˊ ˙ㄏㄡ",
+   "defs": [
+    "time",
+    "length of time",
+    "moment",
+    "period"
+   ]
+  },
+  {
+   "id": "1-97",
+   "level": 1,
+   "trad": "是",
+   "simp": "是",
+   "pinyin": "shi4",
+   "zhuyin": "ㄕˋ",
+   "defs": [
+    "to be (followed by substantives only)",
+    "correct; right; true",
+    "(respectful acknowledgement of a command) very well",
+    "(adverb for emphatic assertion)"
+   ]
+  },
+  {
+   "id": "1-98",
+   "level": 1,
+   "trad": "書",
+   "simp": "书",
+   "pinyin": "shu1",
+   "zhuyin": "ㄕㄨ",
+   "defs": [
+    "book",
+    "letter",
+    "document",
+    "CL:本[ben3],冊|册[ce4],部[bu4]",
+    "to write"
+   ]
+  },
+  {
+   "id": "1-99",
+   "level": 1,
+   "trad": "水",
+   "simp": "水",
+   "pinyin": "shui3",
+   "zhuyin": "ㄕㄨㄟˇ",
+   "defs": [
+    "water",
+    "(after a name) ... River",
+    "to swim (used mostly in 會水|会水[hui4 shui3] and 水性[shui3 xing4])",
+    "(coll.) lacking in substance; shoddy",
+    "(bound form) additional cost; extra income",
+    "classifier for washings of a garment"
+   ]
+  },
+  {
+   "id": "1-100",
+   "level": 1,
+   "trad": "水果",
+   "simp": "水果",
+   "pinyin": "shui3 guo3",
+   "zhuyin": "ㄕㄨㄟˇ ㄍㄨㄛˇ",
+   "defs": [
+    "fruit"
+   ]
+  },
+  {
+   "id": "1-101",
+   "level": 1,
+   "trad": "睡覺",
+   "simp": "睡觉",
+   "pinyin": "shui4 jiao4",
+   "zhuyin": "ㄕㄨㄟˋ ㄐㄧㄠˋ",
+   "defs": [
+    "to go to bed",
+    "to sleep"
+   ]
+  },
+  {
+   "id": "1-102",
+   "level": 1,
+   "trad": "說話",
+   "simp": "说话",
+   "pinyin": "shuo1 hua4",
+   "zhuyin": "ㄕㄨㄛ ㄏㄨㄚˋ",
+   "defs": [
+    "to speak",
+    "to say",
+    "to talk",
+    "to gossip",
+    "to tell stories",
+    "talk",
+    "word"
+   ]
+  },
+  {
+   "id": "1-103",
+   "level": 1,
+   "trad": "四",
+   "simp": "四",
+   "pinyin": "si4",
+   "zhuyin": "ㄙˋ",
+   "defs": [
+    "four",
+    "4"
+   ]
+  },
+  {
+   "id": "1-104",
+   "level": 1,
+   "trad": "歲",
+   "simp": "岁",
+   "pinyin": "sui4",
+   "zhuyin": "ㄙㄨㄟˋ",
+   "defs": [
+    "classifier for years (of age)",
+    "year",
+    "year (of crop harvests)"
+   ]
+  },
+  {
+   "id": "1-105",
+   "level": 1,
+   "trad": "他",
+   "simp": "他",
+   "pinyin": "ta1",
+   "zhuyin": "ㄊㄚ",
+   "defs": [
+    "(third-person singular) (since the early 20th century, usu. male) he; him; his",
+    "(bound form) other; another; some other (as in 他日[ta1 ri4] and 他人[ta1 ren2])"
+   ]
+  },
+  {
+   "id": "1-106",
+   "level": 1,
+   "trad": "她",
+   "simp": "她",
+   "pinyin": "ta1",
+   "zhuyin": "ㄊㄚ",
+   "defs": [
+    "she"
+   ]
+  },
+  {
+   "id": "1-107",
+   "level": 1,
+   "trad": "太",
+   "simp": "太",
+   "pinyin": "tai4",
+   "zhuyin": "ㄊㄞˋ",
+   "defs": [
+    "highest",
+    "greatest",
+    "too (much)",
+    "very",
+    "extremely"
+   ]
+  },
+  {
+   "id": "1-108",
+   "level": 1,
+   "trad": "天氣",
+   "simp": "天气",
+   "pinyin": "tian1 qi4",
+   "zhuyin": "ㄊㄧㄢ ㄑㄧˋ",
+   "defs": [
+    "weather"
+   ]
+  },
+  {
+   "id": "1-109",
+   "level": 1,
+   "trad": "聽",
+   "simp": "听",
+   "pinyin": "ting1",
+   "zhuyin": "ㄊㄧㄥ",
+   "defs": [
+    "to listen to; to hear",
+    "to heed; to obey",
+    "a can (loanword from English \"tin\")",
+    "classifier for canned beverages",
+    "to let be; to allow (Taiwan pr. [ting4])",
+    "(literary) to administer; to deal with (Taiwan pr. [ting4])"
+   ]
+  },
+  {
+   "id": "1-110",
+   "level": 1,
+   "trad": "同學",
+   "simp": "同学",
+   "pinyin": "tong2 xue2",
+   "zhuyin": "ㄊㄨㄥˊ ㄒㄩㄝˊ",
+   "defs": [
+    "to study at the same school",
+    "fellow student",
+    "classmate",
+    "CL:位[wei4],個|个[ge4]"
+   ]
+  },
+  {
+   "id": "1-111",
+   "level": 1,
+   "trad": "喂",
+   "simp": "喂",
+   "pinyin": "wei4",
+   "zhuyin": "ㄨㄟˋ",
+   "defs": [
+    "hey",
+    "to feed (an animal, baby, invalid etc)"
+   ]
+  },
+  {
+   "id": "1-112",
+   "level": 1,
+   "trad": "我",
+   "simp": "我",
+   "pinyin": "wo3",
+   "zhuyin": "ㄨㄛˇ",
+   "defs": [
+    "I; me; my"
+   ]
+  },
+  {
+   "id": "1-113",
+   "level": 1,
+   "trad": "我們",
+   "simp": "我们",
+   "pinyin": "wo3 men5",
+   "zhuyin": "ㄨㄛˇ ˙ㄇㄣ",
+   "defs": [
+    "we; us; ourselves"
+   ]
+  },
+  {
+   "id": "1-114",
+   "level": 1,
+   "trad": "五",
+   "simp": "五",
+   "pinyin": "wu3",
+   "zhuyin": "ㄨˇ",
+   "defs": [
+    "five",
+    "5"
+   ]
+  },
+  {
+   "id": "1-115",
+   "level": 1,
+   "trad": "喜歡",
+   "simp": "喜欢",
+   "pinyin": "xi3 huan5",
+   "zhuyin": "ㄒㄧˇ ˙ㄏㄨㄢ",
+   "defs": [
+    "to like; to be fond of",
+    "to be happy; to be pleased",
+    "to tend to"
+   ]
+  },
+  {
+   "id": "1-116",
+   "level": 1,
+   "trad": "下",
+   "simp": "下",
+   "pinyin": "xia4",
+   "zhuyin": "ㄒㄧㄚˋ",
+   "defs": [
+    "down",
+    "downwards",
+    "below",
+    "lower",
+    "later",
+    "next (week etc)",
+    "second (of two parts)",
+    "to decline",
+    "to go down",
+    "to arrive at (a decision, conclusion etc)",
+    "measure word to show the frequency of an action"
+   ]
+  },
+  {
+   "id": "1-117",
+   "level": 1,
+   "trad": "下午",
+   "simp": "下午",
+   "pinyin": "xia4 wu3",
+   "zhuyin": "ㄒㄧㄚˋ ㄨˇ",
+   "defs": [
+    "afternoon",
+    "CL:個|个[ge4]",
+    "p.m."
+   ]
+  },
+  {
+   "id": "1-118",
+   "level": 1,
+   "trad": "下雨",
+   "simp": "下雨",
+   "pinyin": "xia4 yu3",
+   "zhuyin": "ㄒㄧㄚˋ ㄩˇ",
+   "defs": [
+    "to rain"
+   ]
+  },
+  {
+   "id": "1-119",
+   "level": 1,
+   "trad": "先生",
+   "simp": "先生",
+   "pinyin": "xian1 sheng5",
+   "zhuyin": "ㄒㄧㄢ ˙ㄕㄥ",
+   "defs": [
+    "teacher",
+    "gentleman; sir; mister (Mr.)",
+    "husband",
+    "(dialect) doctor",
+    "CL:位[wei4]"
+   ]
+  },
+  {
+   "id": "1-120",
+   "level": 1,
+   "trad": "現在",
+   "simp": "现在",
+   "pinyin": "xian4 zai4",
+   "zhuyin": "ㄒㄧㄢˋ ㄗㄞˋ",
+   "defs": [
+    "now; at present; currently"
+   ]
+  },
+  {
+   "id": "1-121",
+   "level": 1,
+   "trad": "想",
+   "simp": "想",
+   "pinyin": "xiang3",
+   "zhuyin": "ㄒㄧㄤˇ",
+   "defs": [
+    "to think (about)",
+    "to think of; to devise",
+    "to think (that); to believe (that)",
+    "to desire; to want (to)",
+    "to miss (feel wistful about the absence of)"
+   ]
+  },
+  {
+   "id": "1-122",
+   "level": 1,
+   "trad": "小",
+   "simp": "小",
+   "pinyin": "xiao3",
+   "zhuyin": "ㄒㄧㄠˇ",
+   "defs": [
+    "small",
+    "tiny",
+    "few",
+    "young"
+   ]
+  },
+  {
+   "id": "1-123",
+   "level": 1,
+   "trad": "小姐",
+   "simp": "小姐",
+   "pinyin": "xiao3 jie5",
+   "zhuyin": "ㄒㄧㄠˇ ˙ㄐㄧㄝ",
+   "defs": [
+    "young lady",
+    "miss",
+    "(slang) prostitute",
+    "CL:個|个[ge4],位[wei4]"
+   ]
+  },
+  {
+   "id": "1-124",
+   "level": 1,
+   "trad": "些",
+   "simp": "些",
+   "pinyin": "xie1",
+   "zhuyin": "ㄒㄧㄝ",
+   "defs": [
+    "classifier indicating a small amount or small number greater than 1: some, a few, several"
+   ]
+  },
+  {
+   "id": "1-125",
+   "level": 1,
+   "trad": "寫",
+   "simp": "写",
+   "pinyin": "xie3",
+   "zhuyin": "ㄒㄧㄝˇ",
+   "defs": [
+    "to write"
+   ]
+  },
+  {
+   "id": "1-126",
+   "level": 1,
+   "trad": "謝謝",
+   "simp": "谢谢",
+   "pinyin": "xie4 xie5",
+   "zhuyin": "ㄒㄧㄝˋ ˙ㄒㄧㄝ",
+   "defs": [
+    "to thank",
+    "thanks",
+    "thank you"
+   ]
+  },
+  {
+   "id": "1-127",
+   "level": 1,
+   "trad": "星期",
+   "simp": "星期",
+   "pinyin": "xing1 qi1",
+   "zhuyin": "ㄒㄧㄥ ㄑㄧ",
+   "defs": [
+    "week",
+    "CL:個|个[ge4]",
+    "day of the week",
+    "Sunday"
+   ]
+  },
+  {
+   "id": "1-128",
+   "level": 1,
+   "trad": "學生",
+   "simp": "学生",
+   "pinyin": "xue2 sheng5",
+   "zhuyin": "ㄒㄩㄝˊ ˙ㄕㄥ",
+   "defs": [
+    "student",
+    "schoolchild"
+   ]
+  },
+  {
+   "id": "1-129",
+   "level": 1,
+   "trad": "學習",
+   "simp": "学习",
+   "pinyin": "xue2 xi2",
+   "zhuyin": "ㄒㄩㄝˊ ㄒㄧˊ",
+   "defs": [
+    "to learn; to study"
+   ]
+  },
+  {
+   "id": "1-130",
+   "level": 1,
+   "trad": "學校",
+   "simp": "学校",
+   "pinyin": "xue2 xiao4",
+   "zhuyin": "ㄒㄩㄝˊ ㄒㄧㄠˋ",
+   "defs": [
+    "school",
+    "CL:所[suo3]"
+   ]
+  },
+  {
+   "id": "1-131",
+   "level": 1,
+   "trad": "一",
+   "simp": "一",
+   "pinyin": "yi1",
+   "zhuyin": "ㄧ",
+   "defs": [
+    "one",
+    "single",
+    "a (article)",
+    "as soon as",
+    "entire; whole; all; throughout",
+    "\"one\" radical in Chinese characters (Kangxi radical 1)",
+    "also pr. [yao1] for greater clarity when spelling out numbers digit by digit"
+   ]
+  },
+  {
+   "id": "1-132",
+   "level": 1,
+   "trad": "衣服",
+   "simp": "衣服",
+   "pinyin": "yi1 fu5",
+   "zhuyin": "ㄧ ˙ㄈㄨ",
+   "defs": [
+    "clothes",
+    "CL:件[jian4],套[tao4]"
+   ]
+  },
+  {
+   "id": "1-133",
+   "level": 1,
+   "trad": "醫生",
+   "simp": "医生",
+   "pinyin": "yi1 sheng1",
+   "zhuyin": "ㄧ ㄕㄥ",
+   "defs": [
+    "doctor; medical practitioner"
+   ]
+  },
+  {
+   "id": "1-134",
+   "level": 1,
+   "trad": "醫院",
+   "simp": "医院",
+   "pinyin": "yi1 yuan4",
+   "zhuyin": "ㄧ ㄩㄢˋ",
+   "defs": [
+    "hospital",
+    "CL:所[suo3],家[jia1],座[zuo4]"
+   ]
+  },
+  {
+   "id": "1-135",
+   "level": 1,
+   "trad": "椅子",
+   "simp": "椅子",
+   "pinyin": "yi3 zi5",
+   "zhuyin": "ㄧˇ ˙ㄗ",
+   "defs": [
+    "chair",
+    "CL:把[ba3],張|张[zhang1]"
+   ]
+  },
+  {
+   "id": "1-136",
+   "level": 1,
+   "trad": "有",
+   "simp": "有",
+   "pinyin": "you3",
+   "zhuyin": "ㄧㄡˇ",
+   "defs": [
+    "to have; there is",
+    "(bound form) having; with; -ful; -ed; -al (as in 有意[you3 yi4] intentional)"
+   ]
+  },
+  {
+   "id": "1-137",
+   "level": 1,
+   "trad": "月",
+   "simp": "月",
+   "pinyin": "yue4",
+   "zhuyin": "ㄩㄝˋ",
+   "defs": [
+    "moon",
+    "month",
+    "monthly",
+    "CL:個|个[ge4],輪|轮[lun2]"
+   ]
+  },
+  {
+   "id": "1-138",
+   "level": 1,
+   "trad": "在",
+   "simp": "在",
+   "pinyin": "zai4",
+   "zhuyin": "ㄗㄞˋ",
+   "defs": [
+    "to exist; to be alive",
+    "(of sb or sth) to be (located) at",
+    "(used before a verb to indicate an action in progress)"
+   ]
+  },
+  {
+   "id": "1-139",
+   "level": 1,
+   "trad": "再見",
+   "simp": "再见",
+   "pinyin": "zai4 jian4",
+   "zhuyin": "ㄗㄞˋ ㄐㄧㄢˋ",
+   "defs": [
+    "goodbye"
+   ]
+  },
+  {
+   "id": "1-140",
+   "level": 1,
+   "trad": "怎麼",
+   "simp": "怎么",
+   "pinyin": "zen3 me5",
+   "zhuyin": "ㄗㄣˇ ˙ㄇㄜ",
+   "defs": [
+    "how?",
+    "what?",
+    "why?"
+   ]
+  },
+  {
+   "id": "1-141",
+   "level": 1,
+   "trad": "怎麼樣",
+   "simp": "怎么样",
+   "pinyin": "zen3 me5 yang4",
+   "zhuyin": "ㄗㄣˇ ˙ㄇㄜ ㄧㄤˋ",
+   "defs": [
+    "how?",
+    "how about?",
+    "how was it?",
+    "how are things?"
+   ]
+  },
+  {
+   "id": "1-142",
+   "level": 1,
+   "trad": "這",
+   "simp": "这",
+   "pinyin": "zhe4",
+   "zhuyin": "ㄓㄜˋ",
+   "defs": [
+    "(pronoun) this; these",
+    "(bound form) this; the (followed by a noun)",
+    "(bound form) this; these (followed by a classifier) (in this sense, commonly pr. [zhei4], esp. in Beijing)"
+   ]
+  },
+  {
+   "id": "1-143",
+   "level": 1,
+   "trad": "中國",
+   "simp": "中国",
+   "pinyin": "zhong1 guo2",
+   "zhuyin": "ㄓㄨㄥ ㄍㄨㄛˊ",
+   "defs": [
+    "China"
+   ]
+  },
+  {
+   "id": "1-144",
+   "level": 1,
+   "trad": "中午",
+   "simp": "中午",
+   "pinyin": "zhong1 wu3",
+   "zhuyin": "ㄓㄨㄥ ㄨˇ",
+   "defs": [
+    "noon",
+    "midday",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "1-145",
+   "level": 1,
+   "trad": "住",
+   "simp": "住",
+   "pinyin": "zhu4",
+   "zhuyin": "ㄓㄨˋ",
+   "defs": [
+    "to live; to reside; to stay",
+    "to stop; to cease",
+    "(result complement indicating firmness or a stable achieved state)"
+   ]
+  },
+  {
+   "id": "1-146",
+   "level": 1,
+   "trad": "桌子",
+   "simp": "桌子",
+   "pinyin": "zhuo1 zi5",
+   "zhuyin": "ㄓㄨㄛ ˙ㄗ",
+   "defs": [
+    "table",
+    "desk",
+    "CL:張|张[zhang1],套[tao4]"
+   ]
+  },
+  {
+   "id": "1-147",
+   "level": 1,
+   "trad": "字",
+   "simp": "字",
+   "pinyin": "zi4",
+   "zhuyin": "ㄗˋ",
+   "defs": [
+    "letter",
+    "symbol",
+    "character",
+    "word",
+    "CL:個|个[ge4]",
+    "courtesy or style name traditionally given to males aged 20 in dynastic China"
+   ]
+  },
+  {
+   "id": "1-148",
+   "level": 1,
+   "trad": "昨天",
+   "simp": "昨天",
+   "pinyin": "zuo2 tian1",
+   "zhuyin": "ㄗㄨㄛˊ ㄊㄧㄢ",
+   "defs": [
+    "yesterday"
+   ]
+  },
+  {
+   "id": "1-149",
+   "level": 1,
+   "trad": "坐",
+   "simp": "坐",
+   "pinyin": "zuo4",
+   "zhuyin": "ㄗㄨㄛˋ",
+   "defs": [
+    "to sit",
+    "to take a seat",
+    "to take (a bus, airplane etc)",
+    "to bear fruit"
+   ]
+  },
+  {
+   "id": "1-150",
+   "level": 1,
+   "trad": "做",
+   "simp": "做",
+   "pinyin": "zuo4",
+   "zhuyin": "ㄗㄨㄛˋ",
+   "defs": [
+    "to make; to produce",
+    "to write; to compose",
+    "to do; to engage in; to hold (a party etc)",
+    "(of a person) to be (an intermediary, a good student etc); to become (husband and wife, friends etc)",
+    "(of a thing) to serve as; to be used for",
+    "to assume (an air or manner)"
+   ]
+  },
+  {
+   "id": "2-1",
+   "level": 2,
+   "trad": "吧",
+   "simp": "吧",
+   "pinyin": "ba5",
+   "zhuyin": "˙ㄅㄚ",
+   "defs": [
+    "(modal particle indicating suggestion or surmise)",
+    "...right?",
+    "...OK?",
+    "...I presume."
+   ]
+  },
+  {
+   "id": "2-2",
+   "level": 2,
+   "trad": "白",
+   "simp": "白",
+   "pinyin": "bai2",
+   "zhuyin": "ㄅㄞˊ",
+   "defs": [
+    "white",
+    "in vain",
+    "free of charge",
+    "(bound form) (of facts, the truth, a situation) clear; evident (e.g. 真相大白[zhen1 xiang4 da4 bai2])",
+    "(bound form) plain; without additions (e.g. 白飯|白饭[bai2 fan4])",
+    "(bound form) to explain; to state (e.g. 辯白|辩白[bian4 bai2])",
+    "(bound form) to give a disdainful look (e.g. 白了他一眼[bai2 le5 ta1 yi1 yan3])",
+    "(bound form) vernacular (e.g. 白話|白话[bai2 hua4])",
+    "(bound form) spoken lines in opera (e.g. 念白[nian4 bai2])",
+    "(bound form) reactionary; anti-communist (e.g. 白區|白区[bai2 qu1])"
+   ]
+  },
+  {
+   "id": "2-3",
+   "level": 2,
+   "trad": "百",
+   "simp": "百",
+   "pinyin": "bai3",
+   "zhuyin": "ㄅㄞˇ",
+   "defs": [
+    "hundred",
+    "numerous",
+    "all kinds of"
+   ]
+  },
+  {
+   "id": "2-4",
+   "level": 2,
+   "trad": "幫助",
+   "simp": "帮助",
+   "pinyin": "bang1 zhu4",
+   "zhuyin": "ㄅㄤ ㄓㄨˋ",
+   "defs": [
+    "assistance; aid",
+    "to help; to assist"
+   ]
+  },
+  {
+   "id": "2-5",
+   "level": 2,
+   "trad": "報紙",
+   "simp": "报纸",
+   "pinyin": "bao4 zhi3",
+   "zhuyin": "ㄅㄠˋ ㄓˇ",
+   "defs": [
+    "newspaper",
+    "newsprint",
+    "CL:份[fen4],期[qi1],張|张[zhang1]"
+   ]
+  },
+  {
+   "id": "2-6",
+   "level": 2,
+   "trad": "比",
+   "simp": "比",
+   "pinyin": "bi3",
+   "zhuyin": "ㄅㄧˇ",
+   "defs": [
+    "to compare",
+    "(followed by a noun and adjective) more {adj.} than {noun}",
+    "ratio",
+    "to gesture",
+    "(Taiwan pr. [bi4] in some compounds derived from Classical Chinese)"
+   ]
+  },
+  {
+   "id": "2-7",
+   "level": 2,
+   "trad": "別",
+   "simp": "别",
+   "pinyin": "bie2",
+   "zhuyin": "ㄅㄧㄝˊ",
+   "defs": [
+    "to leave; to part (from)",
+    "(literary) to differentiate; to distinguish",
+    "(dialect) to turn away; to turn aside; to avert (one's face, gaze etc)",
+    "(bound form) other; another; different",
+    "don't ...!",
+    "to fasten with a pin or clip",
+    "to stick in; to insert (in order to hinder movement)",
+    "(noun suffix) category (as in 性別|性别[xing4 bie2], 派別|派别[pai4 bie2])"
+   ]
+  },
+  {
+   "id": "2-8",
+   "level": 2,
+   "trad": "長",
+   "simp": "长",
+   "pinyin": "chang2",
+   "zhuyin": "ㄔㄤˊ",
+   "defs": [
+    "long",
+    "(bound form) length",
+    "(bound form) strong point; forte",
+    "(bound form) to be good at",
+    "(literary) surplus; spare (Taiwan pr. [zhang4])"
+   ]
+  },
+  {
+   "id": "2-9",
+   "level": 2,
+   "trad": "唱歌",
+   "simp": "唱歌",
+   "pinyin": "chang4 ge1",
+   "zhuyin": "ㄔㄤˋ ㄍㄜ",
+   "defs": [
+    "to sing a song"
+   ]
+  },
+  {
+   "id": "2-10",
+   "level": 2,
+   "trad": "出",
+   "simp": "出",
+   "pinyin": "chu1",
+   "zhuyin": "ㄔㄨ",
+   "defs": [
+    "to go out; to come out",
+    "to arise; to occur",
+    "to produce; to yield",
+    "to go beyond; to exceed",
+    "(used after a verb to indicate an outward direction or a positive result)",
+    "classifier for dramas, plays, operas etc"
+   ]
+  },
+  {
+   "id": "2-11",
+   "level": 2,
+   "trad": "穿",
+   "simp": "穿",
+   "pinyin": "chuan1",
+   "zhuyin": "ㄔㄨㄢ",
+   "defs": [
+    "to bore through; to pierce; to perforate",
+    "to go through (e.g. a tunnel); to cross (e.g. a street)",
+    "to thread; to string together",
+    "to wear; to put on (clothes, shoes etc.)",
+    "verb complement indicating thoroughness or completion"
+   ]
+  },
+  {
+   "id": "2-12",
+   "level": 2,
+   "trad": "船",
+   "simp": "船",
+   "pinyin": "chuan2",
+   "zhuyin": "ㄔㄨㄢˊ",
+   "defs": [
+    "boat",
+    "vessel",
+    "ship",
+    "CL:條|条[tiao2],艘[sou1],隻|只[zhi1]"
+   ]
+  },
+  {
+   "id": "2-13",
+   "level": 2,
+   "trad": "次",
+   "simp": "次",
+   "pinyin": "ci4",
+   "zhuyin": "ㄘˋ",
+   "defs": [
+    "next in sequence",
+    "second",
+    "the second (day, time etc)",
+    "secondary",
+    "vice-",
+    "sub-",
+    "infra-",
+    "inferior quality",
+    "substandard",
+    "order",
+    "sequence",
+    "hypo- (chemistry)",
+    "classifier for enumerated events: time"
+   ]
+  },
+  {
+   "id": "2-14",
+   "level": 2,
+   "trad": "從",
+   "simp": "从",
+   "pinyin": "cong2",
+   "zhuyin": "ㄘㄨㄥˊ",
+   "defs": [
+    "from; through; via",
+    "(bound form) to follow",
+    "(bound form) to obey",
+    "(bound form) to engage in (an activity)",
+    "(used before a negative) ever",
+    "(bound form) (Taiwan pr. [zong4]) retainer; attendant",
+    "(bound form) (Taiwan pr. [zong4]) assistant; auxiliary; subordinate",
+    "(bound form) (Taiwan pr. [zong4]) related by common paternal grandfather or earlier ancestor"
+   ]
+  },
+  {
+   "id": "2-15",
+   "level": 2,
+   "trad": "錯",
+   "simp": "错",
+   "pinyin": "cuo4",
+   "zhuyin": "ㄘㄨㄛˋ",
+   "defs": [
+    "mistake",
+    "wrong",
+    "bad",
+    "interlocking",
+    "complex",
+    "to grind",
+    "to polish",
+    "to alternate",
+    "to stagger",
+    "to miss",
+    "to let slip",
+    "to evade",
+    "to inlay with gold or silver"
+   ]
+  },
+  {
+   "id": "2-16",
+   "level": 2,
+   "trad": "打籃球",
+   "simp": "打篮球",
+   "pinyin": "da3 lan2 qiu2",
+   "zhuyin": "ㄉㄚˇ ㄌㄢˊ ㄑㄧㄡˊ",
+   "defs": [
+    "to play basketball"
+   ]
+  },
+  {
+   "id": "2-17",
+   "level": 2,
+   "trad": "大家",
+   "simp": "大家",
+   "pinyin": "da4 jia1",
+   "zhuyin": "ㄉㄚˋ ㄐㄧㄚ",
+   "defs": [
+    "everyone",
+    "influential family",
+    "great expert"
+   ]
+  },
+  {
+   "id": "2-18",
+   "level": 2,
+   "trad": "但是",
+   "simp": "但是",
+   "pinyin": "dan4 shi4",
+   "zhuyin": "ㄉㄢˋ ㄕˋ",
+   "defs": [
+    "but; however"
+   ]
+  },
+  {
+   "id": "2-19",
+   "level": 2,
+   "trad": "到",
+   "simp": "到",
+   "pinyin": "dao4",
+   "zhuyin": "ㄉㄠˋ",
+   "defs": [
+    "to reach; to arrive",
+    "to leave for; to go to",
+    "to (a place); until (a time); up to (a point)",
+    "(verb complement indicating arriving at a place or reaching a point)",
+    "considerate; thoughtful; thorough"
+   ]
+  },
+  {
+   "id": "2-20",
+   "level": 2,
+   "trad": "得",
+   "simp": "得",
+   "pinyin": "de5",
+   "zhuyin": "˙ㄉㄜ",
+   "defs": [
+    "structural particle: used after a verb (or adjective as main verb), linking it to following phrase indicating effect, degree, possibility etc"
+   ]
+  },
+  {
+   "id": "2-21",
+   "level": 2,
+   "trad": "得",
+   "simp": "得",
+   "pinyin": "dei3",
+   "zhuyin": "ㄉㄟˇ",
+   "defs": [
+    "to have to",
+    "must",
+    "ought to",
+    "to need to"
+   ]
+  },
+  {
+   "id": "2-22",
+   "level": 2,
+   "trad": "弟弟",
+   "simp": "弟弟",
+   "pinyin": "di4 di5",
+   "zhuyin": "ㄉㄧˋ ˙ㄉㄧ",
+   "defs": [
+    "younger brother",
+    "CL:個|个[ge4],位[wei4]"
+   ]
+  },
+  {
+   "id": "2-23",
+   "level": 2,
+   "trad": "第一",
+   "simp": "第一",
+   "pinyin": "di4 yi1",
+   "zhuyin": "ㄉㄧˋ ㄧ",
+   "defs": [
+    "first",
+    "most important; primary; foremost"
+   ]
+  },
+  {
+   "id": "2-24",
+   "level": 2,
+   "trad": "懂",
+   "simp": "懂",
+   "pinyin": "dong3",
+   "zhuyin": "ㄉㄨㄥˇ",
+   "defs": [
+    "to understand",
+    "to comprehend"
+   ]
+  },
+  {
+   "id": "2-25",
+   "level": 2,
+   "trad": "房間",
+   "simp": "房间",
+   "pinyin": "fang2 jian1",
+   "zhuyin": "ㄈㄤˊ ㄐㄧㄢ",
+   "defs": [
+    "room",
+    "CL:間|间[jian1]"
+   ]
+  },
+  {
+   "id": "2-26",
+   "level": 2,
+   "trad": "非常",
+   "simp": "非常",
+   "pinyin": "fei1 chang2",
+   "zhuyin": "ㄈㄟ ㄔㄤˊ",
+   "defs": [
+    "very; really",
+    "unusual; extraordinary"
+   ]
+  },
+  {
+   "id": "2-27",
+   "level": 2,
+   "trad": "服務員",
+   "simp": "服务员",
+   "pinyin": "fu2 wu4 yuan2",
+   "zhuyin": "ㄈㄨˊ ㄨˋ ㄩㄢˊ",
+   "defs": [
+    "waiter",
+    "waitress",
+    "attendant",
+    "customer service personnel",
+    "CL:個|个[ge4],位[wei4]"
+   ]
+  },
+  {
+   "id": "2-28",
+   "level": 2,
+   "trad": "高",
+   "simp": "高",
+   "pinyin": "gao1",
+   "zhuyin": "ㄍㄠ",
+   "defs": [
+    "high",
+    "tall",
+    "above average",
+    "loud",
+    "your (honorific)"
+   ]
+  },
+  {
+   "id": "2-29",
+   "level": 2,
+   "trad": "告訴",
+   "simp": "告诉",
+   "pinyin": "gao4 su5",
+   "zhuyin": "ㄍㄠˋ ˙ㄙㄨ",
+   "defs": [
+    "to tell; to inform; to let know"
+   ]
+  },
+  {
+   "id": "2-30",
+   "level": 2,
+   "trad": "哥哥",
+   "simp": "哥哥",
+   "pinyin": "ge1 ge5",
+   "zhuyin": "ㄍㄜ ˙ㄍㄜ",
+   "defs": [
+    "older brother",
+    "CL:個|个[ge4],位[wei4]"
+   ]
+  },
+  {
+   "id": "2-31",
+   "level": 2,
+   "trad": "給",
+   "simp": "给",
+   "pinyin": "gei3",
+   "zhuyin": "ㄍㄟˇ",
+   "defs": [
+    "to",
+    "for",
+    "for the benefit of",
+    "to give",
+    "to allow",
+    "to do sth (for sb)",
+    "(grammatical equivalent of 被)",
+    "(grammatical equivalent of 把)",
+    "(sentence intensifier)"
+   ]
+  },
+  {
+   "id": "2-32",
+   "level": 2,
+   "trad": "公共汽車",
+   "simp": "公共汽车",
+   "pinyin": "gong1 gong4 qi4 che1",
+   "zhuyin": "ㄍㄨㄥ ㄍㄨㄥˋ ㄑㄧˋ ㄔㄜ",
+   "defs": [
+    "bus",
+    "CL:輛|辆[liang4],班[ban1]"
+   ]
+  },
+  {
+   "id": "2-33",
+   "level": 2,
+   "trad": "公斤",
+   "simp": "公斤",
+   "pinyin": "gong1 jin1",
+   "zhuyin": "ㄍㄨㄥ ㄐㄧㄣ",
+   "defs": [
+    "kilogram (kg)"
+   ]
+  },
+  {
+   "id": "2-34",
+   "level": 2,
+   "trad": "公司",
+   "simp": "公司",
+   "pinyin": "gong1 si1",
+   "zhuyin": "ㄍㄨㄥ ㄙ",
+   "defs": [
+    "company; firm; corporation",
+    "CL:家[jia1]"
+   ]
+  },
+  {
+   "id": "2-35",
+   "level": 2,
+   "trad": "貴",
+   "simp": "贵",
+   "pinyin": "gui4",
+   "zhuyin": "ㄍㄨㄟˋ",
+   "defs": [
+    "expensive",
+    "(bound form) highly valued; precious",
+    "(bound form) noble; of high rank",
+    "(prefix) (honorific) your"
+   ]
+  },
+  {
+   "id": "2-36",
+   "level": 2,
+   "trad": "還",
+   "simp": "还",
+   "pinyin": "hai2",
+   "zhuyin": "ㄏㄞˊ",
+   "defs": [
+    "still",
+    "still in progress",
+    "still more",
+    "yet",
+    "even more",
+    "in addition",
+    "fairly",
+    "passably (good)",
+    "as early as",
+    "even",
+    "also",
+    "else"
+   ]
+  },
+  {
+   "id": "2-37",
+   "level": 2,
+   "trad": "孩子",
+   "simp": "孩子",
+   "pinyin": "hai2 zi5",
+   "zhuyin": "ㄏㄞˊ ˙ㄗ",
+   "defs": [
+    "child"
+   ]
+  },
+  {
+   "id": "2-38",
+   "level": 2,
+   "trad": "好吃",
+   "simp": "好吃",
+   "pinyin": "hao3 chi1",
+   "zhuyin": "ㄏㄠˇ ㄔ",
+   "defs": [
+    "tasty; delicious"
+   ]
+  },
+  {
+   "id": "2-39",
+   "level": 2,
+   "trad": "號",
+   "simp": "号",
+   "pinyin": "hao4",
+   "zhuyin": "ㄏㄠˋ",
+   "defs": [
+    "(literary) to call out; to command",
+    "(bound form) bugle; trumpet",
+    "(bound form) signal; bugle call (e.g. 起床號|起床号[qi3 chuang2 hao4])",
+    "(bound form) mark; sign",
+    "to mark; to label; to assign a number",
+    "(bound form) name; appellation (e.g. 國號|国号[guo2 hao4], 年號|年号[nian2 hao4], 遼寧號|辽宁号[Liao2 ning2 Hao4])",
+    "(after a numeral) number designation (e.g. 237號房間|237号房间[er4 san1 qi1 hao4 fang2 jian1] \"Room 237\")",
+    "day of the month (e.g. 七號|七号[qi1 hao4] \"the 7th\")",
+    "(bound form) size; type; category (e.g. 五號電池|五号电池[wu3 hao4 dian4 chi2])",
+    "(TCM) to feel (the pulse) (used in 號脈|号脉[hao4 mai4])",
+    "classifier for numbered people or items"
+   ]
+  },
+  {
+   "id": "2-40",
+   "level": 2,
+   "trad": "黑",
+   "simp": "黑",
+   "pinyin": "hei1",
+   "zhuyin": "ㄏㄟ",
+   "defs": [
+    "black",
+    "dark",
+    "sinister",
+    "secret",
+    "shady",
+    "illegal",
+    "to hide (sth) away",
+    "to vilify",
+    "(loanword) to hack (computing)"
+   ]
+  },
+  {
+   "id": "2-41",
+   "level": 2,
+   "trad": "紅",
+   "simp": "红",
+   "pinyin": "hong2",
+   "zhuyin": "ㄏㄨㄥˊ",
+   "defs": [
+    "red",
+    "popular",
+    "revolutionary",
+    "bonus"
+   ]
+  },
+  {
+   "id": "2-42",
+   "level": 2,
+   "trad": "歡迎",
+   "simp": "欢迎",
+   "pinyin": "huan1 ying2",
+   "zhuyin": "ㄏㄨㄢ ㄧㄥˊ",
+   "defs": [
+    "to welcome",
+    "welcome"
+   ]
+  },
+  {
+   "id": "2-43",
+   "level": 2,
+   "trad": "還",
+   "simp": "还",
+   "pinyin": "huan2",
+   "zhuyin": "ㄏㄨㄢˊ",
+   "defs": [
+    "to pay back",
+    "to return"
+   ]
+  },
+  {
+   "id": "2-44",
+   "level": 2,
+   "trad": "回答",
+   "simp": "回答",
+   "pinyin": "hui2 da2",
+   "zhuyin": "ㄏㄨㄟˊ ㄉㄚˊ",
+   "defs": [
+    "to reply; to answer",
+    "reply; answer"
+   ]
+  },
+  {
+   "id": "2-45",
+   "level": 2,
+   "trad": "機場",
+   "simp": "机场",
+   "pinyin": "ji1 chang3",
+   "zhuyin": "ㄐㄧ ㄔㄤˇ",
+   "defs": [
+    "airport; airfield",
+    "(slang) service provider for Shadowsocks or similar software for circumventing Internet censorship",
+    "CL:家[jia1],處|处[chu4]"
+   ]
+  },
+  {
+   "id": "2-46",
+   "level": 2,
+   "trad": "雞蛋",
+   "simp": "鸡蛋",
+   "pinyin": "ji1 dan4",
+   "zhuyin": "ㄐㄧ ㄉㄢˋ",
+   "defs": [
+    "(chicken) egg",
+    "hen's egg",
+    "CL:個|个[ge4],打[da2]"
+   ]
+  },
+  {
+   "id": "2-47",
+   "level": 2,
+   "trad": "件",
+   "simp": "件",
+   "pinyin": "jian4",
+   "zhuyin": "ㄐㄧㄢˋ",
+   "defs": [
+    "item",
+    "component",
+    "classifier for events, things, clothes etc"
+   ]
+  },
+  {
+   "id": "2-48",
+   "level": 2,
+   "trad": "教室",
+   "simp": "教室",
+   "pinyin": "jiao4 shi4",
+   "zhuyin": "ㄐㄧㄠˋ ㄕˋ",
+   "defs": [
+    "classroom",
+    "CL:間|间[jian1]"
+   ]
+  },
+  {
+   "id": "2-49",
+   "level": 2,
+   "trad": "姐姐",
+   "simp": "姐姐",
+   "pinyin": "jie3 jie5",
+   "zhuyin": "ㄐㄧㄝˇ ˙ㄐㄧㄝ",
+   "defs": [
+    "older sister",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-50",
+   "level": 2,
+   "trad": "介紹",
+   "simp": "介绍",
+   "pinyin": "jie4 shao4",
+   "zhuyin": "ㄐㄧㄝˋ ㄕㄠˋ",
+   "defs": [
+    "to introduce (sb to sb)",
+    "to give a presentation",
+    "to present (sb for a job etc)",
+    "introduction"
+   ]
+  },
+  {
+   "id": "2-51",
+   "level": 2,
+   "trad": "進",
+   "simp": "进",
+   "pinyin": "jin4",
+   "zhuyin": "ㄐㄧㄣˋ",
+   "defs": [
+    "to go forward",
+    "to advance",
+    "to go in",
+    "to enter",
+    "to put in",
+    "to submit",
+    "to take in",
+    "to admit",
+    "(math.) base of a number system",
+    "classifier for sections in a building or residential compound"
+   ]
+  },
+  {
+   "id": "2-52",
+   "level": 2,
+   "trad": "近",
+   "simp": "近",
+   "pinyin": "jin4",
+   "zhuyin": "ㄐㄧㄣˋ",
+   "defs": [
+    "near",
+    "close to",
+    "approximately"
+   ]
+  },
+  {
+   "id": "2-53",
+   "level": 2,
+   "trad": "就",
+   "simp": "就",
+   "pinyin": "jiu4",
+   "zhuyin": "ㄐㄧㄡˋ",
+   "defs": [
+    "(after a suppositional clause) in that case; then",
+    "(after a clause of action) as soon as; immediately after",
+    "(same as 就是[jiu4 shi4]) merely; nothing else but; simply; just; precisely; exactly",
+    "only; as little as",
+    "as much as; as many as",
+    "to approach; to move towards",
+    "to undertake; to engage in",
+    "(often followed by 著|着[zhe5]) taking advantage of",
+    "(of food) to go with",
+    "with regard to; concerning",
+    "(bound form) to reach; to attain (as in 一蹴而就[yi1 cu4 er2 jiu4])",
+    "(pattern: 就[jiu4] ... 也[ye3] ...) even if ... still ...",
+    "(pattern: 不[bu4] ... 就[jiu4] ...) if not ... then must be ..."
+   ]
+  },
+  {
+   "id": "2-54",
+   "level": 2,
+   "trad": "覺得",
+   "simp": "觉得",
+   "pinyin": "jue2 de5",
+   "zhuyin": "ㄐㄩㄝˊ ˙ㄉㄜ",
+   "defs": [
+    "to think that ...; to feel that ...",
+    "to feel (uncomfortable etc)"
+   ]
+  },
+  {
+   "id": "2-55",
+   "level": 2,
+   "trad": "咖啡",
+   "simp": "咖啡",
+   "pinyin": "ka1 fei1",
+   "zhuyin": "ㄎㄚ ㄈㄟ",
+   "defs": [
+    "(loanword) coffee",
+    "CL:杯[bei1]"
+   ]
+  },
+  {
+   "id": "2-56",
+   "level": 2,
+   "trad": "開始",
+   "simp": "开始",
+   "pinyin": "kai1 shi3",
+   "zhuyin": "ㄎㄞ ㄕˇ",
+   "defs": [
+    "to begin; to start",
+    "beginning; start"
+   ]
+  },
+  {
+   "id": "2-57",
+   "level": 2,
+   "trad": "考試",
+   "simp": "考试",
+   "pinyin": "kao3 shi4",
+   "zhuyin": "ㄎㄠˇ ㄕˋ",
+   "defs": [
+    "to take an exam",
+    "exam",
+    "CL:次[ci4]"
+   ]
+  },
+  {
+   "id": "2-58",
+   "level": 2,
+   "trad": "可能",
+   "simp": "可能",
+   "pinyin": "ke3 neng2",
+   "zhuyin": "ㄎㄜˇ ㄋㄥˊ",
+   "defs": [
+    "might (happen)",
+    "possible",
+    "probable",
+    "possibility",
+    "probability",
+    "maybe",
+    "perhaps",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-59",
+   "level": 2,
+   "trad": "可以",
+   "simp": "可以",
+   "pinyin": "ke3 yi3",
+   "zhuyin": "ㄎㄜˇ ㄧˇ",
+   "defs": [
+    "can",
+    "may",
+    "possible",
+    "able to",
+    "not bad",
+    "pretty good"
+   ]
+  },
+  {
+   "id": "2-60",
+   "level": 2,
+   "trad": "課",
+   "simp": "课",
+   "pinyin": "ke4",
+   "zhuyin": "ㄎㄜˋ",
+   "defs": [
+    "subject",
+    "course",
+    "CL:門|门[men2]",
+    "class",
+    "lesson",
+    "CL:堂[tang2],節|节[jie2]",
+    "to levy",
+    "tax",
+    "form of divination"
+   ]
+  },
+  {
+   "id": "2-61",
+   "level": 2,
+   "trad": "快",
+   "simp": "快",
+   "pinyin": "kuai4",
+   "zhuyin": "ㄎㄨㄞˋ",
+   "defs": [
+    "rapid",
+    "quick",
+    "speed",
+    "rate",
+    "soon",
+    "almost",
+    "to make haste",
+    "clever",
+    "sharp (of knives or wits)",
+    "forthright",
+    "plainspoken",
+    "gratified",
+    "pleased",
+    "pleasant"
+   ]
+  },
+  {
+   "id": "2-62",
+   "level": 2,
+   "trad": "快樂",
+   "simp": "快乐",
+   "pinyin": "kuai4 le4",
+   "zhuyin": "ㄎㄨㄞˋ ㄌㄜˋ",
+   "defs": [
+    "happy; joyful"
+   ]
+  },
+  {
+   "id": "2-63",
+   "level": 2,
+   "trad": "累",
+   "simp": "累",
+   "pinyin": "lei4",
+   "zhuyin": "ㄌㄟˋ",
+   "defs": [
+    "tired",
+    "weary",
+    "to strain",
+    "to wear out",
+    "to work hard"
+   ]
+  },
+  {
+   "id": "2-64",
+   "level": 2,
+   "trad": "離",
+   "simp": "离",
+   "pinyin": "li2",
+   "zhuyin": "ㄌㄧˊ",
+   "defs": [
+    "to leave",
+    "to part from",
+    "to be away from",
+    "(in giving distances) from",
+    "without (sth)",
+    "independent of",
+    "one of the Eight Trigrams 八卦[ba1 gua4], symbolizing fire",
+    "☲"
+   ]
+  },
+  {
+   "id": "2-65",
+   "level": 2,
+   "trad": "兩",
+   "simp": "两",
+   "pinyin": "liang3",
+   "zhuyin": "ㄌㄧㄤˇ",
+   "defs": [
+    "two",
+    "both",
+    "some",
+    "a few",
+    "tael, unit of weight equal to 50 grams (modern) or 1⁄16 of a catty 斤[jin1] (old)"
+   ]
+  },
+  {
+   "id": "2-66",
+   "level": 2,
+   "trad": "路",
+   "simp": "路",
+   "pinyin": "lu4",
+   "zhuyin": "ㄌㄨˋ",
+   "defs": [
+    "road (CL:條|条[tiao2])",
+    "journey",
+    "route",
+    "line (bus etc)",
+    "sort; kind"
+   ]
+  },
+  {
+   "id": "2-67",
+   "level": 2,
+   "trad": "旅遊",
+   "simp": "旅游",
+   "pinyin": "lu:3 you2",
+   "zhuyin": "ㄌㄩˇ ㄧㄡˊ",
+   "defs": [
+    "trip",
+    "journey",
+    "tourism",
+    "travel",
+    "tour",
+    "to travel"
+   ]
+  },
+  {
+   "id": "2-68",
+   "level": 2,
+   "trad": "賣",
+   "simp": "卖",
+   "pinyin": "mai4",
+   "zhuyin": "ㄇㄞˋ",
+   "defs": [
+    "to sell",
+    "to betray",
+    "to spare no effort",
+    "to show off or flaunt"
+   ]
+  },
+  {
+   "id": "2-69",
+   "level": 2,
+   "trad": "慢",
+   "simp": "慢",
+   "pinyin": "man4",
+   "zhuyin": "ㄇㄢˋ",
+   "defs": [
+    "slow"
+   ]
+  },
+  {
+   "id": "2-70",
+   "level": 2,
+   "trad": "忙",
+   "simp": "忙",
+   "pinyin": "mang2",
+   "zhuyin": "ㄇㄤˊ",
+   "defs": [
+    "busy",
+    "hurriedly",
+    "to hurry",
+    "to rush"
+   ]
+  },
+  {
+   "id": "2-71",
+   "level": 2,
+   "trad": "每",
+   "simp": "每",
+   "pinyin": "mei3",
+   "zhuyin": "ㄇㄟˇ",
+   "defs": [
+    "each",
+    "every"
+   ]
+  },
+  {
+   "id": "2-72",
+   "level": 2,
+   "trad": "妹妹",
+   "simp": "妹妹",
+   "pinyin": "mei4 mei5",
+   "zhuyin": "ㄇㄟˋ ˙ㄇㄟ",
+   "defs": [
+    "younger sister",
+    "young woman",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-73",
+   "level": 2,
+   "trad": "門",
+   "simp": "门",
+   "pinyin": "men2",
+   "zhuyin": "ㄇㄣˊ",
+   "defs": [
+    "gate; door; doorway; gateway; opening (CL:扇[shan4])",
+    "valve; switch; other door-like or gate-like structure",
+    "way to do sth; knack; method; approach",
+    "family; household; lineage",
+    "(bound form) sect; school; faction (religious or academic)",
+    "(bound form) class; category; division; phylum",
+    "classifier for courses, fields of study, branches of technology, relatives by marriage, guns etc",
+    "(suffix) -gate (scandal)"
+   ]
+  },
+  {
+   "id": "2-74",
+   "level": 2,
+   "trad": "男人",
+   "simp": "男人",
+   "pinyin": "nan2 ren2",
+   "zhuyin": "ㄋㄢˊ ㄖㄣˊ",
+   "defs": [
+    "a man",
+    "a male",
+    "men",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-75",
+   "level": 2,
+   "trad": "您",
+   "simp": "您",
+   "pinyin": "nin2",
+   "zhuyin": "ㄋㄧㄣˊ",
+   "defs": [
+    "you (courteous, as opposed to informal 你[ni3])"
+   ]
+  },
+  {
+   "id": "2-76",
+   "level": 2,
+   "trad": "牛奶",
+   "simp": "牛奶",
+   "pinyin": "niu2 nai3",
+   "zhuyin": "ㄋㄧㄡˊ ㄋㄞˇ",
+   "defs": [
+    "cow's milk",
+    "CL:瓶[ping2],杯[bei1]"
+   ]
+  },
+  {
+   "id": "2-77",
+   "level": 2,
+   "trad": "女人",
+   "simp": "女人",
+   "pinyin": "nu:3 ren2",
+   "zhuyin": "ㄋㄩˇ ㄖㄣˊ",
+   "defs": [
+    "woman"
+   ]
+  },
+  {
+   "id": "2-78",
+   "level": 2,
+   "trad": "旁邊",
+   "simp": "旁边",
+   "pinyin": "pang2 bian1",
+   "zhuyin": "ㄆㄤˊ ㄅㄧㄢ",
+   "defs": [
+    "side; adjacent place"
+   ]
+  },
+  {
+   "id": "2-79",
+   "level": 2,
+   "trad": "跑步",
+   "simp": "跑步",
+   "pinyin": "pao3 bu4",
+   "zhuyin": "ㄆㄠˇ ㄅㄨˋ",
+   "defs": [
+    "to run",
+    "to jog",
+    "(military) to march at the double"
+   ]
+  },
+  {
+   "id": "2-80",
+   "level": 2,
+   "trad": "便宜",
+   "simp": "便宜",
+   "pinyin": "pian2 yi5",
+   "zhuyin": "ㄆㄧㄢˊ ˙ㄧ",
+   "defs": [
+    "cheap; inexpensive",
+    "a petty advantage",
+    "to let sb off lightly"
+   ]
+  },
+  {
+   "id": "2-81",
+   "level": 2,
+   "trad": "票",
+   "simp": "票",
+   "pinyin": "piao4",
+   "zhuyin": "ㄆㄧㄠˋ",
+   "defs": [
+    "ticket",
+    "ballot",
+    "banknote",
+    "CL:張|张[zhang1]",
+    "person held for ransom",
+    "amateur performance of Chinese opera",
+    "classifier for groups, batches, business transactions"
+   ]
+  },
+  {
+   "id": "2-82",
+   "level": 2,
+   "trad": "妻子",
+   "simp": "妻子",
+   "pinyin": "qi1 zi5",
+   "zhuyin": "ㄑㄧ ˙ㄗ",
+   "defs": [
+    "wife"
+   ]
+  },
+  {
+   "id": "2-83",
+   "level": 2,
+   "trad": "起床",
+   "simp": "起床",
+   "pinyin": "qi3 chuang2",
+   "zhuyin": "ㄑㄧˇ ㄔㄨㄤˊ",
+   "defs": [
+    "to get out of bed; to get up"
+   ]
+  },
+  {
+   "id": "2-84",
+   "level": 2,
+   "trad": "千",
+   "simp": "千",
+   "pinyin": "qian1",
+   "zhuyin": "ㄑㄧㄢ",
+   "defs": [
+    "thousand"
+   ]
+  },
+  {
+   "id": "2-85",
+   "level": 2,
+   "trad": "晴",
+   "simp": "晴",
+   "pinyin": "qing2",
+   "zhuyin": "ㄑㄧㄥˊ",
+   "defs": [
+    "clear",
+    "fine (weather)"
+   ]
+  },
+  {
+   "id": "2-86",
+   "level": 2,
+   "trad": "去年",
+   "simp": "去年",
+   "pinyin": "qu4 nian2",
+   "zhuyin": "ㄑㄩˋ ㄋㄧㄢˊ",
+   "defs": [
+    "last year"
+   ]
+  },
+  {
+   "id": "2-87",
+   "level": 2,
+   "trad": "讓",
+   "simp": "让",
+   "pinyin": "rang4",
+   "zhuyin": "ㄖㄤˋ",
+   "defs": [
+    "to yield",
+    "to permit",
+    "to let sb do sth",
+    "to have sb do sth",
+    "to make sb (feel sad etc)",
+    "by (indicates the agent in a passive clause, like 被[bei4])"
+   ]
+  },
+  {
+   "id": "2-88",
+   "level": 2,
+   "trad": "上班",
+   "simp": "上班",
+   "pinyin": "shang4 ban1",
+   "zhuyin": "ㄕㄤˋ ㄅㄢ",
+   "defs": [
+    "to go to work",
+    "to be on duty",
+    "to start work",
+    "to go to the office"
+   ]
+  },
+  {
+   "id": "2-89",
+   "level": 2,
+   "trad": "身體",
+   "simp": "身体",
+   "pinyin": "shen1 ti3",
+   "zhuyin": "ㄕㄣ ㄊㄧˇ",
+   "defs": [
+    "the body",
+    "one's health"
+   ]
+  },
+  {
+   "id": "2-90",
+   "level": 2,
+   "trad": "生病",
+   "simp": "生病",
+   "pinyin": "sheng1 bing4",
+   "zhuyin": "ㄕㄥ ㄅㄧㄥˋ",
+   "defs": [
+    "to fall ill"
+   ]
+  },
+  {
+   "id": "2-91",
+   "level": 2,
+   "trad": "生日",
+   "simp": "生日",
+   "pinyin": "sheng1 ri4",
+   "zhuyin": "ㄕㄥ ㄖˋ",
+   "defs": [
+    "birthday",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-92",
+   "level": 2,
+   "trad": "時間",
+   "simp": "时间",
+   "pinyin": "shi2 jian1",
+   "zhuyin": "ㄕˊ ㄐㄧㄢ",
+   "defs": [
+    "(concept of) time",
+    "(duration of) time",
+    "(point in) time"
+   ]
+  },
+  {
+   "id": "2-93",
+   "level": 2,
+   "trad": "事情",
+   "simp": "事情",
+   "pinyin": "shi4 qing5",
+   "zhuyin": "ㄕˋ ˙ㄑㄧㄥ",
+   "defs": [
+    "affair; matter; thing; business",
+    "CL:件[jian4],樁|桩[zhuang1]"
+   ]
+  },
+  {
+   "id": "2-94",
+   "level": 2,
+   "trad": "手錶",
+   "simp": "手表",
+   "pinyin": "shou3 biao3",
+   "zhuyin": "ㄕㄡˇ ㄅㄧㄠˇ",
+   "defs": [
+    "wristwatch",
+    "CL:塊|块[kuai4],隻|只[zhi1],個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-95",
+   "level": 2,
+   "trad": "手機",
+   "simp": "手机",
+   "pinyin": "shou3 ji1",
+   "zhuyin": "ㄕㄡˇ ㄐㄧ",
+   "defs": [
+    "cell phone; mobile phone",
+    "CL:部[bu4],臺|台[tai2]"
+   ]
+  },
+  {
+   "id": "2-96",
+   "level": 2,
+   "trad": "送",
+   "simp": "送",
+   "pinyin": "song4",
+   "zhuyin": "ㄙㄨㄥˋ",
+   "defs": [
+    "to send; to deliver; to transmit",
+    "to give (as a present)",
+    "to see (sb) off",
+    "to accompany; to go along with"
+   ]
+  },
+  {
+   "id": "2-97",
+   "level": 2,
+   "trad": "所以",
+   "simp": "所以",
+   "pinyin": "suo3 yi3",
+   "zhuyin": "ㄙㄨㄛˇ ㄧˇ",
+   "defs": [
+    "therefore",
+    "as a result",
+    "so",
+    "the reason why"
+   ]
+  },
+  {
+   "id": "2-98",
+   "level": 2,
+   "trad": "它",
+   "simp": "它",
+   "pinyin": "ta1",
+   "zhuyin": "ㄊㄚ",
+   "defs": [
+    "it"
+   ]
+  },
+  {
+   "id": "2-99",
+   "level": 2,
+   "trad": "踢",
+   "simp": "踢",
+   "pinyin": "ti1",
+   "zhuyin": "ㄊㄧ",
+   "defs": [
+    "to kick",
+    "to play (e.g. soccer)",
+    "(slang) butch (in a lesbian relationship)"
+   ]
+  },
+  {
+   "id": "2-100",
+   "level": 2,
+   "trad": "題",
+   "simp": "题",
+   "pinyin": "ti2",
+   "zhuyin": "ㄊㄧˊ",
+   "defs": [
+    "topic",
+    "problem for discussion",
+    "exam question",
+    "subject",
+    "to inscribe",
+    "to mention",
+    "CL:個|个[ge4],道[dao4]"
+   ]
+  },
+  {
+   "id": "2-101",
+   "level": 2,
+   "trad": "跳舞",
+   "simp": "跳舞",
+   "pinyin": "tiao4 wu3",
+   "zhuyin": "ㄊㄧㄠˋ ㄨˇ",
+   "defs": [
+    "to dance"
+   ]
+  },
+  {
+   "id": "2-102",
+   "level": 2,
+   "trad": "外",
+   "simp": "外",
+   "pinyin": "wai4",
+   "zhuyin": "ㄨㄞˋ",
+   "defs": [
+    "outside",
+    "in addition",
+    "foreign",
+    "external"
+   ]
+  },
+  {
+   "id": "2-103",
+   "level": 2,
+   "trad": "完",
+   "simp": "完",
+   "pinyin": "wan2",
+   "zhuyin": "ㄨㄢˊ",
+   "defs": [
+    "to finish",
+    "to be over",
+    "whole",
+    "complete",
+    "entire"
+   ]
+  },
+  {
+   "id": "2-104",
+   "level": 2,
+   "trad": "玩",
+   "simp": "玩",
+   "pinyin": "wan2",
+   "zhuyin": "ㄨㄢˊ",
+   "defs": [
+    "to play",
+    "to have fun",
+    "to trifle with",
+    "toy",
+    "sth used for amusement",
+    "curio or antique (Taiwan pr. [wan4])",
+    "to keep sth for entertainment"
+   ]
+  },
+  {
+   "id": "2-105",
+   "level": 2,
+   "trad": "晚上",
+   "simp": "晚上",
+   "pinyin": "wan3 shang5",
+   "zhuyin": "ㄨㄢˇ ˙ㄕㄤ",
+   "defs": [
+    "evening",
+    "night",
+    "CL:個|个[ge4]",
+    "in the evening"
+   ]
+  },
+  {
+   "id": "2-106",
+   "level": 2,
+   "trad": "為",
+   "simp": "为",
+   "pinyin": "wei4",
+   "zhuyin": "ㄨㄟˋ",
+   "defs": [
+    "because of",
+    "for",
+    "to"
+   ]
+  },
+  {
+   "id": "2-107",
+   "level": 2,
+   "trad": "問",
+   "simp": "问",
+   "pinyin": "wen4",
+   "zhuyin": "ㄨㄣˋ",
+   "defs": [
+    "to ask; to inquire"
+   ]
+  },
+  {
+   "id": "2-108",
+   "level": 2,
+   "trad": "問題",
+   "simp": "问题",
+   "pinyin": "wen4 ti2",
+   "zhuyin": "ㄨㄣˋ ㄊㄧˊ",
+   "defs": [
+    "question",
+    "problem",
+    "issue",
+    "topic",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-109",
+   "level": 2,
+   "trad": "西瓜",
+   "simp": "西瓜",
+   "pinyin": "xi1 gua1",
+   "zhuyin": "ㄒㄧ ㄍㄨㄚ",
+   "defs": [
+    "watermelon",
+    "CL:顆|颗[ke1]"
+   ]
+  },
+  {
+   "id": "2-110",
+   "level": 2,
+   "trad": "希望",
+   "simp": "希望",
+   "pinyin": "xi1 wang4",
+   "zhuyin": "ㄒㄧ ㄨㄤˋ",
+   "defs": [
+    "to hope",
+    "a hope; a wish"
+   ]
+  },
+  {
+   "id": "2-111",
+   "level": 2,
+   "trad": "洗",
+   "simp": "洗",
+   "pinyin": "xi3",
+   "zhuyin": "ㄒㄧˇ",
+   "defs": [
+    "to wash; to bathe",
+    "to develop (photographs)",
+    "to shuffle (cards etc)",
+    "to erase (a recording)"
+   ]
+  },
+  {
+   "id": "2-112",
+   "level": 2,
+   "trad": "向",
+   "simp": "向",
+   "pinyin": "xiang4",
+   "zhuyin": "ㄒㄧㄤˋ",
+   "defs": [
+    "towards",
+    "to face",
+    "to turn towards",
+    "direction",
+    "to support",
+    "to side with",
+    "shortly before",
+    "formerly",
+    "always",
+    "all along",
+    "(suffix) suitable for ...",
+    "oriented to ..."
+   ]
+  },
+  {
+   "id": "2-113",
+   "level": 2,
+   "trad": "小時",
+   "simp": "小时",
+   "pinyin": "xiao3 shi2",
+   "zhuyin": "ㄒㄧㄠˇ ㄕˊ",
+   "defs": [
+    "hour",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-114",
+   "level": 2,
+   "trad": "笑",
+   "simp": "笑",
+   "pinyin": "xiao4",
+   "zhuyin": "ㄒㄧㄠˋ",
+   "defs": [
+    "to laugh; to smile",
+    "to laugh at"
+   ]
+  },
+  {
+   "id": "2-115",
+   "level": 2,
+   "trad": "新",
+   "simp": "新",
+   "pinyin": "xin1",
+   "zhuyin": "ㄒㄧㄣ",
+   "defs": [
+    "new",
+    "newly",
+    "meso- (chemistry)"
+   ]
+  },
+  {
+   "id": "2-116",
+   "level": 2,
+   "trad": "姓",
+   "simp": "姓",
+   "pinyin": "xing4",
+   "zhuyin": "ㄒㄧㄥˋ",
+   "defs": [
+    "family name; surname",
+    "to be surnamed ..."
+   ]
+  },
+  {
+   "id": "2-117",
+   "level": 2,
+   "trad": "休息",
+   "simp": "休息",
+   "pinyin": "xiu1 xi5",
+   "zhuyin": "ㄒㄧㄡ ˙ㄒㄧ",
+   "defs": [
+    "rest",
+    "to rest"
+   ]
+  },
+  {
+   "id": "2-118",
+   "level": 2,
+   "trad": "雪",
+   "simp": "雪",
+   "pinyin": "xue3",
+   "zhuyin": "ㄒㄩㄝˇ",
+   "defs": [
+    "snow",
+    "CL:場|场[chang2]",
+    "(literary) to wipe away (a humiliation etc)"
+   ]
+  },
+  {
+   "id": "2-119",
+   "level": 2,
+   "trad": "顏色",
+   "simp": "颜色",
+   "pinyin": "yan2 se4",
+   "zhuyin": "ㄧㄢˊ ㄙㄜˋ",
+   "defs": [
+    "color",
+    "countenance",
+    "appearance",
+    "facial expression",
+    "pigment",
+    "dyestuff"
+   ]
+  },
+  {
+   "id": "2-120",
+   "level": 2,
+   "trad": "眼睛",
+   "simp": "眼睛",
+   "pinyin": "yan3 jing5",
+   "zhuyin": "ㄧㄢˇ ˙ㄐㄧㄥ",
+   "defs": [
+    "eye",
+    "CL:隻|只[zhi1],雙|双[shuang1]"
+   ]
+  },
+  {
+   "id": "2-121",
+   "level": 2,
+   "trad": "羊肉",
+   "simp": "羊肉",
+   "pinyin": "yang2 rou4",
+   "zhuyin": "ㄧㄤˊ ㄖㄡˋ",
+   "defs": [
+    "mutton",
+    "goat meat"
+   ]
+  },
+  {
+   "id": "2-122",
+   "level": 2,
+   "trad": "藥",
+   "simp": "药",
+   "pinyin": "yao4",
+   "zhuyin": "ㄧㄠˋ",
+   "defs": [
+    "medicine",
+    "drug",
+    "substance used for a specific purpose (e.g. poisoning, explosion, fermenting)",
+    "CL:種|种[zhong3],服[fu4],味[wei4]",
+    "to poison"
+   ]
+  },
+  {
+   "id": "2-123",
+   "level": 2,
+   "trad": "要",
+   "simp": "要",
+   "pinyin": "yao4",
+   "zhuyin": "ㄧㄠˋ",
+   "defs": [
+    "to want; to need; to ask for",
+    "will; shall; about to",
+    "need to; should",
+    "if (same as 要是[yao4 shi5])",
+    "(bound form) important"
+   ]
+  },
+  {
+   "id": "2-124",
+   "level": 2,
+   "trad": "也",
+   "simp": "也",
+   "pinyin": "ye3",
+   "zhuyin": "ㄧㄝˇ",
+   "defs": [
+    "also; too; as well; (not ...) either",
+    "(used after a verbal or nominal expression X to indicate that X is an extreme or unexpected case) even (X)",
+    "(literary) particle having functions similar to 啊[a5]"
+   ]
+  },
+  {
+   "id": "2-125",
+   "level": 2,
+   "trad": "已經",
+   "simp": "已经",
+   "pinyin": "yi3 jing1",
+   "zhuyin": "ㄧˇ ㄐㄧㄥ",
+   "defs": [
+    "already"
+   ]
+  },
+  {
+   "id": "2-126",
+   "level": 2,
+   "trad": "一起",
+   "simp": "一起",
+   "pinyin": "yi1 qi3",
+   "zhuyin": "ㄧ ㄑㄧˇ",
+   "defs": [
+    "(in) the same place",
+    "together; in company (with)",
+    "altogether; in total",
+    "an instance of; a case of (murder, accident, dispute etc)"
+   ]
+  },
+  {
+   "id": "2-127",
+   "level": 2,
+   "trad": "意思",
+   "simp": "意思",
+   "pinyin": "yi4 si5",
+   "zhuyin": "ㄧˋ ˙ㄙ",
+   "defs": [
+    "idea",
+    "opinion",
+    "meaning",
+    "wish",
+    "desire",
+    "interest",
+    "fun",
+    "token of appreciation, affection etc",
+    "CL:個|个[ge4]",
+    "to give as a small token",
+    "to do sth as a gesture of goodwill etc"
+   ]
+  },
+  {
+   "id": "2-128",
+   "level": 2,
+   "trad": "陰",
+   "simp": "阴",
+   "pinyin": "yin1",
+   "zhuyin": "ㄧㄣ",
+   "defs": [
+    "overcast (weather)",
+    "cloudy",
+    "shady",
+    "Yin (the negative principle of Yin and Yang)",
+    "negative (electric.)",
+    "feminine",
+    "moon",
+    "implicit",
+    "hidden",
+    "genitalia"
+   ]
+  },
+  {
+   "id": "2-129",
+   "level": 2,
+   "trad": "因為",
+   "simp": "因为",
+   "pinyin": "yin1 wei4",
+   "zhuyin": "ㄧㄣ ㄨㄟˋ",
+   "defs": [
+    "because; owing to; on account of"
+   ]
+  },
+  {
+   "id": "2-130",
+   "level": 2,
+   "trad": "游泳",
+   "simp": "游泳",
+   "pinyin": "you2 yong3",
+   "zhuyin": "ㄧㄡˊ ㄩㄥˇ",
+   "defs": [
+    "swimming",
+    "to swim"
+   ]
+  },
+  {
+   "id": "2-131",
+   "level": 2,
+   "trad": "右邊",
+   "simp": "右边",
+   "pinyin": "you4 bian5",
+   "zhuyin": "ㄧㄡˋ ˙ㄅㄧㄢ",
+   "defs": [
+    "right side",
+    "right, to the right"
+   ]
+  },
+  {
+   "id": "2-132",
+   "level": 2,
+   "trad": "魚",
+   "simp": "鱼",
+   "pinyin": "yu2",
+   "zhuyin": "ㄩˊ",
+   "defs": [
+    "fish (CL:條|条[tiao2],尾[wei3])",
+    "used in the names of various aquatic animals that are not fish (including abalone 鮑魚|鲍鱼[bao4 yu2], alligators and crocodiles 鱷魚|鳄鱼[e4 yu2] and octopi 章魚|章鱼[zhang1 yu2])"
+   ]
+  },
+  {
+   "id": "2-133",
+   "level": 2,
+   "trad": "元",
+   "simp": "元",
+   "pinyin": "yuan2",
+   "zhuyin": "ㄩㄢˊ",
+   "defs": [
+    "currency unit (esp. Chinese yuan)",
+    "(bound form) first; original; primary",
+    "(bound form) basic; fundamental",
+    "(bound form) constituent; part",
+    "(prefix) meta-",
+    "(math.) argument; variable",
+    "era (of a reign)",
+    "(Tw) (geology) eon"
+   ]
+  },
+  {
+   "id": "2-134",
+   "level": 2,
+   "trad": "遠",
+   "simp": "远",
+   "pinyin": "yuan3",
+   "zhuyin": "ㄩㄢˇ",
+   "defs": [
+    "far",
+    "distant",
+    "remote",
+    "(intensifier in a comparison) by far",
+    "much (lower etc)"
+   ]
+  },
+  {
+   "id": "2-135",
+   "level": 2,
+   "trad": "運動",
+   "simp": "运动",
+   "pinyin": "yun4 dong4",
+   "zhuyin": "ㄩㄣˋ ㄉㄨㄥˋ",
+   "defs": [
+    "to move",
+    "to exercise",
+    "sports",
+    "exercise",
+    "motion",
+    "movement",
+    "campaign",
+    "CL:場|场[chang3]"
+   ]
+  },
+  {
+   "id": "2-136",
+   "level": 2,
+   "trad": "再",
+   "simp": "再",
+   "pinyin": "zai4",
+   "zhuyin": "ㄗㄞˋ",
+   "defs": [
+    "again; once more; re-",
+    "further; beyond this point of time",
+    "(before an adjective) more",
+    "then (after sth, and not until then)",
+    "no matter how ... (followed by an adjective or verb, and then (usually) 也[ye3] or 都[dou1] for emphasis)",
+    "(used to introduce additional information, as in 再則|再则[zai4 ze2], 再就是[zai4 jiu4 shi4] etc)",
+    "(literary) to reappear; to reoccur"
+   ]
+  },
+  {
+   "id": "2-137",
+   "level": 2,
+   "trad": "早上",
+   "simp": "早上",
+   "pinyin": "zao3 shang5",
+   "zhuyin": "ㄗㄠˇ ˙ㄕㄤ",
+   "defs": [
+    "early morning",
+    "CL:個|个[ge4]"
+   ]
+  },
+  {
+   "id": "2-138",
+   "level": 2,
+   "trad": "張",
+   "simp": "张",
+   "pinyin": "zhang1",
+   "zhuyin": "ㄓㄤ",
+   "defs": [
+    "to open up",
+    "to spread",
+    "sheet of paper",
+    "classifier for flat objects, sheet",
+    "classifier for votes"
+   ]
+  },
+  {
+   "id": "2-139",
+   "level": 2,
+   "trad": "長",
+   "simp": "长",
+   "pinyin": "zhang3",
+   "zhuyin": "ㄓㄤˇ",
+   "defs": [
+    "chief",
+    "head",
+    "elder",
+    "to grow",
+    "to develop",
+    "to increase",
+    "to enhance"
+   ]
+  },
+  {
+   "id": "2-140",
+   "level": 2,
+   "trad": "丈夫",
+   "simp": "丈夫",
+   "pinyin": "zhang4 fu5",
+   "zhuyin": "ㄓㄤˋ ˙ㄈㄨ",
+   "defs": [
+    "husband"
+   ]
+  },
+  {
+   "id": "2-141",
+   "level": 2,
+   "trad": "找",
+   "simp": "找",
+   "pinyin": "zhao3",
+   "zhuyin": "ㄓㄠˇ",
+   "defs": [
+    "to try to find",
+    "to look for",
+    "to call on sb",
+    "to find",
+    "to seek",
+    "to return",
+    "to give change"
+   ]
+  },
+  {
+   "id": "2-142",
+   "level": 2,
+   "trad": "著",
+   "simp": "着",
+   "pinyin": "zhe5",
+   "zhuyin": "˙ㄓㄜ",
+   "defs": [
+    "aspect particle indicating action in progress or ongoing state"
+   ]
+  },
+  {
+   "id": "2-143",
+   "level": 2,
+   "trad": "真",
+   "simp": "真",
+   "pinyin": "zhen1",
+   "zhuyin": "ㄓㄣ",
+   "defs": [
+    "really",
+    "truly",
+    "indeed",
+    "real",
+    "true",
+    "genuine"
+   ]
+  },
+  {
+   "id": "2-144",
+   "level": 2,
+   "trad": "正在",
+   "simp": "正在",
+   "pinyin": "zheng4 zai4",
+   "zhuyin": "ㄓㄥˋ ㄗㄞˋ",
+   "defs": [
+    "to be in the process of (doing sth); to be currently ...-ing"
+   ]
+  },
+  {
+   "id": "2-145",
+   "level": 2,
+   "trad": "知道",
+   "simp": "知道",
+   "pinyin": "zhi1 dao4",
+   "zhuyin": "ㄓ ㄉㄠˋ",
+   "defs": [
+    "to know; to become aware of",
+    "also pr. [zhi1dao5]"
+   ]
+  },
+  {
+   "id": "2-146",
+   "level": 2,
+   "trad": "準備",
+   "simp": "准备",
+   "pinyin": "zhun3 bei4",
+   "zhuyin": "ㄓㄨㄣˇ ㄅㄟˋ",
+   "defs": [
+    "preparation",
+    "to prepare",
+    "to intend",
+    "to be about to",
+    "reserve (fund)"
+   ]
+  },
+  {
+   "id": "2-147",
+   "level": 2,
+   "trad": "自行車",
+   "simp": "自行车",
+   "pinyin": "zi4 xing2 che1",
+   "zhuyin": "ㄗˋ ㄒㄧㄥˊ ㄔㄜ",
+   "defs": [
+    "bicycle; bike",
+    "CL:輛|辆[liang4]"
+   ]
+  },
+  {
+   "id": "2-148",
+   "level": 2,
+   "trad": "走",
+   "simp": "走",
+   "pinyin": "zou3",
+   "zhuyin": "ㄗㄡˇ",
+   "defs": [
+    "to walk",
+    "to go",
+    "to run",
+    "to move (of vehicle)",
+    "to visit",
+    "to leave",
+    "to go away",
+    "to die (euph.)",
+    "from",
+    "through",
+    "away (in compound verbs, such as 撤走[che4 zou3])",
+    "to change (shape, form, meaning)"
+   ]
+  },
+  {
+   "id": "2-149",
+   "level": 2,
+   "trad": "最",
+   "simp": "最",
+   "pinyin": "zui4",
+   "zhuyin": "ㄗㄨㄟˋ",
+   "defs": [
+    "(before an adjective or verb) to the highest degree; (the) most ...; -est",
+    "(after 之[zhi1]) best or most extreme example (e.g. 世界之最[shi4 jie4 zhi1 zui4] \"the greatest in the world\")"
+   ]
+  },
+  {
+   "id": "2-150",
+   "level": 2,
+   "trad": "左邊",
+   "simp": "左边",
+   "pinyin": "zuo3 bian5",
+   "zhuyin": "ㄗㄨㄛˇ ˙ㄅㄧㄢ",
+   "defs": [
+    "left",
+    "the left side",
+    "to the left of"
+   ]
+  }
+ ],
+ "hubs": [
+  {
+   "id": "c-子",
+   "char": "子"
+  },
+  {
+   "id": "c-不",
+   "char": "不"
+  },
+  {
+   "id": "c-氣",
+   "char": "氣"
+  },
+  {
+   "id": "c-吃",
+   "char": "吃"
+  },
+  {
+   "id": "c-出",
+   "char": "出"
+  },
+  {
+   "id": "c-車",
+   "char": "車"
+  },
+  {
+   "id": "c-打",
+   "char": "打"
+  },
+  {
+   "id": "c-電",
+   "char": "電"
+  },
+  {
+   "id": "c-話",
+   "char": "話"
+  },
+  {
+   "id": "c-大",
+   "char": "大"
+  },
+  {
+   "id": "c-西",
+   "char": "西"
+  },
+  {
+   "id": "c-起",
+   "char": "起"
+  },
+  {
+   "id": "c-多",
+   "char": "多"
+  },
+  {
+   "id": "c-少",
+   "char": "少"
+  },
+  {
+   "id": "c-兒",
+   "char": "兒"
+  },
+  {
+   "id": "c-飯",
+   "char": "飯"
+  },
+  {
+   "id": "c-機",
+   "char": "機"
+  },
+  {
+   "id": "c-高",
+   "char": "高"
+  },
+  {
+   "id": "c-好",
+   "char": "好"
+  },
+  {
+   "id": "c-面",
+   "char": "面"
+  },
+  {
+   "id": "c-回",
+   "char": "回"
+  },
+  {
+   "id": "c-家",
+   "char": "家"
+  },
+  {
+   "id": "c-天",
+   "char": "天"
+  },
+  {
+   "id": "c-開",
+   "char": "開"
+  },
+  {
+   "id": "c-看",
+   "char": "看"
+  },
+  {
+   "id": "c-見",
+   "char": "見"
+  },
+  {
+   "id": "c-沒",
+   "char": "沒"
+  },
+  {
+   "id": "c-字",
+   "char": "字"
+  },
+  {
+   "id": "c-能",
+   "char": "能"
+  },
+  {
+   "id": "c-年",
+   "char": "年"
+  },
+  {
+   "id": "c-女",
+   "char": "女"
+  },
+  {
+   "id": "c-果",
+   "char": "果"
+  },
+  {
+   "id": "c-去",
+   "char": "去"
+  },
+  {
+   "id": "c-人",
+   "char": "人"
+  },
+  {
+   "id": "c-日",
+   "char": "日"
+  },
+  {
+   "id": "c-上",
+   "char": "上"
+  },
+  {
+   "id": "c-午",
+   "char": "午"
+  },
+  {
+   "id": "c-麼",
+   "char": "麼"
+  },
+  {
+   "id": "c-時",
+   "char": "時"
+  },
+  {
+   "id": "c-是",
+   "char": "是"
+  },
+  {
+   "id": "c-水",
+   "char": "水"
+  },
+  {
+   "id": "c-覺",
+   "char": "覺"
+  },
+  {
+   "id": "c-學",
+   "char": "學"
+  },
+  {
+   "id": "c-我",
+   "char": "我"
+  },
+  {
+   "id": "c-歡",
+   "char": "歡"
+  },
+  {
+   "id": "c-下",
+   "char": "下"
+  },
+  {
+   "id": "c-生",
+   "char": "生"
+  },
+  {
+   "id": "c-在",
+   "char": "在"
+  },
+  {
+   "id": "c-小",
+   "char": "小"
+  },
+  {
+   "id": "c-姐",
+   "char": "姐"
+  },
+  {
+   "id": "c-一",
+   "char": "一"
+  },
+  {
+   "id": "c-服",
+   "char": "服"
+  },
+  {
+   "id": "c-醫",
+   "char": "醫"
+  },
+  {
+   "id": "c-再",
+   "char": "再"
+  },
+  {
+   "id": "c-怎",
+   "char": "怎"
+  },
+  {
+   "id": "c-中",
+   "char": "中"
+  },
+  {
+   "id": "c-長",
+   "char": "長"
+  },
+  {
+   "id": "c-得",
+   "char": "得"
+  },
+  {
+   "id": "c-間",
+   "char": "間"
+  },
+  {
+   "id": "c-公",
+   "char": "公"
+  },
+  {
+   "id": "c-還",
+   "char": "還"
+  },
+  {
+   "id": "c-可",
+   "char": "可"
+  },
+  {
+   "id": "c-以",
+   "char": "以"
+  },
+  {
+   "id": "c-快",
+   "char": "快"
+  },
+  {
+   "id": "c-邊",
+   "char": "邊"
+  },
+  {
+   "id": "c-手",
+   "char": "手"
+  },
+  {
+   "id": "c-題",
+   "char": "題"
+  },
+  {
+   "id": "c-為",
+   "char": "為"
+  },
+  {
+   "id": "c-問",
+   "char": "問"
+  }
+ ],
+ "links": [
+  {
+   "word": "1-4",
+   "hub": "c-子"
+  },
+  {
+   "word": "1-7",
+   "hub": "c-不"
+  },
+  {
+   "word": "1-7",
+   "hub": "c-氣"
+  },
+  {
+   "word": "1-8",
+   "hub": "c-不"
+  },
+  {
+   "word": "1-11",
+   "hub": "c-吃"
+  },
+  {
+   "word": "1-12",
+   "hub": "c-出"
+  },
+  {
+   "word": "1-12",
+   "hub": "c-車"
+  },
+  {
+   "word": "1-13",
+   "hub": "c-打"
+  },
+  {
+   "word": "1-13",
+   "hub": "c-電"
+  },
+  {
+   "word": "1-13",
+   "hub": "c-話"
+  },
+  {
+   "word": "1-14",
+   "hub": "c-大"
+  },
+  {
+   "word": "1-17",
+   "hub": "c-電"
+  },
+  {
+   "word": "1-18",
+   "hub": "c-電"
+  },
+  {
+   "word": "1-19",
+   "hub": "c-電"
+  },
+  {
+   "word": "1-20",
+   "hub": "c-西"
+  },
+  {
+   "word": "1-23",
+   "hub": "c-不"
+  },
+  {
+   "word": "1-23",
+   "hub": "c-起"
+  },
+  {
+   "word": "1-24",
+   "hub": "c-多"
+  },
+  {
+   "word": "1-25",
+   "hub": "c-多"
+  },
+  {
+   "word": "1-25",
+   "hub": "c-少"
+  },
+  {
+   "word": "1-26",
+   "hub": "c-兒"
+  },
+  {
+   "word": "1-26",
+   "hub": "c-子"
+  },
+  {
+   "word": "1-28",
+   "hub": "c-飯"
+  },
+  {
+   "word": "1-29",
+   "hub": "c-機"
+  },
+  {
+   "word": "1-31",
+   "hub": "c-高"
+  },
+  {
+   "word": "1-36",
+   "hub": "c-好"
+  },
+  {
+   "word": "1-40",
+   "hub": "c-面"
+  },
+  {
+   "word": "1-41",
+   "hub": "c-回"
+  },
+  {
+   "word": "1-43",
+   "hub": "c-車"
+  },
+  {
+   "word": "1-45",
+   "hub": "c-家"
+  },
+  {
+   "word": "1-47",
+   "hub": "c-天"
+  },
+  {
+   "word": "1-49",
+   "hub": "c-開"
+  },
+  {
+   "word": "1-50",
+   "hub": "c-看"
+  },
+  {
+   "word": "1-51",
+   "hub": "c-看"
+  },
+  {
+   "word": "1-51",
+   "hub": "c-見"
+  },
+  {
+   "word": "1-64",
+   "hub": "c-沒"
+  },
+  {
+   "word": "1-65",
+   "hub": "c-沒"
+  },
+  {
+   "word": "1-66",
+   "hub": "c-飯"
+  },
+  {
+   "word": "1-67",
+   "hub": "c-天"
+  },
+  {
+   "word": "1-68",
+   "hub": "c-字"
+  },
+  {
+   "word": "1-72",
+   "hub": "c-能"
+  },
+  {
+   "word": "1-74",
+   "hub": "c-年"
+  },
+  {
+   "word": "1-75",
+   "hub": "c-女"
+  },
+  {
+   "word": "1-75",
+   "hub": "c-兒"
+  },
+  {
+   "word": "1-78",
+   "hub": "c-果"
+  },
+  {
+   "word": "1-81",
+   "hub": "c-面"
+  },
+  {
+   "word": "1-83",
+   "hub": "c-去"
+  },
+  {
+   "word": "1-85",
+   "hub": "c-人"
+  },
+  {
+   "word": "1-87",
+   "hub": "c-日"
+  },
+  {
+   "word": "1-90",
+   "hub": "c-上"
+  },
+  {
+   "word": "1-91",
+   "hub": "c-上"
+  },
+  {
+   "word": "1-91",
+   "hub": "c-午"
+  },
+  {
+   "word": "1-92",
+   "hub": "c-少"
+  },
+  {
+   "word": "1-94",
+   "hub": "c-麼"
+  },
+  {
+   "word": "1-96",
+   "hub": "c-時"
+  },
+  {
+   "word": "1-97",
+   "hub": "c-是"
+  },
+  {
+   "word": "1-99",
+   "hub": "c-水"
+  },
+  {
+   "word": "1-100",
+   "hub": "c-水"
+  },
+  {
+   "word": "1-100",
+   "hub": "c-果"
+  },
+  {
+   "word": "1-101",
+   "hub": "c-覺"
+  },
+  {
+   "word": "1-102",
+   "hub": "c-話"
+  },
+  {
+   "word": "1-108",
+   "hub": "c-天"
+  },
+  {
+   "word": "1-108",
+   "hub": "c-氣"
+  },
+  {
+   "word": "1-110",
+   "hub": "c-學"
+  },
+  {
+   "word": "1-112",
+   "hub": "c-我"
+  },
+  {
+   "word": "1-113",
+   "hub": "c-我"
+  },
+  {
+   "word": "1-115",
+   "hub": "c-歡"
+  },
+  {
+   "word": "1-116",
+   "hub": "c-下"
+  },
+  {
+   "word": "1-117",
+   "hub": "c-下"
+  },
+  {
+   "word": "1-117",
+   "hub": "c-午"
+  },
+  {
+   "word": "1-118",
+   "hub": "c-下"
+  },
+  {
+   "word": "1-119",
+   "hub": "c-生"
+  },
+  {
+   "word": "1-120",
+   "hub": "c-在"
+  },
+  {
+   "word": "1-122",
+   "hub": "c-小"
+  },
+  {
+   "word": "1-123",
+   "hub": "c-小"
+  },
+  {
+   "word": "1-123",
+   "hub": "c-姐"
+  },
+  {
+   "word": "1-128",
+   "hub": "c-學"
+  },
+  {
+   "word": "1-128",
+   "hub": "c-生"
+  },
+  {
+   "word": "1-129",
+   "hub": "c-學"
+  },
+  {
+   "word": "1-130",
+   "hub": "c-學"
+  },
+  {
+   "word": "1-131",
+   "hub": "c-一"
+  },
+  {
+   "word": "1-132",
+   "hub": "c-服"
+  },
+  {
+   "word": "1-133",
+   "hub": "c-醫"
+  },
+  {
+   "word": "1-133",
+   "hub": "c-生"
+  },
+  {
+   "word": "1-134",
+   "hub": "c-醫"
+  },
+  {
+   "word": "1-135",
+   "hub": "c-子"
+  },
+  {
+   "word": "1-138",
+   "hub": "c-在"
+  },
+  {
+   "word": "1-139",
+   "hub": "c-再"
+  },
+  {
+   "word": "1-139",
+   "hub": "c-見"
+  },
+  {
+   "word": "1-140",
+   "hub": "c-怎"
+  },
+  {
+   "word": "1-140",
+   "hub": "c-麼"
+  },
+  {
+   "word": "1-141",
+   "hub": "c-怎"
+  },
+  {
+   "word": "1-141",
+   "hub": "c-麼"
+  },
+  {
+   "word": "1-143",
+   "hub": "c-中"
+  },
+  {
+   "word": "1-144",
+   "hub": "c-中"
+  },
+  {
+   "word": "1-144",
+   "hub": "c-午"
+  },
+  {
+   "word": "1-146",
+   "hub": "c-子"
+  },
+  {
+   "word": "1-147",
+   "hub": "c-字"
+  },
+  {
+   "word": "1-148",
+   "hub": "c-天"
+  },
+  {
+   "word": "2-8",
+   "hub": "c-長"
+  },
+  {
+   "word": "2-10",
+   "hub": "c-出"
+  },
+  {
+   "word": "2-16",
+   "hub": "c-打"
+  },
+  {
+   "word": "2-17",
+   "hub": "c-大"
+  },
+  {
+   "word": "2-17",
+   "hub": "c-家"
+  },
+  {
+   "word": "2-18",
+   "hub": "c-是"
+  },
+  {
+   "word": "2-20",
+   "hub": "c-得"
+  },
+  {
+   "word": "2-21",
+   "hub": "c-得"
+  },
+  {
+   "word": "2-23",
+   "hub": "c-一"
+  },
+  {
+   "word": "2-25",
+   "hub": "c-間"
+  },
+  {
+   "word": "2-27",
+   "hub": "c-服"
+  },
+  {
+   "word": "2-28",
+   "hub": "c-高"
+  },
+  {
+   "word": "2-32",
+   "hub": "c-公"
+  },
+  {
+   "word": "2-32",
+   "hub": "c-車"
+  },
+  {
+   "word": "2-33",
+   "hub": "c-公"
+  },
+  {
+   "word": "2-34",
+   "hub": "c-公"
+  },
+  {
+   "word": "2-36",
+   "hub": "c-還"
+  },
+  {
+   "word": "2-37",
+   "hub": "c-子"
+  },
+  {
+   "word": "2-38",
+   "hub": "c-好"
+  },
+  {
+   "word": "2-38",
+   "hub": "c-吃"
+  },
+  {
+   "word": "2-42",
+   "hub": "c-歡"
+  },
+  {
+   "word": "2-43",
+   "hub": "c-還"
+  },
+  {
+   "word": "2-44",
+   "hub": "c-回"
+  },
+  {
+   "word": "2-45",
+   "hub": "c-機"
+  },
+  {
+   "word": "2-49",
+   "hub": "c-姐"
+  },
+  {
+   "word": "2-54",
+   "hub": "c-覺"
+  },
+  {
+   "word": "2-54",
+   "hub": "c-得"
+  },
+  {
+   "word": "2-56",
+   "hub": "c-開"
+  },
+  {
+   "word": "2-58",
+   "hub": "c-可"
+  },
+  {
+   "word": "2-58",
+   "hub": "c-能"
+  },
+  {
+   "word": "2-59",
+   "hub": "c-可"
+  },
+  {
+   "word": "2-59",
+   "hub": "c-以"
+  },
+  {
+   "word": "2-61",
+   "hub": "c-快"
+  },
+  {
+   "word": "2-62",
+   "hub": "c-快"
+  },
+  {
+   "word": "2-74",
+   "hub": "c-人"
+  },
+  {
+   "word": "2-77",
+   "hub": "c-女"
+  },
+  {
+   "word": "2-77",
+   "hub": "c-人"
+  },
+  {
+   "word": "2-78",
+   "hub": "c-邊"
+  },
+  {
+   "word": "2-82",
+   "hub": "c-子"
+  },
+  {
+   "word": "2-83",
+   "hub": "c-起"
+  },
+  {
+   "word": "2-86",
+   "hub": "c-去"
+  },
+  {
+   "word": "2-86",
+   "hub": "c-年"
+  },
+  {
+   "word": "2-88",
+   "hub": "c-上"
+  },
+  {
+   "word": "2-90",
+   "hub": "c-生"
+  },
+  {
+   "word": "2-91",
+   "hub": "c-生"
+  },
+  {
+   "word": "2-91",
+   "hub": "c-日"
+  },
+  {
+   "word": "2-92",
+   "hub": "c-時"
+  },
+  {
+   "word": "2-92",
+   "hub": "c-間"
+  },
+  {
+   "word": "2-94",
+   "hub": "c-手"
+  },
+  {
+   "word": "2-95",
+   "hub": "c-手"
+  },
+  {
+   "word": "2-95",
+   "hub": "c-機"
+  },
+  {
+   "word": "2-97",
+   "hub": "c-以"
+  },
+  {
+   "word": "2-100",
+   "hub": "c-題"
+  },
+  {
+   "word": "2-105",
+   "hub": "c-上"
+  },
+  {
+   "word": "2-106",
+   "hub": "c-為"
+  },
+  {
+   "word": "2-107",
+   "hub": "c-問"
+  },
+  {
+   "word": "2-108",
+   "hub": "c-問"
+  },
+  {
+   "word": "2-108",
+   "hub": "c-題"
+  },
+  {
+   "word": "2-109",
+   "hub": "c-西"
+  },
+  {
+   "word": "2-113",
+   "hub": "c-小"
+  },
+  {
+   "word": "2-113",
+   "hub": "c-時"
+  },
+  {
+   "word": "2-126",
+   "hub": "c-一"
+  },
+  {
+   "word": "2-126",
+   "hub": "c-起"
+  },
+  {
+   "word": "2-129",
+   "hub": "c-為"
+  },
+  {
+   "word": "2-131",
+   "hub": "c-邊"
+  },
+  {
+   "word": "2-136",
+   "hub": "c-再"
+  },
+  {
+   "word": "2-137",
+   "hub": "c-上"
+  },
+  {
+   "word": "2-139",
+   "hub": "c-長"
+  },
+  {
+   "word": "2-144",
+   "hub": "c-在"
+  },
+  {
+   "word": "2-147",
+   "hub": "c-車"
+  },
+  {
+   "word": "2-150",
+   "hub": "c-邊"
+  }
+ ]
+}
