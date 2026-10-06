@@ -9,7 +9,8 @@ import {
   createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
   readingOf,
 } from "./rules.js";
-import { DEFAULT_MODE, MODES, renderSense, renderReading, headword, wordLabel, charLabel } from "../senses.js";
+import { DEFAULT_MODE, MODES, renderSense, renderReading, wordLabel, charLabel } from "../senses.js";
+import { pieceNode, headwordNode } from "../headword.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
 
@@ -604,23 +605,6 @@ function uniq(v, i, a) {
 
 const hanLang = () => (script === "pinyin" ? "zh-Hans" : "zh-Hant");
 
-function pieceNode(p) {
-  if (p.kind === "zhuyin") {
-    // One line: syllables 0.3em apart (hsk-network #zhuyin-line).
-    const n = el("span", "zy-line");
-    n.lang = "zh-Hant";
-    for (const syl of p.syllables) n.append(el("span", "zy-syl", syl));
-    return n;
-  }
-  if (p.kind === "pinyin") return el("span", "py", p.text);
-  if (p.kind === "han") {
-    const n = el("span", "han", p.text);
-    n.lang = p.lang;
-    return n;
-  }
-  return document.createTextNode(p.text);
-}
-
 function senseNode(sense, cls) {
   const node = el("span", cls);
   node.lang = "en";
@@ -631,44 +615,12 @@ function senseNode(sense, cls) {
   return node;
 }
 
-// Headword (hsk-network #zhuyin-layout-heading): Zhuyin stacked beside each
-// character, pinyin centered above it, or the reading on one line under.
-function headwordNode(word) {
-  const h = headword(word, script);
-  const node = el("div", `hw hw-${h.kind}`);
-  if (h.kind === "line") {
-    node.lang = h.han.lang;
-    node.append(el("span", "hw-han", h.han.text), pieceNode(h.reading));
-    return node;
-  }
-  node.lang = h.lang;
-  for (const cell of h.cells) {
-    if (h.kind === "ruby") {
-      const r = el("ruby", "hw-cell", cell.char);
-      r.append(el("rt", "py", cell.pinyin));
-      node.append(r);
-      continue;
-    }
-    const c = el("span", "hw-cell");
-    const col = el("span", "hw-zy");
-    if (cell.neutral) col.append(el("span", "hw-dot", "˙"));
-    cell.symbols.forEach((sym, i) => {
-      const n = el("span", "hw-sym", sym);
-      if (i === cell.symbols.length - 1 && cell.tone) n.append(el("span", "hw-tone", cell.tone));
-      col.append(n);
-    });
-    c.append(el("span", "hw-char", cell.char), col);
-    node.append(c);
-  }
-  return node;
-}
-
 // A card body: one reading shows the headword and its first sense; several
 // (#rule-readings) show the characters, then each reading with its first sense.
 function fillCard(form, readings) {
   if (readings.length === 1) {
     const r = readings[0];
-    cardEl.append(headwordNode({ ...form, pinyin: r.pinyin, zhuyin: r.zhuyin }), senseNode(r.defs[0], "k-def"));
+    cardEl.append(headwordNode({ ...form, pinyin: r.pinyin, zhuyin: r.zhuyin }, script), senseNode(r.defs[0], "k-def"));
     return;
   }
   const han = el("div", "hw hw-plain", wordLabel(form, script));

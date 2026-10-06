@@ -55,7 +55,6 @@ button { font: inherit; color: inherit; }
 /* Focus: a 2px ink ring on surfaces, light on the night board. */
 :focus-visible { outline: var(--focus-ring) solid var(--ink-night); outline-offset: 2px; }
 .sheet :focus-visible, .wcard :focus-visible { outline-color: var(--ink); }
-.level:focus-visible { outline: var(--focus-ring) solid var(--ink); outline-offset: 1px; border-radius: 6px; }
 
 .caption {
   font-size: var(--fs-caption);
@@ -196,7 +195,6 @@ button { font: inherit; color: inherit; }
   font-weight: var(--w-regular);
 }
 .wcard .k-reading { margin-top: 8px; }
-.wcard .k-reading .zy-line, .wcard .k-reading .py { font-size: var(--fs-zhuyin-list); }
 .wcard .k-reading .k-def { margin-top: 0; }
 .wcard .k-levels { display: flex; gap: 12px; margin-top: 6px; }
 .k-level {
@@ -216,43 +214,8 @@ button { font: inherit; color: inherit; }
   color: var(--muted);
 }
 
-/* ---- Headword (hsk-network #zhuyin-layout-heading): kaishu, never bold. */
-.hw {
-  font-size: var(--fs-head-game);
-  font-weight: var(--w-regular);
-  line-height: 1.15;
-}
-.hw-columns { display: flex; align-items: center; }
-.hw-columns .hw-cell { display: inline-flex; align-items: center; }
-/* Zhuyin column beside each character: 38% of the headword, never under 14px. */
-.hw-zy {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 .55em 0 .1em;
-  font-size: max(var(--fs-zhuyin-min), calc(var(--zhuyin-ratio) * 1em));
-  line-height: 1.02;
-}
-.hw-zy .hw-sym { position: relative; }
-.hw-zy .hw-tone { position: absolute; left: 100%; top: -.2em; }
-.hw-zy .hw-dot { line-height: .7; }
-.hw-cell:last-child .hw-zy { padding-right: .4em; }
-/* Pinyin centered above each character. */
-.hw-ruby { display: flex; gap: .06em; align-items: flex-end; }
-.hw-ruby .hw-cell { ruby-position: over; }
-.hw-ruby rt {
-  font-size: max(var(--fs-zhuyin-min), calc(var(--zhuyin-ratio) * 1em));
-  font-weight: var(--w-regular);
-  text-align: center;
-  line-height: 1.2;
-}
-/* Syllables and characters disagree: the reading on one line under. */
-.hw-line { display: flex; flex-direction: column; }
-.hw-line .zy-line, .hw-line .py { font-size: var(--fs-zhuyin-list); }
-
-/* One-line Zhuyin (#zhuyin-line): syllables 0.3em apart. */
-.zy-line { white-space: nowrap; }
-.zy-syl + .zy-syl { margin-left: var(--zhuyin-gap); }
+/* ---- Headword: built by ../headword.js, styled by ../style.css; the game only sizes it. */
+.wcard { --head: var(--fs-head-game); }
 
 /* ---- Screens: white surfaces over the dimmed night board. */
 .screen {
