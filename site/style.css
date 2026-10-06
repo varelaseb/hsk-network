@@ -213,6 +213,8 @@ body {
   z-index: 2;
   width: max-content;
   max-width: min(320px, calc(100% - 24px));
+  max-height: calc(100% - 16px);
+  overflow-y: auto;
   padding: 12px 14px;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -225,7 +227,7 @@ body {
 .card .c-zhuyin { font-size: 18px; color: var(--ink); margin-top: 2px; }
 .card .c-defs { margin: 8px 0 0; color: var(--ink); line-height: 1.4; }
 .card .c-level { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 14px; color: var(--muted); }
-.card .c-words { list-style: none; margin: 8px 0 0; padding: 0; max-height: 40vh; overflow-y: auto; }
+.card .c-words { list-style: none; margin: 8px 0 0; padding: 0; }
 .card .c-words button {
   display: flex;
   gap: 10px;
@@ -244,6 +246,10 @@ body {
 .card .c-words button:hover { background: #eef4fa; }
 .card .c-words .w-trad { font-size: 18px; }
 .card .c-words .w-zy { color: var(--muted); font-size: 14px; }
+.card .c-words .w-trad, .card .c-words .w-zy, .card .c-words .swatch { flex: none; }
+.card .c-words .w-gloss { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; }
+.card .c-reading + .c-reading { margin-top: 8px; }
+.card .c-reading .c-defs { margin-top: 2px; }
 .card .c-close {
   position: absolute;
   top: 2px;

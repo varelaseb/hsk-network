@@ -2,7 +2,7 @@
 """Build site/data/graph.json from the vendored HSK lists and CC-CEDICT.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #graph-model). Python standard library only.
+#schema-example, #graph-model, #hub-reading). Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
 """
@@ -275,6 +275,23 @@ def build_links(words):
     return hubs, links
 
 
+def hub_readings(char, by_trad):
+    """#hub-reading: one reading per distinct pinyin of char's own entries.
+
+    Lowercase entries only, capitalized ones only when no lowercase exists.
+    Raises ValueError when char has no entry or a reading has no Zhuyin.
+    """
+    cands = by_trad.get(char, [])
+    if not cands:
+        raise ValueError("no CC-CEDICT entry")
+    cands = [c for c in cands if not c["cap"]] or cands
+    groups = {}
+    for c in cands:
+        groups.setdefault(c["pinyin"], []).append(c)
+    return [{"pinyin": py, "zhuyin": to_zhuyin(py), "defs": _merge(cs)}
+            for py, cs in groups.items()]
+
+
 def load_hsk():
     """Return list of {"id", "level", "simp", "pinyin"} in list order."""
     entries = []
@@ -326,6 +343,16 @@ def build(cedict_entries, release, hsk_entries, overrides):
     if problems:
         raise BuildError(problems)
     hubs, links = build_links(words)
+    by_trad = {}
+    for c in cedict_entries:
+        by_trad.setdefault(c["trad"], []).append(c)
+    for h in hubs:
+        try:
+            h["readings"] = hub_readings(h["char"], by_trad)
+        except ValueError as err:
+            problems.append(f"{h['id']} {h['char']}: {err}")
+    if problems:
+        raise BuildError(problems)
     return {"meta": {"cedictRelease": release, "hskSource": hsk_source()},
             "words": words, "hubs": hubs, "links": links}
 
