@@ -408,15 +408,15 @@
 <table data-anchor="type-faces">
 <thead><tr><th>Use</th><th>Typeface</th><th>Why</th><th>License and source</th></tr></thead>
 <tbody>
-<tr data-anchor="face-cjk"><td>Characters, Zhuyin, tone marks</td><td>Noto Sans CJK TC (Source Han Sans TC), Regular only</td><td>Simple even strokes read cleanly at small sizes on screens; it carries full Bopomofo and the four tone marks, and the Simplified forms the script setting shows.</td><td>SIL OFL 1.1; release pinned in a source note beside the font, license file beside it</td></tr>
-<tr data-anchor="face-latin"><td>English, numbers, controls</td><td>Geist, variable weight</td><td>A quiet, precise sans with tabular figures for scores; it stays out of the way of the characters.</td><td>SIL OFL 1.1; release pinned in a source note beside the font, license file beside it</td></tr>
+<tr data-anchor="face-cjk"><td>Characters, Zhuyin, tone marks</td><td>Noto Sans CJK TC (Source Han Sans TC), variable weight, Regular 400 to Medium 500</td><td>Simple even strokes read cleanly at small sizes on screens; it carries full Bopomofo and the four tone marks, and the Simplified forms the script setting shows.</td><td>SIL OFL 1.1; release pinned in a source note beside the font, license file beside it</td></tr>
+<tr data-anchor="face-latin"><td>English, numbers, controls</td><td>Geist, variable weight 400 to 600</td><td>A quiet, precise sans with tabular figures for scores; it stays out of the way of the characters.</td><td>SIL OFL 1.1; release pinned in a source note beside the font, license file beside it</td></tr>
 </tbody>
 </table>
 </div>
 <p data-anchor="face-stack">Every text style names Geist first and Noto Sans CJK TC second, so Latin text takes Geist and every character, Zhuyin symbol, and tone mark falls through to the Chinese face; Zhuyin never renders in the Latin face.</p>
 <p data-anchor="face-subset">The Chinese font is cut down by the font build to exactly the Traditional and Simplified characters in the graph data file and the pages' own text, plus all 37 Zhuyin symbols, the four tone marks, and CJK punctuation; Geist is cut to Basic Latin, Latin-1, the pinyin tone letters of Latin Extended, combining tone marks, and typographic punctuation.</p>
-<p data-anchor="face-forms">The subset keeps the face's Traditional Chinese glyph forms only, so in pinyin mode a Simplified character shared with Traditional keeps its Taiwan form; this keeps the face within budget.</p>
-<p data-anchor="face-budget">Size budget, as WOFF2: the Chinese subset at most 240 KB, Geist at most 40 KB, both at most 280 KB; both are preloaded and swap in when ready, and the game draws its bubbles only once the Chinese face has loaded.</p>
+<p data-anchor="face-lang">Chinese text is tagged zh-Hant in Zhuyin mode and zh-Hans in pinyin mode, so each shows its proper Taiwan or mainland glyph forms; the subset keeps the face's language-specific forms for both tags, which apply only through that tag.</p>
+<p data-anchor="face-budget">Size budget, as WOFF2: the Chinese subset at most 232 KB, Geist at most 23 KB, both at most 255 KB; each font is subset to the characters used and served from the site, with no runtime third-party fetch; both are preloaded and swap in when ready, and the game draws its bubbles only once the Chinese face has loaded.</p>
 <p data-anchor="face-coverage">The font build writes a coverage list beside the fonts naming every character in the subset and the subset file's hash, because the standard library cannot read WOFF2; the test suite checks coverage and hash from that list.</p>
 <p data-anchor="face-missing">A character the Chinese face lacks, such as the rare hub part 𠬛, is named in the coverage list and falls back to the device font.</p>
 <h3 data-anchor="scale-heading">Type scale</h3>
@@ -424,17 +424,17 @@
 <table data-anchor="type-scale">
 <thead><tr><th>Role</th><th>Size</th><th>Weight</th><th>Where</th></tr></thead>
 <tbody>
-<tr data-anchor="scale-head"><td>Headword</td><td>40px, 36px on a phone</td><td>Noto Sans CJK TC Regular</td><td>Word and hub card headword, game word card</td></tr>
+<tr data-anchor="scale-head"><td>Headword</td><td>40px, 36px on a phone</td><td>Noto Sans CJK TC Medium 500</td><td>Word and hub card headword, game word card</td></tr>
 <tr data-anchor="scale-score"><td>Score</td><td>56px final, 28px in play</td><td>600, tabular figures</td><td>Game</td></tr>
 <tr data-anchor="scale-title"><td>Title</td><td>22px</td><td>600</td><td>Game screen titles</td></tr>
 <tr data-anchor="scale-body"><td>Body</td><td>16px, line height 1.5</td><td>400</td><td>Senses, sources</td></tr>
-<tr data-anchor="scale-zhuyin"><td>Zhuyin</td><td>38% of its headword, never under 14px; 15px in lists</td><td>Noto Sans CJK TC Regular</td><td>Beside headwords, in lists, in measure words and references</td></tr>
+<tr data-anchor="scale-zhuyin"><td>Zhuyin</td><td>38% of its headword, never under 14px; 15px in lists</td><td>Noto Sans CJK TC Regular 400</td><td>Beside headwords, in lists, in measure words and references</td></tr>
 <tr data-anchor="scale-label"><td>Label</td><td>14px</td><td>500</td><td>Chips, buttons, list rows, search results</td></tr>
 <tr data-anchor="scale-caption"><td>Caption</td><td>12px, letter spacing 0.02em</td><td>500, muted</td><td>"Measure words", sense tags, level, round</td></tr>
 </tbody>
 </table>
 </div>
-<p data-anchor="scale-weights">Only weights 400, 500, and 600 are used; hierarchy comes from size and color before weight, and characters are never bolded.</p>
+<p data-anchor="scale-weights">Geist uses only 400, 500, and 600; the Chinese face uses only 400 and 500: Medium 500 for headwords, graph node labels, and bubbles, Regular 400 for senses and Zhuyin. Hierarchy comes from size and color before weight, and synthetic bold is never used (font-synthesis none).</p>
 <h3 data-anchor="zhuyin-layout-heading">Zhuyin layout</h3>
 <figure data-anchor="zhuyin-figure">
 <div class="rail-wrap" data-anchor="zhuyin-figure-scroll">
@@ -508,7 +508,7 @@
 <tr data-anchor="stack-graph"><td>Graph library</td><td>D3 v7, one pinned minified file vendored in the site directory (ISC license)</td><td>d3-force does the layout and d3-zoom handles wheel, pinch, and drag; SVG gives crisp Chinese labels and native hover and tap targets, and about 450 nodes is well within SVG's comfortable size. Vendoring keeps the page free of third-party requests.</td></tr>
 <tr data-anchor="stack-rejected"><td>Rejected</td><td>Canvas force-graph libraries; Cytoscape.js</td><td>Canvas needs custom hit testing and blurs text when zoomed; Cytoscape is several times larger for features this page does not use.</td></tr>
 <tr data-anchor="stack-fonts"><td>Fonts</td><td>Two subset WOFF2 files vendored in the site directory with their licenses, cut by a separate font build command that uses fontTools in a throwaway environment</td><td>Subsetting a CJK font needs a real font tool the standard library lacks; keeping it a separate maintainer command, run only when the shown characters change, keeps the data build, the tests, and CI free of packages.</td></tr>
-<tr data-anchor="stack-script"><td>Script setting</td><td>Relabeling over the Traditional-keyed graph; each character table entry and word already carries its Simplified form and pinyin</td><td>Small: about 109 more Chinese face glyphs (about 18 KB) and 4 KB of Geist tone letters, one pinyin tone-mark function in the shared sense module, a pinyin search key, and relabeling graph text and game bubble images on change; no change to graph shape or game rules.</td></tr>
+<tr data-anchor="stack-script"><td>Script setting</td><td>Relabeling over the Traditional-keyed graph; each character table entry and word already carries its Simplified form and pinyin</td><td>Moderate: about 156 more Chinese characters plus the mainland glyph forms (about 67 KB of the Chinese face) and 4 KB of Geist tone letters, one pinyin tone-mark function in the shared sense module, a pinyin search key, and relabeling graph text and game bubble images on change; no change to graph shape or game rules.</td></tr>
 <tr data-anchor="stack-pipeline"><td>Pipeline and tests</td><td>Python 3 standard library only, tests with unittest</td><td>The download, parsing, and conversion need nothing more, so CI installs nothing.</td></tr>
 <tr data-anchor="stack-data"><td>Graph data</td><td>Committed in the site directory</td><td>Tests and Pages run with no network; refreshing the dictionary is a deliberate commit whose diff shows what changed.</td></tr>
 <tr data-anchor="stack-delivery"><td>CI and hosting</td><td>A GitHub Actions test workflow on every pull request and push to main; a GitHub Pages workflow that publishes the site directory on every push to main</td><td>Pages from a workflow publishes only the site, never the specs or scripts.</td></tr>
