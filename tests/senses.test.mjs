@@ -16,9 +16,15 @@ const NFD = (s) => s.normalize("NFD");
 test("every tone on a, e, o, i, u", () => {
   assert.equal(toneMarks("ma1 ma2 ma3 ma4 ma5"), "mā má mǎ mà ma");
   assert.equal(toneMarks("de1 de2 de3 de4"), "dē dé dě dè");
-  assert.equal(toneMarks("bo1 bo2 bo3 bo4"), "bō bó bǒ bò");
-  assert.equal(toneMarks("bi1 bi2 bi3 bi4"), "bī bí bǐ bì");
-  assert.equal(toneMarks("bu1 bu2 bu3 bu4"), "bū bú bǔ bù");
+  assert.equal(toneMarks("bo1 bo2 bo3 bo4"), "bō bó bo\u030C bò");
+  assert.equal(toneMarks("bi1 bi2 bi3 bi4"), "bī bí bi\u030C bì");
+  assert.equal(toneMarks("bu1 bu2 bu3 bu4"), "bū bú bu\u030C bù");
+});
+
+test("ǐ ǒ ǔ (any case) take a combining mark: Geist lacks them (#pinyin-glyphs)", () => {
+  assert.equal(toneMarks("Ou3 I3 U3"), "O\u030Cu I\u030C U\u030C");
+  for (const glyph of "ǐǒǔǏǑǓ") assert.ok(!toneMarks("bi3 bo3 bu3 I3 O3 U3").includes(glyph));
+  assert.equal(toneMarks("bi3 bo3 bu3"), NFD("bǐ bǒ bǔ"));
 });
 
 test("ü takes a combining mark, never a precomposed glyph", () => {
@@ -29,13 +35,21 @@ test("ü takes a combining mark, never a precomposed glyph", () => {
   for (const glyph of "ǖǘǚǜ") assert.ok(!toneMarks("lu:1 lu:2 lu:3 lu:4").includes(glyph));
 });
 
+test("every graph word's pinyin uses only glyphs Geist has", () => {
+  const fonts = JSON.parse(readFileSync(new URL("../site/fonts/coverage.json", import.meta.url), "utf8"));
+  const geist = new Set(fonts.geist.chars);
+  for (const w of graph.words) {
+    for (const ch of toneMarks(w.pinyin)) if (ch !== " ") assert.ok(geist.has(ch), `${w.id} ${w.pinyin}: ${ch}`);
+  }
+});
+
 test("mark placement: a or e first, then the o of ou, else the last vowel", () => {
   assert.equal(toneMarks("hao3"), "hǎo");
   assert.equal(toneMarks("xie4"), "xiè");
   assert.equal(toneMarks("lou2"), "lóu");
   assert.equal(toneMarks("liu4"), "liù");
   assert.equal(toneMarks("gui4"), "guì");
-  assert.equal(toneMarks("huo3"), "huǒ");
+  assert.equal(toneMarks("huo3"), "huo\u030C");
   assert.equal(toneMarks("Jing1"), "Jīng");
   assert.equal(toneMarks("Ai4"), "Ài");
 });

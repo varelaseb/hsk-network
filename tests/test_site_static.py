@@ -161,6 +161,23 @@ class LevelPanelTest(unittest.TestCase):
         self.assertGreaterEqual(int(height.group(1)), 44)
 
 
+class ScriptControlTest(unittest.TestCase):
+    """Script setting (#default-script-setting, #acceptance-script-default): one control reading
+    "Zhuyin" by default, stored on the device under the key both pages read."""
+
+    def test_control_reads_zhuyin_and_setting_is_shared(self):
+        html = (SITE / "index.html").read_text(encoding="utf-8")
+        self.assertRegex(html, r'<button type="button" id="script" class="script">Zhuyin</button>')
+        app = (SITE / "app.js").read_text(encoding="utf-8")
+        self.assertIn('const SCRIPT_KEY = "hskScript";', app)
+        self.assertIn('SCRIPT_LABEL = { zhuyin: "Zhuyin", pinyin: "Pinyin" }', app)
+
+    def test_control_is_at_least_44px_tall(self):
+        css = (SITE / "style.css").read_text(encoding="utf-8")
+        rule = re.search(r"(?m)^\.script\s*\{([^}]*)\}", css)
+        self.assertGreaterEqual(int(re.search(r"min-height:\s*(\d+)px", rule.group(1)).group(1)), 44)
+
+
 class BreakdownSourcesTest(unittest.TestCase):
     """#acceptance-sources-breakdown: the Sources footer credits BabelStone IDS and Unihan."""
 
