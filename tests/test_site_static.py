@@ -113,7 +113,8 @@ class StaticSiteTest(unittest.TestCase):
             if path.suffix not in TEXT_SUFFIXES:
                 continue
             text = path.read_text(encoding="utf-8")
-            allowed = D3_ALLOWED if path == D3_FILE else anchor_urls if path.suffix == ".html" else set()
+            # Text files (licenses, credits) may name only addresses the pages link.
+            allowed = D3_ALLOWED if path == D3_FILE else anchor_urls if path.suffix in {".html", ".txt"} else set()
             for url in set(URL_RE.findall(text)):
                 with self.subTest(file=str(path.relative_to(SITE)), url=url):
                     self.assertIn(url, allowed)

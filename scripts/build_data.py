@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build site/data/graph.json from the vendored HSK lists and CC-CEDICT.
+"""Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, and audio-cmn.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #graph-model, #hub-reading). Python standard library only.
+#schema-example, #graph-model, #hub-reading, #audio-rules). Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
 """
@@ -15,11 +15,15 @@ import re
 import sys
 import tempfile
 import unicodedata
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 HSK_DIR = ROOT / "data" / "hsk"
+AUDIO_NOTE = ROOT / "data" / "audio" / "source.json"
+AUDIO_OUT = ROOT / "site" / "audio"
+AUDIO_CREDITS = AUDIO_OUT / "CREDITS.txt"
 OVERRIDES = ROOT / "data" / "overrides.json"
 OUT = ROOT / "site" / "data" / "graph.json"
 CACHE_DIR = ROOT / ".cache"
@@ -183,6 +187,7 @@ def download(url, path):
     """Fetch url into path atomically: a failed or partial fetch leaves no file."""
     CACHE_DIR.mkdir(exist_ok=True)
     (CACHE_DIR / ".gitignore").write_text("*\n")
+    path.parent.mkdir(parents=True, exist_ok=True)
     print(f"downloading {url}", file=sys.stderr)
     fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".part")
     try:
@@ -322,6 +327,15 @@ def hsk_source():
     return f"{src['url']}@{src['commit']}"
 
 
+def audio_note():
+    return json.loads(AUDIO_NOTE.read_text(encoding="utf-8"))
+
+
+def audio_source():
+    note = audio_note()
+    return f"{note['url']}@{note['commit']}"
+
+
 def build(cedict_entries, release, hsk_entries, overrides):
     index = index_by_simp(cedict_entries)
     words, problems = [], []
@@ -353,29 +367,115 @@ def build(cedict_entries, release, hsk_entries, overrides):
             problems.append(f"{h['id']} {h['char']}: {err}")
     if problems:
         raise BuildError(problems)
-    return {"meta": {"cedictRelease": release, "hskSource": hsk_source()},
+    return {"meta": {"cedictRelease": release, "hskSource": hsk_source(),
+                     "audioSource": audio_source()},
             "words": words, "hubs": hubs, "links": links}
+
+
+# ---------------------------------------------------------------- audio
+
+
+def attach_audio(words, recorded):
+    """#audio-rules: set w["audio"] for each word whose Simplified form is in recorded.
+
+    Words sharing a Simplified form get none. Returns the other words left
+    without a recording, for the build to list.
+    """
+    count = {}
+    for w in words:
+        count[w["simp"]] = count.get(w["simp"], 0) + 1
+    missing = []
+    for w in words:
+        w.pop("audio", None)
+        if count[w["simp"]] > 1:
+            continue
+        if w["simp"] in recorded:
+            w["audio"] = f"audio/{w['id']}.mp3"
+        else:
+            missing.append(w)
+    return missing
+
+
+def _audio_cache(note):
+    return CACHE_DIR / f"audio-cmn-{note['commit']}"
+
+
+def _github_repo(note):
+    return note["url"].removeprefix("https://github.com/")
+
+
+def load_audio_index(note, refresh=False):
+    """Return {simp: file name} for every recording in the pinned folder."""
+    tree = _audio_cache(note) / "tree.json"
+    if refresh or not tree.exists():
+        download(f"https://api.github.com/repos/{_github_repo(note)}/git/trees/"
+                 f"{note['commit']}?recursive=1", tree)
+    data = json.loads(tree.read_text(encoding="utf-8"))
+    if data.get("truncated"):
+        raise BuildError([f"{note['url']}: file list truncated"])
+    prefix = note["folder"] + "/cmn-"
+    return {e["path"][len(prefix):-4]: e["path"].rsplit("/", 1)[1]
+            for e in data["tree"]
+            if e["type"] == "blob" and e["path"].startswith(prefix) and e["path"].endswith(".mp3")}
+
+
+def write_audio(words, index, note):
+    """Copy each word's recording unchanged to site/audio/<id>.mp3; drop stale ones."""
+    cache = _audio_cache(note)
+    AUDIO_OUT.mkdir(parents=True, exist_ok=True)
+    keep = set()
+    for w in words:
+        if "audio" not in w:
+            continue
+        name = index[w["simp"]]
+        cached = cache / name
+        if not cached.exists():
+            download(f"https://raw.githubusercontent.com/{_github_repo(note)}/{note['commit']}/"
+                     f"{note['folder']}/{urllib.parse.quote(name)}", cached)
+        target = ROOT / "site" / w["audio"]
+        target.write_bytes(cached.read_bytes())
+        keep.add(target.name)
+    for old in AUDIO_OUT.glob("*.mp3"):
+        if old.name not in keep:
+            old.unlink()
+    AUDIO_CREDITS.write_text(
+        f"Word recordings: {note['speaker']}, via {_github_repo(note)}.\n"
+        f"Source: {note['url']} (commit {note['commit']}, folder {note['folder']}).\n"
+        f"License: {note['license']}, {note['licenseUrl']}\n"
+        "Each file is copied unchanged and renamed to its word id. Unmodified clips\n"
+        "beside the site code form a collection; the license does not extend to the code.\n",
+        encoding="utf-8")
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--cedict", type=Path, help="local CC-CEDICT file (.txt or .gz)")
-    ap.add_argument("--refresh", action="store_true", help="re-download CC-CEDICT")
+    ap.add_argument("--refresh", action="store_true",
+                    help="re-download CC-CEDICT and the audio-cmn file list")
     args = ap.parse_args(argv)
     try:
         overrides = load_overrides()
         entries, release = load_cedict(args.cedict, args.refresh)
         graph = build(entries, release, load_hsk(), overrides)
+        note = audio_note()
+        index = load_audio_index(note, args.refresh)
     except BuildError as err:
         print(f"build failed, {len(err.problems)} entries:", file=sys.stderr)
         for p in err.problems:
             print(f"  {p}", file=sys.stderr)
         return 1
+    missing = attach_audio(graph["words"], index)
+    write_audio(graph["words"], index, note)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(graph, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"wrote {OUT.relative_to(ROOT)}: {len(graph['words'])} words, "
           f"{len(graph['hubs'])} hubs, {len(graph['links'])} links, "
           f"CC-CEDICT {release}", file=sys.stderr)
+    recorded = sum("audio" in w for w in graph["words"])
+    print(f"wrote {AUDIO_OUT.relative_to(ROOT)}: {recorded} recordings; "
+          f"{len(missing)} words have none:", file=sys.stderr)
+    for w in missing:
+        print(f"  {w['id']} {w['simp']}", file=sys.stderr)
     return 0
 
 

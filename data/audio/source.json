@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/hugolpz/audio-cmn",
+  "commit": "ff9ed3d0c631195bd2c06f39450f3264c7124040",
+  "folder": "64k/hsk",
+  "speaker": "Yue Tan (Université de Caen, Shtooka)",
+  "license": "CC BY-SA 3.0 US",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/us/",
+  "note": "Files cmn-<Simplified>.mp3 from the folder above, at the commit above, copied unchanged into site/audio/<word id>.mp3 by scripts/build_data.py."
+}
