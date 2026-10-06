@@ -250,6 +250,15 @@ body {
 .card .c-words .w-gloss { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; }
 .card .c-reading + .c-reading { margin-top: 8px; }
 .card .c-reading .c-defs { margin-top: 2px; }
+.card .c-breakdown { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; margin: 10px 0 0; align-items: baseline; }
+.card .c-breakdown dt { font-size: 13px; color: var(--muted); }
+.card .c-breakdown dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.card .b-parts { width: 100%; display: flex; flex-wrap: wrap; gap: 4px 14px; list-style: none; margin: 0; padding: 0; }
+.card .b-parts li, .card .c-breakdown dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; }
+.card .b-char { font-size: 20px; }
+.card .b-num, .card .b-zy { color: var(--muted); font-size: 14px; }
+.card .b-mean { font-size: 14px; }
+.card .b-none { color: var(--muted); font-size: 14px; }
 .card .c-close {
   position: absolute;
   top: 2px;

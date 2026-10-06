@@ -10,3 +10,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import build_data  # noqa: E402
 
 GRAPH = json.loads((ROOT / "site" / "data" / "graph.json").read_text(encoding="utf-8"))
+CHARS = GRAPH["chars"]
+
+
+def word_reading(w):
+    """A word's (zhuyin, defs): its own, or for a one-character word, through chars (#chars-words)."""
+    r = CHARS[w["trad"]]["readings"][w["reading"]] if "reading" in w else w
+    return r["zhuyin"], r["defs"]

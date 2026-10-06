@@ -7,7 +7,7 @@ import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
   makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
   createGame, shoot, resolveShot, swap, completingChars, boardChars,
-  roundRows, roundShots, lowestRow, pronunciation,
+  roundRows, roundShots, lowestRow, pronunciation, wordReading,
 } from "../../site/bubbles/rules.js";
 
 const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
@@ -346,4 +346,15 @@ test("acceptance-say-source: recording, else on-device Taiwan Mandarin voice, el
   // Pronunciation off: nothing is said.
   assert.equal(pronunciation(rec, false, [tw]), null);
   assert.equal(pronunciation(bare, false, [tw]), null);
+});
+
+// hsk-network #chars-words: cards read a one-character word through chars.
+test("wordReading: own Zhuyin and defs, or the named reading of its character", () => {
+  const chars = { 好: { readings: [{ pinyin: "hao3", zhuyin: "ㄏㄠˇ", defs: ["good"] },
+    { pinyin: "hao4", zhuyin: "ㄏㄠˋ", defs: ["to be fond of"] }] } };
+  assert.deepEqual(wordReading({ trad: "好", reading: 1 }, chars), { zhuyin: "ㄏㄠˋ", defs: ["to be fond of"] });
+  assert.deepEqual(wordReading({ trad: "學生", zhuyin: "ㄒㄩㄝˊ ˙ㄕㄥ", defs: ["student"] }, chars),
+    { zhuyin: "ㄒㄩㄝˊ ˙ㄕㄥ", defs: ["student"] });
+  const hao = GRAPH.words.find((w) => w.trad === "好");
+  assert.equal(wordReading(hao, GRAPH.chars).zhuyin, "ㄏㄠˇ");
 });

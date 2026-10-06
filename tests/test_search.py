@@ -10,10 +10,12 @@ import subprocess
 import unittest
 from pathlib import Path
 
+from graph_data import word_reading
+
 ROOT = Path(__file__).resolve().parent.parent
 APP = ROOT / "site" / "app.js"
 GRAPH = ROOT / "site" / "data" / "graph.json"
-FUNCS = ["zhuyinKey", "englishText", "searchKey", "escapeRe", "cmpId", "search"]
+FUNCS = ["wordReading", "zhuyinKey", "englishText", "searchKey", "escapeRe", "cmpId", "search"]
 NODE = shutil.which("node")
 
 
@@ -39,7 +41,8 @@ def run_search(queries):
         + [extract(src, f) for f in FUNCS]
         + [
             "const data = JSON.parse(fs.readFileSync(%s, 'utf8'));" % json.dumps(str(GRAPH)),
-            "const words = data.words.map(w => Object.assign({}, w, { key: searchKey(w) }));",
+            "const words = data.words.map(w => Object.assign({}, w, wordReading(w, data.chars)))"
+            ".map(w => Object.assign(w, { key: searchKey(w) }));",
             "const out = {};",
             "for (const q of %s) out[q] = search(q).map(w => w.id);" % json.dumps(queries),
             "console.log(JSON.stringify(out));",
@@ -89,7 +92,8 @@ class SearchTest(unittest.TestCase):
 
     def test_english_hits_only_definitions(self):
         hit = re.compile(r"(^|[^a-z])be($|[^a-z])")
-        flags = [any(hit.search(d.lower()) for d in self.words[i]["defs"]) for i in self.results["be"]]
+        flags = [any(hit.search(d.lower()) for d in word_reading(self.words[i])[1])
+                 for i in self.results["be"]]
         self.assertTrue(flags and all(flags), flags)
         self.assertIn("學生", self.trads("student"))
 

@@ -26,6 +26,7 @@ FIXTURE = """\
 
 ENTRIES, RELEASE = build_data.parse_cedict(FIXTURE)
 INDEX = build_data.index_by_simp(ENTRIES)
+NO_CHARS = {"rs": {}, "kdef": {}, "radicals": {}, "ids": {}}  # fixtures here build no hubs
 
 
 def match(simp, pinyin, override=None):
@@ -86,7 +87,7 @@ class Match(unittest.TestCase):
                {"id": "1-3", "level": 1, "simp": "们", "pinyin": "men"},
                {"id": "1-4", "level": 1, "simp": "无", "pinyin": "wú"}]
         with self.assertRaises(build_data.BuildError) as err:
-            build_data.build(ENTRIES, RELEASE, hsk, {})
+            build_data.build(ENTRIES, RELEASE, hsk, {}, NO_CHARS)
         failed = [p.split()[0] for p in err.exception.problems]
         self.assertEqual(failed, ["1-1", "1-2", "1-4"])
 
@@ -95,7 +96,7 @@ class Match(unittest.TestCase):
                {"id": "1-2", "level": 1, "simp": "学生", "pinyin": "xué sheng"}]
         overrides = {"1-1": {"id": "1-1", "simp": "个", "trad": "個", "pinyin": "ge4",
                              "reason": "箇 is a variant"}}
-        graph = build_data.build(ENTRIES, RELEASE, hsk, overrides)
+        graph = build_data.build(ENTRIES, RELEASE, hsk, overrides, NO_CHARS)
         self.assertEqual([w["trad"] for w in graph["words"]], ["個", "學生"])
         self.assertEqual(graph["meta"]["cedictRelease"], "2026-10-01")
 
@@ -105,8 +106,8 @@ class Match(unittest.TestCase):
                               "pinyin": "da3 lan2 qiu2", "defs": ["to play basketball"],
                               "reason": "absent from CC-CEDICT; definition not from CC-CEDICT"}}
         with self.assertRaisesRegex(build_data.BuildError, "2-16 .*no CC-CEDICT candidate"):
-            build_data.build(ENTRIES, RELEASE, hsk, {})
-        [word] = build_data.build(ENTRIES, RELEASE, hsk, overrides)["words"]
+            build_data.build(ENTRIES, RELEASE, hsk, {}, NO_CHARS)
+        [word] = build_data.build(ENTRIES, RELEASE, hsk, overrides, NO_CHARS)["words"]
         self.assertEqual(word, {"id": "2-16", "level": 2, "trad": "打籃球", "simp": "打篮球",
                                 "pinyin": "da3 lan2 qiu2", "zhuyin": "ㄉㄚˇ ㄌㄢˊ ㄑㄧㄡˊ",
                                 "defs": ["to play basketball"]})
@@ -141,27 +142,25 @@ HUB_FIXTURE = """\
 得 得 [de5] /see 得[de2]/
 得 得 [dei3] /must/
 """.splitlines()
-BY_TRAD = {}
-for _e in build_data.parse_cedict(HUB_FIXTURE)[0]:
-    BY_TRAD.setdefault(_e["trad"], []).append(_e)
+SINGLE = build_data.single_char_index(build_data.parse_cedict(HUB_FIXTURE)[0])
 
 
 class HubReading(unittest.TestCase):
     """#hub-reading."""
 
     def test_lowercase_readings_per_pinyin_in_dictionary_order_merged(self):
-        self.assertEqual(build_data.hub_readings("王", BY_TRAD), [
+        self.assertEqual(build_data.char_readings("王", SINGLE), [
             {"pinyin": "wang2", "zhuyin": "ㄨㄤˊ", "defs": ["king", "monarch"]},
             {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]},
         ])
 
     def test_pointer_only_reading_keeps_pointer(self):
-        readings = build_data.hub_readings("得", BY_TRAD)
+        readings = build_data.char_readings("得", SINGLE)
         self.assertEqual([r["zhuyin"] for r in readings], ["ㄉㄜˊ", "˙ㄉㄜ", "ㄉㄟˇ"])
         self.assertEqual(readings[1]["defs"], ["see 得[de2]"])
 
     def test_capitalized_counts_only_without_lowercase(self):
-        self.assertEqual(build_data.hub_readings("李", BY_TRAD),
+        self.assertEqual(build_data.char_readings("李", SINGLE),
                          [{"pinyin": "li3", "zhuyin": "ㄌㄧˇ", "defs": ["surname Li"]}])
 
     def test_build_names_hub_char_without_entry(self):
@@ -170,8 +169,8 @@ class HubReading(unittest.TestCase):
         hsk = [{"id": "1-1", "level": 1, "simp": "学生", "pinyin": "xué sheng"},
                {"id": "1-2", "level": 1, "simp": "学校", "pinyin": "xué xiào"}]
         with self.assertRaises(build_data.BuildError) as err:
-            build_data.build(entries, RELEASE, hsk, {})
-        self.assertEqual(err.exception.problems, ["c-學 學: no CC-CEDICT entry"])
+            build_data.build(entries, RELEASE, hsk, {}, NO_CHARS)
+        self.assertEqual(err.exception.problems, ["c-學 學: 學 has no CC-CEDICT entry"])
 
 
 class Download(unittest.TestCase):
