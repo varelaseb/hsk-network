@@ -51,6 +51,7 @@
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-phone" data-story="story-breakdown story-phone"><td>Breakdown on a phone</td><td data-acceptance-scenario>Given a learner on a phone in portrait viewing the graph. When the learner taps the hub of a character built from three parts.</td><td data-acceptance-observable>Then the bottom sheet shows the Radical and Parts rows in full, each part's meaning readable without zooming, and the page does not scroll sideways.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-known" data-story="story-breakdown story-maintain"><td>Known breakdowns</td><td data-acceptance-scenario>Given the built hub data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected radical and radical number and the expected parts, each part with a meaning containing the expected English word, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-complete" data-story="story-breakdown story-maintain"><td>Every hub broken down</td><td data-acceptance-scenario>Given the built hub data. When every hub is checked.</td><td data-acceptance-observable>Then every hub has a radical with a number and a meaning, and every part has a meaning, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-chars-once" data-story="story-maintain"><td>Stored once</td><td data-acceptance-scenario>Given the built graph data. When every hub, radical, and part is checked.</td><td data-acceptance-observable>Then each names a character that has exactly one entry in the character table, and no reading or meaning appears anywhere else in the file, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-fail" data-story="story-maintain"><td>Unresolved part</td><td data-acceptance-scenario>Given a maintainer rebuilding the data. When a hub character's parts include one with no dictionary entry and no override exists for it, which needs an induced failure: a fixture description with an unknown part.</td><td data-acceptance-observable>Then the build fails and names that character, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hub-known" data-story="story-inspect story-maintain"><td>Known characters</td><td data-acceptance-scenario>Given the built hub data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected readings in Zhuyin, each with a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-data-known" data-story="story-inspect story-maintain"><td>Known words</td><td data-acceptance-scenario>Given the built word data. When the reference words in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected Traditional form, Zhuyin, and a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
@@ -181,14 +182,15 @@
 <li data-anchor="match-absent">A list word absent from CC-CEDICT is overridden with its Traditional form, pinyin, and hand-written English definitions, and its reason says the definitions are not from CC-CEDICT.</li>
 </ol>
 <h3 data-anchor="hub-reading-heading">Character readings</h3>
-<p data-anchor="hub-reading">A hub's readings are the lowercase single-character CC-CEDICT entries whose Traditional form is that character, one reading per distinct pinyin in dictionary order, each with its Zhuyin and its definitions merged and dropped by the match rules above; capitalized entries count only when no lowercase entry exists, and a character with no entry at all fails the build and names it.</p>
+<p data-anchor="chars-table">Each per-character fact lives once, in the character table of the graph data file keyed by character: a character's readings and its short meaning are stored there and nowhere else, and hubs, cards, radicals, and parts refer to a character only by the character itself.</p>
+<p data-anchor="hub-reading">A character's readings, stored in its character table entry for every hub character and every radical or part that is a character itself, are the lowercase single-character CC-CEDICT entries whose Traditional form is that character, one reading per distinct pinyin in dictionary order, each with its Zhuyin and its definitions merged and dropped by the match rules above; capitalized entries count only when no lowercase entry exists, and a character with no entry at all fails the build and names it.</p>
 <h3 data-anchor="breakdown-heading">Character breakdown</h3>
 <ol data-anchor="breakdown-rules">
-<li data-anchor="breakdown-radical">A hub's radical is the Kangxi radical named by the first kRSUnicode value of its character, shown as that radical's character from the CJK radicals table, with its radical number.</li>
+<li data-anchor="breakdown-radical">A hub's radical is the Kangxi radical named by the first kRSUnicode value of its character, recorded on the hub as that radical's character from the CJK radicals table and its radical number.</li>
 <li data-anchor="breakdown-parts">A hub's parts are the top-level components of its character's IDS sequence tagged T (Taiwan), or its first sequence when none is tagged T; repeated parts are listed once, in sequence order.</li>
 <li data-anchor="breakdown-single">A character whose IDS sequence is the character itself has no parts.</li>
-<li data-anchor="breakdown-meaning">A meaning is the first semicolon clause of the Unihan kDefinition that does not name a radical, without parenthetical text, cut at its first comma.</li>
-<li data-anchor="breakdown-zhuyin">A radical or part is a character itself when it has a lowercase single-character CC-CEDICT entry, by Traditional or Simplified form, with a definition that does not mention "radical"; it then shows the Zhuyin of its first reading by the character readings rule below, and otherwise shows no Zhuyin.</li>
+<li data-anchor="breakdown-meaning">Every radical and part has a character table entry holding its meaning: the first semicolon clause of the Unihan kDefinition that does not name a radical, without parenthetical text, cut at its first comma.</li>
+<li data-anchor="breakdown-zhuyin">A radical or part is a character itself when it has a lowercase single-character CC-CEDICT entry, by Traditional or Simplified form, with a definition that does not mention "radical"; its character table entry then also holds its readings by the character readings rule below, and the card shows the Zhuyin of the first; otherwise the entry has no readings and the card shows no Zhuyin.</li>
 <li data-anchor="breakdown-fail">A part or radical with no meaning, such as a stroke, an unencoded component, or a rare form with no kDefinition, fails the build and names the hub character.</li>
 <li data-anchor="breakdown-override">The committed override file also takes one entry per such character, naming its parts and each part's meaning, or no parts, with a one-line reason; an override entry may also replace a misleading derived meaning, with its reason.</li>
 </ol>
@@ -236,24 +238,27 @@
       "audio": "audio/1-128.mp3"
     }
   ],
+  "chars": {
+    "學": { "readings": [ { "pinyin": "xue2", "zhuyin": "ㄒㄩㄝˊ", "defs": ["to learn", "to study"] } ] },
+    "子": {
+      "readings": [ { "pinyin": "zi3", "zhuyin": "ㄗˇ", "defs": ["son", "child"] } ],
+      "meaning": "offspring"
+    },
+    "𦥯": { "meaning": "to learn" }
+  },
   "hubs": [
     {
       "id": "c-學",
       "char": "學",
-      "readings": [
-        { "pinyin": "xue2", "zhuyin": "ㄒㄩㄝˊ", "defs": ["to learn", "to study"] }
-      ],
-      "radical": { "char": "子", "number": 39, "meaning": "offspring", "zhuyin": "ㄗˇ" },
-      "parts": [
-        { "char": "𦥯", "meaning": "to learn" },
-        { "char": "子", "meaning": "offspring", "zhuyin": "ㄗˇ" }
-      ]
+      "radical": { "char": "子", "number": 39 },
+      "parts": ["𦥯", "子"]
     }
   ],
   "links": [
     { "word": "1-128", "hub": "c-學" }
   ]
 }</code></pre>
+<p data-anchor="schema-chars">A hub, radical, or part names a character; its readings and meaning are looked up in "chars", so no reading or meaning is repeated in the file.</p>
 <p data-anchor="schema-id">A word id is its level and its position in that list, so both readings of one character stay distinct.</p>
 </section>
 
@@ -346,6 +351,7 @@
 <li data-anchor="test-known">Known words: at least ten reference words, including 學生, 喜歡, 長 in both readings, 得 in both readings, 中國, and 女兒, each checked for Traditional form, exact Zhuyin, and an expected English gloss.</li>
 <li data-anchor="test-hub-known">Known characters: at least 學 and 子, each hub checked for its readings' exact Zhuyin and an expected English gloss.</li>
 <li data-anchor="test-breakdown-known">Known breakdowns: at least 學, 好, and 時 from the built hub data, each checked for radical, radical number, parts, and an expected English word in each meaning.</li>
+<li data-anchor="test-chars-once">Stored once: every character a hub, radical, or part names has a character table entry, and no hub, radical, or part carries a reading or meaning of its own.</li>
 <li data-anchor="test-breakdown-rules">Breakdown rules: the rules above against a few fixture Unihan and IDS lines, including 明 as 日 + 月, a T-tagged sequence chosen over the first, a single-part character, a radical form shown without Zhuyin, an unresolved part failing the build, and an override.</li>
 <li data-anchor="test-zhuyin">Zhuyin conversion: every tone, neutral tone, erhua, ü syllables, and zero-initial syllables such as yi, wu, and yu.</li>
 <li data-anchor="test-complete">Completeness: every entry of both committed HSK lists appears once, with its level, and nothing else.</li>
