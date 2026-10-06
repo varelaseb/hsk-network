@@ -81,7 +81,11 @@ class StaticSiteTest(unittest.TestCase):
                         self.assertTrue(target.is_file(), "missing site file")
             for _, _, value in refs.anchors:
                 if is_local(value) and not value.startswith("#"):
-                    self.assertTrue((page.parent / value).is_file(), value)
+                    # A directory link ("../") opens that directory's index.html.
+                    target = page.parent / value.split("#")[0]
+                    if value.split("#")[0].endswith("/"):
+                        target = target / "index.html"
+                    self.assertTrue(target.is_file(), value)
 
     def test_css_loads_only_site_files(self):
         for sheet in SITE.rglob("*.css"):
