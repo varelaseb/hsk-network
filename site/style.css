@@ -102,6 +102,46 @@ body {
   color: var(--muted);
 }
 .legend li { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.level {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+.level:focus-visible { outline: 2px solid var(--hsk1); outline-offset: 1px; border-radius: 6px; }
+.level[aria-disabled="true"] { cursor: default; }
+.level[aria-checked="false"] { color: var(--muted); }
+.level[aria-checked="false"] .swatch { opacity: .35; }
+/* On/off track: filled with the level color when on. */
+.toggle {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--line);
+  transition: background .15s;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  background: #fff;
+  transition: transform .15s;
+}
+.level[aria-checked="true"] .toggle::after { transform: translateX(12px); }
+.level[data-level="1"][aria-checked="true"] .toggle { background: var(--hsk1); }
+.level[data-level="2"][aria-checked="true"] .toggle { background: var(--hsk2); }
+.node.off, .link.off { display: none; }
 .swatch { width: 14px; height: 14px; border-radius: 7px; display: inline-block; }
 .swatch.l1 { background: var(--hsk1); }
 .swatch.l2 { background: var(--hsk2); }

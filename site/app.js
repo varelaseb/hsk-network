@@ -15,6 +15,7 @@
   const card = document.getElementById("card");
   const input = document.getElementById("search");
   const resultsEl = document.getElementById("results");
+  const levelBtns = Array.from(document.querySelectorAll(".level"));
   const sheetQuery = window.matchMedia("(hover: none), (max-width: 600px)");
 
   let words = [], hubs = [], nodes = [], links = [];
@@ -24,6 +25,8 @@
   let root, linkSel, nodeSel, zoom, sim;
   let pinned = null;          // node whose card is pinned (click, tap, or search)
   let hovered = null;         // word node under the mouse
+  const levelOn = { 1: true, 2: true };
+  let shown = new Set();      // ids of visible nodes
 
   fetch("data/graph.json")
     .then(function (r) {
@@ -58,9 +61,12 @@
       ws.sort(function (a, b) { return a.level - b.level || cmpId(a.id, b.id); });
     });
 
+    computeShown();
     build();
     statusEl.textContent = "";
     fit();
+    // Text typed while the data loaded gets its results now.
+    if (document.activeElement === input) refreshResults();
   }
 
   function push(map, k, v) {
@@ -149,6 +155,7 @@
         .on("drag", function (e) { moveTo(e.subject, e.x, e.y); })
         .on("end", function (e) { release(e.subject); }));
 
+    applyShown();
     sim.on("tick", draw);
     draw();
 
@@ -190,7 +197,6 @@
   function moveTo(d, x, y) {
     d.fx = x;
     d.fy = y;
-    if (pinned === d) placeCard(d);
   }
 
   function release(d) {
@@ -259,6 +265,7 @@
       .attr("x2", function (l) { return l.target.x; })
       .attr("y2", function (l) { return l.target.y; });
     nodeSel.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+    if (pinned || hovered) placeCard(pinned || hovered);
   }
 
   function stageSize() {
@@ -268,6 +275,7 @@
   function bounds() {
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     nodes.forEach(function (n) {
+      if (!shown.has(n.id)) return;
       const hw = n.kind === "hub" ? HUB_R : n.width / 2;
       const hh = n.kind === "hub" ? HUB_R : WORD_H / 2;
       x0 = Math.min(x0, n.x - hw); x1 = Math.max(x1, n.x + hw);
@@ -303,23 +311,24 @@
   }
 
   function highlight(d) {
-    nodeSel.classed("lit", false).classed("focus", false);
-    linkSel.classed("lit", false);
-    root.classed("dimmed", !!d);
-    if (!d) return;
-    const lit = new Set([d.id]);
-    if (d.kind === "word") {
+    // One pass sets every class, so no clearing pass is needed first.
+    const lit = new Set(), litHubs = new Set();
+    if (d && d.kind === "word") {
+      lit.add(d.id);
       (wordHubs.get(d.id) || []).forEach(function (h) {
+        litHubs.add(h);
         lit.add(h.id);
         hubWords.get(h.id).forEach(function (w) { lit.add(w.id); });
       });
-    } else {
+    } else if (d) {
+      litHubs.add(d);
+      lit.add(d.id);
       (hubWords.get(d.id) || []).forEach(function (w) { lit.add(w.id); });
     }
+    root.classed("dimmed", !!d);
     nodeSel.classed("lit", function (n) { return lit.has(n.id); })
       .classed("focus", function (n) { return n === d; });
     // Every link into a lit hub: the word's own links plus its neighbors' links to shared hubs.
-    const litHubs = new Set(d.kind === "word" ? (wordHubs.get(d.id) || []) : [d]);
     linkSel.classed("lit", function (l) { return litHubs.has(l.target); });
   }
 
@@ -366,7 +375,7 @@
       card.appendChild(levelTag(d.level));
     } else {
       card.appendChild(el("div", "c-trad", d.char)).lang = "zh-Hant";
-      const ws = hubWords.get(d.id) || [];
+      const ws = (hubWords.get(d.id) || []).filter(function (w) { return shown.has(w.id); });
       card.appendChild(el("p", "c-defs", ws.length + " words contain this character"));
       const ul = el("ul", "c-words");
       ws.forEach(function (w) {
@@ -405,6 +414,57 @@
     card.style.top = top + "px";
   }
 
+  // ---------- Level panel ----------
+
+  function computeShown() {
+    shown = new Set();
+    words.forEach(function (w) { if (levelOn[w.level]) shown.add(w.id); });
+    // A hub shows only while two or more of its words show.
+    hubs.forEach(function (h) {
+      const n = (hubWords.get(h.id) || []).filter(function (w) { return shown.has(w.id); }).length;
+      if (n >= 2) shown.add(h.id);
+    });
+  }
+
+  // Hides nodes in place without touching the simulation, so visible nodes do not jump.
+  function applyShown() {
+    nodeSel.classed("off", function (n) { return !shown.has(n.id); });
+    linkSel.classed("off", function (l) { return !shown.has(l.source.id) || !shown.has(l.target.id); });
+  }
+
+  function syncLevels() {
+    const on = levelBtns.filter(function (b) { return levelOn[b.dataset.level]; });
+    levelBtns.forEach(function (b) {
+      b.setAttribute("aria-checked", levelOn[b.dataset.level] ? "true" : "false");
+      // The last level that is on cannot be switched off.
+      if (on.length === 1 && on[0] === b) b.setAttribute("aria-disabled", "true");
+      else b.removeAttribute("aria-disabled");
+    });
+  }
+
+  function toggleLevel(level) {
+    if (levelOn[level] && levelBtns.filter(function (b) { return levelOn[b.dataset.level]; }).length === 1) return;
+    levelOn[level] = !levelOn[level];
+    syncLevels();
+    computeShown();
+    if (!nodeSel) return;
+    applyShown();
+    if (pinned) {
+      if (shown.has(pinned.id)) select(pinned);  // a hub card relists its visible words
+      else clearSelection();
+    }
+    if (hovered && !shown.has(hovered.id)) {
+      hovered = null;
+      if (!pinned) hideCard();
+    }
+    if (!resultsEl.hidden) refreshResults();
+  }
+
+  levelBtns.forEach(function (b) {
+    b.addEventListener("click", function () { toggleLevel(b.dataset.level); });
+  });
+  syncLevels();
+
   // ---------- Search ----------
 
   // Toneless pinyin key: "nu:3 er2" -> "nver"; ü, u:, v all fold to v.
@@ -437,16 +497,18 @@
     const eq = q.toLowerCase();
     const wordRe = /^[a-z][a-z\s'-]*$/i.test(q) ? new RegExp("(^|[^a-z])" + escapeRe(eq) + "($|[^a-z])") : null;
     words.forEach(function (w) {
+      if (!levelOn[w.level]) return;
       let score = 0;
       if (hasHan) {
         if (w.trad === q || w.simp === q) score = 100;
         else if (w.trad.indexOf(q) >= 0 || w.simp.indexOf(q) >= 0) score = 80;
       } else {
-        if (pq && (w.key.py === pq || w.key.pyU === pq)) score = 90;
-        else if (pq && (w.key.py.indexOf(pq) === 0 || w.key.pyU.indexOf(pq) === 0)) score = 70;
-        if (wordRe && w.key.defs.some(function (d) { return d === eq; })) score = Math.max(score, 85);
-        else if (wordRe && w.key.defs.some(function (d) { return wordRe.test(d); })) score = Math.max(score, 60);
-        if (!score && pq.length >= 2 && (w.key.py.indexOf(pq) >= 0 || w.key.pyU.indexOf(pq) >= 0)) score = 40;
+        // Definition matches rank ahead of every pinyin match.
+        if (wordRe && w.key.defs.some(function (d) { return d === eq; })) score = 95;
+        else if (wordRe && w.key.defs.some(function (d) { return wordRe.test(d); })) score = 90;
+        else if (pq && (w.key.py === pq || w.key.pyU === pq)) score = 70;
+        else if (pq && (w.key.py.indexOf(pq) === 0 || w.key.pyU.indexOf(pq) === 0)) score = 60;
+        else if (pq.length >= 2 && (w.key.py.indexOf(pq) >= 0 || w.key.pyU.indexOf(pq) >= 0)) score = 40;
       }
       if (score) scored.push({ w: w, score: score });
     });
@@ -456,10 +518,17 @@
     return scored.slice(0, MAX_RESULTS).map(function (s) { return s.w; });
   }
 
-  let current = [], active = -1;
+  let current = [], active = -1, blurTimer;
+
+  function refreshResults() {
+    current = search(input.value);
+    active = -1;
+    renderResults();
+  }
 
   function renderResults() {
     resultsEl.replaceChildren();
+    input.removeAttribute("aria-activedescendant");
     const q = input.value.trim();
     if (!q) {
       resultsEl.hidden = true;
@@ -471,7 +540,9 @@
     }
     current.forEach(function (w, i) {
       const li = el("li");
+      li.id = "result-" + i;
       li.setAttribute("role", "option");
+      if (i === active) input.setAttribute("aria-activedescendant", li.id);
       li.setAttribute("aria-selected", i === active ? "true" : "false");
       li.appendChild(el("span", "r-trad", w.trad)).lang = "zh-Hant";
       li.appendChild(el("span", "r-def", w.defs[0] || ""));
@@ -493,18 +564,17 @@
     focusWord(w);
   }
 
-  input.addEventListener("input", function () {
-    current = search(input.value);
-    active = -1;
-    renderResults();
-  });
+  input.addEventListener("input", refreshResults);
   input.addEventListener("focus", function () {
-    if (input.value.trim()) { current = search(input.value); renderResults(); }
+    clearTimeout(blurTimer);
+    if (input.value.trim()) refreshResults();
   });
   input.addEventListener("blur", function () {
-    setTimeout(function () { resultsEl.hidden = true; input.setAttribute("aria-expanded", "false"); }, 150);
+    blurTimer = setTimeout(function () { resultsEl.hidden = true; input.setAttribute("aria-expanded", "false"); }, 150);
   });
   input.addEventListener("keydown", function (e) {
+    // Keys during IME composition belong to the input method, not the results list.
+    if (e.isComposing || e.keyCode === 229) return;
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       if (!current.length) return;
       e.preventDefault();
