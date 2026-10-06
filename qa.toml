@@ -96,7 +96,7 @@ cannot_host = "needs the public GitHub Pages game address after a merge to main;
 
 # Network: word links.
 [nav.acceptance-word-link]
-path = "/#word=%E5%AD%B8%E7%94%9F" # 學生
+path = "/#word=1-128" # word id of 學生 in site/data/graph.json
 [nav.acceptance-word-link-unknown]
 path = "/#word=qzqzqz"
 
