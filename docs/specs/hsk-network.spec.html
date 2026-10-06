@@ -27,6 +27,8 @@
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-link">As a learner, I open a link to one word, such as from the bubbles game, and the network shows that word focused with its card open.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-open-game">As a learner, I go from the network to the <a href="hsk-bubbles.spec.html">bubbles game</a> in one tap.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-sources">As a learner, I can see where the vocabulary, definitions, and pronunciation recordings come from and under which licenses.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-read">As a learner, I read a word's meanings one per line in plain English, with its measure words labeled, and every Chinese form in Traditional characters with Zhuyin, so nothing on a card looks like dictionary code.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-look">As a learner, the site and the game look calm and polished, read clearly in one typeface family, and move smoothly on a phone, without motion when my device asks for less.</p>
 <p data-user-story data-user-facing="false" data-anchor="story-maintain">As a maintainer, I rebuild the word data with one command, and an automated test suite proves the data correct on every pull request.</p>
 </section>
 
@@ -54,15 +56,25 @@
 <tr data-acceptance-criterion data-anchor="acceptance-level-off" data-story="story-levels"><td>Level off</td><td data-acceptance-scenario>Given a learner viewing the graph with both levels on. When the learner switches HSK 2 off in the level panel.</td><td data-acceptance-observable>Then only HSK 1 words remain with the hubs they share, the HSK 2 switch reads off, and search lists no HSK 2 word.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-level-on" data-story="story-levels"><td>Level on</td><td data-acceptance-scenario>Given a learner viewing the graph with HSK 2 switched off. When the learner switches HSK 2 back on.</td><td data-acceptance-observable>Then the HSK 2 words, their links, and the hubs they share reappear, and the HSK 2 switch reads on.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-level-last" data-story="story-levels"><td>Last level</td><td data-acceptance-scenario>Given a learner viewing the graph with only HSK 1 on. When the learner tries to switch HSK 1 off.</td><td data-acceptance-observable>Then HSK 1 stays on and its words stay visible, so the graph is never empty.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-phone-fit" data-story="story-phone"><td>Phone layout</td><td data-acceptance-scenario>Given a learner on a phone in portrait. When the learner opens the public site.</td><td data-acceptance-observable>Then the graph fills the screen below the search box, the page does not scroll sideways, and word labels are readable after zooming in.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-phone-fit" data-story="story-phone"><td>Phone layout</td><td data-acceptance-scenario>Given a learner on a phone in portrait. When the learner opens the public site.</td><td data-acceptance-observable>Then the graph fills the whole screen behind a floating search box and level row, the page does not scroll sideways, and word labels are readable after zooming in.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-phone-zoom" data-story="story-phone"><td>Pinch and pan</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner pinches outward with two fingers, then drags one finger across the graph.</td><td data-acceptance-observable>Then the graph zooms in around the pinch and then pans with the finger, needing a two-finger pinch and a one-finger drag gesture.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-word-link" data-story="story-link"><td>Word link</td><td data-acceptance-scenario>Given a learner with a link to one word on the site. When the learner opens the link.</td><td data-acceptance-observable>Then the graph settles, then pans and zooms to that word, highlights it and its neighbors, and opens its card.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-word-link-unknown" data-story="story-link"><td>Unknown word link</td><td data-acceptance-scenario>Given a learner with a site link naming a word that does not exist. When the learner opens the link.</td><td data-acceptance-observable>Then the whole graph fits the screen with no card open, as on a plain visit.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-play-link" data-story="story-open-game"><td>Play</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps "Play" beside the level panel.</td><td data-acceptance-observable>Then the bubbles game start screen opens.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-audio-files" data-story="story-maintain"><td>Audio files</td><td data-acceptance-scenario>Given the built word data. When each word's audio entry is checked.</td><td data-acceptance-observable>Then every audio entry names a recording that exists in the site, every recording in the site belongs to a word, and no word whose Simplified form another list entry shares has one, proven by a unit test: no screen shows it.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, credits the pronunciation recordings to their speaker and source under CC BY-SA 3.0 US with links, and credits the graph library and its license.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, credits the pronunciation recordings to their speaker and source under CC BY-SA 3.0 US with links, credits the graph library and its license, and credits both typefaces, their designers, and the SIL Open Font License with links.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-static" data-story="story-explore story-maintain"><td>Static</td><td data-acceptance-scenario>Given the published site files. When their references are checked.</td><td data-acceptance-observable>Then the page loads only files from its own site, with no runtime API, key, or third-party request, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-ci" data-story="story-maintain"><td>CI</td><td data-acceptance-scenario>Given a maintainer with an open pull request. When the maintainer views its checks.</td><td data-acceptance-observable>Then a test check has run the full test suite and shows pass or fail.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-senses" data-story="story-read"><td>Senses</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a word that has several English senses and measure words.</td><td data-acceptance-observable>Then the card lists each sense on its own line, and a line labeled "Measure words" shows each measure word in Traditional characters with its Zhuyin, separated by dots, with no Simplified character, pinyin, colon code, or bracket.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sense-ref" data-story="story-read"><td>Cross-reference</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a word whose sense names another Chinese word.</td><td data-acceptance-observable>Then that sense shows the other word in Traditional characters followed by its Zhuyin, with no vertical bar, Simplified form, or pinyin.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sense-tag" data-story="story-read"><td>Usage tags</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a word whose sense carries a usage tag.</td><td data-acceptance-observable>Then the tag reads in full words, such as "colloquial" or "bound form", set apart in a smaller muted style before the sense.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-clean-data" data-story="story-read story-maintain"><td>Clean text</td><td data-acceptance-scenario>Given the built graph data. When every string the site or game shows from it is checked.</td><td data-acceptance-observable>Then none holds a Simplified-only character, pinyin with tone numbers, a "CL:" code, a vertical bar, square brackets, or the abbreviations "sb" and "sth", proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-zhuyin-column" data-story="story-read story-look"><td>Zhuyin beside characters</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a two-character word whose second syllable has the neutral tone.</td><td data-acceptance-observable>Then the card's headword shows each character with its Zhuyin stacked in a column on its right, a tone mark to the right of the column's last symbol, and the neutral-tone dot above the second column.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-typeface" data-story="story-look"><td>Typefaces</td><td data-acceptance-scenario>Given a learner on a phone. When the learner opens the site and taps a word.</td><td data-acceptance-observable>Then characters and Zhuyin, on the graph and in the card, show in the site's kaishu typeface, and English text shows in its sans typeface, as on a desktop.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-fonts-files" data-story="story-look story-maintain"><td>Font files</td><td data-acceptance-scenario>Given the published site files. When the font files are checked.</td><td data-acceptance-observable>Then each typeface is served from the site with its license beside it, the kaishu font holds every character and Zhuyin symbol the site and game show, and the fonts stay within the size budget, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-glide" data-story="story-look story-search"><td>Glide</td><td data-acceptance-scenario>Given a learner on a desktop viewing the whole graph. When the learner picks a word from the search results.</td><td data-acceptance-observable>Then the view glides to the word over about half a second while the other nodes fade back, and the card appears once the view arrives.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sheet" data-story="story-look story-phone"><td>Sheet</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner taps a word node.</td><td data-acceptance-observable>Then the card rises from the bottom edge into place, and tapping empty space lowers it away.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-reduced-network" data-story="story-look"><td>Reduced motion</td><td data-acceptance-scenario>Given a learner whose device asks for reduced motion. When the learner picks a word from the search results.</td><td data-acceptance-observable>Then the view moves to the word at once with no glide, and the card fades in without rising.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hosted" data-story="story-explore"><td>Hosted</td><td data-acceptance-scenario>Given a learner with only the public address. When the learner opens it after a change merges to main.</td><td data-acceptance-observable>Then the site loads with the merged version of the graph.</td></tr>
 </tbody>
 </table>
@@ -72,8 +84,9 @@
 
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
 <h2>Modular boundaries</h2>
-<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, and the pronunciation recordings into the graph data: matching, Traditional forms, Zhuyin, definitions, hubs, links, and which word has a recording.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file and the recordings beside it, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT and the recordings at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file, the committed recordings, and the build's error list.</span></p>
-<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards, search, legend, word links, the Play link, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file and the vendored graph library only and holds no dictionary logic.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, and the pronunciation recordings into the graph data: matching, Traditional forms, Zhuyin, definitions cleaned into readable senses and measure words, hubs, links, and which word has a recording.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file and the recordings beside it, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT and the recordings at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file, the committed recordings, and the build's error list.</span></p>
+<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards, search, legend, word links, the Play link, the Sources footer, and the shared look: typefaces, type scale, color, and motion, which the game page reuses.</span> <span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file and the vendored graph library only and holds no dictionary logic.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-fonts"><span data-boundary-responsibility>The font build owns cutting the two vendored typefaces down to the characters the site and game show.</span> <span data-boundary-seam>Caller-facing seam: one maintainer command that reads the graph data file and the pages' own text and writes the subset font files and their coverage list.</span> <span data-boundary-dependency>Dependency direction: external provider; it uses the fontTools subsetter at maintainer time only, and the site and tests never call it.</span> <span data-boundary-scope>Observable scope: the committed font files, their coverage list, and the font size budget.</span></p>
 <p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span> <span data-boundary-scope>Observable scope: check status and the live site.</span></p>
 </section>
 
@@ -90,7 +103,7 @@
 <tr data-anchor="default-lists"><td>Which HSK</td><td>HSK 2.0 levels 1 and 2: 150 + 150 = 300 list entries.</td></tr>
 <tr data-anchor="default-links"><td>What links words</td><td>A shared character; characters are small hub nodes, words never link directly.</td></tr>
 <tr data-anchor="default-script"><td>Script</td><td>Traditional characters everywhere on the page.</td></tr>
-<tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in word and hub cards, and Zhuyin in search; pinyin is never shown or searched.</td></tr>
+<tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in word and hub cards, and Zhuyin in search; pinyin is never shown or searched, including inside definitions.</td></tr>
 <tr data-anchor="default-level"><td>Level cue</td><td>Color by HSK level, named in a legend and in the card.</td></tr>
 <tr data-anchor="default-level-panel"><td>Level filter</td><td>The legend is the level panel: one on/off switch per HSK level, both on at load.</td></tr>
 <tr data-anchor="default-data"><td>Data</td><td>Built once into a static file by a script in the repository; no runtime API and no keys.</td></tr>
@@ -183,6 +196,24 @@
 </tbody>
 </table>
 </div>
+<h3 data-anchor="senses-heading">Senses and measure words</h3>
+<p data-anchor="senses-what">Every definition the site or game shows passes these rules in the pipeline, so the page renders text as it is and holds no dictionary parsing.</p>
+<div class="table-scroll" data-anchor="senses-scroll">
+<table data-anchor="senses-table">
+<thead><tr><th>CC-CEDICT text</th><th>Rule</th><th>Shown as</th></tr></thead>
+<tbody>
+<tr data-anchor="sense-split"><td><code>/to love; to be fond of/affection/</code></td><td>Each slash-separated definition is one sense, kept in dictionary order; semicolons inside a sense stay.</td><td>One sense per line</td></tr>
+<tr data-anchor="sense-cl"><td><code>CL:塊|块[kuai4],隻|只[zhi1],個|个[ge4]</code></td><td>Every "CL:" list, a whole sense or in parentheses inside one, leaves the sense text and becomes the entry's measure words, in order, each once; a sense left empty is dropped.</td><td>Measure words 塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</td></tr>
+<tr data-anchor="sense-ref"><td><code>see 大夫[dai4 fu5]</code>, <code>used in 號脈|号脉[hao4 mai4]</code></td><td>A <code>Traditional|Simplified[pinyin]</code> or <code>Traditional[pinyin]</code> reference becomes the Traditional form, a space, and the pinyin converted to Zhuyin by the Zhuyin rules.</td><td>see 大夫 ㄉㄞˋ ˙ㄈㄨ</td></tr>
+<tr data-anchor="sense-pr"><td><code>(Taiwan pr. [ting4])</code>, <code>also pr. [shui2]</code></td><td>A bare bracketed pinyin becomes its Zhuyin; "Taiwan pr." reads "Taiwan reading", "pr." reads "pronounced".</td><td>(Taiwan reading ㄊㄧㄥˋ)</td></tr>
+<tr data-anchor="sense-tag"><td><code>(bound form)</code>, <code>(coll.)</code>, <code>(Tw)</code></td><td>A parenthesized tag that opens a sense becomes the sense's tag, its abbreviation spelled out: coll. colloquial, Tw Taiwan, lit. literally, fig. figuratively, math. mathematics, abbr. short for, onom. onomatopoeia.</td><td>bound form  root; stem</td></tr>
+<tr data-anchor="sense-abbr"><td><code>to see (sb) off</code></td><td>The abbreviations sb, sth, and esp. anywhere in a sense read someone, something, and especially.</td><td>to see (someone) off</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="sense-mw-store">A measure word refers to its character's entry in the character table, recording the character and the pinyin of the reading the "CL:" list names, so its Zhuyin is read through that reading as for any character; a measure word whose character has no reading with that pinyin fails the build and names the entry.</p>
+<p data-anchor="sense-fail">After cleaning, a sense that still holds a character CC-CEDICT knows only as a Simplified form, a tone-numbered syllable, a vertical bar, or a square bracket fails the build and names the entry, so a new CC-CEDICT pattern is caught before it ships.</p>
+<p data-anchor="sense-scope">The rules apply to word definitions and to character readings alike, so word cards, hub cards, search results, and every game card show the same cleaned text.</p>
 <h3 data-anchor="schema-heading">Graph data file</h3>
 <h3 data-anchor="audio-heading">Matching a word to a recording</h3>
 <ul data-anchor="audio-rules">
@@ -205,7 +236,8 @@
       "simp": "学生",
       "pinyin": "xue2 sheng5",
       "zhuyin": "ㄒㄩㄝˊ ˙ㄕㄥ",
-      "defs": ["student", "schoolchild"],
+      "defs": [{ "text": "student" }, { "text": "schoolchild" }],
+      "mw": [{ "char": "個", "pinyin": "ge4" }, { "char": "名", "pinyin": "ming2" }],
       "audio": "audio/1-128.mp3"
     }
   ],
@@ -222,6 +254,7 @@
     { "word": "1-128", "hub": "c-學" }
   ]
 }</code></pre>
+<p data-anchor="schema-sense">A sense is an object with its cleaned text and, when it opened with a tag, the spelled-out tag, such as <code>{ "tag": "bound form", "text": "root; stem" }</code>; a word or reading with no measure words has no "mw" entry.</p>
 <p data-anchor="schema-id">A word id is its level and its position in that list, so both readings of one character stay distinct.</p>
 </section>
 
@@ -229,37 +262,56 @@
 <div class="sec-head">
 <span class="sec-num">04</span>
 <h2 data-anchor="page-heading">Page</h2>
-<p class="sec-note" data-anchor="page-note">One screen: search on top, graph filling the rest, card on demand.</p>
+<p class="sec-note" data-anchor="page-note">One screen: the graph fills it edge to edge, a few controls float over it, the card comes on demand.</p>
 </div>
 <figure data-anchor="page-figure">
 <div class="rail-wrap" data-anchor="page-figure-scroll">
-<svg viewBox="0 0 720 330" style="min-width: 600px" role="img" aria-label="Desktop layout: search box and legend across the top, graph below, word card floating beside the hovered node, Sources link bottom right. Phone layout: search box on top, graph fills the screen, word card as a bottom sheet.">
-<rect x="10" y="10" width="440" height="300" rx="8" fill="#ffffff" stroke="#5b5f6b"></rect>
-<text x="20" y="30" font-size="13" fill="#171719">Desktop</text>
-<rect x="24" y="40" width="220" height="30" rx="4" fill="#f3f4f6" stroke="#5b5f6b"></rect>
-<text x="34" y="60" font-size="13" fill="#3d4049">Search character, Zhuyin, English</text>
-<text x="262" y="60" font-size="13" fill="#171719">● HSK 1  ● HSK 2  ○ character</text>
-<rect x="24" y="80" width="412" height="200" fill="#f8f9fb" stroke="#c7cad1"></rect>
-<text x="150" y="185" font-size="13" fill="#3d4049">force-directed graph</text>
-<rect x="290" y="100" width="136" height="96" rx="6" fill="#ffffff" stroke="#2947c7" stroke-width="1.5"></rect>
-<text x="300" y="124" font-size="18" fill="#171719">學生</text>
-<text x="300" y="146" font-size="13" fill="#171719">ㄒㄩㄝˊ ˙ㄕㄥ</text>
-<text x="300" y="166" font-size="12" fill="#171719">student; schoolchild</text>
-<text x="300" y="186" font-size="12" fill="#171719">HSK 1</text>
-<text x="380" y="298" font-size="12" fill="#171719">Sources</text>
-<rect x="490" y="10" width="200" height="310" rx="16" fill="#ffffff" stroke="#5b5f6b"></rect>
-<text x="500" y="30" font-size="13" fill="#171719">Phone</text>
-<rect x="502" y="40" width="176" height="30" rx="4" fill="#f3f4f6" stroke="#5b5f6b"></rect>
-<text x="512" y="60" font-size="13" fill="#3d4049">Search</text>
-<rect x="502" y="78" width="176" height="140" fill="#f8f9fb" stroke="#c7cad1"></rect>
-<text x="540" y="150" font-size="13" fill="#3d4049">graph</text>
-<rect x="502" y="222" width="176" height="86" rx="8" fill="#ffffff" stroke="#2947c7" stroke-width="1.5"></rect>
-<text x="512" y="246" font-size="18" fill="#171719">學生</text>
-<text x="512" y="268" font-size="13" fill="#171719">ㄒㄩㄝˊ ˙ㄕㄥ</text>
-<text x="512" y="288" font-size="12" fill="#171719">student · HSK 1</text>
+<svg viewBox="0 0 720 340" style="min-width: 600px" role="img" aria-label="Desktop: the graph fills the window; a floating search pill top left; HSK 1 and HSK 2 level chips and a dark Play pill top right; a word card floats beside the hovered node with the headword's Zhuyin stacked beside each character, senses one per line, and a measure words line; a small Sources text link bottom left. Phone: the graph fills the screen; the search pill on top, the level chips and Play in one row beneath it; the word card is a bottom sheet with a grab handle.">
+<rect x="10" y="10" width="450" height="320" rx="10" fill="#f6f4ef" stroke="#5b5f6b"></rect>
+<text x="20" y="324" font-size="11" fill="#3d4049">Desktop: graph edge to edge</text>
+<rect x="26" y="26" width="200" height="34" rx="17" fill="#ffffff" stroke="#c7cad1"></rect>
+<text x="42" y="48" font-size="12" fill="#3d4049">Search character, Zhuyin, English</text>
+<rect x="262" y="28" width="62" height="30" rx="15" fill="#ffffff" stroke="#c7cad1"></rect>
+<circle cx="276" cy="43" r="5" fill="#0072b2"></circle><text x="286" y="47" font-size="12" fill="#171719">HSK 1</text>
+<rect x="330" y="28" width="62" height="30" rx="15" fill="#ffffff" stroke="#c7cad1"></rect>
+<circle cx="344" cy="43" r="5" fill="#e69f00"></circle><text x="354" y="47" font-size="12" fill="#171719">HSK 2</text>
+<rect x="398" y="28" width="48" height="30" rx="15" fill="#1b1b1f"></rect>
+<text x="410" y="47" font-size="12" fill="#ffffff">Play</text>
+<circle cx="90" cy="150" r="3" fill="#8b877f"></circle><circle cx="130" cy="190" r="3" fill="#8b877f"></circle><circle cx="170" cy="140" r="3" fill="#8b877f"></circle>
+<line x1="90" y1="150" x2="130" y2="190" stroke="#d9d4c9"></line><line x1="130" y1="190" x2="170" y2="140" stroke="#d9d4c9"></line>
+<rect x="104" y="196" width="30" height="16" rx="5" fill="#0072b2"></rect>
+<rect x="250" y="84" width="196" height="200" rx="14" fill="#ffffff" stroke="#c7cad1"></rect>
+<text x="264" y="130" font-size="34" fill="#171719">學</text>
+<text x="300" y="104" font-size="10" fill="#171719">ㄒ</text><text x="300" y="116" font-size="10" fill="#171719">ㄩ</text><text x="300" y="128" font-size="10" fill="#171719">ㄝ</text><text x="310" y="127" font-size="9" fill="#171719">ˊ</text>
+<text x="318" y="130" font-size="34" fill="#171719">生</text>
+<text x="356" y="100" font-size="10" fill="#171719">˙</text><text x="354" y="112" font-size="10" fill="#171719">ㄕ</text><text x="354" y="124" font-size="10" fill="#171719">ㄥ</text>
+<text x="264" y="160" font-size="13" fill="#171719">student</text>
+<text x="264" y="178" font-size="13" fill="#171719">schoolchild</text>
+<text x="264" y="204" font-size="10" fill="#3d4049">Measure words</text>
+<text x="264" y="222" font-size="12" fill="#171719">個 ㄍㄜˋ · 名 ㄇㄧㄥˊ</text>
+<circle cx="268" cy="252" r="4" fill="#0072b2"></circle><text x="278" y="256" font-size="11" fill="#3d4049">HSK 1</text>
+<text x="26" y="304" font-size="11" fill="#3d4049">Sources</text>
+<rect x="500" y="10" width="200" height="320" rx="22" fill="#f6f4ef" stroke="#5b5f6b"></rect>
+<rect x="512" y="26" width="176" height="32" rx="16" fill="#ffffff" stroke="#c7cad1"></rect>
+<text x="526" y="47" font-size="12" fill="#3d4049">Search</text>
+<rect x="512" y="64" width="56" height="26" rx="13" fill="#ffffff" stroke="#c7cad1"></rect>
+<circle cx="524" cy="77" r="4" fill="#0072b2"></circle><text x="532" y="81" font-size="11" fill="#171719">HSK 1</text>
+<rect x="574" y="64" width="56" height="26" rx="13" fill="#ffffff" stroke="#c7cad1"></rect>
+<circle cx="586" cy="77" r="4" fill="#e69f00"></circle><text x="594" y="81" font-size="11" fill="#171719">HSK 2</text>
+<rect x="644" y="64" width="44" height="26" rx="13" fill="#1b1b1f"></rect>
+<text x="654" y="81" font-size="11" fill="#ffffff">Play</text>
+<text x="572" y="160" font-size="12" fill="#3d4049">graph</text>
+<rect x="500" y="212" width="200" height="118" rx="20" fill="#ffffff" stroke="#c7cad1"></rect>
+<rect x="584" y="220" width="32" height="4" rx="2" fill="#c7cad1"></rect>
+<text x="516" y="262" font-size="28" fill="#171719">學</text>
+<text x="546" y="240" font-size="9" fill="#171719">ㄒ</text><text x="546" y="250" font-size="9" fill="#171719">ㄩ</text><text x="546" y="260" font-size="9" fill="#171719">ㄝ</text><text x="555" y="259" font-size="8" fill="#171719">ˊ</text>
+<text x="562" y="262" font-size="28" fill="#171719">生</text>
+<text x="594" y="236" font-size="9" fill="#171719">˙</text><text x="592" y="246" font-size="9" fill="#171719">ㄕ</text><text x="592" y="256" font-size="9" fill="#171719">ㄥ</text>
+<text x="516" y="286" font-size="12" fill="#171719">student</text>
+<text x="516" y="302" font-size="12" fill="#171719">schoolchild</text>
 </svg>
 </div>
-<figcaption data-anchor="page-figure-caption">Desktop shows the card beside the hovered node; a phone shows it as a bottom sheet that leaves the search box visible.</figcaption>
+<figcaption data-anchor="page-figure-caption">No bar: the graph runs edge to edge and the controls float over it. Desktop shows the card beside the hovered node; a phone shows it as a bottom sheet that leaves the search box visible.</figcaption>
 </figure>
 <div class="table-scroll" data-anchor="interactions-scroll">
 <table data-anchor="interactions-table">
@@ -279,19 +331,113 @@
 <p data-anchor="page-fit">On load, and on window resize, the view fits the whole settled graph.</p>
 <p data-anchor="page-focus">Focusing a word pans and zooms so it is centered at a readable size, highlights it with its hubs and the words sharing those hubs, and dims the rest.</p>
 <p data-anchor="page-word-link">A site address ending in <code>#word=</code> followed by a word id from the graph data file focuses that word once the graph settles, as picking it in search does; any other or unknown id loads the page as usual. The bubbles game builds these links.</p>
-<p data-anchor="page-levels">The legend is the level panel: each level's row shows its color, its name, and an on/off switch, both on at load.</p>
+<p data-anchor="page-levels">The legend is the level panel: each level is one chip showing its color dot and its name, acting as an on/off switch, both on at load; an off chip shows a hollow dot and muted name.</p>
 <p data-anchor="page-levels-hide">Switching a level off hides its words and their links, hides any hub left with fewer than two visible words, closes a card for a hidden node, and removes that level's words from search results; the layout of visible nodes does not jump.</p>
 <p data-anchor="page-levels-last">The last level that is on cannot be switched off.</p>
 <p data-anchor="page-color">HSK 1 and HSK 2 use a color pair distinguishable with common color blindness; the legend and the card both name the level in text.</p>
 <p data-anchor="page-touch">Every tappable control and the search box are at least 44px tall, and the search box text is at least 16px so phones do not zoom on focus.</p>
-<p data-anchor="page-sources">A "Sources" footer link opens the credits named in the Sources acceptance criterion.</p>
+<p data-anchor="page-sources">A small "Sources" text link at the bottom left opens the credits named in the Sources acceptance criterion.</p>
+<p data-anchor="page-card-content">A word card shows, top to bottom: the headword with its Zhuyin, the senses one per line with any tag before its sense, the "Measure words" line when the word has measure words, and the level; a hub card shows each reading the same way.</p>
+</section>
+
+<section data-anchor="look">
+<div class="sec-head">
+<span class="sec-num">05</span>
+<h2 data-anchor="look-heading">Look and motion</h2>
+<p class="sec-note" data-anchor="look-note">One look for the network and the game: paper and ink, kaishu characters, color only where it means something, motion that explains.</p>
+</div>
+<h3 data-anchor="type-heading">Typefaces</h3>
+<div class="table-scroll" data-anchor="type-faces-scroll">
+<table data-anchor="type-faces">
+<thead><tr><th>Use</th><th>Typeface</th><th>Why</th><th>License and source</th></tr></thead>
+<tbody>
+<tr data-anchor="face-cjk"><td>Characters, Zhuyin, tone marks</td><td>LXGW WenKai TC, Regular only</td><td>Kaishu is the hand Taiwan's textbooks teach characters and Zhuyin in, so learners see stroke forms as written; it carries full Bopomofo and the four tone marks drawn to match.</td><td>SIL OFL 1.1; release pinned in a source note beside the font, license file beside it</td></tr>
+<tr data-anchor="face-latin"><td>English, numbers, controls</td><td>Geist, variable weight</td><td>A quiet, precise sans with tabular figures for scores; it stays out of the way of the characters.</td><td>SIL OFL 1.1; release pinned in a source note beside the font, license file beside it</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="face-stack">Every text style names Geist first and LXGW WenKai TC second, so Latin text takes Geist and every character, Zhuyin symbol, and tone mark falls through to the kaishu face; Zhuyin never renders in the Latin face.</p>
+<p data-anchor="face-subset">The kaishu font is cut down by the font build to exactly the characters in the graph data file and the pages' own text, plus all 37 Zhuyin symbols, the four tone marks, and CJK punctuation; Geist is cut to Basic Latin, Latin-1, and typographic punctuation.</p>
+<p data-anchor="face-budget">Size budget, as WOFF2: the kaishu subset at most 240 KB, Geist at most 40 KB, both at most 280 KB; both are preloaded and swap in when ready, and the game draws its bubbles only once the kaishu face has loaded.</p>
+<p data-anchor="face-coverage">The font build writes a coverage list beside the fonts naming every character in the subset and the subset file's hash, because the standard library cannot read WOFF2; the test suite checks coverage and hash from that list.</p>
+<h3 data-anchor="scale-heading">Type scale</h3>
+<div class="table-scroll" data-anchor="type-scale-scroll">
+<table data-anchor="type-scale">
+<thead><tr><th>Role</th><th>Size</th><th>Weight</th><th>Where</th></tr></thead>
+<tbody>
+<tr data-anchor="scale-head"><td>Headword</td><td>40px, 36px on a phone</td><td>Regular kaishu</td><td>Word and hub card headword, game word card</td></tr>
+<tr data-anchor="scale-score"><td>Score</td><td>56px final, 28px in play</td><td>600, tabular figures</td><td>Game</td></tr>
+<tr data-anchor="scale-title"><td>Title</td><td>22px</td><td>600</td><td>Game screen titles</td></tr>
+<tr data-anchor="scale-body"><td>Body</td><td>16px, line height 1.5</td><td>400</td><td>Senses, sources</td></tr>
+<tr data-anchor="scale-zhuyin"><td>Zhuyin</td><td>38% of its headword, never under 14px; 15px in lists</td><td>Regular kaishu</td><td>Beside headwords, in lists, in measure words and references</td></tr>
+<tr data-anchor="scale-label"><td>Label</td><td>14px</td><td>500</td><td>Chips, buttons, list rows, search results</td></tr>
+<tr data-anchor="scale-caption"><td>Caption</td><td>12px, letter spacing 0.02em</td><td>500, muted</td><td>"Measure words", sense tags, level, round</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="scale-weights">Only weights 400, 500, and 600 are used; hierarchy comes from size and color before weight, and characters are never bolded.</p>
+<h3 data-anchor="zhuyin-layout-heading">Zhuyin layout</h3>
+<figure data-anchor="zhuyin-figure">
+<div class="rail-wrap" data-anchor="zhuyin-figure-scroll">
+<svg viewBox="0 0 520 150" style="min-width: 460px" role="img" aria-label="Headword 學生: after 學 a column of ㄒ ㄩ ㄝ with the second-tone mark to the right of ㄝ; after 生 a column of ㄕ ㄥ with the neutral-tone dot above ㄕ. In lists, the same word on one line: 學生 then ㄒㄩㄝˊ ˙ㄕㄥ.">
+<text x="20" y="20" font-size="12" fill="#3d4049">Headword: columns</text>
+<text x="20" y="100" font-size="64" fill="#171719">學</text>
+<text x="88" y="56" font-size="18" fill="#171719">ㄒ</text><text x="88" y="78" font-size="18" fill="#171719">ㄩ</text><text x="88" y="100" font-size="18" fill="#171719">ㄝ</text><text x="107" y="98" font-size="16" fill="#171719">ˊ</text>
+<text x="124" y="100" font-size="64" fill="#171719">生</text>
+<text x="196" y="44" font-size="18" fill="#171719">˙</text><text x="192" y="64" font-size="18" fill="#171719">ㄕ</text><text x="192" y="86" font-size="18" fill="#171719">ㄥ</text>
+<text x="20" y="136" font-size="11" fill="#3d4049">tone mark right of the last symbol; neutral dot above the column</text>
+<text x="300" y="20" font-size="12" fill="#3d4049">Lists, measure words, references: one line</text>
+<text x="300" y="80" font-size="28" fill="#171719">學生</text>
+<text x="364" y="78" font-size="15" fill="#171719">ㄒㄩㄝˊ ˙ㄕㄥ</text>
+<text x="300" y="116" font-size="15" fill="#171719">塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</text>
+</svg>
+</div>
+<figcaption data-anchor="zhuyin-figure-caption">Headwords use the Taiwan textbook layout, Zhuyin stacked beside each character; everywhere else Zhuyin runs on one line after its characters.</figcaption>
+</figure>
+<p data-anchor="zhuyin-columns">A headword pairs its characters with the space-separated syllables of its Zhuyin in order; each character is followed by a column of its syllable's symbols, the tone mark for tones 2, 3, and 4 to the right of the last symbol, and the neutral-tone dot centered above the first.</p>
+<p data-anchor="zhuyin-fallback">When a headword's syllable count differs from its character count, its Zhuyin runs on one line under it instead.</p>
+<p data-anchor="zhuyin-line">On one line, a tone mark sits directly after its syllable with no space, the neutral-tone dot directly before it, and syllables are separated by a gap of 0.3em.</p>
+<h3 data-anchor="color-heading">Color</h3>
+<div class="table-scroll" data-anchor="color-scroll">
+<table data-anchor="color-table">
+<thead><tr><th>Token</th><th>Network</th><th>Game</th><th>Use</th></tr></thead>
+<tbody>
+<tr data-anchor="color-paper"><td>Background</td><td>Paper #f6f4ef</td><td>Night #0f1424</td><td>Page and board</td></tr>
+<tr data-anchor="color-surface"><td>Surface</td><td>#ffffff</td><td>#ffffff on cards and screens</td><td>Cards, sheets, chips, search</td></tr>
+<tr data-anchor="color-ink"><td>Ink</td><td>#1b1b1f</td><td>#1b1b1f on surfaces, #f6f4ef on night</td><td>Text, primary action fill</td></tr>
+<tr data-anchor="color-muted"><td>Muted</td><td>#5d5b57</td><td>#5d5b57 on surfaces, #a9b0c2 on night</td><td>Secondary text; at least 4.5:1 on its background</td></tr>
+<tr data-anchor="color-line"><td>Line</td><td>#e3dfd6</td><td>#ffffff at 14%</td><td>Hairline borders, graph links</td></tr>
+<tr data-anchor="color-levels"><td>Levels</td><td colspan="2">HSK 1 #0072b2, HSK 2 #e69f00, unchanged</td><td>Level meaning only</td></tr>
+<tr data-anchor="color-hub"><td>Hub</td><td>#8b877f</td><td>not used</td><td>Character hubs</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="color-meaning">Color carries meaning only: the two level colors mark levels and nothing else; the primary action, such as Play, is an ink pill; focus is a 2px ink ring, light on the night board.</p>
+<p data-anchor="color-depth">Surfaces separate from the page by one soft shadow and a hairline, with corner radius 14px for cards and sheets and full pills for chips and buttons; no gradients on controls.</p>
+<h3 data-anchor="motion-heading">Motion</h3>
+<div class="table-scroll" data-anchor="motion-scroll">
+<table data-anchor="motion-table">
+<thead><tr><th>Moment</th><th>Motion</th><th>Duration and easing</th><th>Reduced motion</th></tr></thead>
+<tbody>
+<tr data-anchor="motion-press"><td>Press a control</td><td>Scales to 97% and back</td><td>140ms, ease out</td><td>Color change only</td></tr>
+<tr data-anchor="motion-card"><td>Card or results list appears</td><td>Fades in while rising 8px</td><td>220ms, ease out cubic-bezier(.22,1,.36,1); leaves in 150ms</td><td>Fade only, 120ms</td></tr>
+<tr data-anchor="motion-sheet"><td>Phone sheet opens or closes</td><td>Slides up from the bottom edge, down to close</td><td>260ms, same ease out</td><td>Fade only, 120ms</td></tr>
+<tr data-anchor="motion-focus"><td>Focus a word</td><td>The view glides to it while other nodes fade back; the card follows</td><td>550ms, ease in out cubic</td><td>View jumps at once</td></tr>
+<tr data-anchor="motion-load"><td>Graph appears</td><td>The layout settles before first draw, then the whole graph fades in</td><td>400ms</td><td>Appears at once</td></tr>
+<tr data-anchor="motion-level"><td>Switch a level</td><td>Its words and links fade out or in</td><td>200ms</td><td>Instant</td></tr>
+<tr data-anchor="motion-game"><td>Game moments</td><td colspan="2">As the game's feel rules state, timed with the tokens above</td><td>As the game states</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="motion-cheap">Every animation moves only transform and opacity, so it runs on the compositor and holds 60 frames a second on a mid-range phone; nothing animates layout, blur, or shadow.</p>
+<p data-anchor="motion-reduced">With reduced motion requested, nothing slides, scales, glides, or shakes; a change that must still be noticed fades in at most 120ms.</p>
 </section>
 
 <section data-anchor="stack">
 <div class="sec-head">
-<span class="sec-num">05</span>
+<span class="sec-num">06</span>
 <h2 data-anchor="stack-heading">Stack</h2>
-<p class="sec-note" data-anchor="stack-note">No build step for the site, no third-party Python packages.</p>
+<p class="sec-note" data-anchor="stack-note">No build step for the site; no third-party Python packages except the maintainer-only font build.</p>
 </div>
 <div class="table-scroll" data-anchor="stack-scroll">
 <table data-anchor="stack-table">
@@ -300,6 +446,7 @@
 <tr data-anchor="stack-site"><td>Site</td><td>Plain HTML, CSS, and one JavaScript file</td><td>One screen needs no framework or bundler; GitHub Pages serves the files as they are.</td></tr>
 <tr data-anchor="stack-graph"><td>Graph library</td><td>D3 v7, one pinned minified file vendored in the site directory (ISC license)</td><td>d3-force does the layout and d3-zoom handles wheel, pinch, and drag; SVG gives crisp Chinese labels and native hover and tap targets, and about 450 nodes is well within SVG's comfortable size. Vendoring keeps the page free of third-party requests.</td></tr>
 <tr data-anchor="stack-rejected"><td>Rejected</td><td>Canvas force-graph libraries; Cytoscape.js</td><td>Canvas needs custom hit testing and blurs text when zoomed; Cytoscape is several times larger for features this page does not use.</td></tr>
+<tr data-anchor="stack-fonts"><td>Fonts</td><td>Two subset WOFF2 files vendored in the site directory with their licenses, cut by a separate font build command that uses fontTools in a throwaway environment</td><td>Subsetting a CJK font needs a real font tool the standard library lacks; keeping it a separate maintainer command, run only when the shown characters change, keeps the data build, the tests, and CI free of packages.</td></tr>
 <tr data-anchor="stack-pipeline"><td>Pipeline and tests</td><td>Python 3 standard library only, tests with unittest</td><td>The download, parsing, and conversion need nothing more, so CI installs nothing.</td></tr>
 <tr data-anchor="stack-data"><td>Graph data</td><td>Committed in the site directory</td><td>Tests and Pages run with no network; refreshing the dictionary is a deliberate commit whose diff shows what changed.</td></tr>
 <tr data-anchor="stack-delivery"><td>CI and hosting</td><td>A GitHub Actions test workflow on every pull request and push to main; a GitHub Pages workflow that publishes the site directory on every push to main</td><td>Pages from a workflow publishes only the site, never the specs or scripts.</td></tr>
@@ -316,6 +463,9 @@
 <li data-anchor="test-links">Links: hubs and links recomputed from the words' Traditional forms equal the committed ones.</li>
 <li data-anchor="test-match">Matching: the match rules above, against a few fixture dictionary lines, including a failing entry and an override.</li>
 <li data-anchor="test-audio">Audio: every audio entry names an existing recording, every recording belongs to a word, and words sharing a Simplified form have none.</li>
+<li data-anchor="test-senses">Senses: the sense rules above against fixture dictionary lines, including a "CL:" sense, a parenthesized "CL:" list, a <code>Traditional|Simplified[pinyin]</code> reference, a "Taiwan pr." note, a leading tag, and sb and sth.</li>
+<li data-anchor="test-clean">Clean text: every string the site or game shows from the graph data file holds no character that the committed HSK lists write differently in Simplified than in Traditional, tone-numbered syllable, "CL:" code, vertical bar, square bracket, or sb and sth.</li>
+<li data-anchor="test-fonts">Fonts: the coverage list's hash matches the committed kaishu font, it covers every character in the graph data file and the pages' text plus all Zhuyin symbols and tone marks, each font has its license beside it, and the sizes stay within the budget.</li>
 <li data-anchor="test-static">Static: no site file references an address outside the site.</li>
 </ul>
 </section>
