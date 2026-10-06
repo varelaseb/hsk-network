@@ -41,7 +41,8 @@
 //   toneMarks(pinyin) -> string
 //       "lu:3 nu:3" -> "lǚ nǚ" per syllable (#test-pinyin): mark on a or e,
 //       else the o of ou, else the last vowel; tone 5 unmarked; "r5" -> "r";
-//       ü (written u: or v) takes a combining mark (#pinyin-glyphs).
+//       ü is written u: or v; ǐ ǒ ǔ and ü with a tone take a combining
+//       mark, as Geist has no precomposed glyph (#pinyin-glyphs).
 //   pinyinWord(pinyin) -> string        toneMarks with the spaces removed.
 //   textOf(pieces) -> string            the pieces' text, concatenated.
 
@@ -55,6 +56,9 @@ const langOf = (mode) => (isPinyin(mode) ? "zh-Hans" : "zh-Hant");
 
 const COMBINING = ["", "\u0304", "\u0301", "\u030C", "\u0300", ""];
 const VOWELS = "aeiouü";
+// Precomposed tone letters Geist draws (site/fonts/coverage.json); any other
+// tone letter (ǐ ǒ ǔ, ü with a tone) stays base letter + combining mark.
+const GEIST_PRECOMPOSED = "āáǎàēéěèīíìōóòūúùĀÁǍÀĒÉĚÈĪÍÌŌÓÒŪÚÙ";
 
 function markSyllable(syl) {
   const m = /^(.*?)([1-5])?$/.exec(syl);
@@ -69,8 +73,8 @@ function markSyllable(syl) {
   }
   if (at < 0) return base;
   const marked = base[at] + COMBINING[tone];
-  // ü stays decomposed: the pinyin font has no precomposed ǖ ǘ ǚ ǜ.
-  const glyph = low[at] === "ü" ? marked : marked.normalize("NFC");
+  const nfc = marked.normalize("NFC");
+  const glyph = GEIST_PRECOMPOSED.includes(nfc) ? nfc : marked;
   return base.slice(0, at) + glyph + base.slice(at + 1);
 }
 
