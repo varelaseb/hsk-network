@@ -524,6 +524,7 @@ function newGame() {
 function pause() {
   if (screen !== "playing") return;
   aimer.on = false;
+  stopSaying();
   show("paused");
   $("resume").focus();
 }
@@ -583,20 +584,25 @@ function uniq(v, i, a) {
   return a.indexOf(v) === i;
 }
 
-// ---- Word cards: one after another, longest word first.
+// ---- Word cards: one after another, longest word first; the last one
+// stays until the learner's next shot.
 
 const cards = [];
 let cardShowing = false;
+let cardResting = false; // latest card shown, waiting for the next shot
+let cardGen = 0;
 
 function queueCards(found) {
   cards.push(...found);
-  if (!cardShowing) nextCard();
+  if (!cardShowing || cardResting) nextCard();
 }
 
 function nextCard() {
   const w = cards.shift();
   if (!w) { hideCard(); return; }
   cardShowing = true;
+  cardResting = false;
+  cardGen++;
   const levels = w.entries.map((e) => e.level).filter(uniq);
   cardEl.className = `wcard l${levels[0]}`;
   cardEl.replaceChildren();
@@ -620,7 +626,8 @@ function nextCard() {
   }
   cardEl.hidden = false;
   say(w);
-  after(cards.length ? 1300 : 2000, () => {
+  if (!cards.length) { cardResting = true; return; }
+  after(1300, () => {
     cardEl.classList.add("out");
     after(220, nextCard);
   });
@@ -628,7 +635,18 @@ function nextCard() {
 
 function hideCard(now) {
   cardShowing = false;
+  cardResting = false;
   if (now || !cards.length) cardEl.hidden = true;
+}
+
+// The next shot fades out a resting card; a card sequence still running plays on.
+function dismissCard() {
+  if (!cardResting) return;
+  cardShowing = false;
+  cardResting = false;
+  cardEl.classList.add("out");
+  const gen = ++cardGen;
+  after(220, () => { if (gen === cardGen) cardEl.hidden = true; });
 }
 
 // ---- Shooting
@@ -652,6 +670,7 @@ function fire(angle) {
   game = next;
   fx.swapAt = -1e9;
   busy = true;
+  dismissCard();
   aimer.on = aimer.on && !coarse.matches;
   sfx("shoot");
   after(flight.dur, land);
@@ -935,7 +954,7 @@ function unlockSay() {
 function renderSay() {
   for (const b of sayBtns) {
     b.setAttribute("aria-checked", settings.say ? "true" : "false");
-    b.querySelector(".sound-state").textContent = settings.say ? "On" : "Off";
+    b.querySelector(".sound-state").textContent = settings.say ? "Voice on" : "Voice off";
     b.title = settings.say ? "Pronunciation on" : "Pronunciation off";
   }
 }
@@ -944,7 +963,8 @@ sayBtns.forEach((b) => b.addEventListener("click", () => {
   settings.say = !settings.say;
   saveStore();
   renderSay();
-  if (!settings.say) stopSaying();
+  if (settings.say) unlockSay();
+  else stopSaying();
 }));
 
 // ---- Effects (sounds and vibration): off until the learner turns them on.
@@ -992,7 +1012,7 @@ function vibrate(pattern) {
 function renderSound() {
   for (const b of soundBtns) {
     b.setAttribute("aria-checked", settings.sound ? "true" : "false");
-    b.querySelector(".sound-state").textContent = settings.sound ? "On" : "Off";
+    b.querySelector(".sound-state").textContent = settings.sound ? "Effects on" : "Effects off";
     b.title = settings.sound ? "Effects on: sounds and vibration" : "Effects off: sounds and vibration";
   }
 }

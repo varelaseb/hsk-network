@@ -106,7 +106,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
   cursor: pointer;
 }
 .icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
-.icon-btn .sound-state { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.icon-btn .sound-state { font-size: 13px; font-weight: 650; white-space: nowrap; }
+.icon-btn.sound-btn { gap: 4px; padding: 0 10px 0 8px; }
+.icon-btn.sound-btn[aria-checked="false"] .sound-state { color: rgba(255, 255, 255, .7); }
 .sound-btn svg .i-slash, .sound-btn svg .i-wave { stroke: currentColor; stroke-width: 2; stroke-linecap: round; fill: none; }
 .sound-btn[aria-checked="false"] svg .i-wave { display: none; }
 .sound-btn[aria-checked="true"] svg .i-slash { display: none; }
@@ -287,7 +289,7 @@ h2 { font-size: 26px; }
   cursor: pointer;
 }
 .chip-btn svg { width: 18px; height: 18px; fill: currentColor; }
-.chip-btn .sound-state { color: var(--muted); }
+.chip-btn[aria-checked="false"] .sound-state { color: var(--muted); }
 .chip-btn[aria-checked="true"] .sound-state { color: var(--hsk1); }
 
 .sources { margin-top: 12px; font-size: 13px; color: var(--muted); text-align: left; }
