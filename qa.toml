@@ -1,4 +1,7 @@
-# QA capture target: HSK network static site (jev-capture.spec.html#jc-target).
+# QA capture target: HSK network static site and its bubbles game (jev-capture.spec.html#jc-target),
+# for docs/specs/hsk-network.spec.html and docs/specs/hsk-bubbles.spec.html. Story and criterion keys
+# are shared by both specs: story-play and story-levels exist in both, as do acceptance-level-off,
+# acceptance-level-last, and acceptance-hosted.
 # Python stdlib only: no setup, rebuild, or env file. The site is served unchanged from site/.
 
 # Paths searched for a test naming a no-browser criterion's anchor.
@@ -30,6 +33,40 @@ viewport = { width = 1280, height = 800 }
 viewport = { width = 390, height = 844 }
 touch = true
 
+# Network word links, on a phone.
+[entry.stories.story-link]
+viewport = { width = 390, height = 844 }
+touch = true
+
+# Bubbles game stories start at the game page on a phone. story-play also holds the network's
+# acceptance-play-link, which nav sends back to the site root.
+[entry.stories.story-play]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-word]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-fall]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-progress]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-review]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-quiet]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+# story-levels stays at the network root (desktop): its acceptance-level-off and
+# acceptance-level-last keys are shared with the bubbles spec, which cannot also start there.
+
 # Search fill values, all from site/data/graph.json.
 [entry.criteria.acceptance-search-hanzi]
 values = ["學生"]
@@ -42,3 +79,75 @@ values = ["qzqzqz"]
 
 [entry.criteria.acceptance-hosted]
 cannot_host = "needs the public GitHub Pages address after a merge to main; this environment serves a local preview of the candidate head"
+
+# Navigation hints (jev-capture.spec.html#jc-target-nav). Game page address options
+# (site/bubbles/game.js): ?fixture=pop|fall|clear|over starts Play on a fixed board, ?seed=N fixes the
+# seed. Selector #play taps Play so the criterion opens mid-game.
+
+# Network: word links and the Play link.
+[nav.acceptance-word-link]
+path = "/#word=%E5%AD%B8%E7%94%9F" # 學生
+[nav.acceptance-word-link-unknown]
+path = "/#word=qzqzqz"
+[nav.acceptance-play-link]
+path = "/"
+
+# Bubbles: playing a seeded board.
+[nav.acceptance-aim]
+path = "?seed=7"
+selectors = ["#play"]
+[nav.acceptance-shoot]
+path = "?seed=7"
+selectors = ["#play"]
+[nav.acceptance-cancel]
+path = "?seed=7"
+selectors = ["#play"]
+[nav.acceptance-swap]
+path = "?seed=7"
+selectors = ["#play"]
+[nav.acceptance-ceiling]
+path = "?seed=7"
+selectors = ["#play"]
+[nav.acceptance-pause]
+path = "?seed=7"
+selectors = ["#play"]
+[nav.acceptance-sound-on]
+path = "?seed=7"
+selectors = ["#play"]
+
+# Bubbles: fixed boards. pop: 生 in the launcher completes 學生 with 學 on the board; a shot
+# elsewhere (next to 站, or the empty right cell) spells no word.
+[nav.acceptance-pop]
+path = "?fixture=pop"
+selectors = ["#play"]
+[nav.acceptance-no-word]
+path = "?fixture=pop"
+selectors = ["#play"]
+[nav.acceptance-reduced]
+path = "?fixture=pop"
+selectors = ["#play"]
+# First visit: the learner taps Play, then shoots 生 beside 學.
+[nav.acceptance-muted]
+path = "?fixture=pop"
+# fall: 生 beside 學 pops 學生, leaving the bubbles below it hanging.
+[nav.acceptance-fall]
+path = "?fixture=fall"
+selectors = ["#play"]
+# clear: the only word left is 學 plus the launcher's 生.
+[nav.acceptance-round]
+path = "?fixture=clear"
+selectors = ["#play"]
+# over: the lowest bubbles sit one row above the line, with 學 in the bottom row for 生 to pop;
+# a later shot settling below the line ends the game.
+[nav.acceptance-over]
+path = "?fixture=over"
+selectors = ["#play"]
+[nav.acceptance-best]
+path = "?fixture=over"
+selectors = ["#play"]
+[nav.acceptance-review]
+path = "?fixture=over"
+selectors = ["#play"]
+[nav.acceptance-review-link]
+path = "?fixture=over"
+selectors = ["#play"]
