@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="./.style/spec.css">
+<title>HSK app</title>
+<script defer src="./.viz/runtime.js"></script>
+</head>
+<body>
+<article class="spec" data-spec-version="1" data-spec-contract="shaped-sections-v1">
+
+<header data-anchor="header">
+<h1 data-anchor="title">HSK app</h1>
+<nav data-anchor="breadcrumbs">docs / specs / hsk-app.spec.html</nav>
+<p data-anchor="context">The HSK site as an app a learner adds to the iPhone home screen from Safari: its icon, name, full-screen launch, phone fit, and offline use.</p>
+<p data-anchor="context-2">It wraps <a href="hsk-network.spec.html">the network</a> and <a href="hsk-bubbles.spec.html">the bubbles game</a> without changing what either does; its colors and typeface come from <a href="hsk-network.spec.html#look">the shared look</a>.</p>
+<p data-anchor="context-3">The site stays static files on GitHub Pages under its project path; the app is those files plus a manifest, icons, and an offline worker.</p>
+</header>
+
+<section data-spec-section="user-stories" data-anchor="user-stories">
+<h2>User stories</h2>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-install">As a learner on an iPhone, I add the site to my home screen from Safari and get an app icon and name that match the site's look.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-native">As a learner, the installed app opens full screen like a native app: no browser bars, no white flash, no page zoom or bounce, nothing under the notch or home indicator, and the network and the game open inside it.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-offline">As a learner, the installed app works with no connection, including its typefaces and word recordings, and it picks up a new version by itself.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-fast">As a learner on a phone, the site shows its page quickly, before the graph has finished loading.</p>
+<p data-user-story data-user-facing="false" data-anchor="story-app-maintain">As a maintainer, tests prove on every pull request that the app manifest is valid for the site's address and that the offline file list matches the published files and the size budget.</p>
+</section>
+
+<section data-spec-section="acceptance" data-acceptance-scope="hsk-app" data-anchor="acceptance">
+<h2>Acceptance criteria</h2>
+<div class="table-scroll" data-anchor="acceptance-table-scroll">
+<table data-anchor="acceptance-table">
+<thead><tr><th>Criterion</th><th>Scenario</th><th>Observable</th></tr></thead>
+<tbody>
+<tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add">
+<td>Add</td>
+<td data-acceptance-scenario>Given a learner on an iPhone viewing the public network in Safari. When the learner taps Share, then "Add to Home Screen", then "Add", which needs the iPhone Share sheet.</td>
+<td data-acceptance-observable>Then the home screen shows the app icon, the character 學 in the kaishu face on the night color, named "HSK".</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add-from-game">
+<td>Add from game</td>
+<td data-acceptance-scenario>Given a learner on an iPhone viewing the public bubbles game in Safari. When the learner adds it to the home screen the same way and taps the new icon.</td>
+<td data-acceptance-observable>Then the same "HSK" icon is added and the app opens on the network.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch">
+<td>Launch</td>
+<td data-acceptance-scenario>Given a learner who added the app to the home screen. When the learner taps its icon.</td>
+<td data-acceptance-observable>Then the network opens full screen with no address bar or browser toolbar, the screen shows the paper color from the first frame with no white flash, and the status bar sits on paper with dark text.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-play-in-app">
+<td>Play in app</td>
+<td data-acceptance-scenario>Given a learner in the installed app viewing the network. When the learner taps "Play".</td>
+<td data-acceptance-observable>Then the bubbles start screen opens inside the app with no browser bar, on the night color, and the status bar text turns light.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-word-in-app">
+<td>Word in app</td>
+<td data-acceptance-scenario>Given a learner in the installed app on the bubbles review screen. When the learner opens a popped word in the network.</td>
+<td data-acceptance-observable>Then the network opens inside the app, with no browser bar, focused on that word with its card open.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-safe-area">
+<td>Safe area</td>
+<td data-acceptance-scenario>Given a learner in the installed app on an iPhone with a notch or island and a home indicator. When the learner opens the network and taps a word node.</td>
+<td data-acceptance-observable>Then the search box sits fully below the status bar, the word card ends above the home indicator, and the graph fills the screen behind both edges.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-landscape">
+<td>Landscape</td>
+<td data-acceptance-scenario>Given a learner in the installed app viewing the network. When the learner turns the phone to landscape.</td>
+<td data-acceptance-observable>Then the search box and level panel sit clear of the notch side and the graph refits the screen.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-page-zoom">
+<td>No page zoom</td>
+<td data-acceptance-scenario>Given a learner on a phone viewing the network. When the learner double-taps the "Play" link area quickly, then pinches outward with two fingers on the search box, which needs a double tap and a two-finger pinch.</td>
+<td data-acceptance-observable>Then the page stays at its normal size with the whole search bar on screen, and only the graph ever zooms.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-bounce">
+<td>No bounce</td>
+<td data-acceptance-scenario>Given a learner on a phone viewing the network. When the learner drags one finger down from the search box toward the bottom of the screen.</td>
+<td data-acceptance-observable>Then the page does not slide or reveal blank space above the search box, and the search box stays in place.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-network">
+<td>Offline network</td>
+<td data-acceptance-scenario>Given a learner who opened the installed app once with a connection. When the learner turns on airplane mode and opens the app.</td>
+<td data-acceptance-observable>Then the network loads with its characters in the kaishu face, and tapping a word opens its card.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-game">
+<td>Offline game</td>
+<td data-acceptance-scenario>Given a learner who opened the installed app once with a connection. When the learner turns on airplane mode, opens the app, taps "Play", and plays until a word pops.</td>
+<td data-acceptance-observable>Then the game plays and the popped word is said aloud.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-site">
+<td>Offline in Safari</td>
+<td data-acceptance-scenario>Given a learner who opened the public network once in phone Safari with a connection. When the learner goes offline and reloads the page.</td>
+<td data-acceptance-observable>Then the network loads as it did online.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-update">
+<td>Update</td>
+<td data-acceptance-scenario>Given a learner who installed the app before a change merged to main. When the learner opens the app with a connection, waits ten seconds, closes it from the app switcher, and opens it again, which needs a ten-second wait.</td>
+<td data-acceptance-observable>Then the second open shows the merged version.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-update-quiet">
+<td>No reload mid-use</td>
+<td data-acceptance-scenario>Given a learner in the installed app with a word card open while a new version downloads. When the download finishes.</td>
+<td data-acceptance-observable>Then the card stays open and the page is not reloaded, proven by a unit test: no screen shows it.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-fail">
+<td>Offline before first visit</td>
+<td data-acceptance-scenario>Given a learner whose offline copy failed to save, which needs an induced failure: the offline download is interrupted. When the learner opens the site with a connection.</td>
+<td data-acceptance-observable>Then the site loads from the network as usual and saves its offline copy again, proven by a unit test: no screen shows it.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint">
+<td>First paint</td>
+<td data-acceptance-scenario>Given a learner on a phone on a slow connection opening the network for the first time.</td>
+<td data-acceptance-observable>Then the paper page with the search box and level panel shows before the graph appears, with no flash of another background color.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-install story-app-maintain" data-anchor="acceptance-manifest">
+<td>Manifest</td>
+<td data-acceptance-scenario>Given the published site files. When the app manifest and both pages' heads are checked.</td>
+<td data-acceptance-observable>Then both pages name the one manifest and the home screen icon, the manifest's start and scope lie inside the site's project path, it opens standalone, its colors equal the look's paper and night, and every icon it names exists at its stated size, including a maskable one, proven by a unit test: no screen shows it.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline story-app-maintain" data-anchor="acceptance-file-list">
+<td>File list</td>
+<td data-acceptance-scenario>Given the published site files. When the offline worker's file list and version are checked.</td>
+<td data-acceptance-observable>Then the list names every published file exactly once and nothing else, and the version equals the one computed from the files' contents, proven by a unit test: no screen shows it.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-fast story-app-maintain" data-anchor="acceptance-budget">
+<td>Budget</td>
+<td data-acceptance-scenario>Given the published site files. When their sizes are summed.</td>
+<td data-acceptance-observable>Then the offline copy and the first-screen files each stay within the size budget, proven by a unit test: no screen shows it.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="onboarding">Onboarding: not needed; Safari's own Share sheet is the install path, and the app adds no screen.</p>
+</section>
+
+<section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
+<h2>Modular boundaries</h2>
+<p data-modular-boundary data-anchor="boundary-shell"><span data-boundary-responsibility>The app shell owns install identity and launch: the manifest, icons, launch images, and the head of each page (theme color, status bar style, viewport, inline first-paint color), plus the page-level touch and safe-area rules.</span> <span data-boundary-seam>Caller-facing seam: the manifest file and the head lines both pages carry; the network and the game add nothing else to join the app.</span> <span data-boundary-dependency>Dependency direction: self-contained; it reads the shared look's colors and kaishu face and changes no network or game behavior.</span> <span data-boundary-scope>Observable scope: the home screen icon and name, launch, status bar, and page fit.</span></p>
+<p data-modular-boundary data-anchor="boundary-worker"><span data-boundary-responsibility>The offline worker owns saving the published files, answering requests from the saved copy, and replacing the copy when the version changes.</span> <span data-boundary-seam>Caller-facing seam: one worker script at the site root, registered by both pages, whose top holds the file list and version.</span> <span data-boundary-dependency>Dependency direction: self-contained; it fetches only the site's own files and holds no word, game, or settings logic.</span> <span data-boundary-scope>Observable scope: the site working offline and new versions arriving.</span></p>
+<p data-modular-boundary data-anchor="boundary-list-build"><span data-boundary-responsibility>The offline list command owns computing the file list and version from the site directory and writing them into the worker script.</span> <span data-boundary-seam>Caller-facing seam: one standard-library command, run after any site change, and the function the tests call to recompute the list.</span> <span data-boundary-dependency>Dependency direction: self-contained; it reads the site directory only and runs with no network.</span> <span data-boundary-scope>Observable scope: the worker script's list block and the tests that compare it.</span></p>
+<p data-modular-boundary data-anchor="boundary-icon-build"><span data-boundary-responsibility>The icon command owns drawing the icons and launch images from the pinned kaishu release and the look's colors.</span> <span data-boundary-seam>Caller-facing seam: one maintainer command, run only when the icon or colors change, writing the committed images.</span> <span data-boundary-dependency>Dependency direction: external provider; like the font command it needs a throwaway environment with an imaging library and the font release cache, never CI.</span> <span data-boundary-scope>Observable scope: the committed icon and launch images.</span></p>
+<p data-modular-boundary data-anchor="boundary-app-delivery"><span data-boundary-responsibility>Delivery runs the app tests with the existing suite on every pull request and publishes the app files with the site directory on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages, unchanged; the site directory is still published unchanged.</span> <span data-boundary-scope>Observable scope: check status and the installable live site.</span></p>
+</section>
+
+<section data-anchor="defaults">
+<div class="sec-head">
+<span class="sec-num">01</span>
+<h2 data-anchor="defaults-heading">Defaults</h2>
+<p class="sec-note" data-anchor="defaults-note">Chosen for v1; each may be changed at review.</p>
+</div>
+<div class="table-scroll" data-anchor="defaults-scroll">
+<table data-anchor="defaults-table">
+<thead><tr><th>Question</th><th>Default</th></tr></thead>
+<tbody>
+<tr data-anchor="default-one-app"><td>How many apps</td><td>One app holding both pages; adding from either page adds the same app, which opens on the network.</td></tr>
+<tr data-anchor="default-name"><td>Name</td><td>"HSK" under the icon; "HSK network" as the full name.</td></tr>
+<tr data-anchor="default-icon"><td>Icon</td><td>學 in the kaishu face, paper color, centered on the night color, with no text, border, or gloss; the glyph fits the maskable safe circle so every icon shape keeps it whole.</td></tr>
+<tr data-anchor="default-launch"><td>Launch screen</td><td>A plain paper-color launch image per current iPhone portrait screen size, so the app opens on the network's own color; no logo, so there is nothing to jump when the page appears.</td></tr>
+<tr data-anchor="default-orientation"><td>Orientation</td><td>Any; the network refits, and the game keeps its own portrait layout rules.</td></tr>
+<tr data-anchor="default-offline-scope"><td>What is saved offline</td><td>Every published file, recordings included, on the first visit, so the game speaks offline without the learner having heard a word first.</td></tr>
+<tr data-anchor="default-update"><td>When an update shows</td><td>On the next open after it downloaded; an open session is never reloaded under the learner.</td></tr>
+<tr data-anchor="default-no-prompt"><td>Install hint</td><td>None in the page; iOS Safari has no install prompt, and the merge note gives the human the Share steps.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section data-anchor="install">
+<div class="sec-head">
+<span class="sec-num">02</span>
+<h2 data-anchor="install-heading">Install and launch</h2>
+<p class="sec-note" data-anchor="install-note">Everything resolves inside the project path, so it works under any GitHub Pages owner.</p>
+</div>
+<div class="table-scroll" data-anchor="manifest-scroll">
+<table data-anchor="manifest-table">
+<thead><tr><th>Manifest field</th><th>Value</th><th>Why</th></tr></thead>
+<tbody>
+<tr data-anchor="manifest-id"><td>id, start address, scope</td><td>The site root, written relative to the manifest, which sits at the site root</td><td>Resolves to the project path on Pages and to / in local preview; both pages lie inside the scope, so moving between them never leaves the app.</td></tr>
+<tr data-anchor="manifest-display"><td>display</td><td>standalone</td><td>Full screen with the status bar, no browser bars.</td></tr>
+<tr data-anchor="manifest-names"><td>name, short name</td><td>"HSK network", "HSK"</td><td>The short name fits under a home screen icon.</td></tr>
+<tr data-anchor="manifest-colors"><td>background and theme color</td><td>Paper</td><td>Matches the network, where the app opens.</td></tr>
+<tr data-anchor="manifest-icons"><td>icons</td><td>192 and 512 pixel squares for any shape, and a 512 pixel maskable square</td><td>Android and desktop installs; iOS reads its own icon line below.</td></tr>
+</tbody>
+</table>
+</div>
+<ul data-anchor="head-rules">
+<li data-anchor="head-common">Both pages carry the same app lines: the manifest link, a 180 pixel home screen icon link, the web-app-capable and app title lines, and a viewport covering the whole screen, so adding from either page gives the same app.</li>
+<li data-anchor="head-color">Each page sets its theme color and an inline background in its head to its own look color, paper for the network and night for the game, so the first frame is already the right color and the status bar follows the page.</li>
+<li data-anchor="head-status">The status bar keeps its own area; its text is dark on paper and light on night.</li>
+<li data-anchor="head-launch">Launch images are linked from the network page only, one per iPhone portrait screen size, each a plain paper image.</li>
+<li data-anchor="head-links">Links between the network and the game stay relative, so they stay inside the scope; links to sources outside the site open over the app and return to it.</li>
+<li data-anchor="head-storage">An installed app keeps its own storage, separate from Safari: the script setting and game settings and best score start fresh in the app; nothing tries to share them.</li>
+</ul>
+</section>
+
+<section data-anchor="fit">
+<div class="sec-head">
+<span class="sec-num">03</span>
+<h2 data-anchor="fit-heading">Phone fit</h2>
+<p class="sec-note" data-anchor="fit-note">The page never moves; only the graph and the game board take gestures.</p>
+</div>
+<ul data-anchor="fit-rules">
+<li data-anchor="fit-safe">The network pads its search bar by the top and side safe areas and its bottom sheet and Sources footer by the bottom safe area; the graph itself runs edge to edge. The game's existing safe-area rules stay.</li>
+<li data-anchor="fit-height">The network fills the visible screen height, measured as the dynamic viewport, so no strip hides under a toolbar in Safari or shows below the page in the app.</li>
+<li data-anchor="fit-zoom">The page does not zoom: controls ignore double-tap zoom, the graph takes all pinch and pan, and every text input is at least 16px, as the network already requires.</li>
+<li data-anchor="fit-bounce">The page does not scroll or bounce; only the results list, the sheet, and the Sources body scroll, each within itself.</li>
+<li data-anchor="fit-touch">Every tappable control is at least 44px, as the network and game already require, and taps show no gray highlight flash.</li>
+<li data-anchor="fit-select">Long-pressing a node or a game bubble shows no text selection or callout; card text stays selectable.</li>
+</ul>
+</section>
+
+<section data-anchor="offline">
+<div class="sec-head">
+<span class="sec-num">04</span>
+<h2 data-anchor="offline-heading">Offline and updates</h2>
+<p class="sec-note" data-anchor="offline-note">One saved copy per version; the version is a hash of every published file.</p>
+</div>
+<ol class="rail" data-anchor="offline-rail">
+<li data-anchor="offline-install">First visit online: the page registers the worker after it has drawn, so saving never delays first paint; the worker saves every listed file into a cache named by the version, and only a complete save counts.</li>
+<li data-anchor="offline-serve">Every later request for a listed file is answered from the saved copy, ignoring the part after # and any query; opening the site root or the game folder answers with that page.</li>
+<li data-anchor="offline-miss">A request for anything not listed goes to the network, and offline it fails as a browser would; an unknown page address offline shows the network.</li>
+<li data-anchor="offline-new">When the site changes, the worker script's version changes, so the browser fetches the new worker on the next visit; it saves the new copy in the background.</li>
+<li data-anchor="offline-switch">Once the new copy is complete, the new worker takes over and deletes older copies; the open page keeps running and is never reloaded, and the next open shows the new version.</li>
+<li data-anchor="offline-fail">If a save is interrupted, the old copy, or the network when there is none, keeps serving, and the next visit tries again.</li>
+</ol>
+<ul data-anchor="offline-rules">
+<li data-anchor="offline-list">The list is every file in the published site directory except the worker script itself, sorted; the version is a short hash over each listed file's path and contents.</li>
+<li data-anchor="offline-block">The list and version are written into a marked block at the top of the worker script by the offline list command, so any site change changes the worker's bytes; a test recomputes both and fails when the block is stale.</li>
+<li data-anchor="offline-static">The worker fetches only the site's own files, so the site still makes no third-party request.</li>
+<li data-anchor="offline-preview">Local preview and the QA service serve the same worker from the site root; it behaves the same on a loopback address.</li>
+</ul>
+</section>
+
+<section data-anchor="budget">
+<div class="sec-head">
+<span class="sec-num">05</span>
+<h2 data-anchor="budget-heading">Size budget</h2>
+<p class="sec-note" data-anchor="budget-note">Checked by a test; current sizes leave room.</p>
+</div>
+<div class="table-scroll" data-anchor="budget-scroll">
+<table data-anchor="budget-table">
+<thead><tr><th>What</th><th>Budget</th><th>Today, about</th></tr></thead>
+<tbody>
+<tr data-anchor="budget-offline"><td>Offline copy: every listed file</td><td>6 MB</td><td>3.8 MB, of which recordings 2.7 MB</td></tr>
+<tr data-anchor="budget-first"><td>First screen of the network: page, style, scripts, graph library, typefaces, graph data</td><td>1.2 MB uncompressed</td><td>0.9 MB</td></tr>
+<tr data-anchor="budget-icons"><td>Icons and launch images together</td><td>200 KB</td><td>new</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="budget-why">iOS keeps far more than this for a home screen app; the budget guards the first visit on a phone connection, when the offline save runs after the page is drawn.</p>
+</section>
+
+<section data-anchor="build">
+<div class="sec-head">
+<span class="sec-num">06</span>
+<h2 data-anchor="build-heading">Build and tests</h2>
+<p class="sec-note" data-anchor="build-note">Plain files; the site directory is still published unchanged.</p>
+</div>
+<ul data-anchor="build-rules">
+<li data-anchor="build-files">New site files: the manifest, the worker script at the site root, and an icons folder; no framework, no bundler, no new runtime dependency.</li>
+<li data-anchor="build-list-cmd">The offline list command is Python standard library only; the repository instructions name it and add it to the data and font refresh steps.</li>
+<li data-anchor="build-icon-cmd">The icon command follows the font command's pattern: a throwaway environment, the pinned kaishu release from the font cache, committed output.</li>
+</ul>
+<ul data-anchor="tests-list">
+<li data-anchor="test-manifest">Manifest: parses; id, start, and scope resolve inside the site path from the manifest's own address; display standalone; names; colors equal the look's paper and night where named; each icon file exists with the stated pixel size read from its header, one maskable.</li>
+<li data-anchor="test-heads">Heads: both pages link the same manifest and the 180 pixel icon, carry the app-capable and title lines and viewport-fit cover, and set the theme color and inline background to their own look color.</li>
+<li data-anchor="test-file-list">File list: the worker's list and version equal the ones recomputed from the site directory.</li>
+<li data-anchor="test-worker">Worker: with a stubbed cache and fetch, a complete install saves every listed file, an interrupted one leaves the old copy serving, activation deletes older copies, and no client is reloaded.</li>
+<li data-anchor="test-budget">Budget: the sizes in the budget table.</li>
+<li data-anchor="test-static-app">Static: the existing site reference check covers the manifest and the worker.</li>
+<li data-anchor="test-phone">Phone check: a headless phone viewport loads the network and the game, then loads both again offline, with no console error and no request outside the site.</li>
+</ul>
+</section>
+
+</article>
+</body>
+</html>
