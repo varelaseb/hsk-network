@@ -110,7 +110,7 @@ CEDICT = build_data.parse_cedict("""\
 
 
 def fixture_chars():
-    rs, kdef = build_data.parse_unihan(UNIHAN)
+    rs, kdef, _ = build_data.parse_unihan(UNIHAN)
     ids, date = build_data.parse_ids(IDS)
     return {"rs": rs, "kdef": kdef, "radicals": build_data.parse_radicals(RADICALS),
             "ids": ids, "unihanVersion": "18.0.0", "idsDate": date}

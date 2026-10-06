@@ -308,14 +308,15 @@ def build_links(words):
     return hubs, links
 
 
-def char_readings(char, single):
+def char_readings(char, single, mandarin=None):
     """#hub-reading: one reading per distinct pinyin of char's own entries.
 
     single: single_char_index(). Entries by Traditional form, else by Simplified
     form for a radical or part that is a character only as written there
     (#breakdown-zhuyin). Lowercase entries only, capitalized ones only when no
-    lowercase exists. Raises ValueError when char has no entry or a reading has
-    no Zhuyin.
+    lowercase exists. mandarin: char's first Unihan kMandarin value (toned);
+    the reading matching it comes first, the rest stay in dictionary order.
+    Raises ValueError when char has no entry or a reading has no Zhuyin.
     """
     cands = single[0].get(char) or single[1].get(char, [])
     if not cands:
@@ -324,6 +325,9 @@ def char_readings(char, single):
     groups = {}
     for c in cands:
         groups.setdefault(c["pinyin"], []).append(c)
+    standard = mandarin and normalize_toned(mandarin)
+    if standard in groups:
+        groups = {standard: groups.pop(standard), **groups}
     return [{"pinyin": py, "zhuyin": to_zhuyin(py), "defs": _merge(cs)}
             for py, cs in groups.items()]
 
@@ -377,8 +381,9 @@ _RADICAL_WORD = re.compile(r"radical", re.I)
 
 
 def parse_unihan(fields):
-    """Lines of Unihan_*.txt -> (kRSUnicode first value, kDefinition) by character."""
-    rs, kdef = {}, {}
+    """Lines of Unihan_*.txt -> (kRSUnicode first value, kDefinition, kMandarin
+    first value) by character."""
+    rs, kdef, mandarin = {}, {}, {}
     for line in fields:
         p = line.rstrip("\n").split("\t")
         if len(p) != 3 or not p[0].startswith("U+"):
@@ -388,7 +393,9 @@ def parse_unihan(fields):
             rs[ch] = p[2].split()[0]
         elif p[1] == "kDefinition":
             kdef[ch] = p[2]
-    return rs, kdef
+        elif p[1] == "kMandarin":
+            mandarin[ch] = p[2].split()[0]
+    return rs, kdef, mandarin
 
 
 def parse_radicals(lines):
@@ -481,7 +488,7 @@ def hub_breakdown(char, chars, override=None):
 
     radical: {"char", "number"}; parts: [char]; meanings: [(char, meaning)] for
     the radical, then each part.
-    chars: {"rs", "kdef", "radicals", "ids"} from Unihan, CJKRadicals, and IDS.
+    chars: {"rs", "kdef", "mandarin", "radicals", "ids"} from Unihan, CJKRadicals, and IDS.
     override: may hold "parts" ([{"char", "meaning"}], or [] for none) replacing
     the derived parts, and "radicalMeaning" replacing the derived radical meaning.
     """
@@ -535,7 +542,7 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
     def readings(ch):
         entry = table.setdefault(ch, {})
         if "readings" not in entry:
-            entry["readings"] = char_readings(ch, single)
+            entry["readings"] = char_readings(ch, single, chars.get("mandarin", {}).get(ch))
         return entry["readings"]
 
     for w in words:  # #chars-words
@@ -591,10 +598,10 @@ def load_chars(refresh=False):
     with zipfile.ZipFile(zpath) as z:
         lines = [l for name in ("Unihan_IRGSources.txt", "Unihan_Readings.txt")
                  for l in z.read(name).decode("utf-8").splitlines()]
-    rs, kdef = parse_unihan(lines)
+    rs, kdef, mandarin = parse_unihan(lines)
     radicals = parse_radicals(rpath.read_text(encoding="utf-8").splitlines())
     ids, date = parse_ids(IDS_CACHE.read_text(encoding="utf-8").splitlines())
-    return {"rs": rs, "kdef": kdef, "radicals": radicals, "ids": ids,
+    return {"rs": rs, "kdef": kdef, "mandarin": mandarin, "radicals": radicals, "ids": ids,
             "unihanVersion": UNIHAN_VERSION, "idsDate": date}
 
 

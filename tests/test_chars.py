@@ -2,7 +2,7 @@
 
 import unittest
 
-from graph_data import CHARS, GRAPH, build_data
+from graph_data import CHARS, GRAPH, build_data, word_reading
 
 
 class StoredOnce(unittest.TestCase):
@@ -53,6 +53,18 @@ class StoredOnce(unittest.TestCase):
         chang, zhang = (w for w in GRAPH["words"] if w["trad"] == "長")
         self.assertNotEqual(chang["reading"], zhang["reading"])
 
+    def test_standard_reading_first_by_kmandarin(self):  # #hub-reading
+        for ch, zhuyin in {"舌": "ㄕㄜˊ", "丨": "ㄍㄨㄣˇ", "長": "ㄓㄤˇ", "好": "ㄏㄠˇ",
+                           "了": "˙ㄌㄜ", "得": "ㄉㄜˊ"}.items():
+            with self.subTest(char=ch):
+                self.assertGreater(len(CHARS[ch]["readings"]), 1)
+                self.assertEqual(CHARS[ch]["readings"][0]["zhuyin"], zhuyin)
+
+    def test_chang_and_zhang_keep_their_zhuyin_through_reading(self):
+        by_pinyin = {w["pinyin"]: w for w in GRAPH["words"] if w["trad"] == "長"}
+        self.assertEqual({p: word_reading(w)[0] for p, w in by_pinyin.items()},
+                         {"chang2": "ㄔㄤˊ", "zhang3": "ㄓㄤˇ"})
+
 
 CEDICT = build_data.parse_cedict("""\
 王 王 [Wang2] /surname Wang/
@@ -87,6 +99,39 @@ class Build(unittest.TestCase):
         self.assertTrue(build_data.is_character("儿", single))
         self.assertEqual(build_data.char_readings("儿", single),
                          [{"pinyin": "er2", "zhuyin": "ㄦˊ", "defs": ["child"]}])
+
+
+XING = build_data.single_char_index(build_data.parse_cedict("""\
+行 行 [hang2] /row/
+行 行 [xing2] /to walk/
+行 行 [xing4] /behavior/
+""".splitlines())[0])
+
+
+class StandardReadingFirst(unittest.TestCase):
+    """#hub-reading: the reading matching kMandarin's first value comes first."""
+
+    def zhuyin(self, mandarin):
+        return [r["zhuyin"] for r in build_data.char_readings("行", XING, mandarin)]
+
+    def test_kmandarin_reading_moves_first_rest_in_dictionary_order(self):
+        self.assertEqual(self.zhuyin("xíng"), ["ㄒㄧㄥˊ", "ㄏㄤˊ", "ㄒㄧㄥˋ"])
+
+    def test_no_match_or_no_kmandarin_keeps_dictionary_order(self):
+        for mandarin in ("háng", "xīng", None):
+            with self.subTest(mandarin=mandarin):
+                self.assertEqual(self.zhuyin(mandarin), ["ㄏㄤˊ", "ㄒㄧㄥˊ", "ㄒㄧㄥˋ"])
+
+    def test_parse_unihan_keeps_first_kmandarin_value(self):
+        _, _, mandarin = build_data.parse_unihan(["U+884C\tkMandarin\txíng háng"])
+        self.assertEqual(mandarin, {"行": "xíng"})
+
+    def test_build_points_one_character_word_at_reordered_reading(self):
+        entries = build_data.parse_cedict(["行 行 [hang2] /row/", "行 行 [xing2] /to walk/"])[0]
+        hsk = [{"id": "1-1", "level": 1, "simp": "行", "pinyin": "xíng"}]
+        graph = build_data.build(entries, None, hsk, {}, {**NO_CHARS, "mandarin": {"行": "xíng"}})
+        self.assertEqual(graph["words"][0]["reading"], 0)
+        self.assertEqual(graph["chars"]["行"]["readings"][0]["pinyin"], "xing2")
 
 
 if __name__ == "__main__":
