@@ -1,8 +1,8 @@
-"""#tests-list test-known, #acceptance-data-known: reference words."""
+"""#tests-list test-known, test-hub-known, #acceptance-data-known, #acceptance-hub-known."""
 
 import unittest
 
-from graph_data import GRAPH
+from graph_data import GRAPH, build_data
 
 # (simplified, toned list pinyin, traditional, zhuyin, expected gloss)
 KNOWN = [
@@ -42,6 +42,32 @@ class KnownWords(unittest.TestCase):
                 self.assertEqual(len(nodes), count)
                 self.assertEqual(len({w["id"] for w in nodes}), count)
                 self.assertEqual(len({w["zhuyin"] for w in nodes}), count)
+
+
+# char -> [(zhuyin, expected gloss)] for every reading, in order.
+KNOWN_HUBS = {
+    "學": [("ㄒㄩㄝˊ", "to learn")],
+    "子": [("ㄗˇ", "son"), ("˙ㄗ", "noun suffix")],
+}
+
+
+class KnownCharacters(unittest.TestCase):
+    def test_reference_hubs(self):
+        hubs = {h["char"]: h for h in GRAPH["hubs"]}
+        for char, readings in KNOWN_HUBS.items():
+            with self.subTest(char=char):
+                got = hubs[char]["readings"]
+                self.assertEqual([r["zhuyin"] for r in got], [z for z, _ in readings])
+                for r, (_, gloss) in zip(got, readings):
+                    self.assertTrue(any(gloss in d for d in r["defs"]), r["defs"])
+
+    def test_every_hub_has_readings_with_defs(self):
+        for h in GRAPH["hubs"]:
+            with self.subTest(char=h["char"]):
+                self.assertTrue(h["readings"])
+                for r in h["readings"]:
+                    self.assertEqual(r["zhuyin"], build_data.to_zhuyin(r["pinyin"]))
+                    self.assertTrue(r["defs"])
 
 
 if __name__ == "__main__":

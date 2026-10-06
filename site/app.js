@@ -375,6 +375,11 @@
       card.appendChild(levelTag(d.level));
     } else {
       card.appendChild(el("div", "c-trad", d.char)).lang = "zh-Hant";
+      d.readings.forEach(function (r) {
+        const div = card.appendChild(el("div", "c-reading"));
+        div.appendChild(el("div", "c-zhuyin", r.zhuyin)).lang = "zh-Hant";
+        div.appendChild(el("p", "c-defs", r.defs.join("; ")));
+      });
       const ws = (hubWords.get(d.id) || []).filter(function (w) { return shown.has(w.id); });
       card.appendChild(el("p", "c-defs", ws.length + " words contain this character"));
       const ul = el("ul", "c-words");
@@ -383,8 +388,8 @@
         b.type = "button";
         b.appendChild(el("span", "w-trad", w.trad));
         b.appendChild(el("span", "w-zy", w.zhuyin));
+        b.appendChild(el("span", "w-gloss", w.defs[0] || ""));
         b.appendChild(el("span", "swatch l" + w.level));
-        b.title = (w.defs[0] || "") + " (HSK " + w.level + ")";
         b.addEventListener("click", function () { focusWord(w); });
         ul.appendChild(el("li")).appendChild(b);
       });

@@ -230,6 +230,10 @@ body {
 .card .c-words button:hover { background: #eef4fa; }
 .card .c-words .w-trad { font-size: 18px; }
 .card .c-words .w-zy { color: var(--muted); font-size: 14px; }
+.card .c-words .w-trad, .card .c-words .w-zy, .card .c-words .swatch { flex: none; }
+.card .c-words .w-gloss { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; }
+.card .c-reading + .c-reading { margin-top: 8px; }
+.card .c-reading .c-defs { margin-top: 2px; }
 .card .c-close {
   position: absolute;
   top: 2px;
