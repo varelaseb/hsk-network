@@ -22,6 +22,7 @@
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-explore">As a learner, I see every HSK 1 and HSK 2 word as a network in which words sharing a character gather around that character, so I learn characters through related words.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-inspect">As a learner, I hover or tap a word to see its Traditional form, Zhuyin, English definitions, and HSK level.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-search">As a learner, I type into a search box to find a word and the graph brings it into view.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-levels">As a learner, I switch each HSK level on or off so I can study one level's words at a time.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-phone">As a learner on a phone, I can read, pan, zoom, and tap the graph as comfortably as on a desktop.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-sources">As a learner, I can see where the vocabulary and definitions come from and under which licenses.</p>
 <p data-user-story data-user-facing="false" data-anchor="story-maintain">As a maintainer, I rebuild the word data with one command, and an automated test suite proves the data correct on every pull request.</p>
@@ -44,9 +45,12 @@
 <tr data-acceptance-criterion data-anchor="acceptance-data-known" data-story="story-inspect story-maintain"><td>Known words</td><td data-acceptance-scenario>Given the built word data. When the reference words in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected Traditional form, Zhuyin, and a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-search-hanzi" data-story="story-search"><td>Search by character</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's Traditional characters into the search box and picks it from the results.</td><td data-acceptance-observable>Then the graph pans and zooms to that word, highlights it and its neighbors, and opens its card.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-search-pinyin" data-story="story-search"><td>Search by pinyin</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's pinyin without tone marks into the search box.</td><td data-acceptance-observable>Then the results list includes that word, shown with its Traditional form and first English definition.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-search-english" data-story="story-search"><td>Search by English</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types an English word from a definition into the search box.</td><td data-acceptance-observable>Then the results list includes every word whose definitions contain it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-search-english" data-story="story-search"><td>Search by English</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types an English word from a definition into the search box.</td><td data-acceptance-observable>Then the results list shows the words whose definitions contain it ahead of any pinyin match, up to the result limit.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-search-none" data-story="story-search"><td>No match</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types text that matches no word.</td><td data-acceptance-observable>Then the results list reads "No matching word" and the graph is unchanged.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-level" data-story="story-explore"><td>Level</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner reads the legend.</td><td data-acceptance-observable>Then the legend names the color for HSK 1 and the color for HSK 2, and every word node uses its level's color.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-level-off" data-story="story-levels"><td>Level off</td><td data-acceptance-scenario>Given a learner viewing the graph with both levels on. When the learner switches HSK 2 off in the level panel.</td><td data-acceptance-observable>Then only HSK 1 words remain with the hubs they share, the HSK 2 switch reads off, and search lists no HSK 2 word.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-level-on" data-story="story-levels"><td>Level on</td><td data-acceptance-scenario>Given a learner viewing the graph with HSK 2 switched off. When the learner switches HSK 2 back on.</td><td data-acceptance-observable>Then the HSK 2 words, their links, and the hubs they share reappear, and the HSK 2 switch reads on.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-level-last" data-story="story-levels"><td>Last level</td><td data-acceptance-scenario>Given a learner viewing the graph with only HSK 1 on. When the learner tries to switch HSK 1 off.</td><td data-acceptance-observable>Then HSK 1 stays on and its words stay visible, so the graph is never empty.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-phone-fit" data-story="story-phone"><td>Phone layout</td><td data-acceptance-scenario>Given a learner on a phone in portrait. When the learner opens the public site.</td><td data-acceptance-observable>Then the graph fills the screen below the search box, the page does not scroll sideways, and word labels are readable after zooming in.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-phone-zoom" data-story="story-phone"><td>Pinch and pan</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner pinches outward with two fingers, then drags one finger across the graph.</td><td data-acceptance-observable>Then the graph zooms in around the pinch and then pans with the finger, needing a two-finger pinch and a one-finger drag gesture.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, and credits the graph library and its license.</td></tr>
@@ -56,7 +60,7 @@
 </tbody>
 </table>
 </div>
-<p data-anchor="acceptance-rules-note">Onboarding: not needed, the site is one screen whose search box and legend explain themselves.</p>
+<p data-anchor="acceptance-rules-note">Onboarding: not needed, the site is one screen whose search box and level panel explain themselves.</p>
 </section>
 
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
@@ -81,6 +85,7 @@
 <tr data-anchor="default-script"><td>Script</td><td>Traditional characters everywhere on the page.</td></tr>
 <tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in the word card; pinyin is used for search only.</td></tr>
 <tr data-anchor="default-level"><td>Level cue</td><td>Color by HSK level, named in a legend and in the card.</td></tr>
+<tr data-anchor="default-level-panel"><td>Level filter</td><td>The legend is the level panel: one on/off switch per HSK level, both on at load.</td></tr>
 <tr data-anchor="default-data"><td>Data</td><td>Built once into a static file by a script in the repository; no runtime API and no keys.</td></tr>
 </tbody>
 </table>
@@ -150,6 +155,7 @@
 <li data-anchor="match-drop">Definitions that only point elsewhere, those starting "variant of", "old variant of", "see ", or "surname ", are dropped unless nothing else remains.</li>
 <li data-anchor="match-fail">No candidate, or candidates with differing Traditional forms, fails the build and names each such entry.</li>
 <li data-anchor="match-override">A small committed override file resolves each failing entry by naming the CC-CEDICT Traditional form and pinyin to use, with a one-line reason per override.</li>
+<li data-anchor="match-absent">A list word absent from CC-CEDICT is overridden with its Traditional form, pinyin, and hand-written English definitions, and its reason says the definitions are not from CC-CEDICT.</li>
 </ol>
 <h3 data-anchor="zhuyin-heading">Zhuyin</h3>
 <p data-anchor="zhuyin-convert">Each numbered pinyin syllable converts to Zhuyin by a complete syllable table, keeping dictionary tones with no tone sandhi.</p>
@@ -240,12 +246,16 @@
 <tr data-anchor="ix-empty"><td>Empty space</td><td>Click closes a pinned card and clears highlight</td><td>Tap closes the card and clears highlight</td></tr>
 <tr data-anchor="ix-move"><td>Zoom and pan</td><td>Wheel zooms, drag on empty space pans</td><td>Two-finger pinch zooms, one-finger drag pans</td></tr>
 <tr data-anchor="ix-drag"><td>Drag a node</td><td>Moves it; the layout follows</td><td>Same with one finger on the node</td></tr>
-<tr data-anchor="ix-search"><td>Search box</td><td colspan="2">Each keystroke lists up to 20 matches by Traditional or Simplified characters, toneless pinyin, or English, each row showing Traditional form and first definition; picking one focuses it</td></tr>
+<tr data-anchor="ix-levels"><td>Level panel</td><td>Click a level's switch to hide or show its words</td><td>Tap does the same; each switch is at least 44px tall</td></tr>
+<tr data-anchor="ix-search"><td>Search box</td><td colspan="2">Each keystroke lists up to 20 matches by Traditional or Simplified characters, toneless pinyin, or English, each row showing Traditional form and first definition; for Latin-letter input, definition matches list ahead of pinyin matches; picking one focuses it</td></tr>
 </tbody>
 </table>
 </div>
 <p data-anchor="page-fit">On load, and on window resize, the view fits the whole settled graph.</p>
 <p data-anchor="page-focus">Focusing a word pans and zooms so it is centered at a readable size, highlights it with its hubs and the words sharing those hubs, and dims the rest.</p>
+<p data-anchor="page-levels">The legend is the level panel: each level's row shows its color, its name, and an on/off switch, both on at load.</p>
+<p data-anchor="page-levels-hide">Switching a level off hides its words and their links, hides any hub left with fewer than two visible words, closes a card for a hidden node, and removes that level's words from search results; the layout of visible nodes does not jump.</p>
+<p data-anchor="page-levels-last">The last level that is on cannot be switched off.</p>
 <p data-anchor="page-color">HSK 1 and HSK 2 use a color pair distinguishable with common color blindness; the legend and the card both name the level in text.</p>
 <p data-anchor="page-touch">Every tappable control and the search box are at least 44px tall, and the search box text is at least 16px so phones do not zoom on focus.</p>
 <p data-anchor="page-sources">A "Sources" footer link opens the credits named in the Sources acceptance criterion.</p>
