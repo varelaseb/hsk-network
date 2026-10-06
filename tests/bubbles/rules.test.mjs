@@ -21,7 +21,7 @@ const popped = (board, cell, lex = LEX) => keys(findWords(board, cell, lex).flat
 const GRAPH = JSON.parse(readFileSync(new URL("../../site/data/graph.json", import.meta.url), "utf8"));
 
 // test-detect
-test("detect: straight chain through the shot bubble pops", () => {
+test("detect: straight chain through the shot bubble pops (acceptance-detect)", () => {
   const b = parseBoard(["學生......"]);
   assert.deepEqual(findWords(b, { r: 0, c: 1 }, LEX).map((w) => w.word), ["學生"]);
   assert.deepEqual(popped(b, { r: 0, c: 1 }), ["0,0", "0,1"]);
@@ -77,7 +77,7 @@ test("detect: word entries come from the data for the card", () => {
 });
 
 // test-fall
-test("fall: a hanging cluster falls, a cluster touching the ceiling through one bubble stays", () => {
+test("fall: a hanging cluster falls, a cluster touching the ceiling through one bubble stays (acceptance-fall-rules)", () => {
   assert.deepEqual(keys(fallen(parseBoard(["中.......", ".......", "學校......"]))), ["2,0", "2,1"]);
   assert.deepEqual(fallen(parseBoard(["中.......", "國......", "學校......"])), []);
 });
@@ -157,7 +157,7 @@ function playRandom(seed, shots, levels, check) {
   }
 }
 
-test("spawn: launcher bubbles come from the board and keep the game playable", () => {
+test("spawn: launcher bubbles come from the board and keep the game playable (acceptance-spawn)", () => {
   let checked = 0;
   for (let seed = 1; seed <= 30; seed++) {
     playRandom(seed, 25, seed % 3 === 0 ? [1] : [1, 2], (game) => {
