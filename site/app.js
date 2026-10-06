@@ -622,13 +622,14 @@
 
   function fillSources(meta) {
     if (meta.cedictRelease) document.getElementById("cedict-release").textContent = meta.cedictRelease;
-    const src = meta.hskSource;
-    if (src) {
-      const a = document.getElementById("hsk-source");
+    // A source "url@commit" links to that commit's tree.
+    [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource]].forEach(([id, src]) => {
+      if (!src) return;
+      const a = document.getElementById(id);
       const at = src.lastIndexOf("@");
       a.href = at > 0 ? src.slice(0, at) + "/tree/" + src.slice(at + 1) : src;
       a.title = src;
-    }
+    });
   }
 
   function debounce(fn, ms) {
