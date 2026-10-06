@@ -6,9 +6,9 @@
       "designer": "Adobe and Google",
       "url": "https://github.com/notofonts/noto-cjk",
       "release": "Sans2.004",
-      "asset": "https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/09_NotoSansCJKtc.zip",
-      "sha256": "8ea0d6feb8e092c250710cdc75c138090832ddaa98d8ccb37cd89b03b72c331b",
-      "member": "NotoSansCJKtc-Regular.otf",
+      "asset": "https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/01_NotoSansCJK-OTF-VF.zip",
+      "sha256": "d5e33aebad9f8a0c0896a4a29199ef85ca966134db164426c74e83e6f13c43cd",
+      "member": "Variable/OTF/NotoSansCJKtc-VF.otf",
       "license": "SIL OFL 1.1",
       "licenseUrl": "https://raw.githubusercontent.com/notofonts/noto-cjk/Sans2.004/LICENSE"
     },

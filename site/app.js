@@ -4,7 +4,7 @@
    (spec hsk-network #sense-render). Loaded as a module, after d3. */
 import {
   MODES, DEFAULT_MODE, renderSense, renderMeasureWords, renderReading,
-  wordLabel, charLabel, textOf,
+  wordLabel, charLabel, textOf, hanLang,
 } from "./senses.js";
 import { pieceNode, appendPieces, headwordNode } from "./headword.js";
 
@@ -167,7 +167,7 @@ function nodeLabel(d) {
 }
 
 function labelNodes() {
-  root.attr("lang", script === "pinyin" ? "zh-Hans" : "zh-Hant");
+  root.attr("lang", hanLang(script));
   nodeSel.select("text").text(nodeLabel);
   nodeSel.select("title").text(nodeLabel);
 }
@@ -462,7 +462,7 @@ function el(tag, cls, text) {
 
 function han(text, cls) {
   const s = el("span", cls || "han", text);
-  s.lang = script === "pinyin" ? "zh-Hans" : "zh-Hant";
+  s.lang = hanLang(script);
   return s;
 }
 
@@ -781,6 +781,7 @@ function renderResults() {
 
 function pick(w) {
   input.value = wordLabel(w, script);
+  input.lang = hanLang(script);
   current = [];
   renderResults();
   resultsEl.hidden = true;

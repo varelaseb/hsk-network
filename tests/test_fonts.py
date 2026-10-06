@@ -52,6 +52,12 @@ class FontFilesTest(unittest.TestCase):
                 self.assertTrue(SOURCE[key]["release"])
                 self.assertIn(f"/{SOURCE[key]['release']}/", SOURCE[key]["licenseUrl"])  # copied from the pinned tag
 
+    def test_budget_and_weights_match_spec(self):
+        """#face-budget caps; #scale-weights ranges; #face-lang keeps mainland and Taiwan forms only."""
+        self.assertEqual(bf.BUDGET, {bf.HAN: 232_000, bf.LATIN: 23_000, "total": 255_000})
+        self.assertEqual(bf.WEIGHTS, {bf.HAN: (400, 500), bf.LATIN: (400, 600)})
+        self.assertEqual(bf.HAN_LANGS, {"ZHS ", "ZHT "})
+
     def test_within_budget(self):
         sizes = {key: (bf.FONTS / COVERAGE[key]["file"]).stat().st_size for key in (bf.HAN, bf.LATIN)}
         for key, size in sizes.items():
@@ -75,6 +81,9 @@ class FontFilesTest(unittest.TestCase):
         for key in (bf.HAN, bf.LATIN):
             self.assertIn(f'url("fonts/{key}.woff2") format("woff2")', css)
         self.assertIn('--font: "Geist", "Noto Sans CJK TC"', css)
+        self.assertRegex(css, r'font-family: "Noto Sans CJK TC";\s*src: url\("fonts/noto-sans-cjk-tc\.woff2"\) format\("woff2"\);\s*font-weight: 400 500;')
+        self.assertRegex(css, r'font-family: "Geist";\s*src: url\("fonts/geist\.woff2"\) format\("woff2"\);\s*font-weight: 400 600;')
+        self.assertIn("font-synthesis: none", css)
 
 
 if __name__ == "__main__":

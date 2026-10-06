@@ -425,7 +425,7 @@ h1, h2 { margin: 0 0 14px; font-size: var(--fs-title); font-weight: var(--w-semi
 }
 .popped-list .pw.l2 { box-shadow: inset 3px 0 0 var(--hsk2); }
 .popped-list a.pw:active { background: var(--paper); }
-.popped-list .p-word { font-size: 22px; font-weight: var(--w-regular); }
+.popped-list .p-word { font-size: 22px; font-weight: var(--w-medium); }
 .popped-list .p-reading { font-size: var(--fs-zhuyin-list); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .popped-list .p-def {
   grid-column: 1 / -1;

@@ -9,7 +9,7 @@ import {
   createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
   readingOf,
 } from "./rules.js";
-import { DEFAULT_MODE, MODES, renderSense, renderReading, wordLabel, charLabel } from "../senses.js";
+import { DEFAULT_MODE, MODES, renderSense, renderReading, wordLabel, charLabel, hanLang as langFor } from "../senses.js";
 import { pieceNode, headwordNode } from "../headword.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
@@ -144,7 +144,8 @@ function sprite(ch) {
   const g = img.getContext("2d");
   const c = size / 2;
   const rad = c * 0.93;
-  // Paper disc with a soft lower shade, ink Chinese-face character, never bold.
+  // Paper disc with a soft lower shade, ink Chinese-face character in Medium (#scale-weights),
+  // drawn in the script's language so its glyph forms follow (#face-lang).
   g.fillStyle = PAPER;
   g.beginPath();
   g.arc(c, c, rad, 0, Math.PI * 2);
@@ -155,7 +156,9 @@ function sprite(ch) {
   g.fillStyle = shade;
   g.fill();
   g.fillStyle = INK;
-  g.font = `400 ${Math.round(size * 0.58)}px ${HAN_FACE}`;
+  img.lang = hanLang();
+  if ("lang" in g) g.lang = img.lang; // canvas text language, where supported
+  g.font = `500 ${Math.round(size * 0.58)}px ${HAN_FACE}`;
   g.textAlign = "center";
   g.textBaseline = "middle";
   g.fillText(label, c, c + size * 0.035);
@@ -603,7 +606,7 @@ function uniq(v, i, a) {
 
 // ---- Card text, rendered through ../senses.js in the current script.
 
-const hanLang = () => (script === "pinyin" ? "zh-Hans" : "zh-Hant");
+const hanLang = () => langFor(script);
 
 function senseNode(sense, cls) {
   const node = el("span", cls);
@@ -1209,7 +1212,7 @@ if (window.visualViewport) visualViewport.addEventListener("resize", layout);
 
 // Bubbles are drawn only once the Chinese face has loaded (#feel-type); the
 // load settles even if the face fails, so the game never hangs on it.
-const hanFace = document.fonts.load(`400 32px ${HAN_FACE}`, "學").catch(() => {});
+const hanFace = document.fonts.load(`500 32px ${HAN_FACE}`, "學").catch(() => {});
 const data = fetch("../data/graph.json").then((r) => r.json());
 
 Promise.all([data, hanFace])

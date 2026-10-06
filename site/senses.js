@@ -34,6 +34,8 @@
 //           (#pinyin-ruby: marked syllable centered above its character)
 //       counts differ: { kind: "line", han: piece, reading: piece }
 //           (#zhuyin-fallback: the reading on one line under the characters)
+//   hanLang(mode) -> "zh-Hant" | "zh-Hans"   language tag for Chinese text in the
+//       mode, so the face shows Taiwan or mainland glyph forms (#face-lang).
 //   wordLabel(word, mode) -> string     word.trad or word.simp
 //   charLabel(ch, mode, chars) -> string
 //       ch, or in pinyin mode its Simplified form from chars (graph.json
@@ -50,7 +52,7 @@ export const MODES = Object.freeze(["zhuyin", "pinyin"]);
 export const DEFAULT_MODE = "zhuyin";
 
 const isPinyin = (mode) => mode === "pinyin";
-const langOf = (mode) => (isPinyin(mode) ? "zh-Hans" : "zh-Hant");
+export const hanLang = (mode) => (isPinyin(mode) ? "zh-Hans" : "zh-Hant");
 
 // ---- Pinyin tone marks.
 
@@ -100,7 +102,7 @@ export function renderRef(ref, mode) {
   const reading = renderReading(ref, mode);
   if (!("trad" in ref)) return [reading];
   const text = isPinyin(mode) ? ref.simp || ref.trad : ref.trad;
-  return [{ kind: "han", text, lang: langOf(mode) }, { kind: "text", text: " " }, reading];
+  return [{ kind: "han", text, lang: hanLang(mode) }, { kind: "text", text: " " }, reading];
 }
 
 export function renderSense(sense, mode) {
@@ -152,7 +154,7 @@ function zhuyinCell(char, syl) {
 
 export function headword(word, mode) {
   const pinyin = isPinyin(mode);
-  const lang = langOf(mode);
+  const lang = hanLang(mode);
   const chars = [...(pinyin ? word.simp || word.trad : word.trad)];
   const syllables = pinyin
     ? String(word.pinyin).split(" ").filter(Boolean)

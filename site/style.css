@@ -4,7 +4,7 @@
 @font-face {
   font-family: "Noto Sans CJK TC";
   src: url("fonts/noto-sans-cjk-tc.woff2") format("woff2");
-  font-weight: 400;
+  font-weight: 400 500;
   font-style: normal;
   font-display: swap;
 }
@@ -12,7 +12,7 @@
 @font-face {
   font-family: "Geist";
   src: url("fonts/geist.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400 600;
   font-style: normal;
   font-display: swap;
 }
@@ -80,6 +80,7 @@
   font-family: var(--font);
   font-size: var(--fs-body);
   font-weight: var(--w-regular);
+  font-synthesis: none; /* #scale-weights: never a synthetic bold */
   color: var(--ink);
   background: var(--paper);
   -webkit-text-size-adjust: 100%;
@@ -138,14 +139,14 @@ button { font: inherit; color: inherit; }
 .level[aria-checked="false"] .swatch { background: transparent; }
 
 /* Headword and readings, built by headword.js for both pages (#zhuyin-columns, #pinyin-ruby,
-   #zhuyin-fallback); --head sets the headword size; characters never bolded. */
+   #zhuyin-fallback); --head sets the headword size; characters Medium, readings Regular (#scale-weights). */
 .hw {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0 .12em;
   font-size: var(--head, var(--fs-head));
-  font-weight: var(--w-regular);
+  font-weight: var(--w-medium);
   line-height: 1.15;
 }
 .hw-cell { display: inline-flex; align-items: center; }
@@ -154,6 +155,7 @@ button { font: inherit; color: inherit; }
   flex-direction: column;
   align-items: center;
   margin: 0 .3em 0 .06em;
+  font-weight: var(--w-regular);
   font-size: max(var(--fs-zhuyin-min), calc(var(--head, var(--fs-head)) * var(--zhuyin-ratio)));
   line-height: 1.02;
 }
@@ -168,10 +170,11 @@ button { font: inherit; color: inherit; }
   text-align: center;
 }
 .hw-line { flex-direction: column; align-items: flex-start; }
+.hw-ruby rt, .hw-reading { font-weight: var(--w-regular); }
 .hw-reading { font-size: 1rem; line-height: 1.4; }
 
 /* One-line readings (#zhuyin-line): syllables 0.3em apart; lists, measure words, references. */
-.zy, .py { font-size: var(--fs-zhuyin-list); white-space: nowrap; }
+.zy, .py { font-size: var(--fs-zhuyin-list); font-weight: var(--w-regular); white-space: nowrap; }
 .zy > span + span { margin-left: var(--zhuyin-gap); }
 
 /* Press (#motion-press): scale on the compositor; color only with reduced motion. */
@@ -376,7 +379,7 @@ button { font: inherit; color: inherit; }
   transition: opacity var(--dur-focus) var(--ease-in-out), visibility 0s;
 }
 .node > * { transition: opacity var(--dur-level) ease-out; }
-.node text { pointer-events: none; text-anchor: middle; dominant-baseline: central; }
+.node text { pointer-events: none; text-anchor: middle; dominant-baseline: central; font-weight: var(--w-medium); }
 .word rect { stroke: var(--paper); stroke-width: 1.5; }
 .word.l1 rect { fill: var(--hsk1); }
 .word.l2 rect { fill: var(--hsk2); }

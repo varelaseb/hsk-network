@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   MODES, DEFAULT_MODE, toneMarks, pinyinWord, renderReading, renderRef, renderSense,
-  renderMeasureWords, textOf, wordLabel, charLabel, headword,
+  renderMeasureWords, textOf, wordLabel, charLabel, headword, hanLang,
 } from "../site/senses.js";
 
 const graph = JSON.parse(readFileSync(new URL("../site/data/graph.json", import.meta.url), "utf8"));
@@ -223,4 +223,10 @@ test("every headword lays out in both modes", () => {
     assert.equal(py.kind, "ruby", w.trad);
     assert.ok(!py.cells.some((c) => ZHUYIN.test(c.pinyin)), w.trad);
   }
+});
+
+test("hanLang tags Chinese text zh-Hant in Zhuyin mode and zh-Hans in pinyin mode (#face-lang)", () => {
+  assert.equal(hanLang("zhuyin"), "zh-Hant");
+  assert.equal(hanLang("pinyin"), "zh-Hans");
+  assert.equal(hanLang("other"), "zh-Hant");
 });

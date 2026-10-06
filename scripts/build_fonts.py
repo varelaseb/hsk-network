@@ -30,7 +30,12 @@ COVERAGE = FONTS / "coverage.json"
 GRAPH = SITE / "data" / "graph.json"
 
 HAN, LATIN = "noto-sans-cjk-tc", "geist"
-BUDGET = {HAN: 240_000, LATIN: 40_000, "total": 280_000}  # bytes, #face-budget
+BUDGET = {HAN: 232_000, LATIN: 23_000, "total": 255_000}  # bytes, #face-budget
+# Variable weight ranges kept (#face-cjk, #face-latin, #scale-weights).
+WEIGHTS = {HAN: (400, 500), LATIN: (400, 600)}
+# OpenType language systems whose locl forms ship: mainland and Taiwan (#face-lang).
+# Japanese, Korean, and Hong Kong alternates are dropped; the site never tags those languages.
+HAN_LANGS = {"ZHS ", "ZHT "}
 
 ZHUYIN = "".join(chr(c) for c in range(0x3105, 0x312A))  # all 37 symbols, ㄅ to ㄩ
 TONE_MARKS = "ˊˇˋ˙"
@@ -103,14 +108,21 @@ def _fetch(url, sha256, name):
     return data
 
 
-def _subset(data, wanted, features, drop=()):
+def _subset(data, wanted, features, weights, langs=None):
     from fontTools import subset
     from fontTools.ttLib import TTFont
+    from fontTools.varLib import instancer
     font = TTFont(io.BytesIO(data), recalcTimestamp=False)  # same input, same bytes
     cmap = set(font.getBestCmap())
+    font = instancer.instantiateVariableFont(font, {"wght": weights})
+    if langs is not None:
+        for tag in ("GSUB", "GPOS"):
+            for rec in font[tag].table.ScriptList.ScriptRecord if tag in font else []:
+                rec.Script.LangSysRecord = [ls for ls in rec.Script.LangSysRecord if ls.LangSysTag in langs]
+                rec.Script.LangSysCount = len(rec.Script.LangSysRecord)
     opts = subset.Options()
     opts.flavor = "woff2"
-    opts.layout_features = sorted((set(opts.layout_features) | set(features)) - set(drop))
+    opts.layout_features = sorted(set(opts.layout_features) | set(features))
     sub = subset.Subsetter(opts)
     sub.populate(unicodes=sorted(ord(c) for c in wanted if ord(c) in cmap))
     sub.subset(font)
@@ -129,15 +141,13 @@ def main():
     # ǐ ǒ ǔ or ü with a tone, so pinyin needs the combining marks over plain letters.
     musts = {HAN: set(ZHUYIN) | set(TONE_MARKS),
              LATIN: {chr(c) for c in range(0x20, 0x7F)} | set("üÜ") | set(COMBINING_TONES)}
-    # The Chinese face drops locl: its Simplified, Japanese, and Korean regional alternates
-    # double the subset past #face-budget, and every character shows in its Taiwan form.
-    for key, wanted, features, drop in ((HAN, need | punct_chars(), [], ["locl"]),
-                                        (LATIN, latin_chars(), ["tnum"], [])):
+    for key, wanted, features, langs in ((HAN, need | punct_chars(), [], HAN_LANGS),
+                                         (LATIN, latin_chars(), ["tnum"], None)):
         note = source[key]
         raw = _fetch(note["asset"], note["sha256"], note["asset"].rsplit("/", 1)[1])
         if "member" in note:
             raw = zipfile.ZipFile(io.BytesIO(raw)).read(note["member"])
-        woff2, covered, cmap = _subset(raw, wanted, features, drop)
+        woff2, covered, cmap = _subset(raw, wanted, features, WEIGHTS[key], langs)
         if musts[key] - cmap:
             sys.exit(f"{note['family']} lacks {''.join(sorted(musts[key] - cmap))}")
         entry = {}
