@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d1526">
-<title>HSK bubbles (Traditional, Zhuyin)</title>
+<meta name="theme-color" content="#0f1424">
+<title>HSK bubbles</title>
 <link rel="preload" href="../fonts/lxgw-wenkai-tc.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../style.css">
@@ -38,29 +38,33 @@
   <aside id="wcard" class="wcard" aria-live="polite" hidden></aside>
   <div id="banner" class="banner" role="status" hidden></div>
 
-  <section id="start" class="screen" aria-labelledby="title">
-    <div class="sheet">
-      <div class="deco" aria-hidden="true" lang="zh-Hant"><span>學</span><span>生</span><span>泡</span></div>
-      <p class="eyebrow">Traditional · Zhuyin · HSK 1-2</p>
-      <h1 id="title">HSK bubbles</h1>
-      <p class="lede">Shoot characters. Spell a word with touching bubbles and it pops.</p>
-      <ul class="levels" aria-label="HSK levels in the game">
-        <li><button type="button" class="level" role="switch" aria-checked="true" data-level="1"><span class="swatch l1"></span>HSK 1<span class="toggle" aria-hidden="true"></span></button></li>
-        <li><button type="button" class="level" role="switch" aria-checked="true" data-level="2"><span class="swatch l2"></span>HSK 2<span class="toggle" aria-hidden="true"></span></button></li>
-      </ul>
-      <p class="best">Best <strong class="best-score">0</strong></p>
-      <button type="button" id="play" class="primary" disabled>Loading…</button>
-      <div class="row">
-        <button type="button" class="chip-btn sound-btn" data-say role="switch" aria-checked="true" aria-label="Voice: pronunciation">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M4 9h3.5L12 5v14l-4.5-4H4z"/><path class="i-wave" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
-          <span class="sound-state">Voice on</span>
-        </button>
-        <button type="button" class="chip-btn sound-btn" data-sound role="switch" aria-checked="false" aria-label="Effects: sounds and vibration">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M9 18.5a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V5.5l10-2v11a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V7.3l-7.8 1.6v9.6z"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
-          <span class="sound-state">Effects off</span>
-        </button>
-        <a class="chip-btn" href="../">Network</a>
+  <section id="start" class="screen scroll" aria-labelledby="title">
+    <div class="fold">
+      <div class="sheet start-sheet">
+        <h1 id="title">HSK bubbles</h1>
+        <ul class="levels" aria-label="HSK levels in the game">
+          <li><button type="button" class="level" role="switch" aria-checked="true" data-level="1"><span class="swatch l1"></span>HSK 1<span class="toggle" aria-hidden="true"></span></button></li>
+          <li><button type="button" class="level" role="switch" aria-checked="true" data-level="2"><span class="swatch l2"></span>HSK 2<span class="toggle" aria-hidden="true"></span></button></li>
+        </ul>
+        <p class="best"><span class="caption">Best</span> <strong class="best-score">0</strong></p>
+        <button type="button" id="play" class="primary" disabled>Loading…</button>
+        <div class="quiet">
+          <button type="button" class="quiet-btn" data-script role="switch" aria-checked="false" aria-label="Script: Zhuyin or Pinyin">
+            <span class="script-state">Zhuyin</span>
+          </button>
+          <button type="button" class="quiet-btn sound-btn" data-say role="switch" aria-checked="true" aria-label="Voice: pronunciation">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M4 9h3.5L12 5v14l-4.5-4H4z"/><path class="i-wave" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
+            <span class="sound-state">Voice on</span>
+          </button>
+          <button type="button" class="quiet-btn sound-btn" data-sound role="switch" aria-checked="false" aria-label="Effects: sounds and vibration">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M9 18.5a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V5.5l10-2v11a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V7.3l-7.8 1.6v9.6z"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
+            <span class="sound-state">Effects off</span>
+          </button>
+        </div>
       </div>
+    </div>
+    <div class="below">
+      <a class="chip-btn" href="../">Network</a>
       <details class="sources">
         <summary>Sources</summary>
         <p>Definitions and Traditional forms: <a href="https://cc-cedict.org/wiki/" rel="noopener">CC-CEDICT</a>,
@@ -87,7 +91,7 @@
     <div class="sheet">
       <h2 id="over-title">Game over</h2>
       <p class="final"><span id="final-score">0</span></p>
-      <p class="best">Best <strong class="best-score">0</strong> <span id="new-best" class="new-best" hidden>New best</span></p>
+      <p class="best"><span class="caption">Best</span> <strong class="best-score">0</strong> <span id="new-best" class="new-best" hidden>New best</span></p>
       <h3 class="list-title">Words popped</h3>
       <ol id="popped-list" class="popped-list"></ol>
       <button type="button" id="again" class="primary">Play again</button>

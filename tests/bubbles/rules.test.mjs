@@ -7,7 +7,7 @@ import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
   makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
   createGame, shoot, resolveShot, swap, completingChars, boardChars,
-  roundRows, roundShots, lowestRow, pronunciation, wordReading, charReadings,
+  roundRows, roundShots, lowestRow, pronunciation, wordReading, charReadings, readingOf,
 } from "../../site/bubbles/rules.js";
 
 const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
@@ -393,4 +393,14 @@ test("wordReading: own Zhuyin and defs, or the named reading of its character", 
     { zhuyin: "ㄒㄩㄝˊ ˙ㄕㄥ", defs: ["student"] });
   const hao = GRAPH.words.find((w) => w.trad === "好");
   assert.equal(wordReading(hao, GRAPH.chars).zhuyin, "ㄏㄠˇ");
+});
+
+// feel-script: the page renders either script from one reading object.
+test("readingOf: a word's full reading, both scripts, from one read path", () => {
+  const xs = GRAPH.words.find((w) => w.trad === "學生");
+  assert.equal(readingOf(xs, GRAPH.chars), xs);
+  const hao = GRAPH.words.find((w) => w.trad === "好");
+  const r = readingOf(hao, GRAPH.chars);
+  assert.equal(r, GRAPH.chars["好"].readings[hao.reading]);
+  assert.ok(r.pinyin && r.zhuyin && r.defs[0].parts, "pinyin, zhuyin, sense objects");
 });

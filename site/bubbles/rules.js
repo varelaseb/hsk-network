@@ -32,6 +32,10 @@
 //       the pronunciation choice, voices = speechSynthesis.getVoices().
 //       src is the game-relative recording path; voice is a Taiwan Mandarin
 //       voice that runs on the device (localService); null says nothing.
+//   readingOf(entry, chars) -> { pinyin, zhuyin, defs, mw? }
+//       a word entry's own reading, or for a one-character word the reading
+//       it names in chars (graph.json `chars`); the page renders it in the
+//       script mode through ../senses.js.
 //   wordReading(entry, chars) -> { zhuyin, defs }
 //       a word entry's Zhuyin and definitions: its own, or for a one-character
 //       word, those of the reading it names in chars (graph.json `chars`).
@@ -80,8 +84,12 @@ function makeRng(seed) {
 
 // hsk-network spec #chars-words: a one-character word names a reading of its
 // character's table entry instead of carrying Zhuyin and definitions.
+export function readingOf(entry, chars) {
+  return "reading" in entry ? chars[entry.trad].readings[entry.reading] : entry;
+}
+
 export function wordReading(entry, chars) {
-  const r = "reading" in entry ? chars[entry.trad].readings[entry.reading] : entry;
+  const r = readingOf(entry, chars);
   return { zhuyin: r.zhuyin, defs: r.defs };
 }
 

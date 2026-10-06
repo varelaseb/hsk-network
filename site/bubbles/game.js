@@ -7,8 +7,9 @@
 import {
   COLS, ROW_H, LINE_ROW, LINE_Y, LAUNCHER, HEIGHT, MIN_ANGLE, MAX_ANGLE,
   createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
-  wordReading, charReadings,
+  readingOf,
 } from "./rules.js";
+import { DEFAULT_MODE, MODES, renderSense, renderReading, headword, wordLabel, charLabel } from "../senses.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
 
@@ -31,6 +32,17 @@ function readStore() {
 function saveStore() {
   try { localStorage.setItem(STORE, JSON.stringify(settings)); } catch { /* storage off: settings last this visit */ }
 }
+
+// Script setting, shared with the network page (hsk-network #default-script-setting):
+// "zhuyin" (default) or "pinyin". Rendering only; word detection stays Traditional.
+const SCRIPT_KEY = "hskScript";
+function readScript() {
+  try {
+    const v = localStorage.getItem(SCRIPT_KEY);
+    return MODES.includes(v) ? v : DEFAULT_MODE;
+  } catch { return DEFAULT_MODE; }
+}
+let script = readScript();
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => {
@@ -55,15 +67,27 @@ const playBtn = $("play");
 const levelBtns = [...document.querySelectorAll(".level")];
 const soundBtns = [...document.querySelectorAll("[data-sound]")];
 const sayBtns = [...document.querySelectorAll("[data-say]")];
+const scriptBtns = [...document.querySelectorAll("[data-script]")];
 
 const params = new URLSearchParams(location.search);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 const coarse = matchMedia("(pointer: coarse)");
-const FONT = '"PingFang TC", "Heiti TC", "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "Source Han Sans TC", sans-serif';
-const LEVEL_COLOR = { 1: "#0072b2", 2: "#e69f00" };
+// Look tokens (hsk-network #look), read once from ../style.css.
+const tokens = getComputedStyle(document.documentElement);
+const tok = (name, fallback) => tokens.getPropertyValue(name).trim() || fallback;
+const KAISHU = '"LXGW WenKai TC"';
+const SANS = '"Geist", system-ui, sans-serif';
+const INK = tok("--ink", "#1b1b1f");
+const PAPER = tok("--paper", "#f6f4ef");
+const NIGHT = tok("--night", "#0f1424");
+const INK_NIGHT = tok("--ink-night", "#f6f4ef");
+const LINE_NIGHT = tok("--line-night", "rgba(255, 255, 255, .14)");
+const LEVEL_COLOR = { 1: tok("--hsk1", "#0072b2"), 2: tok("--hsk2", "#e69f00") };
+const DANGER = "#ff6b5e";
+let fontReady = false;  // bubbles are drawn only once the kaishu face has loaded
 
 let words = [];
-let chars = {};       // graph.json character table, read through by wordReading
+let chars = {};       // graph.json character table, read through readingOf
 let demoBoard = null; // still board behind the start screen
 let screen = "start";
 let game = null;       // rules state after the last shot
@@ -107,40 +131,34 @@ function layout() {
 const X = (x) => L.ox + x * L.s;
 const Y = (y) => L.oy + y * L.s;
 
-// One sprite per character, drawn once at device resolution and reused.
+// One sprite per shown label, drawn once at device resolution and reused.
+// Two Traditional characters sharing a Simplified form share one sprite.
 function sprite(ch) {
-  let img = sprites.get(ch);
+  const label = charLabel(ch, script, chars);
+  let img = sprites.get(label);
   if (img) return img;
   const size = Math.ceil(L.s * L.dpr);
   img = document.createElement("canvas");
   img.width = img.height = size;
   const g = img.getContext("2d");
   const c = size / 2;
-  const rad = c * 0.94;
-  const body = g.createRadialGradient(c * 0.72, c * 0.6, rad * 0.05, c, c, rad);
-  body.addColorStop(0, "#ffffff");
-  body.addColorStop(0.45, "#f4efe6");
-  body.addColorStop(1, "#c8baa2");
-  g.fillStyle = body;
+  const rad = c * 0.93;
+  // Paper disc with a soft lower shade, ink kaishu character, never bold.
+  g.fillStyle = PAPER;
   g.beginPath();
   g.arc(c, c, rad, 0, Math.PI * 2);
   g.fill();
-  g.lineWidth = Math.max(1, size * 0.02);
-  g.strokeStyle = "rgba(60, 45, 20, .28)";
-  g.stroke();
-  const shine = g.createRadialGradient(c * 0.68, c * 0.5, 0, c * 0.68, c * 0.5, rad * 0.5);
-  shine.addColorStop(0, "rgba(255,255,255,.95)");
-  shine.addColorStop(1, "rgba(255,255,255,0)");
-  g.fillStyle = shine;
-  g.beginPath();
-  g.ellipse(c * 0.7, c * 0.52, rad * 0.5, rad * 0.32, -0.5, 0, Math.PI * 2);
+  const shade = g.createRadialGradient(c, c * 0.78, rad * 0.55, c, c, rad);
+  shade.addColorStop(0, "rgba(27, 27, 31, 0)");
+  shade.addColorStop(1, "rgba(27, 27, 31, .13)");
+  g.fillStyle = shade;
   g.fill();
-  g.fillStyle = "#1c2233";
-  g.font = `500 ${Math.round(size * 0.54)}px ${FONT}`;
+  g.fillStyle = INK;
+  g.font = `400 ${Math.round(size * 0.58)}px ${KAISHU}`;
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.fillText(ch, c, c + size * 0.03);
-  sprites.set(ch, img);
+  g.fillText(label, c, c + size * 0.035);
+  sprites.set(label, img);
   return img;
 }
 
@@ -150,28 +168,15 @@ function drawBackdrop() {
   img.height = canvas.height;
   const g = img.getContext("2d");
   g.scale(L.dpr, L.dpr);
-  // Ceiling slab above row 0.
-  const ceil = g.createLinearGradient(0, 0, 0, L.oy);
-  ceil.addColorStop(0, "rgba(255,255,255,.02)");
-  ceil.addColorStop(1, "rgba(255,255,255,.07)");
-  g.fillStyle = ceil;
+  // Night board; hairlines for the ceiling and the side walls.
+  g.fillStyle = NIGHT;
+  g.fillRect(0, 0, L.w, L.h);
+  g.fillStyle = "rgba(255, 255, 255, .03)";
   g.fillRect(L.ox, 0, COLS * L.s, L.oy);
-  g.fillStyle = "rgba(255,255,255,.16)";
-  g.fillRect(L.ox, L.oy - 1.5, COLS * L.s, 1.5);
-  // Side walls.
-  const wall = g.createLinearGradient(0, 0, 0, L.h);
-  wall.addColorStop(0, "rgba(140,190,255,.0)");
-  wall.addColorStop(0.5, "rgba(140,190,255,.22)");
-  wall.addColorStop(1, "rgba(140,190,255,.0)");
-  g.fillStyle = wall;
+  g.fillStyle = LINE_NIGHT;
+  g.fillRect(L.ox, L.oy - 1, COLS * L.s, 1);
   g.fillRect(L.ox - 1, 0, 1, L.h);
   g.fillRect(L.ox + COLS * L.s, 0, 1, L.h);
-  // Launcher pad.
-  const pad = g.createRadialGradient(X(LAUNCHER.x), Y(LAUNCHER.y), L.s * 0.3, X(LAUNCHER.x), Y(LAUNCHER.y), L.s * 1.3);
-  pad.addColorStop(0, "rgba(120,180,255,.22)");
-  pad.addColorStop(1, "rgba(120,180,255,0)");
-  g.fillStyle = pad;
-  g.fillRect(X(LAUNCHER.x) - L.s * 1.4, Y(LAUNCHER.y) - L.s * 1.4, L.s * 2.8, L.s * 2.8);
   backdrop = img;
 }
 
@@ -207,7 +212,7 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(backdrop, 0, 0);
   ctx.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
-  if (!view) return;
+  if (!view || !fontReady) return;
 
   if (fx.shake) {
     const t = (clock - fx.shake.at) / 260;
@@ -252,12 +257,13 @@ function drawLine() {
   ctx.lineWidth = 2;
   if (danger) {
     const pulse = reduced.matches ? 1 : 0.65 + 0.35 * Math.sin(clock / 160);
-    ctx.strokeStyle = `rgba(255, 93, 93, ${0.6 + 0.4 * pulse})`;
-    ctx.shadowColor = "rgba(255, 70, 70, .9)";
+    ctx.globalAlpha = 0.6 + 0.4 * pulse;
+    ctx.strokeStyle = DANGER;
+    ctx.shadowColor = DANGER;
     ctx.shadowBlur = 14 * pulse;
     ctx.lineWidth = 3;
   } else {
-    ctx.strokeStyle = "rgba(255,255,255,.22)";
+    ctx.strokeStyle = "rgba(255, 255, 255, .24)";
   }
   ctx.beginPath();
   ctx.moveTo(X(0), y);
@@ -273,7 +279,7 @@ function drawGuide() {
   let along = 0;
   let total = 0;
   for (let i = 1; i < g.path.length; i++) total += Math.hypot(g.path[i].x - g.path[i - 1].x, g.path[i].y - g.path[i - 1].y);
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle = INK_NIGHT;
   for (let i = 1; i < g.path.length; i++) {
     const a = g.path[i - 1];
     const b = g.path[i];
@@ -296,7 +302,7 @@ function drawGuide() {
     ctx.save();
     ctx.setLineDash([L.s * 0.1, L.s * 0.08]);
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = "rgba(255,255,255,.55)";
+    ctx.strokeStyle = "rgba(246, 244, 239, .55)";
     ctx.beginPath();
     ctx.arc(X(p.x), Y(p.y), L.s * 0.45, 0, Math.PI * 2);
     ctx.stroke();
@@ -312,8 +318,8 @@ function drawLauncher() {
   const ly = Y(LAUNCHER.y);
   // Ring.
   ctx.save();
-  ctx.strokeStyle = "rgba(160, 205, 255, .45)";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = LINE_NIGHT;
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.arc(lx, ly, L.s * 0.6, 0, Math.PI * 2);
   ctx.stroke();
@@ -323,7 +329,7 @@ function drawLauncher() {
   const total = roundShots(game.round);
   for (let i = 0; i < total; i++) {
     const x = X(LAUNCHER.x - 1.35 - i * 0.24);
-    ctx.fillStyle = i < left ? (left <= 1 ? "#ff7a59" : "rgba(255,255,255,.75)") : "rgba(255,255,255,.16)";
+    ctx.fillStyle = i < left ? (left <= 1 ? DANGER : "rgba(246, 244, 239, .75)") : LINE_NIGHT;
     ctx.beginPath();
     ctx.arc(x, Y(LAUNCHER.y + 0.3), L.s * 0.07, 0, Math.PI * 2);
     ctx.fill();
@@ -355,7 +361,7 @@ function drawFlight() {
     d -= len;
   }
   if (!reduced.matches) {
-    ctx.fillStyle = "rgba(160, 210, 255, .25)";
+    ctx.fillStyle = "rgba(246, 244, 239, .14)";
     ctx.beginPath();
     ctx.arc(X(x), Y(y), L.s * 0.56, 0, Math.PI * 2);
     ctx.fill();
@@ -423,9 +429,10 @@ function drawPopups() {
     const t = clamp01((clock - p.at) / 900);
     const rise = reduced.matches ? 0 : ease(t) * 1.1;
     ctx.globalAlpha = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;
-    ctx.font = `800 ${Math.round(L.s * 0.48)}px system-ui, sans-serif`;
+    ctx.font = `600 ${Math.round(L.s * 0.46)}px ${SANS}`;
     ctx.lineWidth = 4;
-    ctx.strokeStyle = "rgba(13,21,38,.7)";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(15, 20, 36, .75)";
     ctx.strokeText(p.text, X(p.x), Y(p.y - rise));
     ctx.fillStyle = p.color;
     ctx.fillText(p.text, X(p.x), Y(p.y - rise));
@@ -567,16 +574,20 @@ function gameOver() {
   for (const word of game.history) {
     const entries = game.lexicon.entries.get(word) || [];
     const first = entries[0];
+    if (!first) continue;
     const li = el("li");
     // Opens the network page focused on the word (hsk-network spec #page-word-link).
-    const row = el("a", `pw l${first ? first.level : 1}`);
-    if (first) row.href = `../#word=${encodeURIComponent(first.id)}`;
-    row.lang = "zh-Hant";
-    row.append(el("span", "p-trad", word));
-    row.append(el("span", "p-zy", entries.map((e) => wordReading(e, chars).zhuyin).filter(uniq).join(" / ")));
-    const def = el("span", "p-def", first ? wordReading(first, chars).defs[0] || "" : "");
-    def.lang = "en";
-    row.append(def);
+    const row = el("a", `pw l${first.level}`);
+    row.href = `../#word=${encodeURIComponent(first.id)}`;
+    const label = el("span", "p-word", wordLabel(first, script));
+    label.lang = hanLang();
+    // Zhuyin (or pinyin) on one line after the characters (#feel-type).
+    const reading = el("span", "p-reading");
+    entries.forEach((e, i) => {
+      if (i) reading.append(" / ");
+      reading.append(pieceNode(renderReading(readingOf(e, chars), script)));
+    });
+    row.append(label, reading, senseNode(readingOf(first, chars).defs[0], "p-def"));
     li.append(row);
     list.append(li);
   }
@@ -587,6 +598,87 @@ function gameOver() {
 
 function uniq(v, i, a) {
   return a.indexOf(v) === i;
+}
+
+// ---- Card text, rendered through ../senses.js in the current script.
+
+const hanLang = () => (script === "pinyin" ? "zh-Hans" : "zh-Hant");
+
+function pieceNode(p) {
+  if (p.kind === "zhuyin") {
+    // One line: syllables 0.3em apart (hsk-network #zhuyin-line).
+    const n = el("span", "zy-line");
+    n.lang = "zh-Hant";
+    for (const syl of p.syllables) n.append(el("span", "zy-syl", syl));
+    return n;
+  }
+  if (p.kind === "pinyin") return el("span", "py", p.text);
+  if (p.kind === "han") {
+    const n = el("span", "han", p.text);
+    n.lang = p.lang;
+    return n;
+  }
+  return document.createTextNode(p.text);
+}
+
+function senseNode(sense, cls) {
+  const node = el("span", cls);
+  node.lang = "en";
+  if (!sense) return node;
+  const { tag, pieces } = renderSense(sense, script);
+  if (tag) node.append(el("span", "s-tag", tag), " ");
+  node.append(...pieces.map(pieceNode));
+  return node;
+}
+
+// Headword (hsk-network #zhuyin-layout-heading): Zhuyin stacked beside each
+// character, pinyin centered above it, or the reading on one line under.
+function headwordNode(word) {
+  const h = headword(word, script);
+  const node = el("div", `hw hw-${h.kind}`);
+  if (h.kind === "line") {
+    node.lang = h.han.lang;
+    node.append(el("span", "hw-han", h.han.text), pieceNode(h.reading));
+    return node;
+  }
+  node.lang = h.lang;
+  for (const cell of h.cells) {
+    if (h.kind === "ruby") {
+      const r = el("ruby", "hw-cell", cell.char);
+      r.append(el("rt", "py", cell.pinyin));
+      node.append(r);
+      continue;
+    }
+    const c = el("span", "hw-cell");
+    const col = el("span", "hw-zy");
+    if (cell.neutral) col.append(el("span", "hw-dot", "˙"));
+    cell.symbols.forEach((sym, i) => {
+      const n = el("span", "hw-sym", sym);
+      if (i === cell.symbols.length - 1 && cell.tone) n.append(el("span", "hw-tone", cell.tone));
+      col.append(n);
+    });
+    c.append(el("span", "hw-char", cell.char), col);
+    node.append(c);
+  }
+  return node;
+}
+
+// A card body: one reading shows the headword and its first sense; several
+// (#rule-readings) show the characters, then each reading with its first sense.
+function fillCard(form, readings) {
+  if (readings.length === 1) {
+    const r = readings[0];
+    cardEl.append(headwordNode({ ...form, pinyin: r.pinyin, zhuyin: r.zhuyin }), senseNode(r.defs[0], "k-def"));
+    return;
+  }
+  const han = el("div", "hw hw-plain", wordLabel(form, script));
+  han.lang = hanLang();
+  cardEl.append(han);
+  for (const r of readings) {
+    const line = el("div", "k-reading");
+    line.append(pieceNode(renderReading(r, script)), senseNode(r.defs[0], "k-def"));
+    cardEl.append(line);
+  }
 }
 
 // ---- Word cards: one after another, longest word first; the last one
@@ -612,31 +704,21 @@ function nextCard() {
   const levels = w.entries.map((e) => e.level).filter(uniq);
   cardEl.className = `wcard l${levels[0]}`;
   cardEl.replaceChildren();
-  const head = el("div", "k-head");
-  const trad = el("span", "k-trad", w.word);
-  trad.lang = "zh-Hant";
-  head.append(trad);
-  for (const lv of levels) {
-    const tag = el("span", "c-level");
-    tag.append(el("span", `swatch l${lv}`), `HSK ${lv}`);
-    head.append(tag);
-  }
-  cardEl.append(head);
   // One reading per entry sharing this Traditional form.
-  for (const e of w.entries) {
-    const line = el("div", "k-reading");
-    const { zhuyin, defs } = wordReading(e, chars);
-    const zy = el("span", "k-zy", zhuyin);
-    zy.lang = "zh-Hant";
-    line.append(zy, el("span", "k-def", defs[0] || ""));
-    cardEl.append(line);
+  fillCard({ trad: w.word, simp: w.entries[0].simp }, w.entries.map((e) => readingOf(e, chars)));
+  const lv = el("div", "k-levels");
+  for (const n of levels) {
+    const tag = el("span", "k-level");
+    tag.append(el("span", `swatch l${n}`), `HSK ${n}`);
+    lv.append(tag);
   }
+  cardEl.append(lv);
   cardEl.hidden = false;
   say(w);
   if (!cards.length) { cardResting = true; return; }
   after(1300, () => {
     cardEl.classList.add("out");
-    after(220, nextCard);
+    after(150, nextCard);
   });
 }
 
@@ -653,7 +735,7 @@ function dismissCard() {
   cardResting = false;
   cardEl.classList.add("out");
   const gen = ++cardGen;
-  after(220, () => { if (gen === cardGen) cardEl.hidden = true; });
+  after(150, () => { if (gen === cardGen) cardEl.hidden = true; });
 }
 
 // ---- Character cards (spec #rule-inspect): right-click, or hold a bubble
@@ -672,21 +754,9 @@ function inspect(p) {
   cardGen++;
   cardEl.className = "wcard ccard";
   cardEl.replaceChildren();
-  const head = el("div", "k-head");
-  const trad = el("span", "k-trad", ch);
-  trad.lang = "zh-Hant";
-  head.append(trad);
-  cardEl.append(head);
-  for (const { zhuyin, defs } of charReadings(ch, chars)) {
-    const line = el("div", "k-reading");
-    const zy = el("span", "k-zy", zhuyin);
-    zy.lang = "zh-Hant";
-    line.append(zy);
-    const def = el("span", "k-def", defs[0] || "");
-    def.lang = "en";
-    line.append(def);
-    cardEl.append(line);
-  }
+  // The character's own readings from the character table, in the script mode.
+  const entry = chars[ch];
+  fillCard({ trad: ch, simp: entry.simp || ch }, entry.readings.map((_, reading) => readingOf({ trad: ch, reading }, chars)));
   cardEl.hidden = false;
 }
 
@@ -766,7 +836,7 @@ function land() {
           const a = Math.random() * Math.PI * 2;
           const v = 2.5 + Math.random() * 3.5;
           fx.parts.push({ x: p.x, y: p.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1, at: clock + delay, life: 420 + Math.random() * 200,
-            size: 0.05 + Math.random() * 0.07, color: i % 2 ? color : "#fff4dc" });
+            size: 0.05 + Math.random() * 0.07, color: i % 2 ? color : PAPER });
         }
       }
       const d = delay;
@@ -787,7 +857,7 @@ function land() {
     if (!reduced.matches) fx.shake = { at: clock };
     vibrate(events.fallen.length ? [18, 40, 28] : 18);
     fx.popups.push({ text: `+${events.points.toLocaleString("en-US")}${events.combo > 1 ? ` ×${events.combo}` : ""}`, x: settledAt.x, y: settledAt.y, at: clock + 60,
-      color: events.combo > 1 ? "#ffd166" : "#ffffff" });
+      color: INK_NIGHT });
     queueCards(events.words);
   }
 
@@ -1001,7 +1071,7 @@ window.addEventListener("pagehide", pause);
 document.addEventListener("dblclick", (e) => e.preventDefault(), { passive: false });
 document.addEventListener("gesturestart", (e) => e.preventDefault());
 document.addEventListener("touchmove", (e) => {
-  if (!e.target.closest(".sheet")) e.preventDefault();
+  if (!e.target.closest(".sheet, .scroll")) e.preventDefault();
 }, { passive: false });
 
 // ---- Pronunciation: on at first; each popped word is said as its card shows.
@@ -1117,6 +1187,32 @@ soundBtns.forEach((b) => b.addEventListener("click", () => {
   sfx("swap");
 }));
 
+// ---- Script setting: relabels bubbles and cards; the network reads the same key.
+
+function renderScript() {
+  for (const b of scriptBtns) {
+    b.setAttribute("aria-checked", script === "pinyin" ? "true" : "false");
+    b.querySelector(".script-state").textContent = script === "pinyin" ? "Pinyin" : "Zhuyin";
+    b.title = script === "pinyin" ? "Simplified with pinyin; tap for Traditional with Zhuyin" : "Traditional with Zhuyin; tap for Simplified with pinyin";
+  }
+}
+
+function setScript(mode) {
+  if (mode === script) return;
+  script = mode;
+  renderScript();
+  sprites = new Map(); // bubbles redraw with their new labels
+  draw();
+}
+
+scriptBtns.forEach((b) => b.addEventListener("click", () => {
+  const mode = script === "pinyin" ? "zhuyin" : "pinyin";
+  try { localStorage.setItem(SCRIPT_KEY, mode); } catch { /* storage off: lasts this visit */ }
+  setScript(mode);
+}));
+// A change on the network page in another tab follows here.
+window.addEventListener("storage", (e) => { if (e.key === SCRIPT_KEY) setScript(readScript()); });
+
 // ---- Level switches: the last one on cannot switch off.
 
 function renderLevels() {
@@ -1154,16 +1250,23 @@ if (!settings.levels.length) settings.levels = [1, 2];
 renderLevels();
 renderSound();
 renderSay();
+renderScript();
 recordBest();
 new ResizeObserver(layout).observe(app);
 if (window.visualViewport) visualViewport.addEventListener("resize", layout);
 
-fetch("../data/graph.json")
-  .then((r) => r.json())
-  .then((data) => {
-    words = data.words;
-    chars = data.chars;
-    $("cedict-release").textContent = data.meta?.cedictRelease || "(unknown)";
+// Bubbles are drawn only once the kaishu face has loaded (#feel-type); the
+// load settles even if the face fails, so the game never hangs on it.
+const kaishu = document.fonts.load(`400 32px ${KAISHU}`, "學").catch(() => {});
+const data = fetch("../data/graph.json").then((r) => r.json());
+
+Promise.all([data, kaishu])
+  .then(([graph]) => {
+    words = graph.words;
+    chars = graph.chars;
+    $("cedict-release").textContent = graph.meta?.cedictRelease || "(unknown)";
+    fontReady = true;
+    sprites = new Map();
     playBtn.disabled = false;
     playBtn.textContent = "Play";
     // A still board behind the start screen.
