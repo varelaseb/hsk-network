@@ -6,7 +6,8 @@
 
 import {
   COLS, ROW_H, LINE_ROW, LINE_Y, LAUNCHER, HEIGHT, MIN_ANGLE, MAX_ANGLE,
-  createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation, lookupChar,
+  createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
+  wordReading, charReadings,
 } from "./rules.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
@@ -62,7 +63,7 @@ const FONT = '"PingFang TC", "Heiti TC", "Noto Sans CJK TC", "Noto Sans TC", "Mi
 const LEVEL_COLOR = { 1: "#0072b2", 2: "#e69f00" };
 
 let words = [];
-let chars = null;
+let chars = {};       // graph.json character table, read through by wordReading
 let demoBoard = null; // still board behind the start screen
 let screen = "start";
 let game = null;       // rules state after the last shot
@@ -488,6 +489,7 @@ function renderHud() {
 
 function show(name) {
   screen = name;
+  closeInspect(); // a screen change never leaves a character card behind
   for (const [k, node] of Object.entries(screens)) node.hidden = k !== name;
   hud.hidden = !(name === "playing" || name === "paused");
   if (name === "playing") startLoop();
@@ -571,8 +573,8 @@ function gameOver() {
     if (first) row.href = `../#word=${encodeURIComponent(first.id)}`;
     row.lang = "zh-Hant";
     row.append(el("span", "p-trad", word));
-    row.append(el("span", "p-zy", entries.map((e) => e.zhuyin).filter(uniq).join(" / ")));
-    const def = el("span", "p-def", first ? first.defs[0] || "" : "");
+    row.append(el("span", "p-zy", entries.map((e) => wordReading(e, chars).zhuyin).filter(uniq).join(" / ")));
+    const def = el("span", "p-def", first ? wordReading(first, chars).defs[0] || "" : "");
     def.lang = "en";
     row.append(def);
     li.append(row);
@@ -623,9 +625,10 @@ function nextCard() {
   // One reading per entry sharing this Traditional form.
   for (const e of w.entries) {
     const line = el("div", "k-reading");
-    const zy = el("span", "k-zy", e.zhuyin);
+    const { zhuyin, defs } = wordReading(e, chars);
+    const zy = el("span", "k-zy", zhuyin);
     zy.lang = "zh-Hant";
-    line.append(zy, el("span", "k-def", e.defs[0] || ""));
+    line.append(zy, el("span", "k-def", defs[0] || ""));
     cardEl.append(line);
   }
   cardEl.hidden = false;
@@ -663,7 +666,6 @@ function inspect(p) {
   if (!game || screen !== "playing" || (cardShowing && !cardResting)) return;
   const ch = bubbleAt(p);
   if (!ch) return;
-  const info = lookupChar(ch, chars);
   cardShowing = false;
   cardResting = false;
   inspecting = true;
@@ -671,16 +673,16 @@ function inspect(p) {
   cardEl.className = "wcard ccard";
   cardEl.replaceChildren();
   const head = el("div", "k-head");
-  const trad = el("span", "k-trad", info.char);
+  const trad = el("span", "k-trad", ch);
   trad.lang = "zh-Hant";
   head.append(trad);
   cardEl.append(head);
-  for (const r of info.readings) {
+  for (const { zhuyin, defs } of charReadings(ch, chars)) {
     const line = el("div", "k-reading");
-    const zy = el("span", "k-zy", r.zhuyin);
+    const zy = el("span", "k-zy", zhuyin);
     zy.lang = "zh-Hant";
     line.append(zy);
-    const def = el("span", "k-def", r.def);
+    const def = el("span", "k-def", defs[0] || "");
     def.lang = "en";
     line.append(def);
     cardEl.append(line);
@@ -1160,7 +1162,7 @@ fetch("../data/graph.json")
   .then((r) => r.json())
   .then((data) => {
     words = data.words;
-    chars = data.chars || null;
+    chars = data.chars;
     $("cedict-release").textContent = data.meta?.cedictRelease || "(unknown)";
     playBtn.disabled = false;
     playBtn.textContent = "Play";

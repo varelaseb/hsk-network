@@ -190,5 +190,271 @@
   "trad": "最",
   "pinyin": "zui4",
   "reason": "㝡 and 冣 are variants"
+ },
+ {
+  "id": "c-不",
+  "char": "不",
+  "parts": [],
+  "reason": "pictograph; its IDS splits it into strokes with no meaning"
+ },
+ {
+  "id": "c-電",
+  "char": "電",
+  "parts": [
+   {
+    "char": "雨",
+    "meaning": "rain"
+   },
+   {
+    "char": "申",
+    "meaning": "lightning"
+   }
+  ],
+  "reason": "its bottom is an unencoded form of 申, the old graph for lightning"
+ },
+ {
+  "id": "c-話",
+  "char": "話",
+  "parts": [
+   {
+    "char": "訁",
+    "meaning": "speech"
+   },
+   {
+    "char": "舌",
+    "meaning": "tongue"
+   }
+  ],
+  "reason": "訁, the side form of 言 speech, has only a radical number as kDefinition"
+ },
+ {
+  "id": "c-西",
+  "char": "西",
+  "parts": [],
+  "reason": "pictograph of a bird's nest; its part 𠁤 has no kDefinition"
+ },
+ {
+  "id": "c-少",
+  "char": "少",
+  "parts": [
+   {
+    "char": "小",
+    "meaning": "small"
+   },
+   {
+    "char": "丿",
+    "meaning": "line"
+   }
+  ],
+  "reason": "IDS writes 小 as 𡭔 and its last stroke as ㇒; both have no kDefinition"
+ },
+ {
+  "id": "c-看",
+  "char": "看",
+  "parts": [
+   {
+    "char": "手",
+    "meaning": "hand"
+   },
+   {
+    "char": "目",
+    "meaning": "eye"
+   }
+  ],
+  "reason": "龵 is the top form of 手 and has no kDefinition: a hand shading the eye"
+ },
+ {
+  "id": "c-沒",
+  "char": "沒",
+  "parts": [
+   {
+    "char": "氵",
+    "meaning": "water"
+   },
+   {
+    "char": "𠬛",
+    "meaning": "to dive under water"
+   }
+  ],
+  "reason": "IDS splits the right side as ⿱勹又, which is the character 𠬛"
+ },
+ {
+  "id": "c-能",
+  "char": "能",
+  "parts": [],
+  "reason": "pictograph of a bear; its parts 䏍 and 𫧇 have no fitting meaning"
+ },
+ {
+  "id": "c-年",
+  "char": "年",
+  "parts": [],
+  "reason": "pictograph of a man carrying grain; its parts are unencoded or lack a kDefinition"
+ },
+ {
+  "id": "c-上",
+  "char": "上",
+  "parts": [],
+  "reason": "indicative sign, a mark above a line; ⺊ has no kDefinition"
+ },
+ {
+  "id": "c-午",
+  "char": "午",
+  "parts": [],
+  "reason": "pictograph of a pestle; its part 𠂉 has no kDefinition"
+ },
+ {
+  "id": "c-是",
+  "char": "是",
+  "parts": [
+   {
+    "char": "日",
+    "meaning": "sun"
+   },
+   {
+    "char": "正",
+    "meaning": "right"
+   }
+  ],
+  "reason": "𤴓 is the bottom form of 正 and has no kDefinition; Shuowen reads 是 as 日 + 正"
+ },
+ {
+  "id": "c-水",
+  "char": "水",
+  "parts": [],
+  "reason": "pictograph of flowing water; IDS splits it into a stroke and a form with no kDefinition"
+ },
+ {
+  "id": "c-我",
+  "char": "我",
+  "parts": [],
+  "reason": "pictograph of a pronged halberd; IDS splits it into strokes and an unencoded form"
+ },
+ {
+  "id": "c-生",
+  "char": "生",
+  "parts": [],
+  "reason": "pictograph of a sprout from the soil; IDS splits it into a stroke and 龶, which has no kDefinition"
+ },
+ {
+  "id": "c-在",
+  "char": "在",
+  "parts": [
+   {
+    "char": "才",
+    "meaning": "talent"
+   },
+   {
+    "char": "土",
+    "meaning": "soil"
+   }
+  ],
+  "reason": "its outer part is an unencoded form of 才, its sound part"
+ },
+ {
+  "id": "c-小",
+  "char": "小",
+  "parts": [],
+  "reason": "pictograph of three small dots; IDS splits it into strokes"
+ },
+ {
+  "id": "c-長",
+  "char": "長",
+  "parts": [],
+  "reason": "pictograph of a person with long hair; both IDS parts are unencoded"
+ },
+ {
+  "id": "c-以",
+  "char": "以",
+  "parts": [],
+  "reason": "pictograph; IDS splits it into 人 and strokes with no meaning"
+ },
+ {
+  "id": "c-邊",
+  "char": "邊",
+  "parts": [
+   {
+    "char": "辶",
+    "meaning": "walk"
+   },
+   {
+    "char": "臱",
+    "meaning": "out of sight"
+   }
+  ],
+  "reason": "臱 has no kDefinition; Shuowen glosses it as out of sight"
+ },
+ {
+  "id": "c-手",
+  "char": "手",
+  "parts": [],
+  "reason": "pictograph of a hand; IDS splits it into strokes"
+ },
+ {
+  "id": "c-為",
+  "char": "為",
+  "parts": [],
+  "reason": "pictograph of a hand leading an elephant; IDS splits it into strokes"
+ },
+ {
+  "id": "c-面",
+  "char": "面",
+  "parts": [],
+  "reason": "pictograph of a face; its part 丆 has only a Korean name as kDefinition"
+ },
+ {
+  "id": "c-車",
+  "char": "車",
+  "parts": [],
+  "reason": "pictograph of a cart seen from above; 亘 + 丨 is a split by strokes"
+ },
+ {
+  "id": "c-日",
+  "char": "日",
+  "parts": [],
+  "reason": "pictograph of the sun; 囗 + 一 would read as erect + one"
+ },
+ {
+  "id": "c-子",
+  "char": "子",
+  "parts": [],
+  "reason": "pictograph of a child; 了 + 一 is a split by strokes"
+ },
+ {
+  "id": "c-中",
+  "char": "中",
+  "parts": [],
+  "radicalMeaning": "line",
+  "reason": "indicative sign, a line through a center; kDefinition of radical 丨 starts with a Hangzhou numeral sense"
+ },
+ {
+  "id": "c-回",
+  "char": "回",
+  "parts": [
+   {
+    "char": "囗",
+    "meaning": "enclosure"
+   },
+   {
+    "char": "口",
+    "meaning": "mouth"
+   }
+  ],
+  "radicalMeaning": "enclosure",
+  "reason": "kDefinition of 囗 starts with erect, a sense it does not have here"
+ },
+ {
+  "id": "c-麼",
+  "char": "麼",
+  "parts": [
+   {
+    "char": "麻",
+    "meaning": "hemp"
+   },
+   {
+    "char": "幺",
+    "meaning": "tiny"
+   }
+  ],
+  "reason": "kDefinition of 幺 starts with one; tiny is its sense here"
  }
 ]
