@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="./.style/spec.css">
+<title>HSK bubbles</title>
+<script defer src="./.viz/runtime.js"></script>
+</head>
+<body>
+<article class="spec" data-spec-version="1" data-spec-contract="shaped-sections-v1">
+
+<header data-anchor="header">
+<h1 data-anchor="title">HSK bubbles</h1>
+<nav data-anchor="breadcrumbs">docs / specs / hsk-bubbles.spec.html</nav>
+<p data-anchor="context">A bubble shooter game on the HSK network site, built for a phone held in one hand.</p>
+<p data-anchor="context-2">The learner aims and shoots Traditional character bubbles; connected bubbles that spell an HSK word pop and show the word with its Zhuyin and English, and bubbles left hanging fall.</p>
+<p data-anchor="context-3">It reuses the network's word data file unchanged; script, reading aid, levels, and sources follow <a href="hsk-network.spec.html#defaults">the network defaults</a>.</p>
+</header>
+
+<section data-spec-section="user-stories" data-anchor="user-stories">
+<h2>User stories</h2>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-play">As a learner on a phone, I aim with one thumb and shoot character bubbles into a board, and it feels smooth, quick, and polished.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-word">As a learner, when my shot spells an HSK word with connected bubbles, the word pops and I see it with its Zhuyin and English, so I learn words while playing.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-fall">As a learner, bubbles left hanging after a pop fall away and score a bonus, so I plan shots that clear more.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-progress">As a learner, I see my score, round, and best score, the game gets harder each round, and it ends when the bubbles reach the bottom line.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-levels">As a learner, I choose which HSK levels the game uses, so I practice one level at a time.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-review">As a learner, after a game I review the words I popped and can open each in the network.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-quiet">As a learner, the game is silent until I turn sound or vibration on, and it respects my reduced-motion setting.</p>
+<p data-user-story data-user-facing="false" data-anchor="story-maintain">As a maintainer, the game rules are a separate module with unit tests that run on every pull request, and the game ships with the site on every merge to main.</p>
+</section>
+
+<section data-spec-section="acceptance" data-acceptance-scope="hsk-bubbles" data-anchor="acceptance">
+<h2>Acceptance criteria</h2>
+<div class="table-scroll" data-anchor="acceptance-table-scroll">
+<table data-anchor="acceptance-table">
+<thead><tr><th>Criterion</th><th>Scenario</th><th>Observable</th></tr></thead>
+<tbody>
+<tr data-acceptance-criterion data-anchor="acceptance-start" data-story="story-play story-levels"><td>Start</td><td data-acceptance-scenario>Given a learner on a phone in portrait. When the learner opens the game page.</td><td data-acceptance-observable>Then a start screen shows the game title, an on/off switch for HSK 1 and for HSK 2 both on, the best score, and a Play button, and the page does not scroll sideways.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-board" data-story="story-play"><td>Board</td><td data-acceptance-scenario>Given a learner on a phone in portrait on the start screen. When the learner taps Play.</td><td data-acceptance-observable>Then a board of round bubbles, each showing one Traditional character, fills the top of the screen, the launcher sits at the bottom center holding the current bubble with the next bubble beside it, and the score, round, and sound control stay clear of the notch and home bar.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-aim" data-story="story-play"><td>Aim</td><td data-acceptance-scenario>Given a learner playing on a phone. When the learner presses a thumb anywhere on the board and drags it sideways without lifting, a press-and-drag gesture.</td><td data-acceptance-observable>Then a dotted guide runs from the launcher toward the thumb, bends once where it meets a side wall, and stops at the bubble it would hit.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-shoot" data-story="story-play"><td>Shoot</td><td data-acceptance-scenario>Given a learner aiming on a phone. When the learner lifts the thumb.</td><td data-acceptance-observable>Then the current bubble flies along the guide, bounces off a side wall if the guide did, settles into the board touching the bubble it hit, and the next bubble moves into the launcher.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-cancel" data-story="story-play"><td>Cancel aim</td><td data-acceptance-scenario>Given a learner aiming on a phone. When the learner drags the thumb down below the launcher and lifts it there.</td><td data-acceptance-observable>Then no bubble is shot, the guide disappears, and the launcher still holds the same bubble.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-swap" data-story="story-play"><td>Swap</td><td data-acceptance-scenario>Given a learner playing on a phone. When the learner taps the launcher.</td><td data-acceptance-observable>Then the current and next bubbles trade places.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-pop" data-story="story-word"><td>Pop a word</td><td data-acceptance-scenario>Given a learner playing a board where the current bubble completes an HSK word with a bubble on the board (a fixture must be added to provide it). When the learner shoots the bubble into the spot that completes the word.</td><td data-acceptance-observable>Then the word's bubbles pop, a word card shows the word in Traditional characters, its Zhuyin with tone marks, its first English definition, and its HSK level, and the score rises.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-no-word" data-story="story-word"><td>No word</td><td data-acceptance-scenario>Given a learner playing a board. When the learner shoots a bubble to a spot where it spells no HSK word with its neighbors.</td><td data-acceptance-observable>Then the bubble stays where it landed, no bubble pops, and the score is unchanged.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-detect" data-story="story-word story-maintain"><td>Word rules</td><td data-acceptance-scenario>Given the game rules and a set of test boards. When each test shot lands.</td><td data-acceptance-observable>Then exactly the bubbles of the words the word rule finds pop, including words read in every direction, longer words, a shot completing two words, and shots that form no word, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-fall" data-story="story-fall"><td>Fall</td><td data-acceptance-scenario>Given a learner playing a board where popping a word leaves bubbles hanging from it (a fixture must be added to provide it). When the learner pops that word.</td><td data-acceptance-observable>Then the hanging bubbles drop off the bottom of the screen and the score rises by their bonus.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-fall-rules" data-story="story-fall story-maintain"><td>Fall rules</td><td data-acceptance-scenario>Given the game rules and a set of test boards. When a pop is resolved.</td><td data-acceptance-observable>Then exactly the bubbles no longer connected to the top row fall, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-spawn" data-story="story-play story-word story-maintain"><td>Always playable</td><td data-acceptance-scenario>Given the game rules and many seeded games. When each new launcher bubble is chosen.</td><td data-acceptance-observable>Then the current or next bubble can complete a word with a bubble a shot can reach, whenever the board holds any word partner, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-level-off" data-story="story-levels"><td>One level</td><td data-acceptance-scenario>Given a learner on the start screen. When the learner switches HSK 2 off and taps Play.</td><td data-acceptance-observable>Then the HSK 2 switch reads off, and every bubble and every word card in that game comes from HSK 1 words.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-level-last" data-story="story-levels"><td>Last level</td><td data-acceptance-scenario>Given a learner on the start screen with only HSK 1 on. When the learner tries to switch HSK 1 off.</td><td data-acceptance-observable>Then HSK 1 stays on and Play stays available.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-round" data-story="story-progress"><td>Round clear</td><td data-acceptance-scenario>Given a learner playing a board with one word left on it (a fixture must be added to provide it). When the learner pops that word.</td><td data-acceptance-observable>Then a round-clear banner shows the round bonus, and the next round starts with a new board and the round number one higher.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-ceiling" data-story="story-progress"><td>Ceiling</td><td data-acceptance-scenario>Given a learner playing a board. When the learner shoots the number of shots in a row without a pop that the round allows.</td><td data-acceptance-observable>Then the whole board moves down one row and a new row appears at the top.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-over" data-story="story-progress story-review"><td>Game over</td><td data-acceptance-scenario>Given a learner playing a board whose lowest bubbles sit one row above the bottom line (a fixture must be added to provide it). When the learner shoots a bubble that settles below the line.</td><td data-acceptance-observable>Then a game-over screen shows the final score, the best score, the words popped this game, and a Play again button.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-best" data-story="story-progress"><td>Best score</td><td data-acceptance-scenario>Given a learner who just finished a game with a new best score. When the learner reloads the game page.</td><td data-acceptance-observable>Then the start screen shows that score as the best score.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-review" data-story="story-review"><td>Review list</td><td data-acceptance-scenario>Given a learner on the game-over screen after popping words. When the learner reads the word list.</td><td data-acceptance-observable>Then each popped word appears once, with its Traditional form, Zhuyin, and first English definition.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-review-link" data-story="story-review"><td>Open in network</td><td data-acceptance-scenario>Given a learner on the game-over screen after popping words. When the learner taps a word in the list.</td><td data-acceptance-observable>Then the network page opens with that word focused and its card open.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-muted" data-story="story-quiet"><td>Muted</td><td data-acceptance-scenario>Given a learner opening the game for the first time. When the learner starts a game and pops a word.</td><td data-acceptance-observable>Then no sound plays, no vibration fires, and the sound control reads off.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sound-on" data-story="story-quiet"><td>Sound on</td><td data-acceptance-scenario>Given a learner playing with sound off. When the learner taps the sound control and reloads the page.</td><td data-acceptance-observable>Then the sound control reads on after the reload.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-pause" data-story="story-play"><td>Pause</td><td data-acceptance-scenario>Given a learner playing on a phone. When the learner switches to another app and comes back.</td><td data-acceptance-observable>Then the game shows a paused screen with a Resume button, and the board is as it was.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-reduced" data-story="story-quiet"><td>Reduced motion</td><td data-acceptance-scenario>Given a learner whose device asks for reduced motion. When the learner pops a word.</td><td data-acceptance-observable>Then the bubbles fade out without bursting particles or screen shake, and the word card still shows.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-static" data-story="story-maintain"><td>Static</td><td data-acceptance-scenario>Given the published game files. When their references are checked.</td><td data-acceptance-observable>Then the game loads only files from its own site, with no runtime API, key, font, or third-party request, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-ci" data-story="story-maintain"><td>CI</td><td data-acceptance-scenario>Given a maintainer with an open pull request. When the maintainer views its checks.</td><td data-acceptance-observable>Then the test check has run the game rule tests along with the existing suite and shows pass or fail.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hosted" data-story="story-play"><td>Hosted</td><td data-acceptance-scenario>Given a learner with only the public address. When the learner opens the game page after a change merges to main.</td><td data-acceptance-observable>Then the start screen loads with the merged version of the game.</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="acceptance-onboarding">Onboarding: not needed, the start screen and the aim guide explain the game; a first game shows one hint line, "Drag to aim, lift to shoot".</p>
+</section>
+
+<section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
+<h2>Modular boundaries</h2>
+<p data-modular-boundary data-anchor="boundary-rules"><span data-boundary-responsibility>Game rules own the board grid, shot paths and wall bounces, where a shot settles, word detection, falling, launcher bubble choice, scoring, rounds, ceiling, and game over.</span> <span data-boundary-seam>Caller-facing seam: a pure module that takes a word list, levels, and a seed, and answers each shot angle with the resulting board and events (settled, popped words, fallen bubbles, score, round clear, game over).</span> <span data-boundary-dependency>Dependency direction: self-contained; no page, timer, randomness source, or storage, so the same seed and shots always give the same game.</span> <span data-boundary-scope>Observable scope: rule unit tests.</span></p>
+<p data-modular-boundary data-anchor="boundary-game-page"><span data-boundary-responsibility>The game page owns screens, touch and pointer aiming, drawing and animation, word cards, sound and vibration, settings, and best score.</span> <span data-boundary-seam>Caller-facing seam: the public game page.</span> <span data-boundary-dependency>Dependency direction: consumes the game rules and the network's word data file read-only; it holds no dictionary logic and changes nothing in the network page or pipeline.</span> <span data-boundary-scope>Observable scope: what a learner sees, hears, and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-data"><span data-boundary-responsibility>The network's data pipeline stays the single source of words, Traditional forms, Zhuyin, definitions, and levels.</span> <span data-boundary-seam>Caller-facing seam: the existing graph data file and its schema in <a href="hsk-network.spec.html#data">the network spec</a>.</span> <span data-boundary-dependency>Dependency direction: the game depends on the file; the pipeline knows nothing of the game, and the game adds no data file.</span> <span data-boundary-scope>Observable scope: the committed graph data file.</span></p>
+<p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery runs the rule tests beside the existing suite on every pull request and publishes the game with the site directory on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages, through the existing workflows.</span> <span data-boundary-scope>Observable scope: check status and the live game page.</span></p>
+</section>
+
+<section data-anchor="decisions">
+<div class="sec-head">
+<span class="sec-num">01</span>
+<h2 data-anchor="decisions-heading">Game design</h2>
+<p class="sec-note" data-anchor="decisions-note">The rules that make it a word game rather than a color game.</p>
+</div>
+<div class="table-scroll" data-anchor="decisions-scroll">
+<table data-anchor="decisions-table">
+<thead><tr><th>Question</th><th>Rule</th></tr></thead>
+<tbody>
+<tr data-anchor="decision-word"><td>What forms a word</td><td>A chain of bubbles, each touching the one before, whose characters read an HSK word in order, and that includes the bubble just shot at any position; it may run in any direction and bend, and uses no bubble twice. Building a word from either end, or dropping its middle character into a gap, both count.</td></tr>
+<tr data-anchor="decision-length"><td>Which words count</td><td>Every HSK word of 2 to 4 characters in the levels switched on (133 two-character, 10 three-character, and 1 four-character word across HSK 1 and 2); single-character words never pop on their own.</td></tr>
+<tr data-anchor="decision-spawn"><td>Which characters appear</td><td>Boards are built by laying whole words of the levels on along chains, so every bubble starts with a word partner. Each launcher bubble is drawn three times in four from characters that complete a word with a bubble a shot can reach, and otherwise from any character still on the board; when neither the current nor the next bubble completes a word, the next one is always a completing character.</td></tr>
+<tr data-anchor="decision-score"><td>Scoring</td><td>Each popped character scores 100 times the word's length, so longer words pay more per character; each fallen bubble scores 50, doubling for every 5 in one drop. Consecutive shots that pop multiply that shot's points by 2, 3, 4, then 5 at most; a shot that pops nothing resets the combo to 1. Clearing a round scores 1000 times the round number.</td></tr>
+<tr data-anchor="decision-rounds"><td>Rounds</td><td>Round 1 starts with 5 rows and the ceiling drops one row after 8 shots in a row without a pop. Each next round starts with one more row, up to 9, and allows one shot fewer, down to 4. A round is cleared when the board is empty.</td></tr>
+<tr data-anchor="decision-over"><td>Game over</td><td>The game ends when a bubble settles below the bottom line, which sits two bubble rows above the launcher. The line is dashed and glows when the lowest bubble is one row above it. A ceiling drop that pushes a bubble below the line also ends the game.</td></tr>
+<tr data-anchor="decision-review"><td>Popped word review</td><td>The game-over screen lists the words popped this game, newest first, each once. Tapping one opens the network page focused on that word with its card open.</td></tr>
+<tr data-anchor="decision-entry"><td>Getting to the game</td><td>The network page has a "Play" link beside its level panel; the game's start and game-over screens link back to the network.</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="decisions-network" data-spec-tbd="later">The network page's "Play" link and its focusing a word named in its address are network page behavior: <a href="hsk-network.spec.html#page">the network spec</a> gains both in this change once it is on main, reviewed before implementation starts.</p>
+</section>
+
+<section data-anchor="rules">
+<div class="sec-head">
+<span class="sec-num">02</span>
+<h2 data-anchor="rules-heading">Board and rules</h2>
+<p class="sec-note" data-anchor="rules-note">A hex grid of character bubbles hanging from the ceiling.</p>
+</div>
+<figure data-anchor="word-figure">
+<div class="rail-wrap" data-anchor="word-figure-scroll">
+<svg viewBox="0 0 520 200" style="min-width: 460px" role="img" aria-label="Word detection example: a shot 生 lands touching 學; 學 then 生 reads 學生, so both pop. 校 hung only from 學 and falls.">
+<line x1="10" y1="12" x2="510" y2="12" stroke="#5b5f6b" stroke-width="2"></line>
+<text x="420" y="30" font-size="12" fill="#3d4049">ceiling</text>
+<circle cx="60" cy="42" r="26" fill="#ffffff" stroke="#5b5f6b"></circle><text x="50" y="49" font-size="20" fill="#171719">喜</text>
+<circle cx="114" cy="42" r="26" fill="#ffffff" stroke="#5b5f6b"></circle><text x="104" y="49" font-size="20" fill="#171719">歡</text>
+<circle cx="168" cy="42" r="26" fill="#ffffff" stroke="#5b5f6b"></circle><text x="158" y="49" font-size="20" fill="#171719">中</text>
+<circle cx="141" cy="88" r="26" fill="#e9edfb" stroke="#2947c7" stroke-width="2"></circle><text x="131" y="95" font-size="20" fill="#171719">學</text>
+<circle cx="114" cy="134" r="26" fill="#fff3e0" stroke="#a65c00" stroke-width="2" stroke-dasharray="4 3"></circle><text x="104" y="141" font-size="20" fill="#171719">校</text>
+<circle cx="168" cy="134" r="26" fill="#e9edfb" stroke="#2947c7" stroke-width="2"></circle><text x="158" y="141" font-size="20" fill="#171719">生</text>
+<path d="M 168 190 L 168 162" stroke="#2947c7" stroke-width="2" marker-end="url(#arrow)"></path>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2947c7"></path></marker></defs>
+<text x="240" y="70" font-size="13" fill="#171719">Blue: shot 生 lands touching 學; 學 → 生 reads 學生, both pop.</text>
+<text x="240" y="100" font-size="13" fill="#171719">Dashed orange: 校 hung only from 學, so it falls.</text>
+<text x="240" y="130" font-size="13" fill="#171719">喜歡 and 中 stay: still hang from the ceiling.</text>
+</svg>
+</div>
+<figcaption data-anchor="word-figure-caption">One shot: the chain through the shot bubble reads a word, it pops, and what hung only from it falls.</figcaption>
+</figure>
+<ul data-anchor="rules-list">
+<li data-anchor="rule-grid">The board is 8 bubbles wide with every other row offset by half a bubble; bubble size is the play width divided by 8.</li>
+<li data-anchor="rule-flight">A shot flies straight at a fixed speed, reflects off the side walls any number of times, and stops when it touches a bubble or the ceiling; it settles into the nearest free grid cell.</li>
+<li data-anchor="rule-aim-limit">Aim is limited to between 10 and 170 degrees from the horizontal, so no shot runs flat along the launcher line.</li>
+<li data-anchor="rule-resolve">After a shot settles: find words through it by the word rule in <a href="#decision-word">Game design</a>, pop the bubbles of every word found, then drop every bubble no longer connected to the ceiling, then score, then check round clear, ceiling, and game over, in that order.</li>
+<li data-anchor="rule-several">When one shot forms several words, all pop and their cards show one after another, longest word first.</li>
+<li data-anchor="rule-readings">A word card shows the word's data entry; when two entries share the Traditional form, it shows each reading's Zhuyin with that entry's first definition.</li>
+<li data-anchor="rule-launcher">Launcher bubbles are chosen by the rule in <a href="#decision-spawn">Game design</a> from characters still on the board, so a board never strands the learner with a character that has no partner left.</li>
+<li data-anchor="rule-seed">Each game takes a seed; the same seed, levels, and shots replay the same game.</li>
+</ul>
+</section>
+
+<section data-anchor="screens">
+<div class="sec-head">
+<span class="sec-num">03</span>
+<h2 data-anchor="screens-heading">Screens and feel</h2>
+<p class="sec-note" data-anchor="screens-note">Portrait first, one thumb, nothing to read mid-shot except the word card.</p>
+</div>
+<figure data-anchor="layout-figure">
+<div class="rail-wrap" data-anchor="layout-figure-scroll">
+<svg viewBox="0 0 640 360" style="min-width: 560px" role="img" aria-label="Phone layout: top bar with score, round, sound and pause; board of character bubbles; dashed bottom line; word card above the launcher; launcher at bottom center with next bubble to its right. Desktop: the same column centered with empty sides.">
+<rect x="10" y="10" width="200" height="340" rx="18" fill="#ffffff" stroke="#5b5f6b"></rect>
+<text x="20" y="30" font-size="12" fill="#3d4049">Phone</text>
+<text x="22" y="50" font-size="12" fill="#171719">2 400  ·  Round 2</text>
+<text x="150" y="50" font-size="12" fill="#171719">♪  ❚❚</text>
+<circle cx="36" cy="72" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="29" y="77" font-size="13" fill="#171719">學</text>
+<circle cx="61" cy="72" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="54" y="77" font-size="13" fill="#171719">喜</text>
+<circle cx="86" cy="72" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="79" y="77" font-size="13" fill="#171719">歡</text>
+<circle cx="111" cy="72" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="104" y="77" font-size="13" fill="#171719">火</text>
+<circle cx="136" cy="72" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="129" y="77" font-size="13" fill="#171719">車</text>
+<circle cx="161" cy="72" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="154" y="77" font-size="13" fill="#171719">站</text>
+<circle cx="49" cy="94" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="42" y="99" font-size="13" fill="#171719">生</text>
+<circle cx="74" cy="94" r="12" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="67" y="99" font-size="13" fill="#171719">中</text>
+<text x="60" y="170" font-size="12" fill="#3d4049">board</text>
+<line x1="20" y1="250" x2="200" y2="250" stroke="#a65c00" stroke-dasharray="5 4"></line>
+<rect x="30" y="200" width="160" height="42" rx="10" fill="#ffffff" stroke="#2947c7" stroke-width="1.5"></rect>
+<text x="40" y="218" font-size="13" fill="#171719">學生  ㄒㄩㄝˊ ˙ㄕㄥ</text>
+<text x="40" y="236" font-size="11" fill="#171719">student · HSK 1</text>
+<line x1="110" y1="300" x2="80" y2="270" stroke="#2947c7" stroke-dasharray="2 4" stroke-width="2"></line>
+<circle cx="110" cy="310" r="16" fill="#e9edfb" stroke="#2947c7" stroke-width="2"></circle><text x="102" y="316" font-size="15" fill="#171719">校</text>
+<circle cx="146" cy="316" r="10" fill="#f3f4f6" stroke="#5b5f6b"></circle><text x="140" y="320" font-size="11" fill="#171719">同</text>
+<text x="24" y="340" font-size="11" fill="#3d4049">home bar safe area</text>
+<rect x="250" y="10" width="380" height="340" rx="8" fill="#ffffff" stroke="#5b5f6b"></rect>
+<text x="260" y="30" font-size="12" fill="#3d4049">Desktop</text>
+<rect x="350" y="20" width="180" height="320" fill="#f8f9fb" stroke="#c7cad1"></rect>
+<text x="372" y="180" font-size="12" fill="#3d4049">same column, centered</text>
+</svg>
+</div>
+<figcaption data-anchor="layout-figure-caption">The word card floats above the launcher so the thumb never covers it; desktop keeps the phone column centered and aims with the mouse.</figcaption>
+</figure>
+<div class="table-scroll" data-anchor="screens-scroll">
+<table data-anchor="screens-table">
+<thead><tr><th>Screen</th><th>Shows</th><th>Leaves by</th></tr></thead>
+<tbody>
+<tr data-anchor="screen-start"><td>Start</td><td>Title, HSK 1 and HSK 2 switches (last one on cannot switch off), best score, Play, sound control, link to the network, Sources</td><td>Play</td></tr>
+<tr data-anchor="screen-play"><td>Playing</td><td>Score, round, combo when above 1, sound control, pause; board; bottom line; word cards; launcher with next bubble</td><td>Pause, round clear, game over, leaving the app</td></tr>
+<tr data-anchor="screen-paused"><td>Paused</td><td>Resume, Quit to start; board kept</td><td>Resume or Quit</td></tr>
+<tr data-anchor="screen-round"><td>Round clear</td><td>Round bonus banner for about 1.5 seconds</td><td>Next round starts by itself</td></tr>
+<tr data-anchor="screen-over"><td>Game over</td><td>Final score, best score with "New best" when beaten, popped words list, Play again</td><td>Play again, or the network link</td></tr>
+</tbody>
+</table>
+</div>
+<div class="table-scroll" data-anchor="input-scroll">
+<table data-anchor="input-table">
+<thead><tr><th>Input</th><th>Phone</th><th>Desktop</th></tr></thead>
+<tbody>
+<tr data-anchor="input-aim"><td>Aim</td><td>Press and drag anywhere above the launcher; the guide follows the thumb, so the thumb never hides the target</td><td>Move the mouse over the board</td></tr>
+<tr data-anchor="input-shoot"><td>Shoot</td><td>Lift the thumb</td><td>Click</td></tr>
+<tr data-anchor="input-cancel"><td>Cancel</td><td>Lift below the launcher line</td><td>Escape while aiming</td></tr>
+<tr data-anchor="input-swap"><td>Swap</td><td>Tap the launcher</td><td>Click the launcher, or Space</td></tr>
+<tr data-anchor="input-pause"><td>Pause</td><td>Pause button; leaving the app pauses</td><td>Pause button, P, or leaving the tab</td></tr>
+</tbody>
+</table>
+</div>
+<h3 data-anchor="feel-heading">Feel</h3>
+<ul data-anchor="feel-list">
+<li data-anchor="feel-frames">Drawing runs once per display frame and holds 60 frames a second on a mid-range phone; character bubbles are drawn once at device resolution and reused, so text stays sharp.</li>
+<li data-anchor="feel-motion">Shots ease into place with a small settle bounce; pops burst into a few particles with a light screen shake; falling bubbles drop with gravity and slight spin; scores count up.</li>
+<li data-anchor="feel-reduced">With reduced motion requested, pops and falls fade, with no particles, shake, or spin.</li>
+<li data-anchor="feel-sound">Sound and vibration are off at first; one sound control turns both on, and the choice is remembered on the device. Sounds are generated in the page, so no audio file is loaded. Vibration fires only where the device supports it.</li>
+<li data-anchor="feel-touch">The game area fills the visual viewport within the safe areas, blocks page scroll, pull-to-refresh, double-tap zoom, and text selection while playing, and every button is at least 44px.</li>
+<li data-anchor="feel-type">Characters use the device's Traditional Chinese system font; no web font is downloaded.</li>
+<li data-anchor="feel-store">Best score, level switches, and the sound choice are remembered on the device only.</li>
+<li data-anchor="feel-look">The game shares the network page's colors for HSK 1 and HSK 2 on word cards and in the switches, with level always named in text.</li>
+</ul>
+</section>
+
+<section data-anchor="build">
+<div class="sec-head">
+<span class="sec-num">04</span>
+<h2 data-anchor="build-heading">Stack and tests</h2>
+<p class="sec-note" data-anchor="build-note">No build step, no package install, same data file.</p>
+</div>
+<div class="table-scroll" data-anchor="build-scroll">
+<table data-anchor="build-table">
+<thead><tr><th>Part</th><th>Choice</th><th>Why</th></tr></thead>
+<tbody>
+<tr data-anchor="build-page"><td>Game page</td><td>Its own page in the site directory: HTML, CSS, a page script, and the rules module, loaded as plain browser modules</td><td>Pages serves it unchanged beside the network; no bundler.</td></tr>
+<tr data-anchor="build-draw"><td>Drawing</td><td>One canvas at device pixel ratio; buttons, cards, and screens as HTML over it</td><td>Many moving bubbles at 60 frames a second suit a canvas; HTML keeps text crisp and controls accessible.</td></tr>
+<tr data-anchor="build-data"><td>Words</td><td>The network's graph data file, read at load</td><td>One data pipeline; the game takes words, levels, Zhuyin, and definitions from it.</td></tr>
+<tr data-anchor="build-tests"><td>Rule tests</td><td>Node's built-in test runner on the rules module, no packages; the repository test command runs it after the Python suite</td><td>The rules are browser JavaScript, so only a JavaScript runtime can test them as shipped; Python unittest stays the suite for the pipeline and static checks.</td></tr>
+</tbody>
+</table>
+</div>
+<ul data-anchor="tests-list">
+<li data-anchor="test-detect">Word detection: straight, bent, and reversed chains; three- and four-character words; a shot completing two words; a single-character word that does not pop; a chain not through the shot bubble that does not pop; levels switched off.</li>
+<li data-anchor="test-fall">Falling: a hanging cluster falls, a cluster still touching the ceiling through one bubble stays, nothing falls after a miss.</li>
+<li data-anchor="test-flight">Flight: wall bounces, ceiling hits, and settling into the nearest free cell, including offset rows.</li>
+<li data-anchor="test-spawn">Launcher choice: over many seeded games, the always-playable rule holds and only characters on the board appear.</li>
+<li data-anchor="test-progress">Scoring, combo, ceiling drop, round clear, and game over on fixed boards.</li>
+<li data-anchor="test-static-game">Static: the existing site reference check covers the game files.</li>
+</ul>
+</section>
+
+</article>
+</body>
+</html>
