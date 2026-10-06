@@ -475,12 +475,21 @@
       .replace(/[0-9\s'’·-]/g, "");
   }
 
+  // English-only search text: drops "CL:" classifier lists, [pinyin] refs, and Han forms
+  // ("CL:個|个[ge4]", "variant of 爲|为[wei4]") so they never match Latin queries.
+  function englishText(d) {
+    return d.replace(/\bCL:.*$/, "")
+      .replace(/\[[^\]]*\]/g, "")
+      .replace(/[\p{Script=Han}|]+/gu, " ")
+      .replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
   function searchKey(w) {
     const py = foldPinyin(w.pinyin || "");
     return {
       py: py,
       pyU: py.replace(/v/g, "u"),
-      defs: (w.defs || []).map(function (d) { return d.toLowerCase(); }),
+      defs: (w.defs || []).map(englishText).filter(Boolean),
     };
   }
 
