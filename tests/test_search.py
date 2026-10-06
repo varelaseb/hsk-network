@@ -55,7 +55,8 @@ class SearchTest(unittest.TestCase):
     def setUpClass(cls):
         cls.words = {w["id"]: w for w in json.loads(GRAPH.read_text(encoding="utf-8"))["words"]}
         cls.results = run_search(
-            ["ㄒㄩㄝㄕㄥ", "ㄒㄩㄝˊ ˙ㄕㄥ", "ㄒㄩㄝ ㄕㄥ", "ㄍㄜ", "ㄍㄜˋ", "ㄕˋ", "xuesheng", "ge", "be", "student"]
+            ["ㄒㄩㄝㄕㄥ", "ㄒㄩㄝˊ ˙ㄕㄥ", "ㄒㄩㄝ ㄕㄥ", "ㄍㄜ", "ㄍㄜˋ", "xuesheng", "ge", "be", "student"]
+            + ["ㄒㄩㄝˊㄕㄥ", "ㄅㄚˋㄅㄚ", "ㄉㄜ˙", "ㄒㄩㄝˊ ㄕ", "ㄒㄩㄝ ㄒㄧˊ"]
         )
 
     def trads(self, q):
@@ -70,10 +71,13 @@ class SearchTest(unittest.TestCase):
         self.assertEqual(self.trads("ㄒㄩㄝ ㄕㄥ")[0], "學生")
         self.assertEqual(self.trads("ㄍㄜˋ")[0], "個")
 
-    def test_tone_marks_narrow_matches(self):
-        for i in self.results["ㄕˋ"]:
-            self.assertIn("ㄕˋ", self.words[i]["zhuyin"].replace(" ", ""))
-        self.assertIn("是", self.trads("ㄕˋ"))
+    def test_partial_or_misplaced_tone_marks(self):
+        # Tone marks are ignored wherever they sit, so partly toned queries still match.
+        self.assertEqual(self.trads("ㄒㄩㄝˊㄕㄥ")[0], "學生")
+        self.assertEqual(self.trads("ㄅㄚˋㄅㄚ")[0], "爸爸")
+        self.assertIn("的", self.trads("ㄉㄜ˙"))
+        self.assertIn("學生", self.trads("ㄒㄩㄝˊ ㄕ"))
+        self.assertEqual(self.trads("ㄒㄩㄝ ㄒㄧˊ")[0], "學習")
 
     def test_pinyin_is_not_searched(self):
         self.assertEqual(self.results["xuesheng"], [])

@@ -467,10 +467,10 @@
 
   // ---------- Search ----------
 
-  // Zhuyin keys ignore spaces; the toneless key also drops tone marks (ˉ ˊ ˇ ˋ ˙).
-  const ZY_TONES = /[ˉˊˇˋ˙]/g;
+  // Zhuyin match key: tone marks (ˉ ˊ ˇ ˋ ˙) and spaces dropped from query and word alike.
+  const ZY_TONES = /[ˉˊˇˋ˙\s]/g;
   function zhuyinKey(s) {
-    return s.replace(/\s+/g, "").replace(/ˉ/g, "");
+    return s.replace(ZY_TONES, "");
   }
 
   // English-only search text: drops "CL:" classifier lists, [pinyin] refs, and Han forms
@@ -483,10 +483,8 @@
   }
 
   function searchKey(w) {
-    const zy = zhuyinKey(w.zhuyin || "");
     return {
-      zy: zy,
-      zyBare: zy.replace(ZY_TONES, ""),
+      zy: zhuyinKey(w.zhuyin || ""),
       defs: (w.defs || []).map(englishText).filter(Boolean),
     };
   }
@@ -502,7 +500,6 @@
     const hasHan = /\p{Script=Han}/u.test(q);
     const hasZy = /\p{Script=Bopomofo}/u.test(q);
     const zq = zhuyinKey(q);
-    const zk = /[ˊˇˋ˙]/.test(zq) ? "zy" : "zyBare";
     const eq = q.toLowerCase();
     const wordRe = /^[a-z][a-z\s'-]*$/i.test(q) ? new RegExp("(^|[^a-z])" + escapeRe(eq) + "($|[^a-z])") : null;
     words.forEach(function (w) {
@@ -512,7 +509,7 @@
         if (w.trad === q || w.simp === q) score = 100;
         else if (w.trad.indexOf(q) >= 0 || w.simp.indexOf(q) >= 0) score = 80;
       } else if (hasZy) {
-        const k = w.key[zk];
+        const k = w.key.zy;
         if (k === zq) score = 100;
         else if (k.indexOf(zq) === 0) score = 80;
         else if (zq.length >= 2 && k.indexOf(zq) >= 0) score = 60;
