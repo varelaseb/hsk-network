@@ -27,6 +27,11 @@
 //   bottom line), LINE_Y, LAUNCHER {x, y}, HEIGHT, MIN_ANGLE, MAX_ANGLE,
 //   center(board, cell) -> {x, y}, lowestRow(board) (danger glow when
 //   lowestRow === LINE_ROW - 1), roundShots(round).
+//   pronunciation(found, on, voices) -> { src } | { voice, text } | null
+//       how a popped word is said: found = shoot's events.words item, on =
+//       the pronunciation choice, voices = speechSynthesis.getVoices().
+//       src is the game-relative recording path; voice is a Taiwan Mandarin
+//       voice that runs on the device (localService); null says nothing.
 
 export const COLS = 8;
 export const ROW_H = Math.sqrt(3) / 2;
@@ -494,4 +499,18 @@ export function resolveShot(game, cell) {
       gameOver: over,
     },
   };
+}
+
+// ---- Pronunciation (spec #feel-say): a recording from the site, else a
+// Taiwan Mandarin voice on the device, else silence. Voices that send text off
+// the device (localService false) are never chosen.
+
+const TAIWAN = /^zh[-_](hant[-_])?tw$/i;
+
+export function pronunciation(found, on, voices) {
+  if (!on) return null;
+  const rec = found.entries.find((e) => e.audio)?.audio;
+  if (rec) return { src: `../${rec}` };
+  const voice = (voices || []).find((v) => v.localService === true && TAIWAN.test(v.lang || ""));
+  return voice ? { voice, text: found.word } : null;
 }

@@ -18,7 +18,11 @@
       <span class="hud-meta"><span id="round">Round 1</span><span id="combo" class="combo" hidden></span></span>
     </div>
     <div class="hud-actions">
-      <button type="button" class="icon-btn sound-btn" data-sound role="switch" aria-checked="false" aria-label="Sound and vibration">
+      <button type="button" class="icon-btn sound-btn" data-say role="switch" aria-checked="true" aria-label="Pronunciation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M4 9h3.5L12 5v14l-4.5-4H4z"/><path class="i-wave" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
+        <span class="sound-state">On</span>
+      </button>
+      <button type="button" class="icon-btn sound-btn" data-sound role="switch" aria-checked="false" aria-label="Effects: sounds and vibration">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M9 18.5a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V5.5l10-2v11a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V7.3l-7.8 1.6v9.6z"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
         <span class="sound-state">Off</span>
       </button>
@@ -45,9 +49,13 @@
       <p class="best">Best <strong class="best-score">0</strong></p>
       <button type="button" id="play" class="primary" disabled>Loading…</button>
       <div class="row">
-        <button type="button" class="chip-btn sound-btn" data-sound role="switch" aria-checked="false" aria-label="Sound and vibration">
+        <button type="button" class="chip-btn sound-btn" data-say role="switch" aria-checked="true" aria-label="Pronunciation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M4 9h3.5L12 5v14l-4.5-4H4z"/><path class="i-wave" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
+          Pronunciation <span class="sound-state">On</span>
+        </button>
+        <button type="button" class="chip-btn sound-btn" data-sound role="switch" aria-checked="false" aria-label="Effects: sounds and vibration">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M9 18.5a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V5.5l10-2v11a2.5 2.5 0 1 1-2.5-2.5c.5 0 1 .1 1.4.4V7.3l-7.8 1.6v9.6z"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
-          Sound <span class="sound-state">Off</span>
+          Effects <span class="sound-state">Off</span>
         </button>
         <a class="chip-btn" href="../">Network</a>
       </div>

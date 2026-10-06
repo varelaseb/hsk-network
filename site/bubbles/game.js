@@ -1,12 +1,12 @@
 // HSK bubbles game page (docs/specs/hsk-bubbles.spec.html, Screens and feel).
-// Owns screens, aiming, drawing and animation, word cards, sound and
-// vibration, settings, and best score. All game rules come from rules.js.
+// Owns screens, aiming, drawing and animation, word cards, pronunciation
+// playback, effect sounds and vibration, settings, and best score. All game rules come from rules.js.
 // Address options: ?fixture=pop|fall|clear|over starts Play on a fixed board,
 // ?seed=N fixes the seed.
 
 import {
   COLS, ROW_H, LINE_ROW, LINE_Y, LAUNCHER, HEIGHT, MIN_ANGLE, MAX_ANGLE,
-  createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard,
+  createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
 } from "./rules.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
@@ -23,7 +23,7 @@ const FIXTURES = {
 // ---- Settings, remembered on this device only.
 
 const STORE = "hskBubbles";
-const settings = Object.assign({ best: 0, levels: [1, 2], sound: false, hinted: false }, readStore());
+const settings = Object.assign({ best: 0, levels: [1, 2], say: true, sound: false, hinted: false }, readStore());
 function readStore() {
   try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; }
 }
@@ -53,6 +53,7 @@ const bannerEl = $("banner");
 const playBtn = $("play");
 const levelBtns = [...document.querySelectorAll(".level")];
 const soundBtns = [...document.querySelectorAll("[data-sound]")];
+const sayBtns = [...document.querySelectorAll("[data-say]")];
 
 const params = new URLSearchParams(location.search);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
@@ -543,6 +544,7 @@ function recordBest() {
 }
 
 function quit() {
+  stopSaying();
   recordBest();
   game = null;
   view = demoBoard && { board: demoBoard, dropAt: null };
@@ -617,6 +619,7 @@ function nextCard() {
     cardEl.append(line);
   }
   cardEl.hidden = false;
+  say(w);
   after(cards.length ? 1300 : 2000, () => {
     cardEl.classList.add("out");
     after(220, nextCard);
@@ -889,7 +892,62 @@ document.addEventListener("touchmove", (e) => {
   if (!e.target.closest(".sheet")) e.preventDefault();
 }, { passive: false });
 
-// ---- Sound and vibration: off until the learner turns them on.
+// ---- Pronunciation: on at first; each popped word is said as its card shows.
+
+const voiceEl = new Audio();
+const speech = window.speechSynthesis || null;
+
+function say(found) {
+  const how = pronunciation(found, settings.say, speech ? speech.getVoices() : []);
+  if (!how) return;
+  if (how.src) {
+    voiceEl.src = how.src;
+    voiceEl.muted = false;
+    voiceEl.play().catch(() => { /* blocked or missing: stay silent */ });
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(how.text);
+  u.voice = how.voice;
+  u.lang = how.voice.lang;
+  speech.speak(u);
+}
+
+function stopSaying() {
+  voiceEl.pause();
+  if (speech) speech.cancel();
+}
+
+// Phone browsers play later sound only from a player a tap has started, so
+// the Play tap starts the recording player muted and wakes the device voice.
+let unlocked = false;
+function unlockSay() {
+  if (unlocked || !settings.say) return;
+  unlocked = true;
+  const any = words.find((w) => w.audio);
+  if (any) {
+    voiceEl.src = `../${any.audio}`;
+    voiceEl.muted = true;
+    voiceEl.play().then(() => { if (voiceEl.muted) voiceEl.pause(); }, () => {}).finally(() => { voiceEl.muted = false; });
+  }
+  if (speech) speech.speak(new SpeechSynthesisUtterance(""));
+}
+
+function renderSay() {
+  for (const b of sayBtns) {
+    b.setAttribute("aria-checked", settings.say ? "true" : "false");
+    b.querySelector(".sound-state").textContent = settings.say ? "On" : "Off";
+    b.title = settings.say ? "Pronunciation on" : "Pronunciation off";
+  }
+}
+
+sayBtns.forEach((b) => b.addEventListener("click", () => {
+  settings.say = !settings.say;
+  saveStore();
+  renderSay();
+  if (!settings.say) stopSaying();
+}));
+
+// ---- Effects (sounds and vibration): off until the learner turns them on.
 
 let audio = null;
 
@@ -935,7 +993,7 @@ function renderSound() {
   for (const b of soundBtns) {
     b.setAttribute("aria-checked", settings.sound ? "true" : "false");
     b.querySelector(".sound-state").textContent = settings.sound ? "On" : "Off";
-    b.title = settings.sound ? "Sound and vibration on" : "Sound and vibration off";
+    b.title = settings.sound ? "Effects on: sounds and vibration" : "Effects off: sounds and vibration";
   }
 }
 
@@ -970,8 +1028,8 @@ levelBtns.forEach((b) => b.addEventListener("click", () => {
 
 // ---- Buttons
 
-playBtn.addEventListener("click", newGame);
-$("again").addEventListener("click", newGame);
+playBtn.addEventListener("click", () => { unlockSay(); newGame(); });
+$("again").addEventListener("click", () => { unlockSay(); newGame(); });
 $("pause").addEventListener("click", pause);
 $("resume").addEventListener("click", resume);
 $("quit").addEventListener("click", quit);
@@ -982,6 +1040,7 @@ settings.levels = [1, 2].filter((x) => settings.levels.includes(x));
 if (!settings.levels.length) settings.levels = [1, 2];
 renderLevels();
 renderSound();
+renderSay();
 recordBest();
 new ResizeObserver(layout).observe(app);
 if (window.visualViewport) visualViewport.addEventListener("resize", layout);
