@@ -1,0 +1,26 @@
+{
+  "note": "Pinned upstream releases, cut to the shown characters by scripts/build_fonts.py; licenses copied unchanged from the same tags.",
+  "fonts": {
+    "lxgw-wenkai-tc": {
+      "family": "LXGW WenKai TC",
+      "designer": "LXGW",
+      "url": "https://github.com/lxgw/LxgwWenkaiTC",
+      "release": "v1.522",
+      "asset": "https://github.com/lxgw/LxgwWenkaiTC/releases/download/v1.522/LXGWWenKaiTC-Regular.ttf",
+      "sha256": "b1a0795862c1415bf3f393ea50b2a4ea6275012cf5bad3f94feeb1222f555731",
+      "license": "SIL OFL 1.1",
+      "licenseUrl": "https://raw.githubusercontent.com/lxgw/LxgwWenkaiTC/v1.522/OFL.txt"
+    },
+    "geist": {
+      "family": "Geist",
+      "designer": "Vercel with Basement Studio",
+      "url": "https://github.com/vercel/geist-font",
+      "release": "v1.7.2",
+      "asset": "https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip",
+      "sha256": "7fc800d2ac6b92844895196e5041aca55d814c15db70c44f79b3b83ab82b04e2",
+      "member": "geist-font/Geist/webfonts/Geist[wght].woff2",
+      "license": "SIL OFL 1.1",
+      "licenseUrl": "https://raw.githubusercontent.com/vercel/geist-font/v1.7.2/OFL.txt"
+    }
+  }
+}
