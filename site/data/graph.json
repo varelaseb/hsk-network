@@ -242,7 +242,7 @@
    "trad": "讀",
    "simp": "读",
    "pinyin": "du2",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-22.mp3"
   },
   {
@@ -360,7 +360,7 @@
    "trad": "個",
    "simp": "个",
    "pinyin": "ge4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-32.mp3"
   },
   {
@@ -486,7 +486,7 @@
    "trad": "幾",
    "simp": "几",
    "pinyin": "ji3",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-44.mp3"
   },
   {
@@ -544,7 +544,7 @@
    "trad": "看",
    "simp": "看",
    "pinyin": "kan4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-50.mp3"
   },
   {
@@ -655,7 +655,7 @@
    "trad": "嗎",
    "simp": "吗",
    "pinyin": "ma5",
-   "reading": 2,
+   "reading": 0,
    "audio": "audio/1-61.mp3"
   },
   {
@@ -748,7 +748,7 @@
    "trad": "那",
    "simp": "那",
    "pinyin": "na4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-70.mp3"
   },
   {
@@ -963,7 +963,7 @@
    "trad": "上",
    "simp": "上",
    "pinyin": "shang4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-90.mp3"
   },
   {
@@ -1189,7 +1189,7 @@
    "trad": "喂",
    "simp": "喂",
    "pinyin": "wei4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/1-111.mp3"
   },
   {
@@ -1646,7 +1646,7 @@
    "trad": "吧",
    "simp": "吧",
    "pinyin": "ba5",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/2-1.mp3"
   },
   {
@@ -1700,7 +1700,7 @@
    "trad": "比",
    "simp": "比",
    "pinyin": "bi3",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/2-6.mp3"
   },
   {
@@ -1718,7 +1718,7 @@
    "trad": "長",
    "simp": "长",
    "pinyin": "chang2",
-   "reading": 0
+   "reading": 1
   },
   {
    "id": "2-9",
@@ -2051,7 +2051,7 @@
    "trad": "號",
    "simp": "号",
    "pinyin": "hao4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/2-39.mp3"
   },
   {
@@ -2069,7 +2069,7 @@
    "trad": "紅",
    "simp": "红",
    "pinyin": "hong2",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/2-41.mp3"
   },
   {
@@ -2336,7 +2336,7 @@
    "trad": "累",
    "simp": "累",
    "pinyin": "lei4",
-   "reading": 2,
+   "reading": 0,
    "audio": "audio/2-63.mp3"
   },
   {
@@ -2818,7 +2818,7 @@
    "trad": "為",
    "simp": "为",
    "pinyin": "wei4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/2-106.mp3"
   },
   {
@@ -3009,7 +3009,7 @@
    "trad": "要",
    "simp": "要",
    "pinyin": "yao4",
-   "reading": 1,
+   "reading": 0,
    "audio": "audio/2-123.mp3"
   },
   {
@@ -3199,7 +3199,7 @@
    "trad": "長",
    "simp": "长",
    "pinyin": "zhang3",
-   "reading": 1
+   "reading": 0
   },
   {
    "id": "2-140",
@@ -3228,7 +3228,7 @@
    "trad": "著",
    "simp": "着",
    "pinyin": "zhe5",
-   "reading": 2,
+   "reading": 3,
    "audio": "audio/2-142.mp3"
   },
   {
@@ -3536,14 +3536,6 @@
   "讀": {
    "readings": [
     {
-     "pinyin": "dou4",
-     "zhuyin": "ㄉㄡˋ",
-     "defs": [
-      "comma",
-      "phrase marked by pause"
-     ]
-    },
-    {
      "pinyin": "du2",
      "zhuyin": "ㄉㄨˊ",
      "defs": [
@@ -3551,6 +3543,14 @@
       "to read",
       "to attend (school); to study (a subject in school)",
       "to pronounce"
+     ]
+    },
+    {
+     "pinyin": "dou4",
+     "zhuyin": "ㄉㄡˋ",
+     "defs": [
+      "comma",
+      "phrase marked by pause"
      ]
     }
    ]
@@ -3586,18 +3586,18 @@
   "個": {
    "readings": [
     {
-     "pinyin": "ge3",
-     "zhuyin": "ㄍㄜˇ",
-     "defs": [
-      "used in 自個兒|自个儿[zi4 ge3 r5]"
-     ]
-    },
-    {
      "pinyin": "ge4",
      "zhuyin": "ㄍㄜˋ",
      "defs": [
       "(classifier used before a noun that has no specific classifier)",
       "(bound form) individual"
+     ]
+    },
+    {
+     "pinyin": "ge3",
+     "zhuyin": "ㄍㄜˇ",
+     "defs": [
+      "used in 自個兒|自个儿[zi4 ge3 r5]"
      ]
     }
    ]
@@ -3760,18 +3760,18 @@
   "幾": {
    "readings": [
     {
-     "pinyin": "ji1",
-     "zhuyin": "ㄐㄧ",
-     "defs": [
-      "(literary) almost"
-     ]
-    },
-    {
      "pinyin": "ji3",
      "zhuyin": "ㄐㄧˇ",
      "defs": [
       "how many; how much",
       "several; a few"
+     ]
+    },
+    {
+     "pinyin": "ji1",
+     "zhuyin": "ㄐㄧ",
+     "defs": [
+      "(literary) almost"
      ]
     }
    ],
@@ -3844,16 +3844,6 @@
   "看": {
    "readings": [
     {
-     "pinyin": "kan1",
-     "zhuyin": "ㄎㄢ",
-     "defs": [
-      "to look after",
-      "to take care of",
-      "to watch",
-      "to guard"
-     ]
-    },
-    {
      "pinyin": "kan4",
      "zhuyin": "ㄎㄢˋ",
      "defs": [
@@ -3868,6 +3858,16 @@
       "to feel (that)",
       "(after a verb) to give it a try",
       "to watch out for"
+     ]
+    },
+    {
+     "pinyin": "kan1",
+     "zhuyin": "ㄎㄢ",
+     "defs": [
+      "to look after",
+      "to take care of",
+      "to watch",
+      "to guard"
      ]
     }
    ]
@@ -3996,6 +3996,13 @@
   "嗎": {
    "readings": [
     {
+     "pinyin": "ma5",
+     "zhuyin": "˙ㄇㄚ",
+     "defs": [
+      "(question particle for \"yes-no\" questions)"
+     ]
+    },
+    {
      "pinyin": "ma2",
      "zhuyin": "ㄇㄚˊ",
      "defs": [
@@ -4007,13 +4014,6 @@
      "zhuyin": "ㄇㄚˇ",
      "defs": [
       "used in 嗎啡|吗啡[ma3 fei1]"
-     ]
-    },
-    {
-     "pinyin": "ma5",
-     "zhuyin": "˙ㄇㄚ",
-     "defs": [
-      "(question particle for \"yes-no\" questions)"
      ]
     }
    ]
@@ -4108,19 +4108,19 @@
   "那": {
    "readings": [
     {
-     "pinyin": "na3",
-     "zhuyin": "ㄋㄚˇ",
-     "defs": [
-      "variant of 哪[na3]"
-     ]
-    },
-    {
      "pinyin": "na4",
      "zhuyin": "ㄋㄚˋ",
      "defs": [
       "(specifier) that; the; those (colloquial pr. [nei4])",
       "(pronoun) that (referring to persons, things or situations)",
       "then (in that case)"
+     ]
+    },
+    {
+     "pinyin": "na3",
+     "zhuyin": "ㄋㄚˇ",
+     "defs": [
+      "variant of 哪[na3]"
      ]
     },
     {
@@ -4316,13 +4316,6 @@
   "上": {
    "readings": [
     {
-     "pinyin": "shang3",
-     "zhuyin": "ㄕㄤˇ",
-     "defs": [
-      "used in 上聲|上声[shang3 sheng1]"
-     ]
-    },
-    {
      "pinyin": "shang4",
      "zhuyin": "ㄕㄤˋ",
      "defs": [
@@ -4332,6 +4325,13 @@
       "to attend (class or university)",
       "(directional complement) up",
       "(noun suffix) on; above"
+     ]
+    },
+    {
+     "pinyin": "shang3",
+     "zhuyin": "ㄕㄤˇ",
+     "defs": [
+      "used in 上聲|上声[shang3 sheng1]"
      ]
     }
    ]
@@ -4513,18 +4513,18 @@
   "喂": {
    "readings": [
     {
-     "pinyin": "wei2",
-     "zhuyin": "ㄨㄟˊ",
-     "defs": [
-      "hello (when answering the phone)"
-     ]
-    },
-    {
      "pinyin": "wei4",
      "zhuyin": "ㄨㄟˋ",
      "defs": [
       "hey",
       "to feed (an animal, baby, invalid etc)"
+     ]
+    },
+    {
+     "pinyin": "wei2",
+     "zhuyin": "ㄨㄟˊ",
+     "defs": [
+      "hello (when answering the phone)"
      ]
     }
    ]
@@ -4772,16 +4772,6 @@
   "吧": {
    "readings": [
     {
-     "pinyin": "ba1",
-     "zhuyin": "ㄅㄚ",
-     "defs": [
-      "bar (loanword) (serving drinks, or providing Internet access etc)",
-      "to puff (on a pipe etc)",
-      "(onom.) bang",
-      "abbr. for 貼吧|贴吧[tie1 ba1]"
-     ]
-    },
-    {
      "pinyin": "ba5",
      "zhuyin": "˙ㄅㄚ",
      "defs": [
@@ -4789,6 +4779,16 @@
       "...right?",
       "...OK?",
       "...I presume."
+     ]
+    },
+    {
+     "pinyin": "ba1",
+     "zhuyin": "ㄅㄚ",
+     "defs": [
+      "bar (loanword) (serving drinks, or providing Internet access etc)",
+      "to puff (on a pipe etc)",
+      "(onom.) bang",
+      "abbr. for 貼吧|贴吧[tie1 ba1]"
      ]
     },
     {
@@ -4836,13 +4836,6 @@
   "比": {
    "readings": [
     {
-     "pinyin": "bi1",
-     "zhuyin": "ㄅㄧ",
-     "defs": [
-      "euphemistic variant of 屄[bi1]"
-     ]
-    },
-    {
      "pinyin": "bi3",
      "zhuyin": "ㄅㄧˇ",
      "defs": [
@@ -4851,6 +4844,13 @@
       "ratio",
       "to gesture",
       "(Taiwan pr. [bi4] in some compounds derived from Classical Chinese)"
+     ]
+    },
+    {
+     "pinyin": "bi1",
+     "zhuyin": "ㄅㄧ",
+     "defs": [
+      "euphemistic variant of 屄[bi1]"
      ]
     }
    ]
@@ -4876,17 +4876,6 @@
   "長": {
    "readings": [
     {
-     "pinyin": "chang2",
-     "zhuyin": "ㄔㄤˊ",
-     "defs": [
-      "long",
-      "(bound form) length",
-      "(bound form) strong point; forte",
-      "(bound form) to be good at",
-      "(literary) surplus; spare (Taiwan pr. [zhang4])"
-     ]
-    },
-    {
      "pinyin": "zhang3",
      "zhuyin": "ㄓㄤˇ",
      "defs": [
@@ -4897,6 +4886,17 @@
       "to develop",
       "to increase",
       "to enhance"
+     ]
+    },
+    {
+     "pinyin": "chang2",
+     "zhuyin": "ㄔㄤˊ",
+     "defs": [
+      "long",
+      "(bound form) length",
+      "(bound form) strong point; forte",
+      "(bound form) to be good at",
+      "(literary) surplus; spare (Taiwan pr. [zhang4])"
      ]
     }
    ],
@@ -5174,13 +5174,6 @@
   "號": {
    "readings": [
     {
-     "pinyin": "hao2",
-     "zhuyin": "ㄏㄠˊ",
-     "defs": [
-      "(bound form) to wail; to howl"
-     ]
-    },
-    {
      "pinyin": "hao4",
      "zhuyin": "ㄏㄠˋ",
      "defs": [
@@ -5195,6 +5188,13 @@
       "(bound form) size; type; category (e.g. 五號電池|五号电池[wu3 hao4 dian4 chi2])",
       "(TCM) to feel (the pulse) (used in 號脈|号脉[hao4 mai4])",
       "classifier for numbered people or items"
+     ]
+    },
+    {
+     "pinyin": "hao2",
+     "zhuyin": "ㄏㄠˊ",
+     "defs": [
+      "(bound form) to wail; to howl"
      ]
     }
    ]
@@ -5221,13 +5221,6 @@
   "紅": {
    "readings": [
     {
-     "pinyin": "gong1",
-     "zhuyin": "ㄍㄨㄥ",
-     "defs": [
-      "used in 女紅|女红[nu : 3 gong1]"
-     ]
-    },
-    {
      "pinyin": "hong2",
      "zhuyin": "ㄏㄨㄥˊ",
      "defs": [
@@ -5235,6 +5228,13 @@
       "popular",
       "revolutionary",
       "bonus"
+     ]
+    },
+    {
+     "pinyin": "gong1",
+     "zhuyin": "ㄍㄨㄥ",
+     "defs": [
+      "used in 女紅|女红[nu : 3 gong1]"
      ]
     }
    ]
@@ -5354,6 +5354,17 @@
   "累": {
    "readings": [
     {
+     "pinyin": "lei4",
+     "zhuyin": "ㄌㄟˋ",
+     "defs": [
+      "tired",
+      "weary",
+      "to strain",
+      "to wear out",
+      "to work hard"
+     ]
+    },
+    {
      "pinyin": "lei2",
      "zhuyin": "ㄌㄟˊ",
      "defs": [
@@ -5369,17 +5380,6 @@
       "to involve or implicate (Taiwan pr. [lei4])",
       "continuous",
       "repeated"
-     ]
-    },
-    {
-     "pinyin": "lei4",
-     "zhuyin": "ㄌㄟˋ",
-     "defs": [
-      "tired",
-      "weary",
-      "to strain",
-      "to wear out",
-      "to work hard"
      ]
     }
    ]
@@ -5673,6 +5673,15 @@
   "為": {
    "readings": [
     {
+     "pinyin": "wei4",
+     "zhuyin": "ㄨㄟˋ",
+     "defs": [
+      "because of",
+      "for",
+      "to"
+     ]
+    },
+    {
      "pinyin": "wei2",
      "zhuyin": "ㄨㄟˊ",
      "defs": [
@@ -5685,15 +5694,6 @@
       "to be",
       "to do",
       "by (in the passive voice)"
-     ]
-    },
-    {
-     "pinyin": "wei4",
-     "zhuyin": "ㄨㄟˋ",
-     "defs": [
-      "because of",
-      "for",
-      "to"
      ]
     }
    ]
@@ -5820,13 +5820,6 @@
   "要": {
    "readings": [
     {
-     "pinyin": "yao1",
-     "zhuyin": "ㄧㄠ",
-     "defs": [
-      "(bound form) to demand; to coerce"
-     ]
-    },
-    {
      "pinyin": "yao4",
      "zhuyin": "ㄧㄠˋ",
      "defs": [
@@ -5835,6 +5828,13 @@
       "need to; should",
       "if (same as 要是[yao4 shi5])",
       "(bound form) important"
+     ]
+    },
+    {
+     "pinyin": "yao1",
+     "zhuyin": "ㄧㄠ",
+     "defs": [
+      "(bound form) to demand; to coerce"
      ]
     }
    ]
@@ -5976,6 +5976,18 @@
   "著": {
    "readings": [
     {
+     "pinyin": "zhu4",
+     "zhuyin": "ㄓㄨˋ",
+     "defs": [
+      "to make known",
+      "to show",
+      "to prove",
+      "to write",
+      "book",
+      "outstanding"
+     ]
+    },
+    {
      "pinyin": "zhao1",
      "zhuyin": "ㄓㄠ",
      "defs": [
@@ -6016,18 +6028,6 @@
       "to use",
       "to apply",
       "used in 執著|执著[zhi2 zhuo2]"
-     ]
-    },
-    {
-     "pinyin": "zhu4",
-     "zhuyin": "ㄓㄨˋ",
-     "defs": [
-      "to make known",
-      "to show",
-      "to prove",
-      "to write",
-      "book",
-      "outstanding"
      ]
     }
    ]
@@ -6234,14 +6234,6 @@
   "打": {
    "readings": [
     {
-     "pinyin": "da2",
-     "zhuyin": "ㄉㄚˊ",
-     "defs": [
-      "(loanword) dozen",
-      "Taiwan pr. [da3]"
-     ]
-    },
-    {
      "pinyin": "da3",
      "zhuyin": "ㄉㄚˇ",
      "defs": [
@@ -6249,6 +6241,14 @@
       "to fight",
       "(in many expressions) a semantically light transitive verb used with various objects to form expressions with a wide range of meanings, e.g. 打傘|打伞[da3 san3] \"to hold an umbrella\", 打電話|打电话[da3 dian4 hua4] \"to make a phone call\", 打針|打针[da3 zhen1] \"to get an injection\"",
       "(coll.) from; since"
+     ]
+    },
+    {
+     "pinyin": "da2",
+     "zhuyin": "ㄉㄚˊ",
+     "defs": [
+      "(loanword) dozen",
+      "Taiwan pr. [da3]"
      ]
     }
    ]
@@ -6396,17 +6396,17 @@
    "meaning": "tongue",
    "readings": [
     {
-     "pinyin": "ji1",
-     "zhuyin": "ㄐㄧ",
-     "defs": [
-      "used in 喇舌[la3 ji1] to transcribe the Taiwanese word for \"tongue\""
-     ]
-    },
-    {
      "pinyin": "she2",
      "zhuyin": "ㄕㄜˊ",
      "defs": [
       "tongue"
+     ]
+    },
+    {
+     "pinyin": "ji1",
+     "zhuyin": "ㄐㄧ",
+     "defs": [
+      "used in 喇舌[la3 ji1] to transcribe the Taiwanese word for \"tongue\""
      ]
     }
    ]
@@ -6853,17 +6853,17 @@
    "meaning": "private",
    "readings": [
     {
-     "pinyin": "mou3",
-     "zhuyin": "ㄇㄡˇ",
-     "defs": [
-      "old variant of 某[mou3]"
-     ]
-    },
-    {
      "pinyin": "si1",
      "zhuyin": "ㄙ",
      "defs": [
       "old variant of 私[si1]"
+     ]
+    },
+    {
+     "pinyin": "mou3",
+     "zhuyin": "ㄇㄡˇ",
+     "defs": [
+      "old variant of 某[mou3]"
      ]
     }
    ]
@@ -6902,6 +6902,13 @@
   "麼": {
    "readings": [
     {
+     "pinyin": "me5",
+     "zhuyin": "˙ㄇㄜ",
+     "defs": [
+      "suffix, used to form interrogative 什麼|什么[shen2 me5], what?, indefinite 這麼|这么[zhe4 me5] thus, etc"
+     ]
+    },
+    {
      "pinyin": "ma2",
      "zhuyin": "ㄇㄚˊ",
      "defs": [
@@ -6913,13 +6920,6 @@
      "zhuyin": "˙ㄇㄚ",
      "defs": [
       "interrogative final particle"
-     ]
-    },
-    {
-     "pinyin": "me5",
-     "zhuyin": "˙ㄇㄜ",
-     "defs": [
-      "suffix, used to form interrogative 什麼|什么[shen2 me5], what?, indefinite 這麼|这么[zhe4 me5] thus, etc"
      ]
     },
     {
@@ -7002,13 +7002,6 @@
    "meaning": "right",
    "readings": [
     {
-     "pinyin": "zheng1",
-     "zhuyin": "ㄓㄥ",
-     "defs": [
-      "first month of the lunar year"
-     ]
-    },
-    {
      "pinyin": "zheng4",
      "zhuyin": "ㄓㄥˋ",
      "defs": [
@@ -7024,20 +7017,18 @@
       "right (in that place)",
       "(math.) positive"
      ]
+    },
+    {
+     "pinyin": "zheng1",
+     "zhuyin": "ㄓㄥ",
+     "defs": [
+      "first month of the lunar year"
+     ]
     }
    ]
   },
   "覺": {
    "readings": [
-    {
-     "pinyin": "jiao4",
-     "zhuyin": "ㄐㄧㄠˋ",
-     "defs": [
-      "a nap",
-      "a sleep",
-      "CL:場|场[chang2]"
-     ]
-    },
     {
      "pinyin": "jue2",
      "zhuyin": "ㄐㄩㄝˊ",
@@ -7047,6 +7038,15 @@
       "thinking",
       "awake",
       "aware"
+     ]
+    },
+    {
+     "pinyin": "jiao4",
+     "zhuyin": "ㄐㄧㄠˋ",
+     "defs": [
+      "a nap",
+      "a sleep",
+      "CL:場|场[chang2]"
      ]
     }
    ]
@@ -7398,17 +7398,17 @@
    "meaning": "to get",
    "readings": [
     {
-     "pinyin": "ai4",
-     "zhuyin": "ㄞˋ",
-     "defs": [
-      "variant of 礙|碍[ai4]"
-     ]
-    },
-    {
      "pinyin": "de2",
      "zhuyin": "ㄉㄜˊ",
      "defs": [
       "to obtain (old variant of 得[de2])"
+     ]
+    },
+    {
+     "pinyin": "ai4",
+     "zhuyin": "ㄞˋ",
+     "defs": [
+      "variant of 礙|碍[ai4]"
      ]
     }
    ]
@@ -7580,18 +7580,18 @@
    "meaning": "page",
    "readings": [
     {
-     "pinyin": "xie2",
-     "zhuyin": "ㄒㄧㄝˊ",
-     "defs": [
-      "head"
-     ]
-    },
-    {
      "pinyin": "ye4",
      "zhuyin": "ㄧㄝˋ",
      "defs": [
       "page",
       "leaf"
+     ]
+    },
+    {
+     "pinyin": "xie2",
+     "zhuyin": "ㄒㄧㄝˊ",
+     "defs": [
+      "head"
      ]
     }
    ]
