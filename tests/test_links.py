@@ -1,4 +1,4 @@
-"""#tests-list test-links, #acceptance-links, #graph-model: hubs and links."""
+"""#tests-list test-links, #graph-model: hubs and links."""
 
 import unittest
 from collections import Counter
@@ -8,6 +8,7 @@ from graph_data import GRAPH
 
 class Links(unittest.TestCase):
     def test_recomputed_from_trad_forms(self):
+        """#acceptance-links."""
         words = GRAPH["words"]
         uses = Counter(ch for w in words for ch in set(w["trad"]))
         shared = {ch for ch, n in uses.items() if n >= 2}

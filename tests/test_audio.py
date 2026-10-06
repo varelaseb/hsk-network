@@ -1,4 +1,4 @@
-"""#test-audio, #acceptance-audio-files, #acceptance-sources: word recordings."""
+"""#test-audio: word recordings."""
 
 import re
 import unittest
@@ -27,6 +27,7 @@ class AttachAudio(unittest.TestCase):
 
 class CommittedAudio(unittest.TestCase):
     def test_every_entry_names_an_existing_recording(self):
+        """#acceptance-audio-files: every audio entry names a recording in the site."""
         for w in GRAPH["words"]:
             if "audio" in w:
                 with self.subTest(id=w["id"]):
@@ -37,12 +38,14 @@ class CommittedAudio(unittest.TestCase):
                     self.assertTrue(head == b"ID3" or head[0] == 0xFF, "not an MP3")
 
     def test_every_recording_belongs_to_a_word(self):
+        """#acceptance-audio-files: every recording in the site belongs to a word."""
         named = {w["audio"] for w in GRAPH["words"] if "audio" in w}
         on_disk = {f"audio/{p.name}" for p in (SITE / "audio").glob("*.mp3")}
         self.assertTrue(named)
         self.assertEqual(on_disk, named)
 
     def test_shared_simplified_form_has_none(self):
+        """#acceptance-audio-files: no word with a shared Simplified form has a recording."""
         count = {}
         for w in GRAPH["words"]:
             count[w["simp"]] = count.get(w["simp"], 0) + 1
@@ -62,6 +65,7 @@ class Credits(unittest.TestCase):
     """Credits file beside the recordings and the Sources footer name the note's source."""
 
     def test_credits_file_and_footer(self):
+        """#acceptance-sources."""
         note = build_data.audio_note()
         credits = (SITE / "audio" / "CREDITS.txt").read_text(encoding="utf-8")
         footer = re.search(r'<details id="sources">.*?</details>',
