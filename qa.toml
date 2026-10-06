@@ -37,6 +37,13 @@ touch = true
 viewport = { width = 390, height = 844 }
 touch = true
 
+# Look and motion, on a phone. acceptance-glide is driven in story-search and acceptance-sheet in
+# story-phone (each criterion runs in its first listed user-facing story), so both keep their own.
+[entry.stories.story-look]
+viewport = { width = 390, height = 844 }
+touch = true
+# story-read and story-script keep the desktop site root default.
+
 # Bubbles game stories start at the game page on a phone. The network's story-open-game
 # (acceptance-play-link) keeps the desktop site root default.
 [entry.stories.story-play]
@@ -84,11 +91,18 @@ values = ["ㄒㄩㄝㄕㄥ"]
 values = ["student"]
 [entry.criteria.acceptance-search-none]
 values = ["qzqzqz"]
+[entry.criteria.acceptance-glide]
+values = ["學生"]
+# Pinyin of 學生 (xue2 sheng5) without tone marks.
+[entry.criteria.acceptance-script-search]
+values = ["xuesheng"]
 
 [entry.criteria.acceptance-hosted]
 cannot_host = "needs the public GitHub Pages address after a merge to main; this environment serves a local preview of the candidate head"
 [entry.criteria.acceptance-game-hosted]
 cannot_host = "needs the public GitHub Pages game address after a merge to main; this environment serves a local preview of the candidate head"
+[entry.criteria.acceptance-reduced-network]
+cannot_host = "needs a device asking for reduced motion; the capture browser does not emulate prefers-reduced-motion"
 
 # Navigation hints (jev-capture.spec.html#jc-target-nav). Game page address options
 # (site/bubbles/game.js): ?fixture=pop|fall|clear|over starts Play on a fixed board, ?seed=N fixes the
@@ -99,6 +113,16 @@ cannot_host = "needs the public GitHub Pages game address after a merge to main;
 path = "/#word=1-128" # word id of 學生 in site/data/graph.json
 [nav.acceptance-word-link-unknown]
 path = "/#word=qzqzqz"
+
+# Network: reading cards (word ids in site/data/graph.json).
+[nav.acceptance-senses]
+path = "/#word=1-98" # 書: four senses, measure words 本 and 冊
+[nav.acceptance-sense-ref]
+path = "/#word=1-57" # 裡: sense "also written 裏"
+[nav.acceptance-sense-tag]
+path = "/#word=1-9" # 菜: sense tagged "colloquial"
+[nav.acceptance-zhuyin-column]
+path = "/#word=1-76" # 朋友 (peng2 you5): neutral second syllable
 
 # Bubbles: playing a seeded board.
 [nav.acceptance-aim]
@@ -132,6 +156,9 @@ selectors = ["#play"]
 path = "?fixture=pop"
 selectors = ["#play"]
 [nav.acceptance-reduced]
+path = "?fixture=pop"
+selectors = ["#play"]
+[nav.acceptance-game-look]
 path = "?fixture=pop"
 selectors = ["#play"]
 # First visit: the learner taps Play, then shoots 生 beside 學.
