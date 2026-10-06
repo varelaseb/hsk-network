@@ -76,7 +76,7 @@ const coarse = matchMedia("(pointer: coarse)");
 // Look tokens (hsk-network #look), read once from ../style.css.
 const tokens = getComputedStyle(document.documentElement);
 const tok = (name, fallback) => tokens.getPropertyValue(name).trim() || fallback;
-const KAISHU = '"LXGW WenKai TC"';
+const HAN_FACE = '"Noto Sans CJK TC"';
 const SANS = '"Geist", system-ui, sans-serif';
 const INK = tok("--ink", "#1b1b1f");
 const PAPER = tok("--paper", "#f6f4ef");
@@ -85,7 +85,7 @@ const INK_NIGHT = tok("--ink-night", "#f6f4ef");
 const LINE_NIGHT = tok("--line-night", "rgba(255, 255, 255, .14)");
 const LEVEL_COLOR = { 1: tok("--hsk1", "#0072b2"), 2: tok("--hsk2", "#e69f00") };
 const DANGER = "#ff6b5e";
-let fontReady = false;  // bubbles are drawn only once the kaishu face has loaded
+let fontReady = false;  // bubbles are drawn only once the Chinese face has loaded
 
 let words = [];
 let chars = {};       // graph.json character table, read through readingOf
@@ -144,7 +144,7 @@ function sprite(ch) {
   const g = img.getContext("2d");
   const c = size / 2;
   const rad = c * 0.93;
-  // Paper disc with a soft lower shade, ink kaishu character, never bold.
+  // Paper disc with a soft lower shade, ink Chinese-face character, never bold.
   g.fillStyle = PAPER;
   g.beginPath();
   g.arc(c, c, rad, 0, Math.PI * 2);
@@ -155,7 +155,7 @@ function sprite(ch) {
   g.fillStyle = shade;
   g.fill();
   g.fillStyle = INK;
-  g.font = `400 ${Math.round(size * 0.58)}px ${KAISHU}`;
+  g.font = `400 ${Math.round(size * 0.58)}px ${HAN_FACE}`;
   g.textAlign = "center";
   g.textBaseline = "middle";
   g.fillText(label, c, c + size * 0.035);
@@ -1207,12 +1207,12 @@ recordBest();
 new ResizeObserver(layout).observe(app);
 if (window.visualViewport) visualViewport.addEventListener("resize", layout);
 
-// Bubbles are drawn only once the kaishu face has loaded (#feel-type); the
+// Bubbles are drawn only once the Chinese face has loaded (#feel-type); the
 // load settles even if the face fails, so the game never hangs on it.
-const kaishu = document.fonts.load(`400 32px ${KAISHU}`, "學").catch(() => {});
+const hanFace = document.fonts.load(`400 32px ${HAN_FACE}`, "學").catch(() => {});
 const data = fetch("../data/graph.json").then((r) => r.json());
 
-Promise.all([data, kaishu])
+Promise.all([data, hanFace])
   .then(([graph]) => {
     words = graph.words;
     chars = graph.chars;

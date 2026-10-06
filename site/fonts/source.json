@@ -1,15 +1,16 @@
 {
   "note": "Pinned upstream releases, cut to the shown characters by scripts/build_fonts.py; licenses copied unchanged from the same tags.",
   "fonts": {
-    "lxgw-wenkai-tc": {
-      "family": "LXGW WenKai TC",
-      "designer": "LXGW",
-      "url": "https://github.com/lxgw/LxgwWenkaiTC",
-      "release": "v1.522",
-      "asset": "https://github.com/lxgw/LxgwWenkaiTC/releases/download/v1.522/LXGWWenKaiTC-Regular.ttf",
-      "sha256": "b1a0795862c1415bf3f393ea50b2a4ea6275012cf5bad3f94feeb1222f555731",
+    "noto-sans-cjk-tc": {
+      "family": "Noto Sans CJK TC",
+      "designer": "Adobe and Google",
+      "url": "https://github.com/notofonts/noto-cjk",
+      "release": "Sans2.004",
+      "asset": "https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/09_NotoSansCJKtc.zip",
+      "sha256": "8ea0d6feb8e092c250710cdc75c138090832ddaa98d8ccb37cd89b03b72c331b",
+      "member": "NotoSansCJKtc-Regular.otf",
       "license": "SIL OFL 1.1",
-      "licenseUrl": "https://raw.githubusercontent.com/lxgw/LxgwWenkaiTC/v1.522/OFL.txt"
+      "licenseUrl": "https://raw.githubusercontent.com/notofonts/noto-cjk/Sans2.004/LICENSE"
     },
     "geist": {
       "family": "Geist",

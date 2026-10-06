@@ -10,7 +10,7 @@ Canonical spec: [docs/specs/hsk-network.spec.html](docs/specs/hsk-network.spec.h
 - `data/`: vendored HSK 2.0 lists (copied unchanged, source URL and commit noted beside them) and the match override file.
 - `site/bubbles/`: HSK bubbles game. `rules.js` is the pure game rules module (exports documented at its top).
 - `scripts/build_data.py`: data pipeline. Writes `site/data/graph.json`.
-- `site/fonts/`: vendored subset WOFF2 fonts (LXGW WenKai TC, Geist), their OFL licenses, `source.json` (pinned releases), `coverage.json` (subset characters, hashes, kaishu-missing characters). Built by `scripts/build_fonts.py`.
+- `site/fonts/`: vendored subset WOFF2 fonts (Noto Sans CJK TC, Geist), their OFL licenses, `source.json` (pinned releases), `coverage.json` (subset characters, hashes, Chinese-face missing characters). Built by `scripts/build_fonts.py`.
 - `tests/`: unittest suite; `tests/bubbles/*.test.mjs`: game rule tests (Node built-in test runner).
 - `docs/specs/`: canonical specs. Never published.
 - `.github/workflows/`: `ci.yml` (tests), `pages.yml` (deploy `site/`).

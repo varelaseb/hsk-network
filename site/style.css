@@ -2,8 +2,8 @@
 
 /* Vendored subsets cut by scripts/build_fonts.py; licenses beside them (#type-faces). */
 @font-face {
-  font-family: "LXGW WenKai TC";
-  src: url("fonts/lxgw-wenkai-tc.woff2") format("woff2");
+  font-family: "Noto Sans CJK TC";
+  src: url("fonts/noto-sans-cjk-tc.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -18,8 +18,8 @@
 }
 
 :root {
-  /* Type (#face-stack, #type-scale): Geist first so every character and Zhuyin falls to kaishu. */
-  --font: "Geist", "LXGW WenKai TC", system-ui, sans-serif;
+  /* Type (#face-stack, #type-scale): Geist first so every character and Zhuyin falls to the Chinese face. */
+  --font: "Geist", "Noto Sans CJK TC", system-ui, sans-serif;
   --fs-head: 40px;
   --fs-head-phone: 36px;
   --fs-score: 56px;

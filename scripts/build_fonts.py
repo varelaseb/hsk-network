@@ -29,15 +29,15 @@ SOURCE = FONTS / "source.json"
 COVERAGE = FONTS / "coverage.json"
 GRAPH = SITE / "data" / "graph.json"
 
-KAISHU, LATIN = "lxgw-wenkai-tc", "geist"
-BUDGET = {KAISHU: 240_000, LATIN: 40_000, "total": 280_000}  # bytes, #face-budget
+HAN, LATIN = "noto-sans-cjk-tc", "geist"
+BUDGET = {HAN: 240_000, LATIN: 40_000, "total": 280_000}  # bytes, #face-budget
 
 ZHUYIN = "".join(chr(c) for c in range(0x3105, 0x312A))  # all 37 symbols, ㄅ to ㄩ
 TONE_MARKS = "ˊˇˋ˙"
 # CJK punctuation: the CJK Symbols and Punctuation block and the fullwidth punctuation.
 CJK_PUNCT = [(0x3000, 0x303F), (0xFF01, 0xFF0F), (0xFF1A, 0xFF20), (0xFF3B, 0xFF40), (0xFF5B, 0xFF65)]
-# Ranges drawn by the kaishu face; everything else falls to Geist (#face-stack).
-KAISHU_RANGES = [(0x2E80, 0x2FFF), (0x3000, 0x9FFF), (0xF900, 0xFAFF), (0xFE30, 0xFE4F),
+# Ranges drawn by the Chinese face; everything else falls to Geist (#face-stack).
+HAN_RANGES = [(0x2E80, 0x2FFF), (0x3000, 0x9FFF), (0xF900, 0xFAFF), (0xFE30, 0xFE4F),
                  (0xFF00, 0xFFEF), (0x20000, 0x3FFFF)]
 # Geist: Basic Latin, Latin-1, pinyin tone letters, combining tone marks, typographic punctuation.
 PINYIN_LETTERS = "āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüĀÁǍÀĒÉĚÈĪÍǏÌŌÓǑÒŪÚǓÙǕǗǙǛÜ"
@@ -46,9 +46,9 @@ LATIN_RANGES = [(0x20, 0x7E), (0xA0, 0xFF), (0x2010, 0x2027), (0x2030, 0x203A), 
                 (0x2122, 0x2122), (0x2212, 0x2212)]
 
 
-def is_kaishu(ch):
+def is_han(ch):
     c = ord(ch)
-    return ch in TONE_MARKS or any(lo <= c <= hi for lo, hi in KAISHU_RANGES)
+    return ch in TONE_MARKS or any(lo <= c <= hi for lo, hi in HAN_RANGES)
 
 
 def strings(value):
@@ -73,9 +73,9 @@ def page_texts(site=SITE):
 
 
 def shown_chars(graph, texts):
-    """Kaishu characters the site and game can show: Traditional and Simplified, readings, refs, pages."""
-    found = {ch for s in strings(graph) for ch in s if is_kaishu(ch)}
-    found |= {ch for t in texts for ch in t if is_kaishu(ch)}
+    """Chinese-face characters the site and game can show: Traditional and Simplified, readings, refs, pages."""
+    found = {ch for s in strings(graph) for ch in s if is_han(ch)}
+    found |= {ch for t in texts for ch in t if is_han(ch)}
     return found | set(ZHUYIN) | set(TONE_MARKS)
 
 
@@ -103,14 +103,14 @@ def _fetch(url, sha256, name):
     return data
 
 
-def _subset(data, wanted, features):
+def _subset(data, wanted, features, drop=()):
     from fontTools import subset
     from fontTools.ttLib import TTFont
     font = TTFont(io.BytesIO(data), recalcTimestamp=False)  # same input, same bytes
     cmap = set(font.getBestCmap())
     opts = subset.Options()
     opts.flavor = "woff2"
-    opts.layout_features = sorted(set(opts.layout_features) | set(features))
+    opts.layout_features = sorted((set(opts.layout_features) | set(features)) - set(drop))
     sub = subset.Subsetter(opts)
     sub.populate(unicodes=sorted(ord(c) for c in wanted if ord(c) in cmap))
     sub.subset(font)
@@ -127,18 +127,21 @@ def main():
     coverage, total = {}, 0
     # Must-haves: a face lacking one of these fails the build. Geist has no precomposed
     # ǐ ǒ ǔ or ü with a tone, so pinyin needs the combining marks over plain letters.
-    musts = {KAISHU: set(ZHUYIN) | set(TONE_MARKS),
+    musts = {HAN: set(ZHUYIN) | set(TONE_MARKS),
              LATIN: {chr(c) for c in range(0x20, 0x7F)} | set("üÜ") | set(COMBINING_TONES)}
-    for key, wanted, features in ((KAISHU, need | punct_chars(), []), (LATIN, latin_chars(), ["tnum"])):
+    # The Chinese face drops locl: its Simplified, Japanese, and Korean regional alternates
+    # double the subset past #face-budget, and every character shows in its Taiwan form.
+    for key, wanted, features, drop in ((HAN, need | punct_chars(), [], ["locl"]),
+                                        (LATIN, latin_chars(), ["tnum"], [])):
         note = source[key]
         raw = _fetch(note["asset"], note["sha256"], note["asset"].rsplit("/", 1)[1])
         if "member" in note:
             raw = zipfile.ZipFile(io.BytesIO(raw)).read(note["member"])
-        woff2, covered, cmap = _subset(raw, wanted, features)
+        woff2, covered, cmap = _subset(raw, wanted, features, drop)
         if musts[key] - cmap:
             sys.exit(f"{note['family']} lacks {''.join(sorted(musts[key] - cmap))}")
         entry = {}
-        if key == KAISHU:
+        if key == HAN:
             # Shown characters the face has no glyph for, such as rare hub parts (#face-missing):
             # named so the test allows exactly these; they fall back to the device font.
             entry["missing"] = "".join(sorted(need - cmap))
