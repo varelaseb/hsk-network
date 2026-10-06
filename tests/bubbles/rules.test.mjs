@@ -322,7 +322,6 @@ test("swap trades current and next", () => {
   assert.equal(g.next, "生");
 });
 
-// acceptance-say-source
 test("acceptance-say-source: recording, else on-device Taiwan Mandarin voice, else silent; never a network voice", () => {
   const rec = { word: "學生", entries: [{ ...W("1-128", 1, "學生"), audio: "audio/1-128.mp3" }] };
   const bare = { word: "喜歡", entries: [W("c", 2, "喜歡")] };

@@ -1,7 +1,6 @@
 # QA capture target: HSK network static site and its bubbles game (jev-capture.spec.html#jc-target),
 # for docs/specs/hsk-network.spec.html and docs/specs/hsk-bubbles.spec.html. Story and criterion keys
-# are shared by both specs: story-play and story-levels exist in both, as do acceptance-level-off,
-# acceptance-level-last, and acceptance-hosted.
+# are unique across both specs, so each entry below belongs to exactly one of them.
 # Python stdlib only: no setup, rebuild, or env file. The site is served unchanged from site/.
 
 # Paths searched for a test naming a no-browser criterion's anchor.
@@ -38,8 +37,8 @@ touch = true
 viewport = { width = 390, height = 844 }
 touch = true
 
-# Bubbles game stories start at the game page on a phone. story-play also holds the network's
-# acceptance-play-link, which nav sends back to the site root.
+# Bubbles game stories start at the game page on a phone. The network's story-open-game
+# (acceptance-play-link) keeps the desktop site root default.
 [entry.stories.story-play]
 url = "{site}/bubbles/"
 viewport = { width = 390, height = 844 }
@@ -64,8 +63,17 @@ touch = true
 url = "{site}/bubbles/"
 viewport = { width = 390, height = 844 }
 touch = true
-# story-levels stays at the network root (desktop): its acceptance-level-off and
-# acceptance-level-last keys are shared with the bubbles spec, which cannot also start there.
+[entry.stories.story-game-levels]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-hear]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-game-maintain]
+url = "{site}/bubbles/"
+# Network story-levels stays at the site root (desktop default).
 
 # Search fill values, all from site/data/graph.json.
 [entry.criteria.acceptance-search-hanzi]
@@ -79,18 +87,18 @@ values = ["qzqzqz"]
 
 [entry.criteria.acceptance-hosted]
 cannot_host = "needs the public GitHub Pages address after a merge to main; this environment serves a local preview of the candidate head"
+[entry.criteria.acceptance-game-hosted]
+cannot_host = "needs the public GitHub Pages game address after a merge to main; this environment serves a local preview of the candidate head"
 
 # Navigation hints (jev-capture.spec.html#jc-target-nav). Game page address options
 # (site/bubbles/game.js): ?fixture=pop|fall|clear|over starts Play on a fixed board, ?seed=N fixes the
 # seed. Selector #play taps Play so the criterion opens mid-game.
 
-# Network: word links and the Play link.
+# Network: word links.
 [nav.acceptance-word-link]
 path = "/#word=%E5%AD%B8%E7%94%9F" # 學生
 [nav.acceptance-word-link-unknown]
 path = "/#word=qzqzqz"
-[nav.acceptance-play-link]
-path = "/"
 
 # Bubbles: playing a seeded board.
 [nav.acceptance-aim]

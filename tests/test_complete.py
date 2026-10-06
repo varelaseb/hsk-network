@@ -1,4 +1,4 @@
-"""#tests-list test-complete, #acceptance-complete: one node per list entry."""
+"""#tests-list test-complete: one node per list entry."""
 
 import json
 import unittest
@@ -8,6 +8,7 @@ from graph_data import GRAPH, ROOT
 
 class Complete(unittest.TestCase):
     def test_every_entry_once_and_nothing_else(self):
+        """#acceptance-complete."""
         expected = {}
         for level in (1, 2):
             path = ROOT / "data" / "hsk" / f"hsk-level-{level}.json"
