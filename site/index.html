@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSK 1-2 network (Traditional, Zhuyin)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="search" role="search">
+    <input id="search" type="search" autocomplete="off" spellcheck="false"
+      placeholder="Search character, Zhuyin, English" aria-label="Search words"
+      aria-controls="results" aria-expanded="false">
+    <ul id="results" class="results" role="listbox" hidden></ul>
+  </div>
+  <ul class="legend" aria-label="HSK levels">
+    <li><button type="button" class="level" role="switch" aria-checked="true" data-level="1"><span class="swatch l1"></span>HSK 1<span class="toggle" aria-hidden="true"></span></button></li>
+    <li><button type="button" class="level" role="switch" aria-checked="true" data-level="2"><span class="swatch l2"></span>HSK 2<span class="toggle" aria-hidden="true"></span></button></li>
+    <li><span class="swatch hub"></span>character</li>
+  </ul>
+</header>
+<main id="stage" class="stage">
+  <svg id="graph" role="img" aria-label="Network of HSK 1 and HSK 2 words linked by shared characters"></svg>
+  <p id="status" class="status">Loading…</p>
+  <aside id="card" class="card" hidden aria-live="polite"></aside>
+</main>
+<footer class="foot">
+  <details id="sources">
+    <summary>Sources</summary>
+    <div class="sources-body">
+      <p>Definitions and Traditional forms: <a href="https://cc-cedict.org/wiki/" rel="noopener">CC-CEDICT</a>,
+        licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>;
+        <a href="https://www.mdbg.net/chinese/dictionary?page=cc-cedict" rel="noopener">download</a>.
+        Built from the release of <span id="cedict-release">(unknown)</span>.
+        The graph data is shared under the same license.</p>
+      <p>Word lists: HSK 2.0 levels 1 and 2 from <a id="hsk-source" href="https://github.com/clem109/hsk-vocabulary" rel="noopener">clem109/hsk-vocabulary</a> (MIT).</p>
+      <p>Graph library: <a href="https://d3js.org" rel="noopener">D3</a> v7.9.0,
+        <a href="vendor/d3.LICENSE.txt">ISC license</a>.</p>
+    </div>
+  </details>
+</footer>
+<script src="vendor/d3.v7.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

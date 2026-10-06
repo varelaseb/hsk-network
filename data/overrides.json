@@ -1,0 +1,194 @@
+[
+ {
+  "id": "1-11",
+  "simp": "吃",
+  "trad": "吃",
+  "pinyin": "chi1",
+  "reason": "喫 is a variant; 吃 is the standard form"
+ },
+ {
+  "id": "1-32",
+  "simp": "个",
+  "trad": "個",
+  "pinyin": "ge4",
+  "reason": "箇 is a variant; 個 is the standard classifier"
+ },
+ {
+  "id": "1-38",
+  "simp": "和",
+  "trad": "和",
+  "pinyin": "he2",
+  "reason": "咊 and 龢 are variants"
+ },
+ {
+  "id": "1-41",
+  "simp": "回",
+  "trad": "回",
+  "pinyin": "hui2",
+  "reason": "迴 and 逥 are variants or narrower senses; 回 is the HSK sense"
+ },
+ {
+  "id": "1-45",
+  "simp": "家",
+  "trad": "家",
+  "pinyin": "jia1",
+  "reason": "傢 is only used in 傢伙 and 傢俱"
+ },
+ {
+  "id": "1-46",
+  "simp": "叫",
+  "trad": "叫",
+  "pinyin": "jiao4",
+  "reason": "呌 is a variant"
+ },
+ {
+  "id": "1-57",
+  "simp": "里",
+  "trad": "裡",
+  "pinyin": "li3",
+  "reason": "HSK sense is inside; 裡 is the Taiwan standard, 里 is the length unit, 裏 a variant"
+ },
+ {
+  "id": "1-73",
+  "simp": "你",
+  "trad": "你",
+  "pinyin": "ni3",
+  "reason": "妳 is the feminine form; HSK lists the general you"
+ },
+ {
+  "id": "1-74",
+  "simp": "年",
+  "trad": "年",
+  "pinyin": "nian2",
+  "reason": "秊 is a variant"
+ },
+ {
+  "id": "1-97",
+  "simp": "是",
+  "trad": "是",
+  "pinyin": "shi4",
+  "reason": "昰 is a variant"
+ },
+ {
+  "id": "1-104",
+  "simp": "岁",
+  "trad": "歲",
+  "pinyin": "sui4",
+  "reason": "嵗 is a variant"
+ },
+ {
+  "id": "1-111",
+  "simp": "喂",
+  "trad": "喂",
+  "pinyin": "wei4",
+  "reason": "HSK sense is hey or hello; 餵 and 餧 mean to feed"
+ },
+ {
+  "id": "1-140",
+  "simp": "怎么",
+  "trad": "怎麼",
+  "pinyin": "zen3 me5",
+  "reason": "怎麽 is a variant"
+ },
+ {
+  "id": "2-10",
+  "simp": "出",
+  "trad": "出",
+  "pinyin": "chu1",
+  "reason": "齣 is the classifier for plays"
+ },
+ {
+  "id": "2-12",
+  "simp": "船",
+  "trad": "船",
+  "pinyin": "chuan2",
+  "reason": "舩 is a variant"
+ },
+ {
+  "id": "2-16",
+  "simp": "打篮球",
+  "trad": "打籃球",
+  "pinyin": "da3 lan2 qiu2",
+  "defs": [
+   "to play basketball"
+  ],
+  "reason": "absent from CC-CEDICT, and the list's dá is a typo for dǎ; definition hand-written, not from CC-CEDICT"
+ },
+ {
+  "id": "2-14",
+  "simp": "从",
+  "trad": "從",
+  "pinyin": "cong2",
+  "reason": "从 is a variant; 從 is the standard form"
+ },
+ {
+  "id": "2-84",
+  "simp": "千",
+  "trad": "千",
+  "pinyin": "qian1",
+  "reason": "韆 is only used in 鞦韆"
+ },
+ {
+  "id": "2-98",
+  "simp": "它",
+  "trad": "它",
+  "pinyin": "ta1",
+  "reason": "牠 is the animal-only form"
+ },
+ {
+  "id": "2-104",
+  "simp": "玩",
+  "trad": "玩",
+  "pinyin": "wan2",
+  "reason": "翫 is a variant"
+ },
+ {
+  "id": "2-106",
+  "simp": "为",
+  "trad": "為",
+  "pinyin": "wei4",
+  "reason": "爲 is a variant; 為 is the Taiwan standard"
+ },
+ {
+  "id": "2-112",
+  "simp": "向",
+  "trad": "向",
+  "pinyin": "xiang4",
+  "reason": "嚮 and 曏 are variants or narrower senses"
+ },
+ {
+  "id": "2-114",
+  "simp": "笑",
+  "trad": "笑",
+  "pinyin": "xiao4",
+  "reason": "咲 is a variant"
+ },
+ {
+  "id": "2-122",
+  "simp": "药",
+  "trad": "藥",
+  "pinyin": "yao4",
+  "reason": "葯 is a variant"
+ },
+ {
+  "id": "2-128",
+  "simp": "阴",
+  "trad": "陰",
+  "pinyin": "yin1",
+  "reason": "隂 is a variant"
+ },
+ {
+  "id": "2-142",
+  "simp": "着",
+  "trad": "著",
+  "pinyin": "zhe5",
+  "reason": "HSK sense is the aspect particle; 著 is the Taiwan standard and 着 a variant"
+ },
+ {
+  "id": "2-149",
+  "simp": "最",
+  "trad": "最",
+  "pinyin": "zui4",
+  "reason": "㝡 and 冣 are variants"
+ }
+]
