@@ -33,6 +33,22 @@ class StoredOnce(unittest.TestCase):
                     self.assertNotIn("reading", w)
                     self.assertTrue(w["zhuyin"] and w["defs"])
 
+    def test_every_word_character_has_readings(self):
+        """#char-coverage: hub or not, e.g. 們."""
+        for w in GRAPH["words"]:
+            for ch in w["trad"]:
+                with self.subTest(char=ch):
+                    self.assertTrue(CHARS[ch]["readings"][0]["defs"])
+        self.assertNotIn("們", {h["char"] for h in GRAPH["hubs"]})
+
+    def test_no_pinyin_in_definitions(self):
+        """#default-reading: no numbered pinyin left in any shipped definition."""
+        defs = [d for w in GRAPH["words"] for d in w.get("defs", [])]
+        defs += [d for e in CHARS.values() for r in e.get("readings", []) for d in r["defs"]]
+        for d in defs:
+            with self.subTest(d=d):
+                self.assertNotRegex(d, r"[A-Za-z:]+[1-5]\b")
+
     def test_both_readings_of_one_character(self):
         chang, zhang = (w for w in GRAPH["words"] if w["trad"] == "長")
         self.assertNotEqual(chang["reading"], zhang["reading"])
@@ -55,6 +71,8 @@ CEDICT = build_data.parse_cedict("""\
 王 王 [wang4] /to rule/
 公主 公主 [gong1 zhu3] /princess/
 兒 儿 [er2] /child/
+公 公 [gong1] /public/
+主 主 [zhu3] /owner/
 """.splitlines())[0]
 NO_CHARS = {"rs": {}, "kdef": {}, "radicals": {}, "ids": {}}
 
@@ -72,8 +90,8 @@ class Build(unittest.TestCase):
         graph = build_data.build(CEDICT, None, hsk, {}, NO_CHARS)
         self.assertEqual(graph["words"][0], {"id": "1-1", "level": 1, "trad": "王", "simp": "王",
                                              "pinyin": "wang4", "reading": 0})
-        self.assertEqual(graph["chars"], {"王": {"readings": [
-            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]}]}})
+        self.assertEqual(graph["chars"]["王"], {"readings": [
+            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]}]})
         self.assertEqual(graph["words"][1]["zhuyin"], "ㄍㄨㄥ ㄓㄨˇ")
 
     def test_part_written_only_as_simplified_reads_simplified_entries(self):

@@ -2,7 +2,7 @@
 """Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, and BabelStone IDS.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #graph-model, #chars-table, #chars-words, #hub-reading, #breakdown-rules, #audio-rules).
+#schema-example, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules, #audio-rules).
 Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
@@ -228,7 +228,27 @@ def _merge(cands):
             if d not in defs:
                 defs.append(d)
     kept = [d for d in defs if not d.startswith(POINTER_PREFIXES)]
-    return kept or defs
+    return [_bracket_zhuyin(d) for d in kept or defs]
+
+
+_BRACKET = re.compile(r"\[([^\[\]]*)\]")
+_SYLLABLE = re.compile(r"[A-Za-zü:]+[1-5]")
+
+
+def _bracket_zhuyin(definition):
+    """#default-reading: bracketed CC-CEDICT pinyin in a definition becomes Zhuyin,
+    brackets kept: 'CL:棵[ke1]' -> 'CL:棵[ㄎㄜ]'. Takes CC-CEDICT's spellings
+    'zhi1dao5' and 'nu : 3'. Other bracketed text stays."""
+    def sub(m):
+        text = re.sub(r"\s*:\s*", ":", m.group(1))
+        syllables = _SYLLABLE.findall(text)
+        if not syllables or "".join(syllables) != "".join(text.split()):
+            return m.group(0)
+        try:
+            return f"[{to_zhuyin(normalize_numbered(syllables))}]"
+        except ValueError:
+            return m.group(0)
+    return _BRACKET.sub(sub, definition)
 
 
 def match_entry(entry, index, override=None):
@@ -537,9 +557,14 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
             continue
         del w["zhuyin"], w["defs"]
         w["reading"] = pinyins.index(w["pinyin"])
-    for h in hubs:
+    for w in words:  # #char-coverage: every character of every word
+        for ch in dict.fromkeys(w["trad"]):
+            try:
+                readings(ch)
+            except ValueError as err:
+                problems.append(f"{w['id']} {w['simp']}: {err}")
+    for h in hubs:  # a hub's character is a word's, so it has its readings
         try:
-            readings(h["char"])
             override = hub_overrides.get(h["id"])
             if override and override["char"] != h["char"]:
                 raise ValueError(f"override names {override['char']}")

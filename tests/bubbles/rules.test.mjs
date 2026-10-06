@@ -7,7 +7,7 @@ import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
   makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
   createGame, shoot, resolveShot, swap, completingChars, boardChars,
-  roundRows, roundShots, lowestRow, pronunciation, wordReading,
+  roundRows, roundShots, lowestRow, pronunciation, wordReading, charReadings,
 } from "../../site/bubbles/rules.js";
 
 const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
@@ -346,6 +346,42 @@ test("acceptance-say-source: recording, else on-device Taiwan Mandarin voice, el
   // Pronunciation off: nothing is said.
   assert.equal(pronunciation(rec, false, [tw]), null);
   assert.equal(pronunciation(bare, false, [tw]), null);
+});
+
+// test-inspect
+const CHARS = {
+  // shared by several words, two readings
+  子: { readings: [{ pinyin: "zi3", zhuyin: "ㄗˇ", defs: ["son", "child"] }, { pinyin: "zi5", zhuyin: "˙ㄗ", defs: ["noun suffix"] }] },
+  學: { readings: [{ pinyin: "xue2", zhuyin: "ㄒㄩㄝˊ", defs: ["to learn", "to study"] }], meaning: "learn" },
+  // in only one word
+  杯: { readings: [{ pinyin: "bei1", zhuyin: "ㄅㄟ", defs: ["cup"] }] },
+};
+
+test("inspect: each character gives its own readings as Zhuyin and definitions (acceptance-inspect-rules)", () => {
+  assert.deepEqual(charReadings("子", CHARS), [{ zhuyin: "ㄗˇ", defs: ["son", "child"] }, { zhuyin: "˙ㄗ", defs: ["noun suffix"] }]);
+  assert.deepEqual(charReadings("學", CHARS), [{ zhuyin: "ㄒㄩㄝˊ", defs: ["to learn", "to study"] }]);
+  assert.deepEqual(charReadings("杯", CHARS), [{ zhuyin: "ㄅㄟ", defs: ["cup"] }]);
+});
+
+test("inspect: never pinyin", () => {
+  for (const ch of Object.keys(CHARS)) {
+    const text = JSON.stringify(charReadings(ch, CHARS));
+    assert.ok(!/pinyin|[a-z]+[1-5]/.test(text), text);
+  }
+});
+
+test("inspect: every character of every word has readings with English in the built table (hsk-network #char-coverage)", () => {
+  for (const w of GRAPH.words) for (const ch of w.trad) {
+    const rs = charReadings(ch, GRAPH.chars);
+    assert.ok(rs.length && rs[0].zhuyin && rs[0].defs[0], ch);
+  }
+});
+
+test("shoot events carry word entries with English definitions for the card", () => {
+  const game = createGame({ words: GRAPH.words, levels: [1, 2], seed: 1, board: parseBoard(["..學...."]), current: "生", next: "學" });
+  const { events } = resolveShot(game, { r: 0, c: 3 });
+  assert.equal(events.words[0].word, "學生");
+  for (const e of events.words[0].entries) assert.ok(wordReading(e, GRAPH.chars).defs[0], "defs[0]");
 });
 
 // hsk-network #chars-words: cards read a one-character word through chars.

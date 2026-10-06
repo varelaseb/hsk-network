@@ -35,6 +35,10 @@
 //   wordReading(entry, chars) -> { zhuyin, defs }
 //       a word entry's Zhuyin and definitions: its own, or for a one-character
 //       word, those of the reading it names in chars (graph.json `chars`).
+//   charReadings(ch, chars) -> [{ zhuyin, defs }]
+//       character card (spec #rule-inspect): every reading of ch's chars entry,
+//       read through wordReading; never pinyin. The build gives every word
+//       character an entry (hsk-network #char-coverage).
 
 export const COLS = 8;
 export const ROW_H = Math.sqrt(3) / 2;
@@ -523,4 +527,11 @@ export function pronunciation(found, on, voices) {
   if (rec) return { src: `../${rec}` };
   const voice = (voices || []).find((v) => v.localService === true && TAIWAN.test(v.lang || ""));
   return voice ? { voice, text: found.word } : null;
+}
+
+// ---- Character lookup (spec #rule-inspect): the shared character table, one
+// read path with words.
+
+export function charReadings(ch, chars) {
+  return chars[ch].readings.map((_, reading) => wordReading({ trad: ch, reading }, chars));
 }
