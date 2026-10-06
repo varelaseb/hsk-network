@@ -131,6 +131,49 @@ class Match(unittest.TestCase):
                 self.assertTrue(o["reason"].strip())
 
 
+HUB_FIXTURE = """\
+王 王 [Wang2] /surname Wang/
+王 王 [wang2] /king/
+王 王 [wang4] /to rule/
+王 王 [wang2] /monarch/king/
+李 李 [Li3] /surname Li/
+得 得 [de2] /to obtain/
+得 得 [de5] /see 得[de2]/
+得 得 [dei3] /must/
+""".splitlines()
+BY_TRAD = {}
+for _e in build_data.parse_cedict(HUB_FIXTURE)[0]:
+    BY_TRAD.setdefault(_e["trad"], []).append(_e)
+
+
+class HubReading(unittest.TestCase):
+    """#hub-reading."""
+
+    def test_lowercase_readings_per_pinyin_in_dictionary_order_merged(self):
+        self.assertEqual(build_data.hub_readings("王", BY_TRAD), [
+            {"pinyin": "wang2", "zhuyin": "ㄨㄤˊ", "defs": ["king", "monarch"]},
+            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]},
+        ])
+
+    def test_pointer_only_reading_keeps_pointer(self):
+        readings = build_data.hub_readings("得", BY_TRAD)
+        self.assertEqual([r["zhuyin"] for r in readings], ["ㄉㄜˊ", "˙ㄉㄜ", "ㄉㄟˇ"])
+        self.assertEqual(readings[1]["defs"], ["see 得[de2]"])
+
+    def test_capitalized_counts_only_without_lowercase(self):
+        self.assertEqual(build_data.hub_readings("李", BY_TRAD),
+                         [{"pinyin": "li3", "zhuyin": "ㄌㄧˇ", "defs": ["surname Li"]}])
+
+    def test_build_names_hub_char_without_entry(self):
+        entries = build_data.parse_cedict(["學生 学生 [xue2 sheng5] /student/",
+                                           "學校 学校 [xue2 xiao4] /school/"])[0]
+        hsk = [{"id": "1-1", "level": 1, "simp": "学生", "pinyin": "xué sheng"},
+               {"id": "1-2", "level": 1, "simp": "学校", "pinyin": "xué xiào"}]
+        with self.assertRaises(build_data.BuildError) as err:
+            build_data.build(entries, RELEASE, hsk, {})
+        self.assertEqual(err.exception.problems, ["c-學 學: no CC-CEDICT entry"])
+
+
 class Download(unittest.TestCase):
     def fetch(self, read):
         """Run download with urlopen().read() mocked; return (files left, urlopen kwargs)."""
