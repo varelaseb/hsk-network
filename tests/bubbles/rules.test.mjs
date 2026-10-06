@@ -7,7 +7,7 @@ import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
   makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
   createGame, shoot, resolveShot, swap, completingChars, boardChars,
-  roundRows, roundShots, lowestRow,
+  roundRows, roundShots, lowestRow, pronunciation,
 } from "../../site/bubbles/rules.js";
 
 const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
@@ -320,4 +320,31 @@ test("swap trades current and next", () => {
   const g = swap(fixture(["學......."]));
   assert.equal(g.current, "中");
   assert.equal(g.next, "生");
+});
+
+// acceptance-say-source
+test("acceptance-say-source: recording, else on-device Taiwan Mandarin voice, else silent; never a network voice", () => {
+  const rec = { word: "學生", entries: [{ ...W("1-128", 1, "學生"), audio: "audio/1-128.mp3" }] };
+  const bare = { word: "喜歡", entries: [W("c", 2, "喜歡")] };
+  const tw = { name: "Mei-Jia", lang: "zh-TW", localService: true };
+  const twAndroid = { name: "zh_TW local", lang: "zh_TW", localService: true };
+  const twCloud = { name: "Google 國語（臺灣）", lang: "zh-TW", localService: false };
+  const cn = { name: "Tingting", lang: "zh-CN", localService: true };
+  const en = { name: "Samantha", lang: "en-US", localService: true };
+
+  // A word with a recording plays it, from the site, whatever voices exist.
+  assert.deepEqual(pronunciation(rec, true, [tw]), { src: "../audio/1-128.mp3" });
+  assert.deepEqual(pronunciation(rec, true, []), { src: "../audio/1-128.mp3" });
+  // Without one: a Taiwan Mandarin voice on the device says the Traditional form.
+  assert.deepEqual(pronunciation(bare, true, [en, cn, twCloud, tw]), { voice: tw, text: "喜歡" });
+  assert.equal(pronunciation(bare, true, [twAndroid]).voice, twAndroid);
+  // No such device voice: silent. Off-device voices are never used.
+  assert.equal(pronunciation(bare, true, [en, cn]), null);
+  assert.equal(pronunciation(bare, true, [twCloud]), null);
+  assert.equal(pronunciation(bare, true, [{ lang: "zh-TW" }]), null);
+  assert.equal(pronunciation(bare, true, []), null);
+  assert.equal(pronunciation(bare, true, undefined), null);
+  // Pronunciation off: nothing is said.
+  assert.equal(pronunciation(rec, false, [tw]), null);
+  assert.equal(pronunciation(bare, false, [tw]), null);
 });

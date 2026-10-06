@@ -107,7 +107,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 }
 .icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
 .icon-btn .sound-state { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.sound-btn svg .i-slash { stroke: currentColor; stroke-width: 2; stroke-linecap: round; fill: none; }
+.sound-btn svg .i-slash, .sound-btn svg .i-wave { stroke: currentColor; stroke-width: 2; stroke-linecap: round; fill: none; }
+.sound-btn[aria-checked="false"] svg .i-wave { display: none; }
 .sound-btn[aria-checked="true"] svg .i-slash { display: none; }
 .sound-btn[aria-checked="false"] svg .i-note { opacity: .55; }
 
