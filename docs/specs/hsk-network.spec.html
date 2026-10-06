@@ -26,7 +26,7 @@
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-phone">As a learner on a phone, I can read, pan, zoom, and tap the graph as comfortably as on a desktop.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-link">As a learner, I open a link to one word, such as from the bubbles game, and the network shows that word focused with its card open.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-play">As a learner, I go from the network to the <a href="hsk-bubbles.spec.html">bubbles game</a> in one tap.</p>
-<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-sources">As a learner, I can see where the vocabulary and definitions come from and under which licenses.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-sources">As a learner, I can see where the vocabulary, definitions, and pronunciation recordings come from and under which licenses.</p>
 <p data-user-story data-user-facing="false" data-anchor="story-maintain">As a maintainer, I rebuild the word data with one command, and an automated test suite proves the data correct on every pull request.</p>
 </section>
 
@@ -59,7 +59,8 @@
 <tr data-acceptance-criterion data-anchor="acceptance-word-link" data-story="story-link"><td>Word link</td><td data-acceptance-scenario>Given a learner with a link to one word on the site. When the learner opens the link.</td><td data-acceptance-observable>Then the graph settles, then pans and zooms to that word, highlights it and its neighbors, and opens its card.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-word-link-unknown" data-story="story-link"><td>Unknown word link</td><td data-acceptance-scenario>Given a learner with a site link naming a word that does not exist. When the learner opens the link.</td><td data-acceptance-observable>Then the whole graph fits the screen with no card open, as on a plain visit.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-play-link" data-story="story-play"><td>Play</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps "Play" beside the level panel.</td><td data-acceptance-observable>Then the bubbles game start screen opens.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, and credits the graph library and its license.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-audio-files" data-story="story-maintain"><td>Audio files</td><td data-acceptance-scenario>Given the built word data. When each word's audio entry is checked.</td><td data-acceptance-observable>Then every audio entry names a recording that exists in the site, every recording in the site belongs to a word, and no word whose Simplified form another list entry shares has one, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, credits the pronunciation recordings to their speaker and source under CC BY-SA 3.0 US with links, and credits the graph library and its license.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-static" data-story="story-explore story-maintain"><td>Static</td><td data-acceptance-scenario>Given the published site files. When their references are checked.</td><td data-acceptance-observable>Then the page loads only files from its own site, with no runtime API, key, or third-party request, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-ci" data-story="story-maintain"><td>CI</td><td data-acceptance-scenario>Given a maintainer with an open pull request. When the maintainer views its checks.</td><td data-acceptance-observable>Then a test check has run the full test suite and shows pass or fail.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hosted" data-story="story-explore"><td>Hosted</td><td data-acceptance-scenario>Given a learner with only the public address. When the learner opens it after a change merges to main.</td><td data-acceptance-observable>Then the site loads with the merged version of the graph.</td></tr>
@@ -71,7 +72,7 @@
 
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
 <h2>Modular boundaries</h2>
-<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists and CC-CEDICT into the graph data: matching, Traditional forms, Zhuyin, definitions, hubs, and links.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file and the build's error list.</span></p>
+<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, and the pronunciation recordings into the graph data: matching, Traditional forms, Zhuyin, definitions, hubs, links, and which word has a recording.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file and the recordings beside it, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT and the recordings at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file, the committed recordings, and the build's error list.</span></p>
 <p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards, search, legend, word links, the Play link, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file and the vendored graph library only and holds no dictionary logic.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
 <p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span> <span data-boundary-scope>Observable scope: check status and the live site.</span></p>
 </section>
@@ -150,6 +151,7 @@
 <tbody>
 <tr data-anchor="source-hsk"><td>HSK 2.0 word lists, <a href="https://github.com/clem109/hsk-vocabulary">clem109/hsk-vocabulary</a> levels 1 and 2</td><td>Which words, their level, Simplified form, and toned pinyin</td><td>Copied unchanged into the repository with its source URL and commit noted beside it</td><td>MIT; cited in the Sources footer</td></tr>
 <tr data-anchor="source-cedict"><td><a href="https://www.mdbg.net/chinese/dictionary?page=cedict">CC-CEDICT</a></td><td>Traditional form, numbered pinyin, English definitions</td><td>Downloaded by the build command into an ignored cache; never committed</td><td>CC BY-SA 4.0; credited with links and release date in the Sources footer; the graph data file is shared under the same license</td></tr>
+<tr data-anchor="source-audio"><td>Word recordings by Yue Tan (Université de Caen, Shtooka), via <a href="https://github.com/hugolpz/audio-cmn">hugolpz/audio-cmn</a></td><td>One human recording per word, named by its Simplified form; a mainland voice, which matches the Zhuyin shown, since that comes from mainland CC-CEDICT pinyin</td><td>The build command downloads the source at a commit pinned in a source note beside the HSK lists, into an ignored cache, and copies each matched MP3 unchanged into the site directory, one file per word id; about 1 to 3 MB in all</td><td>CC BY-SA 3.0 US; credited with speaker, source link, and license link in the Sources footer and in a credits file beside the recordings; unmodified clips beside the site code form a collection, so the license does not extend to the code</td></tr>
 </tbody>
 </table>
 </div>
@@ -182,11 +184,18 @@
 </table>
 </div>
 <h3 data-anchor="schema-heading">Graph data file</h3>
+<h3 data-anchor="audio-heading">Matching a word to a recording</h3>
+<ul data-anchor="audio-rules">
+<li data-anchor="audio-match">A word gets the recording whose name is its Simplified form; a word with no such recording gets none and the build lists it, without failing.</li>
+<li data-anchor="audio-polyphone">When two list entries share a Simplified form, such as 長 cháng and 長 zhǎng, neither gets a recording, because one clip cannot say both readings.</li>
+<li data-anchor="audio-field">A word with a recording carries its site-relative path in the graph data file; one without carries no audio entry.</li>
+</ul>
 <p data-anchor="schema-what">One JSON file in the site directory; the pipeline writes it and the site reads it.</p>
 <pre data-anchor="schema-example"><code>{
   "meta": {
     "cedictRelease": "2026-10-01",
-    "hskSource": "https://github.com/clem109/hsk-vocabulary@&lt;commit&gt;"
+    "hskSource": "https://github.com/clem109/hsk-vocabulary@&lt;commit&gt;",
+    "audioSource": "https://github.com/hugolpz/audio-cmn@&lt;commit&gt;"
   },
   "words": [
     {
@@ -196,7 +205,8 @@
       "simp": "学生",
       "pinyin": "xue2 sheng5",
       "zhuyin": "ㄒㄩㄝˊ ˙ㄕㄥ",
-      "defs": ["student", "schoolchild"]
+      "defs": ["student", "schoolchild"],
+      "audio": "audio/1-128.mp3"
     }
   ],
   "hubs": [
@@ -305,6 +315,7 @@
 <li data-anchor="test-complete">Completeness: every entry of both committed HSK lists appears once, with its level, and nothing else.</li>
 <li data-anchor="test-links">Links: hubs and links recomputed from the words' Traditional forms equal the committed ones.</li>
 <li data-anchor="test-match">Matching: the match rules above, against a few fixture dictionary lines, including a failing entry and an override.</li>
+<li data-anchor="test-audio">Audio: every audio entry names an existing recording, every recording belongs to a word, and words sharing a Simplified form have none.</li>
 <li data-anchor="test-static">Static: no site file references an address outside the site.</li>
 </ul>
 </section>
