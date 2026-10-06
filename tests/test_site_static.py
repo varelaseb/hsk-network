@@ -123,5 +123,37 @@ class StaticSiteTest(unittest.TestCase):
                 self.assertNotRegex(text, r"(?i)api[_-]?key|access[_-]?token|bearer\s|/api/")
 
 
+class Switches(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.switches = []
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if a.get("role") == "switch":
+            self.switches.append((tag, a))
+
+
+class LevelPanelTest(unittest.TestCase):
+    """Level panel markup (spec #page-levels, #ix-levels)."""
+
+    def test_one_switch_per_level_on_at_load(self):
+        page = Switches()
+        page.feed((SITE / "index.html").read_text(encoding="utf-8"))
+        self.assertEqual([a.get("data-level") for _, a in page.switches], ["1", "2"])
+        for tag, a in page.switches:
+            with self.subTest(level=a.get("data-level")):
+                self.assertEqual(tag, "button")
+                self.assertEqual(a.get("aria-checked"), "true")
+
+    def test_switch_is_at_least_44px_tall(self):
+        css = (SITE / "style.css").read_text(encoding="utf-8")
+        rule = re.search(r"(?m)^\.level\s*\{([^}]*)\}", css)
+        self.assertIsNotNone(rule)
+        height = re.search(r"min-height:\s*(\d+)px", rule.group(1))
+        self.assertIsNotNone(height)
+        self.assertGreaterEqual(int(height.group(1)), 44)
+
+
 if __name__ == "__main__":
     unittest.main()
