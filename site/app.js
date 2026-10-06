@@ -19,6 +19,7 @@
   const sheetQuery = window.matchMedia("(hover: none), (max-width: 600px)");
 
   let words = [], hubs = [], nodes = [], links = [];
+  let chars = {};             // character table (spec #chars-table)
   let byId = new Map();
   let wordHubs = new Map();   // word id -> [hub]
   let hubWords = new Map();   // hub id -> [word]
@@ -40,13 +41,12 @@
 
   function init(data) {
     fillSources(data.meta || {});
+    chars = data.chars;
     words = data.words.map(function (w) {
-      return Object.assign({}, w, {
-        kind: "word",
-        defs: w.defs || [],
-        width: textWidth(w.trad) + 14,
-        key: searchKey(w),
-      });
+      const n = Object.assign({}, w, wordReading(w, chars), { kind: "word" });
+      n.width = textWidth(w.trad) + 14;
+      n.key = searchKey(n);
+      return n;
     });
     hubs = data.hubs.map(function (h) { return Object.assign({}, h, { kind: "hub" }); });
     nodes = words.concat(hubs);
@@ -69,6 +69,13 @@
     if (document.activeElement === input) refreshResults();
     openWordLink();
     window.addEventListener("hashchange", openWordLink);
+  }
+
+  // A word's Zhuyin and definitions: its own, or for a one-character word, those of the
+  // reading it names in its character's table entry (spec #chars-words).
+  function wordReading(w, chars) {
+    const r = "reading" in w ? chars[w.trad].readings[w.reading] : w;
+    return { zhuyin: r.zhuyin, defs: r.defs };
   }
 
   // A #word=<id> address focuses that word as picking it in search does (spec #page-word-link).
@@ -391,7 +398,7 @@
       card.appendChild(levelTag(d.level));
     } else {
       card.appendChild(el("div", "c-trad", d.char)).lang = "zh-Hant";
-      d.readings.forEach(function (r) {
+      chars[d.char].readings.forEach(function (r) {
         const div = card.appendChild(el("div", "c-reading"));
         div.appendChild(el("div", "c-zhuyin", r.zhuyin)).lang = "zh-Hant";
         div.appendChild(el("p", "c-defs", r.defs.join("; ")));
@@ -418,16 +425,17 @@
   }
 
   // Radical and Parts rows (spec #page-breakdown). A hub built before breakdown data shows neither.
+  // Meaning and Zhuyin (of the first reading, when the part is a character) come from chars.
   function breakdown(d) {
     const dl = el("dl", "c-breakdown");
     if (d.radical) {
-      const r = d.radical;
+      const r = d.radical, c = chars[r.char];
       dl.appendChild(el("dt", null, "Radical"));
       const dd = dl.appendChild(el("dd"));
       dd.appendChild(el("span", "b-char", r.char)).lang = "zh-Hant";
       dd.appendChild(el("span", "b-num", "#" + r.number));
-      dd.appendChild(el("span", "b-mean", r.meaning));
-      if (r.zhuyin) dd.appendChild(el("span", "b-zy", r.zhuyin)).lang = "zh-Hant";
+      dd.appendChild(el("span", "b-mean", c.meaning));
+      if (c.readings) dd.appendChild(el("span", "b-zy", c.readings[0].zhuyin)).lang = "zh-Hant";
     }
     dl.appendChild(el("dt", null, "Parts"));
     const parts = d.parts || [];
@@ -437,10 +445,11 @@
     }
     const ul = dl.appendChild(el("dd")).appendChild(el("ul", "b-parts"));
     parts.forEach(function (p) {
+      const c = chars[p];
       const li = ul.appendChild(el("li"));
-      li.appendChild(el("span", "b-char", p.char)).lang = "zh-Hant";
-      if (p.zhuyin) li.appendChild(el("span", "b-zy", p.zhuyin)).lang = "zh-Hant";
-      li.appendChild(el("span", "b-mean", p.meaning));
+      li.appendChild(el("span", "b-char", p)).lang = "zh-Hant";
+      if (c.readings) li.appendChild(el("span", "b-zy", c.readings[0].zhuyin)).lang = "zh-Hant";
+      li.appendChild(el("span", "b-mean", c.meaning));
     });
     return dl;
   }
