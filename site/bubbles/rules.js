@@ -32,6 +32,11 @@
 //       the pronunciation choice, voices = speechSynthesis.getVoices().
 //       src is the game-relative recording path; voice is a Taiwan Mandarin
 //       voice that runs on the device (localService); null says nothing.
+//   lookupChar(ch, chars) -> { char, readings [{ zhuyin, def }] }
+//       character card (spec #rule-inspect): chars = graph.json `chars`
+//       ({ '<char>': { readings [{pinyin, zhuyin, defs}] } }). Each reading's
+//       Zhuyin and first definition; never pinyin. No table or entry: readings
+//       [] (the card shows the character alone).
 
 export const COLS = 8;
 export const ROW_H = Math.sqrt(3) / 2;
@@ -513,4 +518,11 @@ export function pronunciation(found, on, voices) {
   if (rec) return { src: `../${rec}` };
   const voice = (voices || []).find((v) => v.localService === true && TAIWAN.test(v.lang || ""));
   return voice ? { voice, text: found.word } : null;
+}
+
+// ---- Character lookup (spec #rule-inspect): the shared character table only.
+
+export function lookupChar(ch, chars) {
+  const readings = (chars && Object.hasOwn(chars, ch) && chars[ch].readings) || [];
+  return { char: ch, readings: readings.map((r) => ({ zhuyin: r.zhuyin, def: (r.defs && r.defs[0]) || "" })) };
 }
