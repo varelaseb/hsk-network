@@ -417,6 +417,7 @@
 <p data-anchor="face-subset">The kaishu font is cut down by the font build to exactly the Traditional and Simplified characters in the graph data file and the pages' own text, plus all 37 Zhuyin symbols, the four tone marks, and CJK punctuation; Geist is cut to Basic Latin, Latin-1, the pinyin tone letters of Latin Extended, combining tone marks, and typographic punctuation.</p>
 <p data-anchor="face-budget">Size budget, as WOFF2: the kaishu subset at most 240 KB, Geist at most 40 KB, both at most 280 KB; both are preloaded and swap in when ready, and the game draws its bubbles only once the kaishu face has loaded.</p>
 <p data-anchor="face-coverage">The font build writes a coverage list beside the fonts naming every character in the subset and the subset file's hash, because the standard library cannot read WOFF2; the test suite checks coverage and hash from that list.</p>
+<p data-anchor="face-missing">A character the kaishu face lacks, such as a rare component in a hub's parts, is named in the coverage list and falls back to the device font.</p>
 <h3 data-anchor="scale-heading">Type scale</h3>
 <div class="table-scroll" data-anchor="type-scale-scroll">
 <table data-anchor="type-scale">

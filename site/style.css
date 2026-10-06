@@ -1,13 +1,81 @@
+/* Shared look tokens for the network and the game (spec hsk-network #look). */
+
+/* Vendored subsets cut by scripts/build_fonts.py; licenses beside them (#type-faces). */
+@font-face {
+  font-family: "LXGW WenKai TC";
+  src: url("fonts/lxgw-wenkai-tc.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("fonts/geist.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  /* Okabe-Ito blue and orange: distinguishable under common color blindness. */
+  /* Type (#face-stack, #type-scale): Geist first so every character and Zhuyin falls to kaishu. */
+  --font: "Geist", "LXGW WenKai TC", system-ui, sans-serif;
+  --fs-head: 40px;
+  --fs-head-phone: 36px;
+  --fs-score: 56px;
+  --fs-score-play: 28px;
+  --fs-title: 22px;
+  --fs-body: 16px;
+  --lh-body: 1.5;
+  --fs-label: 14px;
+  --fs-caption: 12px;
+  --ls-caption: .02em;
+  --zhuyin-ratio: .38;
+  --fs-zhuyin-min: 14px;
+  --fs-zhuyin-list: 15px;
+  --zhuyin-gap: .3em;
+  --w-regular: 400;
+  --w-medium: 500;
+  --w-semibold: 600;
+
+  /* Color (#color-table). Okabe-Ito blue and orange: distinguishable under common color blindness. */
+  --paper: #f6f4ef;
+  --night: #0f1424;
+  --surface: #ffffff;
+  --ink: #1b1b1f;
+  --ink-night: #f6f4ef;
+  --muted: #5d5b57;
+  --muted-night: #a9b0c2;
+  --line: #e3dfd6;
+  --line-night: rgba(255, 255, 255, .14);
   --hsk1: #0072b2;
   --hsk2: #e69f00;
-  --hub: #9a9a9a;
-  --ink: #1d1d1f;
-  --muted: #5f6368;
+  --hub: #8b877f;
+
+  /* Depth (#color-depth, #color-meaning). */
+  --radius-card: 14px;
+  --radius-pill: 999px;
+  --shadow: 0 6px 24px rgba(27, 27, 31, .08);
+  --focus-ring: 2px;
+
+  /* Motion (#motion-table): transform and opacity only. */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --press-scale: .97;
+  --rise: 8px;
+  --dur-press: 140ms;
+  --dur-card: 220ms;
+  --dur-card-leave: 150ms;
+  --dur-sheet: 260ms;
+  --dur-focus: 550ms;
+  --dur-load: 400ms;
+  --dur-level: 200ms;
+  --dur-reduced: 120ms;
+}
+
+:root {
   --bg: #fbfbfa;
   --panel: #ffffff;
-  --line: #d6d6d6;
   --bar-h: 60px;
   font-family: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   color: var(--ink);
