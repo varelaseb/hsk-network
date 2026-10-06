@@ -173,8 +173,8 @@ class Rules(unittest.TestCase):
         [hub] = graph["hubs"]
         self.assertEqual(hub, {"id": "c-電", "char": "電", "radical": {"char": "雨", "number": 173},
                                "parts": ["雨", "申"]})
-        self.assertEqual(graph["chars"]["雨"], {"meaning": "rain"})
-        self.assertEqual(graph["chars"]["申"], {"meaning": "lightning"})
+        self.assertEqual(graph["chars"]["雨"], {"simp": "雨", "meaning": "rain"})
+        self.assertEqual(graph["chars"]["申"], {"simp": "申", "meaning": "lightning"})
         self.assertEqual(graph["chars"]["電"]["readings"][0]["zhuyin"], "ㄉㄧㄢˋ")
         self.assertEqual(graph["meta"]["idsDate"], "2025-06-27")
 

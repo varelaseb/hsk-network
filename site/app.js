@@ -533,12 +533,10 @@
     return s.replace(ZY_TONES, "");
   }
 
-  // English-only search text: drops "CL:" classifier lists, [pinyin] refs, and Han forms
-  // ("CL:個|个[ge4]", "variant of 爲|为[wei4]") so they never match Latin queries.
+  // English-only search text of a sense (#schema-sense): its plain text parts, so
+  // references (Han forms, readings) never match Latin queries.
   function englishText(d) {
-    return d.replace(/\bCL:.*$/, "")
-      .replace(/\[[^\]]*\]/g, "")
-      .replace(/[\p{Script=Han}|]+/gu, " ")
+    return d.parts.filter(function (p) { return typeof p === "string"; }).join(" ")
       .replace(/\s+/g, " ").trim().toLowerCase();
   }
 

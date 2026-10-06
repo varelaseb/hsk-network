@@ -10,7 +10,7 @@ import subprocess
 import unittest
 from pathlib import Path
 
-from graph_data import word_reading
+from graph_data import sense_text, word_reading
 
 ROOT = Path(__file__).resolve().parent.parent
 APP = ROOT / "site" / "app.js"
@@ -92,7 +92,7 @@ class SearchTest(unittest.TestCase):
 
     def test_english_hits_only_definitions(self):
         hit = re.compile(r"(^|[^a-z])be($|[^a-z])")
-        flags = [any(hit.search(d.lower()) for d in word_reading(self.words[i])[1])
+        flags = [any(hit.search(sense_text(d).lower()) for d in word_reading(self.words[i])[1])
                  for i in self.results["be"]]
         self.assertTrue(flags and all(flags), flags)
         self.assertIn("學生", self.trads("student"))
