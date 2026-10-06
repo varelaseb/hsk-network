@@ -14,7 +14,7 @@
 <h1 data-anchor="title">HSK bubbles</h1>
 <nav data-anchor="breadcrumbs">docs / specs / hsk-bubbles.spec.html</nav>
 <p data-anchor="context">A bubble shooter game on the HSK network site, built for a phone held in one hand.</p>
-<p data-anchor="context-2">The learner aims and shoots Traditional character bubbles; connected bubbles that spell an HSK word pop and show the word with its Zhuyin and English, and bubbles left hanging fall.</p>
+<p data-anchor="context-2">The learner aims and shoots character bubbles; connected bubbles that spell an HSK word pop and show the word with its Zhuyin and English, and bubbles left hanging fall.</p>
 <p data-anchor="context-3">It reuses the network's word data file unchanged; script, reading aid, levels, and sources follow <a href="hsk-network.spec.html#defaults">the network defaults</a>.</p>
 </header>
 
@@ -186,7 +186,7 @@
 <table data-anchor="screens-table">
 <thead><tr><th>Screen</th><th>Shows</th><th>Leaves by</th></tr></thead>
 <tbody>
-<tr data-anchor="screen-start"><td>Start</td><td>Title, HSK 1 and HSK 2 switches (last one on cannot switch off), best score, Play, pronunciation and effects controls, link to the network, Sources</td><td>Play</td></tr>
+<tr data-anchor="screen-start"><td>Start</td><td>Title, HSK 1 and HSK 2 switches (last one on cannot switch off), best score, Play, script, pronunciation, and effects controls, link to the network, Sources</td><td>Play</td></tr>
 <tr data-anchor="screen-play"><td>Playing</td><td>Score, round, combo when above 1, pronunciation and effects controls, pause; board; bottom line; word cards; launcher with next bubble</td><td>Pause, round clear, game over, leaving the app</td></tr>
 <tr data-anchor="screen-paused"><td>Paused</td><td>Resume, Quit to start; board kept</td><td>Resume or Quit</td></tr>
 <tr data-anchor="screen-round"><td>Round clear</td><td>Round bonus banner for about 1.5 seconds</td><td>Next round starts by itself</td></tr>
@@ -216,6 +216,7 @@
 <li data-anchor="feel-touch">The game area fills the visual viewport within the safe areas, blocks page scroll, pull-to-refresh, double-tap zoom, and text selection while playing, and every button is at least 44px.</li>
 <li data-anchor="feel-type">Type follows <a href="hsk-network.spec.html#look">the network's look</a>: characters and Zhuyin in the vendored kaishu face, drawn into bubbles only once it has loaded, English and scores in the vendored sans; word cards use the network's headword Zhuyin layout and cleaned senses, and the review list shows Zhuyin on one line.</li>
 <li data-anchor="feel-store">Best score, level switches, and the pronunciation and effects choices are remembered on the device only.</li>
+<li data-anchor="feel-script">Bubbles, word cards, and the review list follow <a href="hsk-network.spec.html#default-script-setting">the network's script setting</a>, shown on the start screen; switching it relabels the bubbles only, as word detection stays keyed by Traditional characters.</li>
 <li data-anchor="feel-look">The game uses the network's color, surface, and motion tokens in their game column, with the HSK 1 and HSK 2 colors on word cards and in the switches and level always named in text; the start screen is the title, the level chips, the best score, one ink Play pill, and the pronunciation and effects controls as a quiet row, with nothing else above the fold.</li>
 </ul>
 </section>
