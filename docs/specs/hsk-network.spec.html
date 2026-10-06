@@ -20,7 +20,7 @@
 <section data-spec-section="user-stories" data-anchor="user-stories">
 <h2>User stories</h2>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-explore">As a learner, I see every HSK 1 and HSK 2 word as a network in which words sharing a character gather around that character, so I learn characters through related words.</p>
-<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-inspect">As a learner, I hover or tap a word to see its Traditional form, Zhuyin, English definitions, and HSK level.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-inspect">As a learner, I hover or tap a word to see its Traditional form, Zhuyin, English definitions, and HSK level, and I tap a character hub to see its Zhuyin, its English, and the words that contain it, each with a short English gloss.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-search">As a learner, I type into a search box to find a word and the graph brings it into view.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-levels">As a learner, I switch each HSK level on or off so I can study one level's words at a time.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-phone">As a learner on a phone, I can read, pan, zoom, and tap the graph as comfortably as on a desktop.</p>
@@ -41,7 +41,8 @@
 <tr data-acceptance-criterion data-anchor="acceptance-hover" data-story="story-inspect"><td>Hover</td><td data-acceptance-scenario>Given a learner on a desktop browser viewing the graph. When the learner moves the pointer over a word node.</td><td data-acceptance-observable>Then a card shows the word in Traditional characters, its Zhuyin with tone marks, its English definitions, and its HSK level as text.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-tap" data-story="story-phone story-inspect"><td>Tap</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner taps a word node.</td><td data-acceptance-observable>Then the same word card opens at the bottom of the screen without covering the search box.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-dismiss" data-story="story-phone story-inspect"><td>Dismiss</td><td data-acceptance-scenario>Given a learner on a phone with a word card open. When the learner taps empty space in the graph.</td><td data-acceptance-observable>Then the card closes and the full graph is visible again.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-hub-card" data-story="story-inspect"><td>Hub card</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a character hub.</td><td data-acceptance-observable>Then a card shows that character and lists the words that contain it, and those words are highlighted in the graph.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hub-card" data-story="story-inspect"><td>Hub card</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a character hub.</td><td data-acceptance-observable>Then a card shows that character with the Zhuyin and English definitions of each of its readings, lists the words that contain it, each with its first English definition shown as text beside it, and highlights those words in the graph.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hub-known" data-story="story-inspect story-maintain"><td>Known characters</td><td data-acceptance-scenario>Given the built hub data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected readings in Zhuyin, each with a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-data-known" data-story="story-inspect story-maintain"><td>Known words</td><td data-acceptance-scenario>Given the built word data. When the reference words in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected Traditional form, Zhuyin, and a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-search-hanzi" data-story="story-search"><td>Search by character</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's Traditional characters into the search box and picks it from the results.</td><td data-acceptance-observable>Then the graph pans and zooms to that word, highlights it and its neighbors, and opens its card.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-search-zhuyin" data-story="story-search"><td>Search by Zhuyin</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's Zhuyin without tone marks into the search box.</td><td data-acceptance-observable>Then the results list includes that word, shown with its Traditional form and first English definition.</td></tr>
@@ -83,7 +84,7 @@
 <tr data-anchor="default-lists"><td>Which HSK</td><td>HSK 2.0 levels 1 and 2: 150 + 150 = 300 list entries.</td></tr>
 <tr data-anchor="default-links"><td>What links words</td><td>A shared character; characters are small hub nodes, words never link directly.</td></tr>
 <tr data-anchor="default-script"><td>Script</td><td>Traditional characters everywhere on the page.</td></tr>
-<tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in the word card, and Zhuyin in search; pinyin is never shown or searched.</td></tr>
+<tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in word and hub cards, and Zhuyin in search; pinyin is never shown or searched.</td></tr>
 <tr data-anchor="default-level"><td>Level cue</td><td>Color by HSK level, named in a legend and in the card.</td></tr>
 <tr data-anchor="default-level-panel"><td>Level filter</td><td>The legend is the level panel: one on/off switch per HSK level, both on at load.</td></tr>
 <tr data-anchor="default-data"><td>Data</td><td>Built once into a static file by a script in the repository; no runtime API and no keys.</td></tr>
@@ -157,6 +158,8 @@
 <li data-anchor="match-override">A small committed override file resolves each failing entry by naming the CC-CEDICT Traditional form and pinyin to use, with a one-line reason per override.</li>
 <li data-anchor="match-absent">A list word absent from CC-CEDICT is overridden with its Traditional form, pinyin, and hand-written English definitions, and its reason says the definitions are not from CC-CEDICT.</li>
 </ol>
+<h3 data-anchor="hub-reading-heading">Character readings</h3>
+<p data-anchor="hub-reading">A hub's readings are the lowercase single-character CC-CEDICT entries whose Traditional form is that character, one reading per distinct pinyin in dictionary order, each with its Zhuyin and its definitions merged and dropped by the match rules above; capitalized entries count only when no lowercase entry exists, and a character with no entry at all fails the build and names it.</p>
 <h3 data-anchor="zhuyin-heading">Zhuyin</h3>
 <p data-anchor="zhuyin-convert">Each numbered pinyin syllable converts to Zhuyin by a complete syllable table, keeping dictionary tones with no tone sandhi.</p>
 <p data-anchor="zhuyin-spacing">Syllables are separated by one space.</p>
@@ -192,7 +195,13 @@
     }
   ],
   "hubs": [
-    { "id": "c-學", "char": "學" }
+    {
+      "id": "c-學",
+      "char": "學",
+      "readings": [
+        { "pinyin": "xue2", "zhuyin": "ㄒㄩㄝˊ", "defs": ["to learn", "to study"] }
+      ]
+    }
   ],
   "links": [
     { "word": "1-128", "hub": "c-學" }
@@ -284,6 +293,7 @@
 <h3 data-anchor="tests-heading">Test suite</h3>
 <ul data-anchor="tests-list">
 <li data-anchor="test-known">Known words: at least ten reference words, including 學生, 喜歡, 長 in both readings, 得 in both readings, 中國, and 女兒, each checked for Traditional form, exact Zhuyin, and an expected English gloss.</li>
+<li data-anchor="test-hub-known">Known characters: at least 學 and 子, each hub checked for its readings' exact Zhuyin and an expected English gloss.</li>
 <li data-anchor="test-zhuyin">Zhuyin conversion: every tone, neutral tone, erhua, ü syllables, and zero-initial syllables such as yi, wu, and yu.</li>
 <li data-anchor="test-complete">Completeness: every entry of both committed HSK lists appears once, with its level, and nothing else.</li>
 <li data-anchor="test-links">Links: hubs and links recomputed from the words' Traditional forms equal the committed ones.</li>
