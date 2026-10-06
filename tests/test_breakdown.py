@@ -2,7 +2,7 @@
 
 import unittest
 
-from graph_data import GRAPH, build_data
+from graph_data import CHARS, GRAPH, build_data
 
 HUBS = {h["char"]: h for h in GRAPH["hubs"]}
 
@@ -21,14 +21,13 @@ class KnownBreakdowns(unittest.TestCase):
             with self.subTest(char=char):
                 hub = HUBS[char]
                 self.assertEqual((hub["radical"]["char"], hub["radical"]["number"]), (rad, num))
-                self.assertEqual([p["char"] for p in hub["parts"]], [p for p, _ in parts])
+                self.assertEqual(hub["parts"], [p for p, _ in parts])
                 for part, (_, word) in zip(hub["parts"], parts):
-                    self.assertIn(word, part["meaning"])
+                    self.assertIn(word, CHARS[part]["meaning"])
 
-    def test_zhuyin_only_on_characters(self):
-        self.assertEqual(HUBS["學"]["radical"]["zhuyin"], "ㄗˇ")
-        self.assertEqual(HUBS["學"]["parts"][1]["zhuyin"], "ㄗˇ")
-        self.assertNotIn("zhuyin", HUBS["沒"]["parts"][0])  # 氵, a radical form
+    def test_readings_only_on_characters(self):
+        self.assertEqual(CHARS[HUBS["學"]["radical"]["char"]]["readings"][0]["zhuyin"], "ㄗˇ")
+        self.assertNotIn("readings", CHARS[HUBS["沒"]["parts"][0]])  # 氵, a radical form
 
 
 class EveryHub(unittest.TestCase):
@@ -38,10 +37,10 @@ class EveryHub(unittest.TestCase):
         for hub in GRAPH["hubs"]:
             with self.subTest(char=hub["char"]):
                 rad = hub["radical"]
-                self.assertTrue(rad["char"] and rad["meaning"])
+                self.assertTrue(CHARS[rad["char"]]["meaning"])
                 self.assertIsInstance(rad["number"], int)
                 for part in hub["parts"]:
-                    self.assertTrue(part["char"] and part["meaning"])
+                    self.assertTrue(CHARS[part]["meaning"])
 
     def test_meta(self):
         self.assertRegex(GRAPH["meta"]["unihanVersion"], r"^\d+\.\d+\.\d+$")
@@ -125,29 +124,29 @@ class Rules(unittest.TestCase):
         self.single = build_data.single_char_index(CEDICT)
 
     def breakdown(self, char, override=None):
-        return build_data.hub_breakdown(char, self.chars, self.single, override)
+        return build_data.hub_breakdown(char, self.chars, override)
 
     def test_ming_is_sun_and_moon(self):
-        radical, parts = self.breakdown("明")
-        self.assertEqual(radical, {"char": "日", "number": 72, "meaning": "sun", "zhuyin": "ㄖˋ"})
-        self.assertEqual(parts, [{"char": "日", "meaning": "sun", "zhuyin": "ㄖˋ"},
-                                 {"char": "月", "meaning": "moon", "zhuyin": "ㄩㄝˋ"}])
+        radical, parts, meanings = self.breakdown("明")
+        self.assertEqual(radical, {"char": "日", "number": 72})
+        self.assertEqual(parts, ["日", "月"])
+        self.assertEqual(meanings, [("日", "sun"), ("日", "sun"), ("月", "moon")])
 
     def test_t_tagged_sequence_chosen_over_first(self):
-        self.assertEqual([p["char"] for p in self.breakdown("起")[1]], ["走", "巳"])
+        self.assertEqual(self.breakdown("起")[1], ["走", "巳"])
 
     def test_single_part_character_has_no_parts(self):
-        radical, parts = self.breakdown("女")
+        radical, parts, meanings = self.breakdown("女")
         self.assertEqual(parts, [])
-        self.assertEqual(radical["meaning"], "woman")
+        self.assertEqual(meanings, [("女", "woman")])
 
     def test_repeated_parts_listed_once(self):
-        self.assertEqual([p["char"] for p in self.breakdown("多")[1]], ["夕"])
+        self.assertEqual(self.breakdown("多")[1], ["夕"])
 
-    def test_radical_form_shown_without_zhuyin(self):
-        water, can = self.breakdown("河")[1]
-        self.assertEqual(water, {"char": "氵", "meaning": "water"})
-        self.assertEqual(can, {"char": "可", "meaning": "may", "zhuyin": "ㄎㄜˇ"})
+    def test_radical_form_is_not_a_character(self):
+        self.assertEqual(self.breakdown("河")[1:], (["氵", "可"], [("水", "water"), ("氵", "water"), ("可", "may")]))
+        self.assertFalse(build_data.is_character("氵", self.single))
+        self.assertTrue(build_data.is_character("可", self.single))
 
     def test_meaning_rule(self):
         self.assertEqual(build_data.meaning("hand; radical number 64"), "hand")
@@ -172,15 +171,17 @@ class Rules(unittest.TestCase):
                               {"char": "申", "meaning": "lightning"}]}
         graph = build_data.build(CEDICT, None, hsk, {"c-電": override}, self.chars)
         [hub] = graph["hubs"]
-        self.assertEqual(hub["radical"], {"char": "雨", "number": 173, "meaning": "rain"})
-        self.assertEqual(hub["parts"], [{"char": "雨", "meaning": "rain"},
-                                        {"char": "申", "meaning": "lightning"}])
+        self.assertEqual(hub, {"id": "c-電", "char": "電", "radical": {"char": "雨", "number": 173},
+                               "parts": ["雨", "申"]})
+        self.assertEqual(graph["chars"]["雨"], {"meaning": "rain"})
+        self.assertEqual(graph["chars"]["申"], {"meaning": "lightning"})
+        self.assertEqual(graph["chars"]["電"]["readings"][0]["zhuyin"], "ㄉㄧㄢˋ")
         self.assertEqual(graph["meta"]["idsDate"], "2025-06-27")
 
     def test_override_replaces_misleading_radical_meaning(self):
-        radical, parts = self.breakdown("明", {"radicalMeaning": "day"})
-        self.assertEqual(radical["meaning"], "day")
-        self.assertEqual([p["char"] for p in parts], ["日", "月"])
+        radical, parts, meanings = self.breakdown("明", {"radicalMeaning": "day"})
+        self.assertEqual(dict(meanings)["日"], "day")
+        self.assertEqual(parts, ["日", "月"])
 
     def test_override_for_no_hub_fails(self):
         hsk = [{"id": "1-1", "level": 1, "simp": "电", "pinyin": "diàn"}]

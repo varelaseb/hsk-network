@@ -2,7 +2,7 @@
 """Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, and BabelStone IDS.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #graph-model, #hub-reading, #breakdown-rules, #audio-rules).
+#schema-example, #graph-model, #chars-table, #chars-words, #hub-reading, #breakdown-rules, #audio-rules).
 Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
@@ -288,15 +288,18 @@ def build_links(words):
     return hubs, links
 
 
-def hub_readings(char, by_trad):
+def char_readings(char, single):
     """#hub-reading: one reading per distinct pinyin of char's own entries.
 
-    Lowercase entries only, capitalized ones only when no lowercase exists.
-    Raises ValueError when char has no entry or a reading has no Zhuyin.
+    single: single_char_index(). Entries by Traditional form, else by Simplified
+    form for a radical or part that is a character only as written there
+    (#breakdown-zhuyin). Lowercase entries only, capitalized ones only when no
+    lowercase exists. Raises ValueError when char has no entry or a reading has
+    no Zhuyin.
     """
-    cands = by_trad.get(char, [])
+    cands = single[0].get(char) or single[1].get(char, [])
     if not cands:
-        raise ValueError("no CC-CEDICT entry")
+        raise ValueError(f"{char} has no CC-CEDICT entry")
     cands = [c for c in cands if not c["cap"]] or cands
     groups = {}
     for c in cands:
@@ -433,24 +436,19 @@ def meaning(kdefinition):
     return None
 
 
-def char_zhuyin(ch, single):
-    """#breakdown-zhuyin: Zhuyin of ch's first reading when ch is a character itself.
-
-    single: {char: [lowercase single-character CC-CEDICT entries by Traditional
-    form]}, then by Simplified form, each in dictionary order.
-    """
-    by_trad, by_simp = single
-    pool = by_trad.get(ch) or by_simp.get(ch) or []
-    if not any(not _RADICAL_WORD.search(d) for e in pool for d in _merge([e])):
-        return None
-    return to_zhuyin(pool[0]["pinyin"])
+def is_character(ch, single):
+    """#breakdown-zhuyin: ch has a lowercase entry, by Traditional then Simplified
+    form, with a definition not mentioning "radical"."""
+    by_trad, by_simp = ([e for e in ix.get(ch, []) if not e["cap"]] for ix in single)
+    pool = by_trad or by_simp
+    return any(not _RADICAL_WORD.search(d) for e in pool for d in _merge([e]))
 
 
 def single_char_index(cedict_entries):
+    """({char: [entries by Traditional form]}, {char: [by Simplified form]}),
+    single-character CC-CEDICT entries in dictionary order, capitalized included."""
     by_trad, by_simp = {}, {}
     for e in cedict_entries:
-        if e["cap"]:
-            continue
         if len(e["trad"]) == 1:
             by_trad.setdefault(e["trad"], []).append(e)
         if len(e["simp"]) == 1:
@@ -458,17 +456,11 @@ def single_char_index(cedict_entries):
     return by_trad, by_simp
 
 
-def _component(ch, meaning_text, single):
-    out = {"char": ch, "meaning": meaning_text}
-    zhuyin = char_zhuyin(ch, single)
-    if zhuyin:
-        out["zhuyin"] = zhuyin
-    return out
+def hub_breakdown(char, chars, override=None):
+    """#breakdown-rules: return (radical, parts, meanings) or raise ValueError naming what failed.
 
-
-def hub_breakdown(char, chars, single, override=None):
-    """#breakdown-rules: return (radical, parts) or raise ValueError naming what failed.
-
+    radical: {"char", "number"}; parts: [char]; meanings: [(char, meaning)] for
+    the radical, then each part.
     chars: {"rs", "kdef", "radicals", "ids"} from Unihan, CJKRadicals, and IDS.
     override: may hold "parts" ([{"char", "meaning"}], or [] for none) replacing
     the derived parts, and "radicalMeaning" replacing the derived radical meaning.
@@ -482,21 +474,17 @@ def hub_breakdown(char, chars, single, override=None):
     if not rad_meaning:
         raise ValueError(f"radical {rad} has no meaning")
     radical = {"char": rad, "number": int(num.rstrip("'"))}
-    radical.update({k: v for k, v in _component(rad, rad_meaning, single).items() if k != "char"})
     if "parts" in override:
-        return radical, [_component(p["char"], p["meaning"], single) for p in override["parts"]]
-    if char not in chars["ids"]:
-        raise ValueError("no IDS sequence")
-    parts, missing = [], []
-    for p in ids_parts(char, chars["ids"][char]):
-        m = meaning(chars["kdef"].get(p)) if len(p) == 1 else None
-        if m:
-            parts.append(_component(p, m, single))
-        else:
-            missing.append(p)
-    if missing:
-        raise ValueError(f"part {', '.join(missing)} has no meaning")
-    return radical, parts
+        parts = {p["char"]: p["meaning"] for p in override["parts"]}
+    else:
+        if char not in chars["ids"]:
+            raise ValueError("no IDS sequence")
+        parts = {p: rad_meaning if p == rad else meaning(chars["kdef"].get(p)) if len(p) == 1 else None
+                 for p in ids_parts(char, chars["ids"][char])}
+        missing = [p for p, m in parts.items() if not m]
+        if missing:
+            raise ValueError(f"part {', '.join(missing)} has no meaning")
+    return radical, list(parts), [(rad, rad_meaning), *parts.items()]
 
 
 def build(cedict_entries, release, hsk_entries, overrides, chars):
@@ -521,17 +509,40 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
     if problems:
         raise BuildError(problems)
     hubs, links = build_links(words)
-    by_trad = {}
-    for c in cedict_entries:
-        by_trad.setdefault(c["trad"], []).append(c)
     single = single_char_index(cedict_entries)
+    table = {}  # #chars-table: char -> {"readings"?, "meaning"?}
+
+    def readings(ch):
+        entry = table.setdefault(ch, {})
+        if "readings" not in entry:
+            entry["readings"] = char_readings(ch, single)
+        return entry["readings"]
+
+    for w in words:  # #chars-words
+        if len(w["trad"]) != 1:
+            continue
+        try:
+            pinyins = [r["pinyin"] for r in readings(w["trad"])]
+            if w["pinyin"] not in pinyins:
+                raise ValueError(f"reading {w['pinyin']} missing from {w['trad']}'s entry")
+        except ValueError as err:
+            problems.append(f"{w['id']} {w['simp']}: {err}")
+            continue
+        del w["zhuyin"], w["defs"]
+        w["reading"] = pinyins.index(w["pinyin"])
     for h in hubs:
         try:
-            h["readings"] = hub_readings(h["char"], by_trad)
+            readings(h["char"])
             override = hub_overrides.get(h["id"])
             if override and override["char"] != h["char"]:
                 raise ValueError(f"override names {override['char']}")
-            h["radical"], h["parts"] = hub_breakdown(h["char"], chars, single, override)
+            h["radical"], h["parts"], meanings = hub_breakdown(h["char"], chars, override)
+            for ch, m in meanings:
+                entry = table.setdefault(ch, {})
+                if entry.setdefault("meaning", m) != m:
+                    raise ValueError(f"{ch} has differing meanings {entry['meaning']}, {m}")
+                if is_character(ch, single):
+                    readings(ch)
         except ValueError as err:
             problems.append(f"{h['id']} {h['char']}: {err}")
     problems += [f"{i}: override names no hub"
@@ -541,7 +552,7 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
     return {"meta": {"cedictRelease": release, "hskSource": hsk_source(),
                      "audioSource": audio_source(), "unihanVersion": chars.get("unihanVersion"),
                      "idsDate": chars.get("idsDate")},
-            "words": words, "hubs": hubs, "links": links}
+            "words": words, "chars": table, "hubs": hubs, "links": links}
 
 
 def load_chars(refresh=False):

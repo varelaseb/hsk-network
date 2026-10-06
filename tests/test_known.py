@@ -2,7 +2,7 @@
 
 import unittest
 
-from graph_data import GRAPH, build_data
+from graph_data import CHARS, GRAPH, build_data, word_reading
 
 # (simplified, toned list pinyin, traditional, zhuyin, expected gloss)
 KNOWN = [
@@ -30,11 +30,12 @@ class KnownWords(unittest.TestCase):
         for simp, toned, trad, zhuyin, gloss in KNOWN:
             with self.subTest(simp=simp, pinyin=toned):
                 want = [w for w in GRAPH["words"] if w["simp"] == simp
-                        and w["zhuyin"] == zhuyin]
+                        and word_reading(w)[0] == zhuyin]
                 self.assertEqual(len(want), 1, f"{simp} {zhuyin} not found once")
                 w = want[0]
                 self.assertEqual(w["trad"], trad)
-                self.assertTrue(any(gloss in d for d in w["defs"]), w["defs"])
+                defs = word_reading(w)[1]
+                self.assertTrue(any(gloss in d for d in defs), defs)
 
     def test_both_readings_are_distinct_nodes(self):
         for trad, count in (("長", 2), ("得", 2)):
@@ -42,7 +43,7 @@ class KnownWords(unittest.TestCase):
                 nodes = [w for w in GRAPH["words"] if w["trad"] == trad]
                 self.assertEqual(len(nodes), count)
                 self.assertEqual(len({w["id"] for w in nodes}), count)
-                self.assertEqual(len({w["zhuyin"] for w in nodes}), count)
+                self.assertEqual(len({word_reading(w)[0] for w in nodes}), count)
 
 
 # char -> [(zhuyin, expected gloss)] for every reading, in order.
@@ -55,10 +56,9 @@ KNOWN_HUBS = {
 class KnownCharacters(unittest.TestCase):
     def test_reference_hubs(self):
         """#acceptance-hub-known."""
-        hubs = {h["char"]: h for h in GRAPH["hubs"]}
         for char, readings in KNOWN_HUBS.items():
             with self.subTest(char=char):
-                got = hubs[char]["readings"]
+                got = CHARS[char]["readings"]
                 self.assertEqual([r["zhuyin"] for r in got], [z for z, _ in readings])
                 for r, (_, gloss) in zip(got, readings):
                     self.assertTrue(any(gloss in d for d in r["defs"]), r["defs"])
@@ -66,8 +66,8 @@ class KnownCharacters(unittest.TestCase):
     def test_every_hub_has_readings_with_defs(self):
         for h in GRAPH["hubs"]:
             with self.subTest(char=h["char"]):
-                self.assertTrue(h["readings"])
-                for r in h["readings"]:
+                self.assertTrue(CHARS[h["char"]]["readings"])
+                for r in CHARS[h["char"]]["readings"]:
                     self.assertEqual(r["zhuyin"], build_data.to_zhuyin(r["pinyin"]))
                     self.assertTrue(r["defs"])
 

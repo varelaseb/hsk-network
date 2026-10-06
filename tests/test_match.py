@@ -142,27 +142,25 @@ HUB_FIXTURE = """\
 得 得 [de5] /see 得[de2]/
 得 得 [dei3] /must/
 """.splitlines()
-BY_TRAD = {}
-for _e in build_data.parse_cedict(HUB_FIXTURE)[0]:
-    BY_TRAD.setdefault(_e["trad"], []).append(_e)
+SINGLE = build_data.single_char_index(build_data.parse_cedict(HUB_FIXTURE)[0])
 
 
 class HubReading(unittest.TestCase):
     """#hub-reading."""
 
     def test_lowercase_readings_per_pinyin_in_dictionary_order_merged(self):
-        self.assertEqual(build_data.hub_readings("王", BY_TRAD), [
+        self.assertEqual(build_data.char_readings("王", SINGLE), [
             {"pinyin": "wang2", "zhuyin": "ㄨㄤˊ", "defs": ["king", "monarch"]},
             {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]},
         ])
 
     def test_pointer_only_reading_keeps_pointer(self):
-        readings = build_data.hub_readings("得", BY_TRAD)
+        readings = build_data.char_readings("得", SINGLE)
         self.assertEqual([r["zhuyin"] for r in readings], ["ㄉㄜˊ", "˙ㄉㄜ", "ㄉㄟˇ"])
         self.assertEqual(readings[1]["defs"], ["see 得[de2]"])
 
     def test_capitalized_counts_only_without_lowercase(self):
-        self.assertEqual(build_data.hub_readings("李", BY_TRAD),
+        self.assertEqual(build_data.char_readings("李", SINGLE),
                          [{"pinyin": "li3", "zhuyin": "ㄌㄧˇ", "defs": ["surname Li"]}])
 
     def test_build_names_hub_char_without_entry(self):
@@ -172,7 +170,7 @@ class HubReading(unittest.TestCase):
                {"id": "1-2", "level": 1, "simp": "学校", "pinyin": "xué xiào"}]
         with self.assertRaises(build_data.BuildError) as err:
             build_data.build(entries, RELEASE, hsk, {}, NO_CHARS)
-        self.assertEqual(err.exception.problems, ["c-學 學: no CC-CEDICT entry"])
+        self.assertEqual(err.exception.problems, ["c-學 學: 學 has no CC-CEDICT entry"])
 
 
 class Download(unittest.TestCase):
