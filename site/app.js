@@ -467,12 +467,10 @@
 
   // ---------- Search ----------
 
-  // Toneless pinyin key: "nu:3 er2" -> "nver"; ü, u:, v all fold to v.
-  function foldPinyin(s) {
-    return s.toLowerCase()
-      .replace(/u:|ü|ǖ|ǘ|ǚ|ǜ/g, "v")
-      .normalize("NFD").replace(/[̀-ͯ]/g, "")
-      .replace(/[0-9\s'’·-]/g, "");
+  // Zhuyin keys ignore spaces; the toneless key also drops tone marks (ˉ ˊ ˇ ˋ ˙).
+  const ZY_TONES = /[ˉˊˇˋ˙]/g;
+  function zhuyinKey(s) {
+    return s.replace(/\s+/g, "").replace(/ˉ/g, "");
   }
 
   // English-only search text: drops "CL:" classifier lists, [pinyin] refs, and Han forms
@@ -485,10 +483,10 @@
   }
 
   function searchKey(w) {
-    const py = foldPinyin(w.pinyin || "");
+    const zy = zhuyinKey(w.zhuyin || "");
     return {
-      py: py,
-      pyU: py.replace(/v/g, "u"),
+      zy: zy,
+      zyBare: zy.replace(ZY_TONES, ""),
       defs: (w.defs || []).map(englishText).filter(Boolean),
     };
   }
@@ -502,7 +500,9 @@
     if (!q) return [];
     const scored = [];
     const hasHan = /\p{Script=Han}/u.test(q);
-    const pq = foldPinyin(q);
+    const hasZy = /\p{Script=Bopomofo}/u.test(q);
+    const zq = zhuyinKey(q);
+    const zk = /[ˊˇˋ˙]/.test(zq) ? "zy" : "zyBare";
     const eq = q.toLowerCase();
     const wordRe = /^[a-z][a-z\s'-]*$/i.test(q) ? new RegExp("(^|[^a-z])" + escapeRe(eq) + "($|[^a-z])") : null;
     words.forEach(function (w) {
@@ -511,13 +511,14 @@
       if (hasHan) {
         if (w.trad === q || w.simp === q) score = 100;
         else if (w.trad.indexOf(q) >= 0 || w.simp.indexOf(q) >= 0) score = 80;
-      } else {
-        // Definition matches rank ahead of every pinyin match.
-        if (wordRe && w.key.defs.some(function (d) { return d === eq; })) score = 95;
-        else if (wordRe && w.key.defs.some(function (d) { return wordRe.test(d); })) score = 90;
-        else if (pq && (w.key.py === pq || w.key.pyU === pq)) score = 70;
-        else if (pq && (w.key.py.indexOf(pq) === 0 || w.key.pyU.indexOf(pq) === 0)) score = 60;
-        else if (pq.length >= 2 && (w.key.py.indexOf(pq) >= 0 || w.key.pyU.indexOf(pq) >= 0)) score = 40;
+      } else if (hasZy) {
+        const k = w.key[zk];
+        if (k === zq) score = 100;
+        else if (k.indexOf(zq) === 0) score = 80;
+        else if (zq.length >= 2 && k.indexOf(zq) >= 0) score = 60;
+      } else if (wordRe) {
+        if (w.key.defs.some(function (d) { return d === eq; })) score = 95;
+        else if (w.key.defs.some(function (d) { return wordRe.test(d); })) score = 90;
       }
       if (score) scored.push({ w: w, score: score });
     });

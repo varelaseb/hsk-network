@@ -1,4 +1,4 @@
-"""Search ranking in site/app.js (spec #ix-search, #acceptance-search-pinyin, #acceptance-search-english).
+"""Search ranking in site/app.js (spec #ix-search, #acceptance-search-zhuyin, #acceptance-search-english).
 
 Runs the real search functions from app.js under Node against the built graph.json.
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 APP = ROOT / "site" / "app.js"
 GRAPH = ROOT / "site" / "data" / "graph.json"
-FUNCS = ["foldPinyin", "englishText", "searchKey", "escapeRe", "cmpId", "search"]
+FUNCS = ["zhuyinKey", "englishText", "searchKey", "escapeRe", "cmpId", "search"]
 NODE = shutil.which("node")
 
 
@@ -34,6 +34,7 @@ def run_search(queries):
             "const fs = require('fs');",
             "const MAX_RESULTS = %s;" % re.search(r"MAX_RESULTS = (\d+);", src).group(1),
             "const levelOn = { 1: true, 2: true };",
+            re.search(r"  const ZY_TONES = .*;", src).group(0),
         ]
         + [extract(src, f) for f in FUNCS]
         + [
@@ -53,27 +54,40 @@ class SearchTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.words = {w["id"]: w for w in json.loads(GRAPH.read_text(encoding="utf-8"))["words"]}
-        cls.results = run_search(["ge", "wei", "jia", "zhang", "shi", "be"])
+        cls.results = run_search(
+            ["ㄒㄩㄝㄕㄥ", "ㄒㄩㄝˊ ˙ㄕㄥ", "ㄒㄩㄝ ㄕㄥ", "ㄍㄜ", "ㄍㄜˋ", "ㄕˋ", "xuesheng", "ge", "be", "student"]
+        )
 
     def trads(self, q):
         return [self.words[i]["trad"] for i in self.results[q]]
 
-    def test_pinyin_finds_exact_syllable_words(self):
-        for q, trad in [("ge", "個"), ("wei", "為"), ("jia", "家"), ("shi", "是")]:
-            with self.subTest(q=q):
-                self.assertIn(trad, self.trads(q))
+    def test_zhuyin_without_tones_finds_word(self):
+        self.assertEqual(self.trads("ㄒㄩㄝㄕㄥ")[0], "學生")
+        self.assertEqual(self.trads("ㄍㄜ")[0], "個")
+
+    def test_zhuyin_with_tones_and_spaces(self):
+        self.assertEqual(self.trads("ㄒㄩㄝˊ ˙ㄕㄥ")[0], "學生")
+        self.assertEqual(self.trads("ㄒㄩㄝ ㄕㄥ")[0], "學生")
+        self.assertEqual(self.trads("ㄍㄜˋ")[0], "個")
+
+    def test_tone_marks_narrow_matches(self):
+        for i in self.results["ㄕˋ"]:
+            self.assertIn("ㄕˋ", self.words[i]["zhuyin"].replace(" ", ""))
+        self.assertIn("是", self.trads("ㄕˋ"))
+
+    def test_pinyin_is_not_searched(self):
+        self.assertEqual(self.results["xuesheng"], [])
+        self.assertNotIn("個", self.trads("ge"))
 
     def test_classifier_refs_are_not_english(self):
         # 家 lists "CL:個|个[ge4]"; that must not make it an English hit for "ge".
-        ids = self.results["ge"]
-        self.assertLess(ids.index("1-32"), 20)
-        self.assertEqual(self.trads("ge")[0], "個")
+        self.assertNotIn("家", self.trads("ge"))
 
-    def test_english_definition_hits_rank_first(self):
+    def test_english_hits_only_definitions(self):
         hit = re.compile(r"(^|[^a-z])be($|[^a-z])")
         flags = [any(hit.search(d.lower()) for d in self.words[i]["defs"]) for i in self.results["be"]]
-        self.assertTrue(flags and flags[0], flags)
-        self.assertEqual(flags, sorted(flags, reverse=True))
+        self.assertTrue(flags and all(flags), flags)
+        self.assertIn("學生", self.trads("student"))
 
 
 if __name__ == "__main__":
