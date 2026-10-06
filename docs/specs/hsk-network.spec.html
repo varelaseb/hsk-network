@@ -22,7 +22,7 @@
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-explore">As a learner, I see every HSK 1 and HSK 2 word as a network in which words sharing a character gather around that character, so I learn characters through related words.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-inspect">As a learner, I hover or tap a word to see its Traditional form, Zhuyin, English definitions, and HSK level, and I tap a character hub to see its Zhuyin, its English, and the words that contain it, each with a short English gloss.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-breakdown">As a learner, I see in a character hub's card its radical and the parts it is built from, each with a short English meaning and, where the part is a character itself, its Zhuyin, so I learn to read characters by their parts.</p>
-<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-strokes">As a learner, I see a hub's character drawn in simple lines in its card and tap its radical or any part to light up that part's strokes inside the character, so I see where each part sits.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-strokes">As a learner, I see a hub's character drawn in simple lines in its card with each part already in its own color and the radical marked, and a matching swatch beside each entry in the Radical and Parts rows, so I see where each part sits at a glance without tapping anything.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-search">As a learner, I type into a search box to find a word and the graph brings it into view.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-levels">As a learner, I switch each HSK level on or off so I can study one level's words at a time.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-phone">As a learner on a phone, I can read, pan, zoom, and tap the graph as comfortably as on a desktop.</p>
@@ -54,14 +54,17 @@
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-complete" data-story="story-breakdown story-maintain"><td>Every hub broken down</td><td data-acceptance-scenario>Given the built hub data. When every hub is checked.</td><td data-acceptance-observable>Then every hub has a radical with a number and a meaning, and every part has a meaning, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-chars-once" data-story="story-maintain"><td>Stored once</td><td data-acceptance-scenario>Given the built graph data. When every hub, radical, and part is checked.</td><td data-acceptance-observable>Then each names a character that has exactly one entry in the character table, no hub, radical, or part carries a reading or meaning of its own, and no one-character word carries Zhuyin or definitions of its own but names one reading of its character's entry, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-fail" data-story="story-maintain"><td>Unresolved part</td><td data-acceptance-scenario>Given a maintainer rebuilding the data. When a hub character's parts include one with no dictionary entry and no override exists for it, which needs an induced failure: a fixture description with an unknown part.</td><td data-acceptance-observable>Then the build fails and names that character, proven by a unit test: no screen shows it.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-draw" data-story="story-strokes"><td>Drawn character</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then the hub card's breakdown shows that character drawn in even simple lines, every stroke in the same ink, beside its "Radical" and "Parts" rows.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-part" data-story="story-strokes"><td>Light a part</td><td data-acceptance-scenario>Given a learner with the card of a hub built from two or more parts open. When the learner taps one part in the "Parts" row.</td><td data-acceptance-observable>Then that part's strokes inside the drawn character light up in the highlight color, every other stroke turns pale, and the tapped part reads as selected.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-radical" data-story="story-strokes"><td>Light the radical</td><td data-acceptance-scenario>Given a learner with a hub card open. When the learner taps the radical in the "Radical" row.</td><td data-acceptance-observable>Then the radical's strokes inside the drawn character light up, every other stroke turns pale, and the radical reads as selected.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-move" data-story="story-strokes"><td>Move the light</td><td data-acceptance-scenario>Given a learner with one part lit in a hub card. When the learner taps a different part.</td><td data-acceptance-observable>Then only the newly tapped part's strokes are lit and only it reads as selected.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-clear" data-story="story-strokes"><td>Clear the light</td><td data-acceptance-scenario>Given a learner with one part lit in a hub card. When the learner taps that lit part again.</td><td data-acceptance-observable>Then every stroke returns to the same ink and no part or radical reads as selected.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-repeat" data-story="story-strokes"><td>Repeated part</td><td data-acceptance-scenario>Given a learner with the card of a hub whose one part appears twice in it open. When the learner taps that part.</td><td data-acceptance-observable>Then the strokes of both places the part appears light up together.</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-single" data-story="story-strokes"><td>Unsplit character</td><td data-acceptance-scenario>Given a learner with the card of a hub that is not split into parts open. When the learner taps the radical.</td><td data-acceptance-observable>Then the radical's strokes light up, which is every stroke when the character is its own radical, and the "Parts" row still reads "Not split further".</td></tr>
-<tr data-acceptance-criterion data-anchor="acceptance-strokes-phone" data-story="story-strokes story-phone"><td>Drawing on a phone</td><td data-acceptance-scenario>Given a learner on a phone in portrait viewing the graph. When the learner taps the hub of a character built from three parts, then taps each part in turn.</td><td data-acceptance-observable>Then the drawn character and the Radical and Parts rows show in full in the bottom sheet, each tap lights that part, and the page does not scroll sideways.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-draw" data-story="story-strokes"><td>Parts at a glance</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then, with no further tap, the hub card's breakdown shows that character drawn in even simple lines with each part's strokes in that part's own color, and each entry in the "Parts" row shows a swatch of the same color beside the part.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-radical-mark" data-story="story-strokes"><td>Radical marked</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character whose radical is one of its parts.</td><td data-acceptance-observable>Then, with no further tap, the radical's strokes in the drawing carry the radical outline over their part color, and the "Radical" row shows a swatch with the same outline beside the radical.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-dark" data-story="story-strokes"><td>Night look</td><td data-acceptance-scenario>Given a learner whose device uses the dark appearance. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then each part's color, its swatch, and the radical outline stand out clearly against the dark card.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-colors" data-story="story-strokes story-maintain"><td>Colors that read</td><td data-acceptance-scenario>Given the part colors and radical outline. When each is checked against the light and the dark card background.</td><td data-acceptance-observable>Then each reaches a contrast of at least 3 to 1 in both, and the part colors come from a palette designed to stay apart under common color blindness, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-part" data-story="story-strokes"><td>Emphasize a part</td><td data-acceptance-scenario>Given a learner with the card of a hub built from two or more parts open. When the learner taps one part in the "Parts" row.</td><td data-acceptance-observable>Then that part's strokes keep their color, every other stroke turns pale, and the tapped part reads as selected.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-radical" data-story="story-strokes"><td>Emphasize the radical</td><td data-acceptance-scenario>Given a learner with a hub card open. When the learner taps the radical in the "Radical" row.</td><td data-acceptance-observable>Then the radical's strokes keep their color and outline, every other stroke turns pale, and the radical reads as selected.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-move" data-story="story-strokes"><td>Move the emphasis</td><td data-acceptance-scenario>Given a learner with one part emphasized in a hub card. When the learner taps a different part.</td><td data-acceptance-observable>Then only the newly tapped part's strokes keep their color and only it reads as selected.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-clear" data-story="story-strokes"><td>Clear the emphasis</td><td data-acceptance-scenario>Given a learner with one part emphasized in a hub card. When the learner taps that part again.</td><td data-acceptance-observable>Then every part returns to its own color and no part or radical reads as selected.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-repeat" data-story="story-strokes"><td>Repeated part</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character in which one part appears twice.</td><td data-acceptance-observable>Then both places the part appears share its one color, and the "Parts" row lists it once with that color's swatch.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-single" data-story="story-strokes"><td>Unsplit character</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character that is not split into parts.</td><td data-acceptance-observable>Then the drawing shows the radical's strokes in the first part color with the radical outline, which is every stroke when the character is its own radical, the rest in ink, the "Radical" row shows the matching swatch, and the "Parts" row still reads "Not split further".</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-strokes-phone" data-story="story-strokes story-phone"><td>Drawing on a phone</td><td data-acceptance-scenario>Given a learner on a phone in portrait viewing the graph. When the learner taps the hub of a character built from three parts, then taps each part in turn.</td><td data-acceptance-observable>Then the colored drawing, the swatches, and the Radical and Parts rows show in full in the bottom sheet, each tap emphasizes that part, and the page does not scroll sideways.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-strokes-complete" data-story="story-strokes story-maintain"><td>Every hub drawn</td><td data-acceptance-scenario>Given the built drawing data. When every hub is checked.</td><td data-acceptance-observable>Then every hub has a drawing, its radical and each of its parts name at least one stroke, and for a hub with parts every stroke belongs to exactly one part, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-strokes-known" data-story="story-strokes story-maintain"><td>Known drawings</td><td data-acceptance-scenario>Given the built drawing data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each part's strokes sit where the character places that part, such as 訁 left of 舌 in 話, 子 below 𦥯 in 學, and 辶 along the bottom left of 還, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-strokes-layout" data-story="story-strokes story-maintain"><td>Side by side and stacked</td><td data-acceptance-scenario>Given the built drawing data. When every hub whose parts sit side by side or stacked is checked.</td><td data-acceptance-observable>Then each part's strokes lie left of, or above, the next part's, in part order, proven by a unit test: no screen shows it.</td></tr>
@@ -97,7 +100,7 @@
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
 <h2>Modular boundaries</h2>
 <p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, the pronunciation recordings, Unihan, and the IDS data into the graph data, and GlyphWiki into the drawing data: matching, Traditional forms, Zhuyin, definitions, hubs, links, which word has a recording, each hub's radical and parts, and each hub's strokes with which strokes belong to each part and to the radical.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, the drawing data file, and the recordings, plus both files' schemas below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT, the recordings, Unihan, the IDS data, and the GlyphWiki data at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file, the committed drawing data file, the committed recordings, and the build's error list.</span></p>
-<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards including the hub breakdown and its drawn character, search, legend, word links, the Play link, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file, the drawing data file, and the vendored graph library only, and holds no dictionary or stroke logic: it draws the strokes it is given and lights the ones a part names.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards including the hub breakdown and its drawn character, search, legend, word links, the Play link, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file, the drawing data file, and the vendored graph library only, and holds no dictionary or stroke logic: it draws the strokes it is given, colors each part's strokes, and outlines the radical's.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
 <p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span> <span data-boundary-scope>Observable scope: check status and the live site.</span></p>
 </section>
 
@@ -121,7 +124,7 @@
 <tr data-anchor="default-breakdown-where">
 <td>Where the breakdown shows</td><td>Only in hub cards; word cards are unchanged.</td></tr>
 <tr data-anchor="default-drawing"><td>How a hub's character is drawn</td><td data-spec-tbd="style">GlyphWiki's Taiwan-form stroke skeleton, every stroke a centerline of one even width with round ends, so it reads as the same simple-line style as the site's Chinese typeface. Open choice for review: the alternative is Make Me a Hanzi's Arphic outlines, which are brush-shaped kaishu with thick and thin strokes, hooks, and slanted ends, and come under the Arphic Public License; their centerlines drawn even keep the kaishu shapes. See the drawing figure under Page.</td></tr>
-<tr data-anchor="default-drawing-what"><td>What lights up</td><td>One radical or part at a time: its strokes in the highlight color, all others pale; nothing is lit when the card opens.</td></tr>
+<tr data-anchor="default-drawing-what"><td>What the drawing shows</td><td>Every part in its own color and the radical outlined as soon as the card opens; tapping a part or the radical only emphasizes it by turning the rest pale, and nothing needs a tap.</td></tr>
 <tr data-anchor="default-drawing-script"><td>Drawing and script mode</td><td>The drawing is always the Traditional character, the one the Radical and Parts rows break down, in either script mode.</td></tr>
 <tr data-anchor="default-data"><td>Data</td><td>Built once into a static file by a script in the repository; no runtime API and no keys.</td></tr>
 </tbody>
@@ -345,7 +348,7 @@
 <tbody>
 <tr data-anchor="ix-word"><td>Word node</td><td>Hover opens the card; leaving closes it; click pins it</td><td>Tap opens the card as a bottom sheet</td></tr>
 <tr data-anchor="ix-hub"><td>Hub node</td><td>Click opens the hub card and highlights its words</td><td>Tap does the same</td></tr>
-<tr data-anchor="ix-strokes"><td>Radical or part in a hub card</td><td>Click lights its strokes in the drawn character; click again clears</td><td>Tap does the same; each button is at least 44px tall</td></tr>
+<tr data-anchor="ix-strokes"><td>Radical or part in a hub card</td><td>Click emphasizes its strokes and pales the rest; click again clears</td><td>Tap does the same; each button is at least 44px tall</td></tr>
 <tr data-anchor="ix-empty"><td>Empty space</td><td>Click closes a pinned card and clears highlight</td><td>Tap closes the card and clears highlight</td></tr>
 <tr data-anchor="ix-move"><td>Zoom and pan</td><td>Wheel zooms, drag on empty space pans</td><td>Two-finger pinch zooms, one-finger drag pans</td></tr>
 <tr data-anchor="ix-drag"><td>Drag a node</td><td>Moves it; the layout follows</td><td>Same with one finger on the node</td></tr>
@@ -365,82 +368,116 @@
 <p data-anchor="page-touch">Every tappable control and the search box are at least 44px tall, and the search box text is at least 16px so phones do not zoom on focus.</p>
 <p data-anchor="page-breakdown">A hub card shows, below the readings and above the word list, a "Radical" row (radical, its number, meaning, Zhuyin) and a "Parts" row listing each part as the part, its Zhuyin when it has one, and its meaning; a character with no parts reads "Not split further".</p>
 <p data-anchor="page-breakdown-wrap">On a phone the Parts row wraps onto further lines rather than widening the sheet.</p>
-<p data-anchor="page-strokes">The breakdown opens with the hub's character drawn from its strokes, each a line of one even width with round ends in the card's ink, beside the Radical and Parts rows, or above them when the card is too narrow.</p>
-<p data-anchor="page-strokes-light">The radical and each part are buttons; pressing one lights its strokes in the highlight color, turns the rest pale, and marks the button pressed with an outline as well as color; pressing it again clears the light, and pressing another moves it.</p>
-<p data-anchor="page-strokes-name">The drawing is named for assistive technology by its character, and the pressed button says which part is lit.</p>
+<p data-anchor="page-strokes">The breakdown opens with the hub's character drawn from its strokes, each a line of one even width with round ends, beside the Radical and Parts rows, or above them when the card is too narrow.</p>
+<p data-anchor="page-strokes-color">From the moment the card opens, each part's strokes take that part's color by its place in the Parts row, and each Parts entry shows a swatch of its color; a stroke in no part, as in an unsplit character, is in the card's ink.</p>
+<p data-anchor="page-strokes-radical">The radical's strokes carry the radical outline, a band of the card's ink color on both sides of the line, over whatever color they have; in a character with no parts they take the first part color; the Radical row shows a swatch with the same outline.</p>
+<p data-anchor="page-strokes-swatch">A swatch is a short line drawn like a stroke, set right beside the part or radical it names, so its label, not its color alone, says which part it is.</p>
+<p data-anchor="page-strokes-light">The radical and each part are buttons; pressing one keeps its strokes colored, turns the rest pale, and marks the button pressed with an outline as well as color; pressing it again clears the emphasis, and pressing another moves it.</p>
+<p data-anchor="page-strokes-name">The drawing is named for assistive technology by its character and its parts in order with their color names, and the pressed button says which part is emphasized.</p>
+<div class="table-scroll" data-anchor="strokes-colors-scroll">
+<table data-anchor="strokes-colors">
+<thead><tr><th>Mark</th><th>Color</th><th>Contrast on the light card</th><th>Contrast on the dark card</th></tr></thead>
+<tbody>
+<tr data-anchor="strokes-color-1"><td>First part</td><td>Vermillion #D55E00</td><td>3.9 to 1</td><td>4.7 to 1</td></tr>
+<tr data-anchor="strokes-color-2"><td>Second part</td><td>Bluish green #009E73</td><td>3.4 to 1</td><td>5.4 to 1</td></tr>
+<tr data-anchor="strokes-color-3"><td>Third part</td><td>Reddish purple #CC79A7</td><td>3.1 to 1</td><td>6.0 to 1</td></tr>
+<tr data-anchor="strokes-color-radical"><td>Radical outline</td><td>The card's ink, dark on the light card and light on the dark card</td><td>at least 15 to 1</td><td>at least 15 to 1</td></tr>
+</tbody>
+</table>
+</div>
+<p data-anchor="strokes-colors-why">The three part colors are the Okabe-Ito colors left after the HSK level blue and orange, so they stay apart under common color blindness and never read as a level; no hub has more than three parts.</p>
 <figure data-anchor="strokes-figure">
 <div class="rail-wrap" data-anchor="strokes-figure-scroll">
-<svg viewBox="0 0 660 250" style="min-width: 520px" role="img" aria-label="Three hub characters drawn in even simple lines. In 話 the left part 訁 is lit orange and the rest is pale gray. In 學 the bottom part 子 is lit. In 還 the walking radical 辶 along the lower left is lit.">
-<g transform="translate(20 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="11">
-<path d="M26.6 15.0 Q44.6 26.0 49.4 43.0" stroke="#d55e00"></path>
-<path d="M12.3 47.0 L81.7 47.0" stroke="#d55e00"></path>
-<path d="M19.0 76.0 L75.0 76.0" stroke="#d55e00"></path>
-<path d="M19.0 104.0 L75.0 104.0" stroke="#d55e00"></path>
-<path d="M24.7 132.0 L24.7 173.0" stroke="#d55e00"></path>
-<path d="M24.7 132.0 L67.5 132.0" stroke="#d55e00"></path>
-<path d="M67.5 132.0 L67.5 173.0" stroke="#d55e00"></path>
-<path d="M24.7 173.0 L67.5 173.0" stroke="#d55e00"></path>
-<path d="M171.3 22.0 Q133.7 39.0 82.7 46.0" stroke="#c4c7cf"></path>
-<path d="M80.9 78.0 L188.3 78.0" stroke="#c4c7cf"></path>
-<path d="M134.6 36.0 L134.6 119.0" stroke="#c4c7cf"></path>
-<path d="M100.5 119.0 L100.5 169.0" stroke="#c4c7cf"></path>
-<path d="M100.5 119.0 L168.6 119.0" stroke="#c4c7cf"></path>
-<path d="M168.6 119.0 L168.6 169.0" stroke="#c4c7cf"></path>
-<path d="M100.5 169.0 L168.6 169.0" stroke="#c4c7cf"></path>
+<svg viewBox="0 0 660 260" style="min-width: 520px" role="img" aria-label="Three hub characters drawn in even simple lines with every part in its own color and no tap needed. 話: 訁 vermillion with a dark outline marking it as the radical, 舌 bluish green. 學: 𦥯 vermillion, 子 bluish green with the radical outline. 還: 辶 vermillion with the radical outline, 睘 bluish green.">
+<g transform="translate(20 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M26.6 15.0 Q44.6 26.0 49.4 43.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M12.3 47.0 L81.7 47.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M19.0 76.0 L75.0 76.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M19.0 104.0 L75.0 104.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M24.7 132.0 L24.7 173.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M24.7 132.0 L67.5 132.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M67.5 132.0 L67.5 173.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M24.7 173.0 L67.5 173.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M26.6 15.0 Q44.6 26.0 49.4 43.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M12.3 47.0 L81.7 47.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M19.0 76.0 L75.0 76.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M19.0 104.0 L75.0 104.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M24.7 132.0 L24.7 173.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M24.7 132.0 L67.5 132.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M67.5 132.0 L67.5 173.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M24.7 173.0 L67.5 173.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M171.3 22.0 Q133.7 39.0 82.7 46.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M80.9 78.0 L188.3 78.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M134.6 36.0 L134.6 119.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M100.5 119.0 L100.5 169.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M100.5 119.0 L168.6 119.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M168.6 119.0 L168.6 169.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M100.5 169.0 L168.6 169.0" stroke="#009E73" stroke-width="11"></path>
 </g>
-<text x="110" y="236" text-anchor="middle" font-size="14" fill="#171719">話: tap 訁 speech</text>
-<g transform="translate(240 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="11">
-<path d="M79.0 19.0 Q65.0 25.6 39.0 30.3" stroke="#c4c7cf"></path>
-<path d="M39.0 30.3 L43.0 92.7" stroke="#c4c7cf"></path>
-<path d="M41.0 47.3 L77.0 47.3" stroke="#c4c7cf"></path>
-<path d="M42.0 70.0 L77.0 70.0" stroke="#c4c7cf"></path>
-<path d="M126.0 24.6 L161.0 24.6" stroke="#c4c7cf"></path>
-<path d="M161.0 24.6 L157.0 92.7" stroke="#c4c7cf"></path>
-<path d="M128.0 47.3 L159.0 47.3" stroke="#c4c7cf"></path>
-<path d="M128.0 70.0 L158.0 70.0" stroke="#c4c7cf"></path>
-<path d="M27.0 81.3 Q27.0 106.8 16.0 116.3" stroke="#c4c7cf"></path>
-<path d="M25.0 92.7 L178.0 92.7" stroke="#c4c7cf"></path>
-<path d="M178.0 92.7 Q173.0 103.1 161.0 117.2" stroke="#c4c7cf"></path>
-<path d="M118.0 17.1 Q103.0 43.5 76.0 55.8" stroke="#c4c7cf"></path>
-<path d="M84.0 21.8 Q104.0 29.3 117.0 46.4" stroke="#c4c7cf"></path>
-<path d="M120.0 53.0 Q105.0 75.7 74.0 87.0" stroke="#c4c7cf"></path>
-<path d="M84.0 56.8 Q105.0 66.2 119.0 84.2" stroke="#c4c7cf"></path>
-<path d="M47.4 113.4 L142.3 113.4" stroke="#d55e00"></path>
-<path d="M142.3 113.4 Q124.4 122.8 101.9 132.2" stroke="#d55e00"></path>
-<path d="M100.0 128.4 L100.0 182.0" stroke="#d55e00"></path>
-<path d="M18.2 145.4 L182.7 145.4" stroke="#d55e00"></path>
+<text x="110" y="236" text-anchor="middle" font-size="14" fill="#171719">話: 訁 speech · 舌 tongue</text>
+<g transform="translate(240 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M47.4 113.4 L142.3 113.4" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M142.3 113.4 Q124.4 122.8 101.9 132.2" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M100.0 128.4 L100.0 182.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M18.2 145.4 L182.7 145.4" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M79.0 19.0 Q65.0 25.6 39.0 30.3" stroke="#D55E00" stroke-width="11"></path>
+<path d="M39.0 30.3 L43.0 92.7" stroke="#D55E00" stroke-width="11"></path>
+<path d="M41.0 47.3 L77.0 47.3" stroke="#D55E00" stroke-width="11"></path>
+<path d="M42.0 70.0 L77.0 70.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M126.0 24.6 L161.0 24.6" stroke="#D55E00" stroke-width="11"></path>
+<path d="M161.0 24.6 L157.0 92.7" stroke="#D55E00" stroke-width="11"></path>
+<path d="M128.0 47.3 L159.0 47.3" stroke="#D55E00" stroke-width="11"></path>
+<path d="M128.0 70.0 L158.0 70.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M27.0 81.3 Q27.0 106.8 16.0 116.3" stroke="#D55E00" stroke-width="11"></path>
+<path d="M25.0 92.7 L178.0 92.7" stroke="#D55E00" stroke-width="11"></path>
+<path d="M178.0 92.7 Q173.0 103.1 161.0 117.2" stroke="#D55E00" stroke-width="11"></path>
+<path d="M118.0 17.1 Q103.0 43.5 76.0 55.8" stroke="#D55E00" stroke-width="11"></path>
+<path d="M84.0 21.8 Q104.0 29.3 117.0 46.4" stroke="#D55E00" stroke-width="11"></path>
+<path d="M120.0 53.0 Q105.0 75.7 74.0 87.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M84.0 56.8 Q105.0 66.2 119.0 84.2" stroke="#D55E00" stroke-width="11"></path>
+<path d="M47.4 113.4 L142.3 113.4" stroke="#009E73" stroke-width="11"></path>
+<path d="M142.3 113.4 Q124.4 122.8 101.9 132.2" stroke="#009E73" stroke-width="11"></path>
+<path d="M100.0 128.4 L100.0 182.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M18.2 145.4 L182.7 145.4" stroke="#009E73" stroke-width="11"></path>
 </g>
-<text x="330" y="236" text-anchor="middle" font-size="14" fill="#171719">學: tap 子 child</text>
-<g transform="translate(460 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="11">
-<path d="M83.9 25.6 L83.9 50.9" stroke="#c4c7cf"></path>
-<path d="M83.9 25.6 L168.1 25.6" stroke="#c4c7cf"></path>
-<path d="M168.1 25.6 L168.1 50.9" stroke="#c4c7cf"></path>
-<path d="M112.0 25.6 L112.0 50.9" stroke="#c4c7cf"></path>
-<path d="M140.0 25.6 L140.0 50.9" stroke="#c4c7cf"></path>
-<path d="M83.9 50.9 L168.1 50.9" stroke="#c4c7cf"></path>
-<path d="M72.0 71.0 L181.0 71.0" stroke="#c4c7cf"></path>
-<path d="M89.0 84.0 L89.0 109.0" stroke="#c4c7cf"></path>
-<path d="M89.0 84.0 L160.0 84.0" stroke="#c4c7cf"></path>
-<path d="M160.0 84.0 L160.0 109.0" stroke="#c4c7cf"></path>
-<path d="M89.0 109.0 L160.0 109.0" stroke="#c4c7cf"></path>
-<path d="M121.0 112.0 Q107.0 127.0 60.0 144.0" stroke="#c4c7cf"></path>
-<path d="M100.0 129.0 L100.0 153.0" stroke="#c4c7cf"></path>
-<path d="M94.0 160.0 Q116.0 153.0 143.0 143.0" stroke="#c4c7cf"></path>
-<path d="M177.0 117.0 Q167.0 126.0 151.0 134.0" stroke="#c4c7cf"></path>
-<path d="M134.0 124.0 Q158.0 137.0 172.0 161.0" stroke="#c4c7cf"></path>
-<path d="M26.0 16.0 Q46.0 26.0 55.0 46.0" stroke="#d55e00"></path>
-<path d="M17.0 65.0 L56.0 65.0" stroke="#d55e00"></path>
-<path d="M56.0 65.0 L28.0 106.0" stroke="#d55e00"></path>
-<path d="M30.0 104.0 L61.0 104.0" stroke="#d55e00"></path>
-<path d="M61.0 104.0 Q60.0 135.0 40.0 156.0" stroke="#d55e00"></path>
-<path d="M16.0 172.0 C27.0 166.0 44.0 143.0 56.0 167.0" stroke="#d55e00"></path>
-<path d="M30.0 158.0 C72.0 151.0 20.0 183.0 178.0 177.0" stroke="#d55e00"></path>
+<text x="330" y="236" text-anchor="middle" font-size="14" fill="#171719">學: 𦥯 learn · 子 child</text>
+<g transform="translate(460 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M26.0 16.0 Q46.0 26.0 55.0 46.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M17.0 65.0 L56.0 65.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M56.0 65.0 L28.0 106.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M30.0 104.0 L61.0 104.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M61.0 104.0 Q60.0 135.0 40.0 156.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M16.0 172.0 C27.0 166.0 44.0 143.0 56.0 167.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M30.0 158.0 C72.0 151.0 20.0 183.0 178.0 177.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M83.9 25.6 L83.9 50.9" stroke="#009E73" stroke-width="11"></path>
+<path d="M83.9 25.6 L168.1 25.6" stroke="#009E73" stroke-width="11"></path>
+<path d="M168.1 25.6 L168.1 50.9" stroke="#009E73" stroke-width="11"></path>
+<path d="M112.0 25.6 L112.0 50.9" stroke="#009E73" stroke-width="11"></path>
+<path d="M140.0 25.6 L140.0 50.9" stroke="#009E73" stroke-width="11"></path>
+<path d="M83.9 50.9 L168.1 50.9" stroke="#009E73" stroke-width="11"></path>
+<path d="M72.0 71.0 L181.0 71.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M89.0 84.0 L89.0 109.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M89.0 84.0 L160.0 84.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M160.0 84.0 L160.0 109.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M89.0 109.0 L160.0 109.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M121.0 112.0 Q107.0 127.0 60.0 144.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M100.0 129.0 L100.0 153.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M94.0 160.0 Q116.0 153.0 143.0 143.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M177.0 117.0 Q167.0 126.0 151.0 134.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M134.0 124.0 Q158.0 137.0 172.0 161.0" stroke="#009E73" stroke-width="11"></path>
+<path d="M26.0 16.0 Q46.0 26.0 55.0 46.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M17.0 65.0 L56.0 65.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M56.0 65.0 L28.0 106.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M30.0 104.0 L61.0 104.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M61.0 104.0 Q60.0 135.0 40.0 156.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M16.0 172.0 C27.0 166.0 44.0 143.0 56.0 167.0" stroke="#D55E00" stroke-width="11"></path>
+<path d="M30.0 158.0 C72.0 151.0 20.0 183.0 178.0 177.0" stroke="#D55E00" stroke-width="11"></path>
 </g>
-<text x="550" y="236" text-anchor="middle" font-size="14" fill="#171719">還: tap 辶 walk</text>
+<text x="550" y="236" text-anchor="middle" font-size="14" fill="#171719">還: 辶 walk · 睘 look</text>
+<text x="20" y="256" font-size="12" fill="#3d4049">Dark outline: the radical. First part vermillion, second bluish green, third reddish purple.</text>
 </svg>
-
 </div>
-<figcaption data-anchor="strokes-figure-caption">Drawn from GlyphWiki's Taiwan forms in even lines: a tapped part lights up inside the character while the rest turns pale.</figcaption>
+<figcaption data-anchor="strokes-figure-caption">Drawn from GlyphWiki's Taiwan forms in even lines: every part shows in its own color and the radical carries the outline as soon as the card opens.</figcaption>
 </figure>
 <p data-anchor="page-sources">A "Sources" footer link opens the credits named in the Sources acceptance criterion.</p>
 </section>
@@ -472,7 +509,7 @@
 <li data-anchor="test-breakdown-known">Known breakdowns: at least 學, 好, and 時 from the built hub data, each checked for radical, radical number, parts, and an expected English word in each meaning.</li>
 <li data-anchor="test-chars-once">Stored once: every character a hub, radical, or part names has a character table entry, and no hub, radical, or part carries a reading or meaning of its own.</li>
 <li data-anchor="test-breakdown-rules">Breakdown rules: the rules above against a few fixture Unihan and IDS lines, including 明 as 日 + 月, a T-tagged sequence chosen over the first, a single-part character, a radical form shown without Zhuyin, an unresolved part failing the build, and an override.</li>
-<li data-anchor="test-strokes">Drawing: every hub drawn with its parts and radical naming strokes and parts covering every stroke once; 話, 學, 還, and 多 placed as expected; side-by-side and stacked parts in order; the drawing rules against a few fixture glyph lines, including a Taiwan glyph chosen over the plain one, a pointer glyph followed, one unnamed part taking the rest, two unnamed parts failing the build, and an override; and no stroke in the graph data and no reading or meaning in the drawing data.</li>
+<li data-anchor="test-strokes">Drawing: the part colors and radical outline at 3 to 1 or more on both card backgrounds; every hub drawn with its parts and radical naming strokes and parts covering every stroke once; 話, 學, 還, and 多 placed as expected; side-by-side and stacked parts in order; the drawing rules against a few fixture glyph lines, including a Taiwan glyph chosen over the plain one, a pointer glyph followed, one unnamed part taking the rest, two unnamed parts failing the build, and an override; and no stroke in the graph data and no reading or meaning in the drawing data.</li>
 <li data-anchor="test-zhuyin">Zhuyin conversion: every tone, neutral tone, erhua, ü syllables, and zero-initial syllables such as yi, wu, and yu.</li>
 <li data-anchor="test-complete">Completeness: every entry of both committed HSK lists appears once, with its level, and nothing else.</li>
 <li data-anchor="test-links">Links: hubs and links recomputed from the words' Traditional forms equal the committed ones.</li>
