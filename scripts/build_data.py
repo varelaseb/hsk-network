@@ -10,8 +10,10 @@ Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
 import argparse
 import gzip
 import json
+import os
 import re
 import sys
+import tempfile
 import unicodedata
 import urllib.request
 from pathlib import Path
@@ -23,6 +25,7 @@ OUT = ROOT / "site" / "data" / "graph.json"
 CACHE_DIR = ROOT / ".cache"
 CEDICT_URL = "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
 CEDICT_CACHE = CACHE_DIR / "cedict_1_0_ts_utf-8_mdbg.txt.gz"
+DOWNLOAD_TIMEOUT = 60  # seconds
 LEVELS = (1, 2)
 POINTER_PREFIXES = ("variant of", "old variant of", "see ", "surname ")
 
@@ -126,16 +129,18 @@ _TONE_SUFFIX = {1: "", 2: "ˊ", 3: "ˇ", 4: "ˋ"}
 
 
 def syllable_to_zhuyin(numbered):
-    """'xue2' -> 'ㄒㄩㄝˊ', 'men5' -> '˙ㄇㄣ', 'r5' -> 'ㄦ' (erhua)."""
-    s = numbered.lower().replace("ü", "u:").replace("v", "u:")
-    tone = int(s[-1]) if s[-1].isdigit() else 5
-    base = s.rstrip("012345")
+    """'xue2' -> 'ㄒㄩㄝˊ', 'men5' -> '˙ㄇㄣ', 'r5' -> 'ㄦ' (erhua).
+
+    Takes one syllable as normalize_numbered emits it: lowercase, ü as u:,
+    tone digit 1 to 5.
+    """
+    base, tone = numbered[:-1], int(numbered[-1])
     if base == "r":
         return "ㄦ"
     if base not in SYLLABLES:
         raise ValueError(f"unknown pinyin syllable: {numbered}")
     bopo = SYLLABLES[base]
-    if tone == 5 or tone == 0:
+    if tone == 5:
         return "˙" + bopo
     return bopo + _TONE_SUFFIX[tone]
 
@@ -174,15 +179,26 @@ def parse_cedict(lines):
     return entries, release
 
 
+def download(url, path):
+    """Fetch url into path atomically: a failed or partial fetch leaves no file."""
+    CACHE_DIR.mkdir(exist_ok=True)
+    (CACHE_DIR / ".gitignore").write_text("*\n")
+    print(f"downloading {url}", file=sys.stderr)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".part")
+    try:
+        with os.fdopen(fd, "wb") as f, urllib.request.urlopen(url, timeout=DOWNLOAD_TIMEOUT) as r:
+            f.write(r.read())
+        os.replace(tmp, path)
+    except BaseException:
+        os.unlink(tmp)
+        raise
+
+
 def load_cedict(path=None, refresh=False):
     if path is None:
         path = CEDICT_CACHE
         if refresh or not path.exists():
-            CACHE_DIR.mkdir(exist_ok=True)
-            (CACHE_DIR / ".gitignore").write_text("*\n")
-            print(f"downloading {CEDICT_URL}", file=sys.stderr)
-            with urllib.request.urlopen(CEDICT_URL) as r:
-                path.write_bytes(r.read())
+            download(CEDICT_URL, path)
     path = Path(path)
     opener = gzip.open if path.suffix == ".gz" else open
     with opener(path, "rt", encoding="utf-8") as f:
@@ -271,9 +287,17 @@ def load_hsk():
 
 
 def load_overrides(path=OVERRIDES):
+    """Return id -> override. Raises BuildError naming any duplicated id."""
     if not Path(path).exists():
         return {}
-    return {o["id"]: o for o in json.loads(Path(path).read_text(encoding="utf-8"))}
+    overrides, dups = {}, []
+    for o in json.loads(Path(path).read_text(encoding="utf-8")):
+        if o["id"] in overrides and o["id"] not in dups:
+            dups.append(o["id"])
+        overrides[o["id"]] = o
+    if dups:
+        raise BuildError([f"{i}: duplicate override id" for i in dups])
+    return overrides
 
 
 def hsk_source():
@@ -311,9 +335,10 @@ def main(argv=None):
     ap.add_argument("--cedict", type=Path, help="local CC-CEDICT file (.txt or .gz)")
     ap.add_argument("--refresh", action="store_true", help="re-download CC-CEDICT")
     args = ap.parse_args(argv)
-    entries, release = load_cedict(args.cedict, args.refresh)
     try:
-        graph = build(entries, release, load_hsk(), load_overrides())
+        overrides = load_overrides()
+        entries, release = load_cedict(args.cedict, args.refresh)
+        graph = build(entries, release, load_hsk(), overrides)
     except BuildError as err:
         print(f"build failed, {len(err.problems)} entries:", file=sys.stderr)
         for p in err.problems:

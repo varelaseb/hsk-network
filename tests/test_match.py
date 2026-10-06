@@ -1,6 +1,9 @@
 """#tests-list test-match, #match-rules: matching against fixture lines."""
 
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 from graph_data import build_data
 
@@ -96,10 +99,62 @@ class Match(unittest.TestCase):
         self.assertEqual([w["trad"] for w in graph["words"]], ["個", "學生"])
         self.assertEqual(graph["meta"]["cedictRelease"], "2026-10-01")
 
+    def test_build_with_absent_word_override(self):
+        hsk = [{"id": "2-16", "level": 2, "simp": "打篮球", "pinyin": "dá lán qiú"}]
+        overrides = {"2-16": {"id": "2-16", "simp": "打篮球", "trad": "打籃球",
+                              "pinyin": "da3 lan2 qiu2", "defs": ["to play basketball"],
+                              "reason": "absent from CC-CEDICT; definition not from CC-CEDICT"}}
+        with self.assertRaisesRegex(build_data.BuildError, "2-16 .*no CC-CEDICT candidate"):
+            build_data.build(ENTRIES, RELEASE, hsk, {})
+        [word] = build_data.build(ENTRIES, RELEASE, hsk, overrides)["words"]
+        self.assertEqual(word, {"id": "2-16", "level": 2, "trad": "打籃球", "simp": "打篮球",
+                                "pinyin": "da3 lan2 qiu2", "zhuyin": "ㄉㄚˇ ㄌㄢˊ ㄑㄧㄡˊ",
+                                "defs": ["to play basketball"]})
+
+    def test_duplicate_override_id_fails_naming_it(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "overrides.json"
+            path.write_text('[{"id": "1-1"}, {"id": "1-2"}, {"id": "1-1"}, {"id": "1-1"}]')
+            with self.assertRaises(build_data.BuildError) as err:
+                build_data.load_overrides(path)
+        self.assertEqual(err.exception.problems, ["1-1: duplicate override id"])
+
+    def test_committed_absent_word_overrides_say_defs_not_from_cedict(self):
+        for o in build_data.load_overrides().values():
+            if "defs" in o:
+                with self.subTest(id=o["id"]):
+                    self.assertIn("not from CC-CEDICT", o["reason"])
+
     def test_committed_overrides_each_have_a_reason(self):
         for o in build_data.load_overrides().values():
             with self.subTest(id=o["id"]):
                 self.assertTrue(o["reason"].strip())
+
+
+class Download(unittest.TestCase):
+    def fetch(self, read):
+        """Run download with urlopen().read() mocked; return (files left, urlopen kwargs)."""
+        with tempfile.TemporaryDirectory() as d, \
+                mock.patch.object(build_data, "CACHE_DIR", Path(d)), \
+                mock.patch.object(build_data.urllib.request, "urlopen") as urlopen:
+            urlopen.return_value.__enter__.return_value.read.side_effect = read
+            path = Path(d) / "cedict.txt.gz"
+            try:
+                build_data.download("https://example.invalid/x", path)
+                self.assertEqual(path.read_bytes(), b"data")
+            finally:
+                self.left = sorted(p.name for p in Path(d).iterdir())
+            return urlopen.call_args.kwargs
+
+    def test_writes_file_with_timeout(self):
+        kwargs = self.fetch([b"data"])
+        self.assertEqual(kwargs["timeout"], build_data.DOWNLOAD_TIMEOUT)
+        self.assertEqual(self.left, [".gitignore", "cedict.txt.gz"])
+
+    def test_failed_fetch_leaves_no_partial_file(self):
+        with self.assertRaises(TimeoutError):
+            self.fetch(TimeoutError)
+        self.assertEqual(self.left, [".gitignore"])
 
 
 if __name__ == "__main__":
