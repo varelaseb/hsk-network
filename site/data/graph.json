@@ -1,7 +1,8 @@
 {
  "meta": {
   "cedictRelease": "2026-10-06",
-  "hskSource": "https://github.com/clem109/hsk-vocabulary@f3dc9d12ae00d04fa3676b0bd4c43cd58de2c264"
+  "hskSource": "https://github.com/clem109/hsk-vocabulary@f3dc9d12ae00d04fa3676b0bd4c43cd58de2c264",
+  "audioSource": "https://github.com/hugolpz/audio-cmn@ff9ed3d0c631195bd2c06f39450f3264c7124040"
  },
  "words": [
   {
@@ -15,7 +16,8 @@
     "to love; to be fond of; to like",
     "affection",
     "to be inclined (to do sth); to tend to (happen)"
-   ]
+   ],
+   "audio": "audio/1-1.mp3"
   },
   {
    "id": "1-2",
@@ -26,7 +28,8 @@
    "zhuyin": "ㄅㄚ",
    "defs": [
     "eight"
-   ]
+   ],
+   "audio": "audio/1-2.mp3"
   },
   {
    "id": "1-3",
@@ -38,7 +41,8 @@
    "defs": [
     "(coll.) father; dad",
     "CL:位[wei4]"
-   ]
+   ],
+   "audio": "audio/1-3.mp3"
   },
   {
    "id": "1-4",
@@ -51,7 +55,8 @@
     "cup",
     "glass",
     "CL:個|个[ge4],隻|只[zhi1]"
-   ]
+   ],
+   "audio": "audio/1-4.mp3"
   },
   {
    "id": "1-5",
@@ -81,7 +86,8 @@
     "originally; initially",
     "capital; principal",
     "classifier for books, periodicals, files etc"
-   ]
+   ],
+   "audio": "audio/1-6.mp3"
   },
   {
    "id": "1-7",
@@ -108,7 +114,8 @@
    "defs": [
     "no; not so",
     "(bound form) not; un-"
-   ]
+   ],
+   "audio": "audio/1-8.mp3"
   },
   {
    "id": "1-9",
@@ -122,7 +129,8 @@
     "dish (of food) (CL:樣|样[yang4],道[dao4],盤|盘[pan2])",
     "(of one's skills etc) weak; poor",
     "(coll.) (one's) type"
-   ]
+   ],
+   "audio": "audio/1-9.mp3"
   },
   {
    "id": "1-10",
@@ -135,7 +143,8 @@
     "tea",
     "tea plant",
     "CL:杯[bei1],壺|壶[hu2]"
-   ]
+   ],
+   "audio": "audio/1-10.mp3"
   },
   {
    "id": "1-11",
@@ -150,7 +159,8 @@
     "to eradicate; to destroy",
     "to absorb",
     "to suffer (shock, injury, defeat etc)"
-   ]
+   ],
+   "audio": "audio/1-11.mp3"
   },
   {
    "id": "1-12",
@@ -189,7 +199,8 @@
     "greatly; freely; fully",
     "(dialect) father",
     "(dialect) uncle (father's brother)"
-   ]
+   ],
+   "audio": "audio/1-14.mp3"
   },
   {
    "id": "1-15",
@@ -204,7 +215,8 @@
     "(used at the end of a declarative sentence for emphasis)",
     "(used after a noun, verb or adjective to form a nominal expression, as in 皮革的[pi2 ge2 de5] \"one made of leather\" or 跑堂兒的|跑堂儿的[pao3 tang2 r5 de5] \"a waiter (literally, one who runs back and forth in a restaurant)\" or 新的[xin1 de5] \"new one\")",
     "also pr. [di4] or [di5] in poetry and songs"
-   ]
+   ],
+   "audio": "audio/1-15.mp3"
   },
   {
    "id": "1-16",
@@ -229,7 +241,8 @@
     "(after a number) o'clock",
     "a small amount; a bit; (after a verb or adjective) a bit more",
     "classifier for small amounts"
-   ]
+   ],
+   "audio": "audio/1-16.mp3"
   },
   {
    "id": "1-17",
@@ -241,7 +254,8 @@
    "defs": [
     "computer",
     "CL:臺|台[tai2]"
-   ]
+   ],
+   "audio": "audio/1-17.mp3"
   },
   {
    "id": "1-18",
@@ -253,7 +267,8 @@
    "defs": [
     "television; TV",
     "CL:臺|台[tai2],部[bu4]"
-   ]
+   ],
+   "audio": "audio/1-18.mp3"
   },
   {
    "id": "1-19",
@@ -265,7 +280,8 @@
    "defs": [
     "movie; film",
     "CL:部[bu4]"
-   ]
+   ],
+   "audio": "audio/1-19.mp3"
   },
   {
    "id": "1-20",
@@ -279,7 +295,8 @@
     "stuff",
     "person",
     "CL:個|个[ge4],件[jian4]"
-   ]
+   ],
+   "audio": "audio/1-20.mp3"
   },
   {
    "id": "1-21",
@@ -293,7 +310,8 @@
     "(used for emphasis) even",
     "already",
     "(not) at all"
-   ]
+   ],
+   "audio": "audio/1-21.mp3"
   },
   {
    "id": "1-22",
@@ -307,7 +325,8 @@
     "to read",
     "to attend (school); to study (a subject in school)",
     "to pronounce"
-   ]
+   ],
+   "audio": "audio/1-22.mp3"
   },
   {
    "id": "1-23",
@@ -319,7 +338,8 @@
    "defs": [
     "I'm sorry; excuse me; I beg your pardon",
     "to let (sb) down; to disappoint"
-   ]
+   ],
+   "audio": "audio/1-23.mp3"
   },
   {
    "id": "1-24",
@@ -334,7 +354,8 @@
     "(after a numeral) ... odd",
     "how (to what extent) (Taiwan pr. [duo2])",
     "(bound form) multi-; poly-"
-   ]
+   ],
+   "audio": "audio/1-24.mp3"
   },
   {
    "id": "1-25",
@@ -346,7 +367,8 @@
    "defs": [
     "how much?; how many?",
     "(phone number, student ID etc) what number?"
-   ]
+   ],
+   "audio": "audio/1-25.mp3"
   },
   {
    "id": "1-26",
@@ -357,7 +379,8 @@
    "zhuyin": "ㄦˊ ˙ㄗ",
    "defs": [
     "son"
-   ]
+   ],
+   "audio": "audio/1-26.mp3"
   },
   {
    "id": "1-27",
@@ -370,7 +393,8 @@
     "two",
     "2",
     "(Beijing dialect) stupid"
-   ]
+   ],
+   "audio": "audio/1-27.mp3"
   },
   {
    "id": "1-28",
@@ -382,7 +406,8 @@
    "defs": [
     "restaurant",
     "CL:家[jia1]"
-   ]
+   ],
+   "audio": "audio/1-28.mp3"
   },
   {
    "id": "1-29",
@@ -394,7 +419,8 @@
    "defs": [
     "airplane",
     "CL:架[jia4]"
-   ]
+   ],
+   "audio": "audio/1-29.mp3"
   },
   {
    "id": "1-30",
@@ -405,7 +431,8 @@
    "zhuyin": "ㄈㄣ ㄓㄨㄥ",
    "defs": [
     "minute"
-   ]
+   ],
+   "audio": "audio/1-30.mp3"
   },
   {
    "id": "1-31",
@@ -419,7 +446,8 @@
     "glad",
     "willing (to do sth)",
     "in a cheerful mood"
-   ]
+   ],
+   "audio": "audio/1-31.mp3"
   },
   {
    "id": "1-32",
@@ -431,7 +459,8 @@
    "defs": [
     "(classifier used before a noun that has no specific classifier)",
     "(bound form) individual"
-   ]
+   ],
+   "audio": "audio/1-32.mp3"
   },
   {
    "id": "1-33",
@@ -447,7 +476,8 @@
     "work",
     "task",
     "CL:個|个[ge4],份[fen4],項|项[xiang4]"
-   ]
+   ],
+   "audio": "audio/1-33.mp3"
   },
   {
    "id": "1-34",
@@ -459,7 +489,8 @@
    "defs": [
     "dog",
     "CL:隻|只[zhi1],條|条[tiao2]"
-   ]
+   ],
+   "audio": "audio/1-34.mp3"
   },
   {
    "id": "1-35",
@@ -470,7 +501,8 @@
    "zhuyin": "ㄏㄢˋ ㄩˇ",
    "defs": [
     "Chinese language"
-   ]
+   ],
+   "audio": "audio/1-35.mp3"
   },
   {
    "id": "1-36",
@@ -489,7 +521,8 @@
     "(verb complement indicating completion)",
     "(of two people) close; on intimate terms",
     "(after a form of address) hello"
-   ]
+   ],
+   "audio": "audio/1-36.mp3"
   },
   {
    "id": "1-37",
@@ -500,7 +533,8 @@
    "zhuyin": "ㄏㄜ",
    "defs": [
     "to drink"
-   ]
+   ],
+   "audio": "audio/1-37.mp3"
   },
   {
    "id": "1-38",
@@ -516,7 +550,8 @@
     "(sports) to draw; to tie",
     "(bound form) harmonious",
     "(bound form) Japan; Japanese"
-   ]
+   ],
+   "audio": "audio/1-38.mp3"
   },
   {
    "id": "1-39",
@@ -528,7 +563,8 @@
    "defs": [
     "very; quite",
     "(also, often used before an adjective without intensifying its meaning, i.e. as a meaningless syntactic element)"
-   ]
+   ],
+   "audio": "audio/1-39.mp3"
   },
   {
    "id": "1-40",
@@ -541,7 +577,8 @@
     "the back; the rear; the last bit",
     "behind; near the end; at the back",
     "later; afterwards"
-   ]
+   ],
+   "audio": "audio/1-40.mp3"
   },
   {
    "id": "1-41",
@@ -555,7 +592,8 @@
     "to reply; to answer",
     "classifier for literary divisions (acts of a play, sections or chapters of a classic book)",
     "classifier for occurrences or times"
-   ]
+   ],
+   "audio": "audio/1-41.mp3"
   },
   {
    "id": "1-42",
@@ -571,7 +609,8 @@
     "meeting; gathering",
     "(suffix) union; group; association",
     "(bound form) a moment (Taiwan pr. [hui3])"
-   ]
+   ],
+   "audio": "audio/1-42.mp3"
   },
   {
    "id": "1-43",
@@ -594,7 +633,8 @@
    "defs": [
     "how many; how much",
     "several; a few"
-   ]
+   ],
+   "audio": "audio/1-44.mp3"
   },
   {
    "id": "1-45",
@@ -611,7 +651,8 @@
     "refers to the philosophical schools of pre-Han China",
     "noun suffix for a specialist in some activity, such as a musician or revolutionary, corresponding to English -ist, -er, -ary or -ian",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/1-45.mp3"
   },
   {
    "id": "1-46",
@@ -627,7 +668,8 @@
     "to ask",
     "to be called",
     "by (indicates agent in the passive mood)"
-   ]
+   ],
+   "audio": "audio/1-46.mp3"
   },
   {
    "id": "1-47",
@@ -639,7 +681,8 @@
    "defs": [
     "today",
     "the present time; now"
-   ]
+   ],
+   "audio": "audio/1-47.mp3"
   },
   {
    "id": "1-48",
@@ -651,7 +694,8 @@
    "defs": [
     "nine",
     "9"
-   ]
+   ],
+   "audio": "audio/1-48.mp3"
   },
   {
    "id": "1-49",
@@ -670,7 +714,8 @@
     "carat (gold)",
     "abbr. for Kelvin, 開爾文|开尔文[Kai1 er3 wen2]",
     "abbr. for 開本|开本[kai1 ben3], book format"
-   ]
+   ],
+   "audio": "audio/1-49.mp3"
   },
   {
    "id": "1-50",
@@ -691,7 +736,8 @@
     "to feel (that)",
     "(after a verb) to give it a try",
     "to watch out for"
-   ]
+   ],
+   "audio": "audio/1-50.mp3"
   },
   {
    "id": "1-51",
@@ -702,7 +748,8 @@
    "zhuyin": "ㄎㄢˋ ㄐㄧㄢˋ",
    "defs": [
     "to see; to catch sight of"
-   ]
+   ],
+   "audio": "audio/1-51.mp3"
   },
   {
    "id": "1-52",
@@ -715,7 +762,8 @@
     "lump; chunk; piece",
     "classifier for pieces of cloth, cake, soap etc",
     "(coll.) classifier for money and currency units"
-   ]
+   ],
+   "audio": "audio/1-52.mp3"
   },
   {
    "id": "1-53",
@@ -734,7 +782,8 @@
     "(between two verbs) in order to",
     "(after a round number) approximately",
     "(used after 得[de2] to indicate possibility, as in 談得來|谈得来[tan2 de5 lai2], or after 不[bu4] to indicate impossibility, as in 吃不來|吃不来[chi1 bu5 lai2])"
-   ]
+   ],
+   "audio": "audio/1-53.mp3"
   },
   {
    "id": "1-54",
@@ -745,7 +794,8 @@
    "zhuyin": "ㄌㄠˇ ㄕ",
    "defs": [
     "teacher"
-   ]
+   ],
+   "audio": "audio/1-54.mp3"
   },
   {
    "id": "1-55",
@@ -758,7 +808,8 @@
     "(completed action marker)",
     "(modal particle indicating change of state, situation now)",
     "(modal particle intensifying preceding clause)"
-   ]
+   ],
+   "audio": "audio/1-55.mp3"
   },
   {
    "id": "1-56",
@@ -769,7 +820,8 @@
    "zhuyin": "ㄌㄥˇ",
    "defs": [
     "cold"
-   ]
+   ],
+   "audio": "audio/1-56.mp3"
   },
   {
    "id": "1-57",
@@ -784,7 +836,8 @@
     "inside",
     "internal",
     "also written 裏|里[li3]"
-   ]
+   ],
+   "audio": "audio/1-57.mp3"
   },
   {
    "id": "1-58",
@@ -806,7 +859,8 @@
     "extra",
     "to wither and fall",
     "to wither"
-   ]
+   ],
+   "audio": "audio/1-58.mp3"
   },
   {
    "id": "1-59",
@@ -818,7 +872,8 @@
    "defs": [
     "six",
     "6"
-   ]
+   ],
+   "audio": "audio/1-59.mp3"
   },
   {
    "id": "1-60",
@@ -832,7 +887,8 @@
     "mommy",
     "mother",
     "CL:個|个[ge4],位[wei4]"
-   ]
+   ],
+   "audio": "audio/1-60.mp3"
   },
   {
    "id": "1-61",
@@ -843,7 +899,8 @@
    "zhuyin": "˙ㄇㄚ",
    "defs": [
     "(question particle for \"yes-no\" questions)"
-   ]
+   ],
+   "audio": "audio/1-61.mp3"
   },
   {
    "id": "1-62",
@@ -855,7 +912,8 @@
    "defs": [
     "to buy",
     "to purchase"
-   ]
+   ],
+   "audio": "audio/1-62.mp3"
   },
   {
    "id": "1-63",
@@ -868,7 +926,8 @@
     "cat (CL:隻|只[zhi1])",
     "(dialect) to hide oneself",
     "(loanword) (coll.) modem"
-   ]
+   ],
+   "audio": "audio/1-63.mp3"
   },
   {
    "id": "1-64",
@@ -879,7 +938,8 @@
    "zhuyin": "ㄇㄟˊ",
    "defs": [
     "(negative prefix for verbs) have not; not"
-   ]
+   ],
+   "audio": "audio/1-64.mp3"
   },
   {
    "id": "1-65",
@@ -890,7 +950,8 @@
    "zhuyin": "ㄇㄟˊ ㄍㄨㄢ ˙ㄒㄧ",
    "defs": [
     "it doesn't matter"
-   ]
+   ],
+   "audio": "audio/1-65.mp3"
   },
   {
    "id": "1-66",
@@ -901,7 +962,8 @@
    "zhuyin": "ㄇㄧˇ ㄈㄢˋ",
    "defs": [
     "(cooked) rice"
-   ]
+   ],
+   "audio": "audio/1-66.mp3"
   },
   {
    "id": "1-67",
@@ -912,7 +974,8 @@
    "zhuyin": "ㄇㄧㄥˊ ㄊㄧㄢ",
    "defs": [
     "tomorrow"
-   ]
+   ],
+   "audio": "audio/1-67.mp3"
   },
   {
    "id": "1-68",
@@ -923,7 +986,8 @@
    "zhuyin": "ㄇㄧㄥˊ ˙ㄗ",
    "defs": [
     "name (of a person or thing)"
-   ]
+   ],
+   "audio": "audio/1-68.mp3"
   },
   {
    "id": "1-69",
@@ -935,7 +999,8 @@
    "defs": [
     "how",
     "which"
-   ]
+   ],
+   "audio": "audio/1-69.mp3"
   },
   {
    "id": "1-70",
@@ -948,7 +1013,8 @@
     "(specifier) that; the; those (colloquial pr. [nei4])",
     "(pronoun) that (referring to persons, things or situations)",
     "then (in that case)"
-   ]
+   ],
+   "audio": "audio/1-70.mp3"
   },
   {
    "id": "1-71",
@@ -961,7 +1027,8 @@
     "(sentence-final particle) used in questions to link back to prior discourse or context (\"what about...?\", \"and...?\")",
     "(sentence-final particle) indicating that a state or situation still holds",
     "(discourse particle) used to mark a slight pause or emphasis in speech"
-   ]
+   ],
+   "audio": "audio/1-71.mp3"
   },
   {
    "id": "1-72",
@@ -976,7 +1043,8 @@
     "might possibly",
     "ability",
     "(physics) energy"
-   ]
+   ],
+   "audio": "audio/1-72.mp3"
   },
   {
    "id": "1-73",
@@ -987,7 +1055,8 @@
    "zhuyin": "ㄋㄧˇ",
    "defs": [
     "you (informal, as opposed to courteous 您[nin2])"
-   ]
+   ],
+   "audio": "audio/1-73.mp3"
   },
   {
    "id": "1-74",
@@ -999,7 +1068,8 @@
    "defs": [
     "year",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/1-74.mp3"
   },
   {
    "id": "1-75",
@@ -1010,7 +1080,8 @@
    "zhuyin": "ㄋㄩˇ ㄦˊ",
    "defs": [
     "daughter"
-   ]
+   ],
+   "audio": "audio/1-75.mp3"
   },
   {
    "id": "1-76",
@@ -1022,7 +1093,8 @@
    "defs": [
     "friend",
     "CL:個|个[ge4],位[wei4]"
-   ]
+   ],
+   "audio": "audio/1-76.mp3"
   },
   {
    "id": "1-77",
@@ -1033,7 +1105,8 @@
    "zhuyin": "ㄆㄧㄠˋ ˙ㄌㄧㄤ",
    "defs": [
     "pretty; beautiful"
-   ]
+   ],
+   "audio": "audio/1-77.mp3"
   },
   {
    "id": "1-78",
@@ -1045,7 +1118,8 @@
    "defs": [
     "apple",
     "CL:個|个[ge4],顆|颗[ke1]"
-   ]
+   ],
+   "audio": "audio/1-78.mp3"
   },
   {
    "id": "1-79",
@@ -1057,7 +1131,8 @@
    "defs": [
     "seven",
     "7"
-   ]
+   ],
+   "audio": "audio/1-79.mp3"
   },
   {
    "id": "1-80",
@@ -1071,7 +1146,8 @@
     "money",
     "CL:筆|笔[bi3]",
     "unit of weight, one tenth of a tael 兩|两[liang3]"
-   ]
+   ],
+   "audio": "audio/1-80.mp3"
   },
   {
    "id": "1-81",
@@ -1086,7 +1162,8 @@
     "preceding",
     "above",
     "also pr. [qian2 mian5]"
-   ]
+   ],
+   "audio": "audio/1-81.mp3"
   },
   {
    "id": "1-82",
@@ -1101,7 +1178,8 @@
     "please (do sth)",
     "to treat (to a meal etc)",
     "to request"
-   ]
+   ],
+   "audio": "audio/1-82.mp3"
   },
   {
    "id": "1-83",
@@ -1125,7 +1203,8 @@
     "(when used either before or after a verb) to go in order to do sth",
     "(after a verb of motion indicates movement away from the speaker)",
     "(used after certain verbs to indicate detachment or separation)"
-   ]
+   ],
+   "audio": "audio/1-83.mp3"
   },
   {
    "id": "1-84",
@@ -1140,7 +1219,8 @@
     "hot (of weather)",
     "heat",
     "fervent"
-   ]
+   ],
+   "audio": "audio/1-84.mp3"
   },
   {
    "id": "1-85",
@@ -1152,7 +1232,8 @@
    "defs": [
     "person; people",
     "CL:個|个[ge4],位[wei4],名[ming2]"
-   ]
+   ],
+   "audio": "audio/1-85.mp3"
   },
   {
    "id": "1-86",
@@ -1170,7 +1251,8 @@
     "understanding",
     "awareness",
     "cognition"
-   ]
+   ],
+   "audio": "audio/1-86.mp3"
   },
   {
    "id": "1-87",
@@ -1185,7 +1267,8 @@
     "day of the month",
     "(bound form) Japan (abbr. for 日本[Ri4 ben3])",
     "(vulgar) to fuck; to have sex with"
-   ]
+   ],
+   "audio": "audio/1-87.mp3"
   },
   {
    "id": "1-88",
@@ -1197,7 +1280,8 @@
    "defs": [
     "three",
     "3"
-   ]
+   ],
+   "audio": "audio/1-88.mp3"
   },
   {
    "id": "1-89",
@@ -1209,7 +1293,8 @@
    "defs": [
     "store; shop",
     "CL:家[jia1]"
-   ]
+   ],
+   "audio": "audio/1-89.mp3"
   },
   {
    "id": "1-90",
@@ -1225,7 +1310,8 @@
     "to attend (class or university)",
     "(directional complement) up",
     "(noun suffix) on; above"
-   ]
+   ],
+   "audio": "audio/1-90.mp3"
   },
   {
    "id": "1-91",
@@ -1236,7 +1322,8 @@
    "zhuyin": "ㄕㄤˋ ㄨˇ",
    "defs": [
     "morning"
-   ]
+   ],
+   "audio": "audio/1-91.mp3"
   },
   {
    "id": "1-92",
@@ -1252,7 +1339,8 @@
     "to be missing",
     "to stop (doing sth)",
     "seldom"
-   ]
+   ],
+   "audio": "audio/1-92.mp3"
   },
   {
    "id": "1-93",
@@ -1264,7 +1352,8 @@
    "defs": [
     "who",
     "also pr. [shui2]"
-   ]
+   ],
+   "audio": "audio/1-93.mp3"
   },
   {
    "id": "1-94",
@@ -1276,7 +1365,8 @@
    "defs": [
     "what?",
     "something; anything"
-   ]
+   ],
+   "audio": "audio/1-94.mp3"
   },
   {
    "id": "1-95",
@@ -1288,7 +1378,8 @@
    "defs": [
     "ten",
     "10"
-   ]
+   ],
+   "audio": "audio/1-95.mp3"
   },
   {
    "id": "1-96",
@@ -1302,7 +1393,8 @@
     "length of time",
     "moment",
     "period"
-   ]
+   ],
+   "audio": "audio/1-96.mp3"
   },
   {
    "id": "1-97",
@@ -1316,7 +1408,8 @@
     "correct; right; true",
     "(respectful acknowledgement of a command) very well",
     "(adverb for emphatic assertion)"
-   ]
+   ],
+   "audio": "audio/1-97.mp3"
   },
   {
    "id": "1-98",
@@ -1331,7 +1424,8 @@
     "document",
     "CL:本[ben3],冊|册[ce4],部[bu4]",
     "to write"
-   ]
+   ],
+   "audio": "audio/1-98.mp3"
   },
   {
    "id": "1-99",
@@ -1347,7 +1441,8 @@
     "(coll.) lacking in substance; shoddy",
     "(bound form) additional cost; extra income",
     "classifier for washings of a garment"
-   ]
+   ],
+   "audio": "audio/1-99.mp3"
   },
   {
    "id": "1-100",
@@ -1358,7 +1453,8 @@
    "zhuyin": "ㄕㄨㄟˇ ㄍㄨㄛˇ",
    "defs": [
     "fruit"
-   ]
+   ],
+   "audio": "audio/1-100.mp3"
   },
   {
    "id": "1-101",
@@ -1370,7 +1466,8 @@
    "defs": [
     "to go to bed",
     "to sleep"
-   ]
+   ],
+   "audio": "audio/1-101.mp3"
   },
   {
    "id": "1-102",
@@ -1399,7 +1496,8 @@
    "defs": [
     "four",
     "4"
-   ]
+   ],
+   "audio": "audio/1-103.mp3"
   },
   {
    "id": "1-104",
@@ -1412,7 +1510,8 @@
     "classifier for years (of age)",
     "year",
     "year (of crop harvests)"
-   ]
+   ],
+   "audio": "audio/1-104.mp3"
   },
   {
    "id": "1-105",
@@ -1424,7 +1523,8 @@
    "defs": [
     "(third-person singular) (since the early 20th century, usu. male) he; him; his",
     "(bound form) other; another; some other (as in 他日[ta1 ri4] and 他人[ta1 ren2])"
-   ]
+   ],
+   "audio": "audio/1-105.mp3"
   },
   {
    "id": "1-106",
@@ -1435,7 +1535,8 @@
    "zhuyin": "ㄊㄚ",
    "defs": [
     "she"
-   ]
+   ],
+   "audio": "audio/1-106.mp3"
   },
   {
    "id": "1-107",
@@ -1450,7 +1551,8 @@
     "too (much)",
     "very",
     "extremely"
-   ]
+   ],
+   "audio": "audio/1-107.mp3"
   },
   {
    "id": "1-108",
@@ -1461,7 +1563,8 @@
    "zhuyin": "ㄊㄧㄢ ㄑㄧˋ",
    "defs": [
     "weather"
-   ]
+   ],
+   "audio": "audio/1-108.mp3"
   },
   {
    "id": "1-109",
@@ -1477,7 +1580,8 @@
     "classifier for canned beverages",
     "to let be; to allow (Taiwan pr. [ting4])",
     "(literary) to administer; to deal with (Taiwan pr. [ting4])"
-   ]
+   ],
+   "audio": "audio/1-109.mp3"
   },
   {
    "id": "1-110",
@@ -1491,7 +1595,8 @@
     "fellow student",
     "classmate",
     "CL:位[wei4],個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/1-110.mp3"
   },
   {
    "id": "1-111",
@@ -1503,7 +1608,8 @@
    "defs": [
     "hey",
     "to feed (an animal, baby, invalid etc)"
-   ]
+   ],
+   "audio": "audio/1-111.mp3"
   },
   {
    "id": "1-112",
@@ -1514,7 +1620,8 @@
    "zhuyin": "ㄨㄛˇ",
    "defs": [
     "I; me; my"
-   ]
+   ],
+   "audio": "audio/1-112.mp3"
   },
   {
    "id": "1-113",
@@ -1525,7 +1632,8 @@
    "zhuyin": "ㄨㄛˇ ˙ㄇㄣ",
    "defs": [
     "we; us; ourselves"
-   ]
+   ],
+   "audio": "audio/1-113.mp3"
   },
   {
    "id": "1-114",
@@ -1537,7 +1645,8 @@
    "defs": [
     "five",
     "5"
-   ]
+   ],
+   "audio": "audio/1-114.mp3"
   },
   {
    "id": "1-115",
@@ -1550,7 +1659,8 @@
     "to like; to be fond of",
     "to be happy; to be pleased",
     "to tend to"
-   ]
+   ],
+   "audio": "audio/1-115.mp3"
   },
   {
    "id": "1-116",
@@ -1571,7 +1681,8 @@
     "to go down",
     "to arrive at (a decision, conclusion etc)",
     "measure word to show the frequency of an action"
-   ]
+   ],
+   "audio": "audio/1-116.mp3"
   },
   {
    "id": "1-117",
@@ -1584,7 +1695,8 @@
     "afternoon",
     "CL:個|个[ge4]",
     "p.m."
-   ]
+   ],
+   "audio": "audio/1-117.mp3"
   },
   {
    "id": "1-118",
@@ -1610,7 +1722,8 @@
     "husband",
     "(dialect) doctor",
     "CL:位[wei4]"
-   ]
+   ],
+   "audio": "audio/1-119.mp3"
   },
   {
    "id": "1-120",
@@ -1621,7 +1734,8 @@
    "zhuyin": "ㄒㄧㄢˋ ㄗㄞˋ",
    "defs": [
     "now; at present; currently"
-   ]
+   ],
+   "audio": "audio/1-120.mp3"
   },
   {
    "id": "1-121",
@@ -1636,7 +1750,8 @@
     "to think (that); to believe (that)",
     "to desire; to want (to)",
     "to miss (feel wistful about the absence of)"
-   ]
+   ],
+   "audio": "audio/1-121.mp3"
   },
   {
    "id": "1-122",
@@ -1650,7 +1765,8 @@
     "tiny",
     "few",
     "young"
-   ]
+   ],
+   "audio": "audio/1-122.mp3"
   },
   {
    "id": "1-123",
@@ -1664,7 +1780,8 @@
     "miss",
     "(slang) prostitute",
     "CL:個|个[ge4],位[wei4]"
-   ]
+   ],
+   "audio": "audio/1-123.mp3"
   },
   {
    "id": "1-124",
@@ -1675,7 +1792,8 @@
    "zhuyin": "ㄒㄧㄝ",
    "defs": [
     "classifier indicating a small amount or small number greater than 1: some, a few, several"
-   ]
+   ],
+   "audio": "audio/1-124.mp3"
   },
   {
    "id": "1-125",
@@ -1686,7 +1804,8 @@
    "zhuyin": "ㄒㄧㄝˇ",
    "defs": [
     "to write"
-   ]
+   ],
+   "audio": "audio/1-125.mp3"
   },
   {
    "id": "1-126",
@@ -1699,7 +1818,8 @@
     "to thank",
     "thanks",
     "thank you"
-   ]
+   ],
+   "audio": "audio/1-126.mp3"
   },
   {
    "id": "1-127",
@@ -1713,7 +1833,8 @@
     "CL:個|个[ge4]",
     "day of the week",
     "Sunday"
-   ]
+   ],
+   "audio": "audio/1-127.mp3"
   },
   {
    "id": "1-128",
@@ -1725,7 +1846,8 @@
    "defs": [
     "student",
     "schoolchild"
-   ]
+   ],
+   "audio": "audio/1-128.mp3"
   },
   {
    "id": "1-129",
@@ -1736,7 +1858,8 @@
    "zhuyin": "ㄒㄩㄝˊ ㄒㄧˊ",
    "defs": [
     "to learn; to study"
-   ]
+   ],
+   "audio": "audio/1-129.mp3"
   },
   {
    "id": "1-130",
@@ -1748,7 +1871,8 @@
    "defs": [
     "school",
     "CL:所[suo3]"
-   ]
+   ],
+   "audio": "audio/1-130.mp3"
   },
   {
    "id": "1-131",
@@ -1765,7 +1889,8 @@
     "entire; whole; all; throughout",
     "\"one\" radical in Chinese characters (Kangxi radical 1)",
     "also pr. [yao1] for greater clarity when spelling out numbers digit by digit"
-   ]
+   ],
+   "audio": "audio/1-131.mp3"
   },
   {
    "id": "1-132",
@@ -1777,7 +1902,8 @@
    "defs": [
     "clothes",
     "CL:件[jian4],套[tao4]"
-   ]
+   ],
+   "audio": "audio/1-132.mp3"
   },
   {
    "id": "1-133",
@@ -1788,7 +1914,8 @@
    "zhuyin": "ㄧ ㄕㄥ",
    "defs": [
     "doctor; medical practitioner"
-   ]
+   ],
+   "audio": "audio/1-133.mp3"
   },
   {
    "id": "1-134",
@@ -1800,7 +1927,8 @@
    "defs": [
     "hospital",
     "CL:所[suo3],家[jia1],座[zuo4]"
-   ]
+   ],
+   "audio": "audio/1-134.mp3"
   },
   {
    "id": "1-135",
@@ -1812,7 +1940,8 @@
    "defs": [
     "chair",
     "CL:把[ba3],張|张[zhang1]"
-   ]
+   ],
+   "audio": "audio/1-135.mp3"
   },
   {
    "id": "1-136",
@@ -1824,7 +1953,8 @@
    "defs": [
     "to have; there is",
     "(bound form) having; with; -ful; -ed; -al (as in 有意[you3 yi4] intentional)"
-   ]
+   ],
+   "audio": "audio/1-136.mp3"
   },
   {
    "id": "1-137",
@@ -1838,7 +1968,8 @@
     "month",
     "monthly",
     "CL:個|个[ge4],輪|轮[lun2]"
-   ]
+   ],
+   "audio": "audio/1-137.mp3"
   },
   {
    "id": "1-138",
@@ -1851,7 +1982,8 @@
     "to exist; to be alive",
     "(of sb or sth) to be (located) at",
     "(used before a verb to indicate an action in progress)"
-   ]
+   ],
+   "audio": "audio/1-138.mp3"
   },
   {
    "id": "1-139",
@@ -1862,7 +1994,8 @@
    "zhuyin": "ㄗㄞˋ ㄐㄧㄢˋ",
    "defs": [
     "goodbye"
-   ]
+   ],
+   "audio": "audio/1-139.mp3"
   },
   {
    "id": "1-140",
@@ -1875,7 +2008,8 @@
     "how?",
     "what?",
     "why?"
-   ]
+   ],
+   "audio": "audio/1-140.mp3"
   },
   {
    "id": "1-141",
@@ -1889,7 +2023,8 @@
     "how about?",
     "how was it?",
     "how are things?"
-   ]
+   ],
+   "audio": "audio/1-141.mp3"
   },
   {
    "id": "1-142",
@@ -1902,7 +2037,8 @@
     "(pronoun) this; these",
     "(bound form) this; the (followed by a noun)",
     "(bound form) this; these (followed by a classifier) (in this sense, commonly pr. [zhei4], esp. in Beijing)"
-   ]
+   ],
+   "audio": "audio/1-142.mp3"
   },
   {
    "id": "1-143",
@@ -1926,7 +2062,8 @@
     "noon",
     "midday",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/1-144.mp3"
   },
   {
    "id": "1-145",
@@ -1939,7 +2076,8 @@
     "to live; to reside; to stay",
     "to stop; to cease",
     "(result complement indicating firmness or a stable achieved state)"
-   ]
+   ],
+   "audio": "audio/1-145.mp3"
   },
   {
    "id": "1-146",
@@ -1952,7 +2090,8 @@
     "table",
     "desk",
     "CL:張|张[zhang1],套[tao4]"
-   ]
+   ],
+   "audio": "audio/1-146.mp3"
   },
   {
    "id": "1-147",
@@ -1968,7 +2107,8 @@
     "word",
     "CL:個|个[ge4]",
     "courtesy or style name traditionally given to males aged 20 in dynastic China"
-   ]
+   ],
+   "audio": "audio/1-147.mp3"
   },
   {
    "id": "1-148",
@@ -1979,7 +2119,8 @@
    "zhuyin": "ㄗㄨㄛˊ ㄊㄧㄢ",
    "defs": [
     "yesterday"
-   ]
+   ],
+   "audio": "audio/1-148.mp3"
   },
   {
    "id": "1-149",
@@ -1993,7 +2134,8 @@
     "to take a seat",
     "to take (a bus, airplane etc)",
     "to bear fruit"
-   ]
+   ],
+   "audio": "audio/1-149.mp3"
   },
   {
    "id": "1-150",
@@ -2009,7 +2151,8 @@
     "(of a person) to be (an intermediary, a good student etc); to become (husband and wife, friends etc)",
     "(of a thing) to serve as; to be used for",
     "to assume (an air or manner)"
-   ]
+   ],
+   "audio": "audio/1-150.mp3"
   },
   {
    "id": "2-1",
@@ -2023,7 +2166,8 @@
     "...right?",
     "...OK?",
     "...I presume."
-   ]
+   ],
+   "audio": "audio/2-1.mp3"
   },
   {
    "id": "2-2",
@@ -2043,7 +2187,8 @@
     "(bound form) vernacular (e.g. 白話|白话[bai2 hua4])",
     "(bound form) spoken lines in opera (e.g. 念白[nian4 bai2])",
     "(bound form) reactionary; anti-communist (e.g. 白區|白区[bai2 qu1])"
-   ]
+   ],
+   "audio": "audio/2-2.mp3"
   },
   {
    "id": "2-3",
@@ -2056,7 +2201,8 @@
     "hundred",
     "numerous",
     "all kinds of"
-   ]
+   ],
+   "audio": "audio/2-3.mp3"
   },
   {
    "id": "2-4",
@@ -2068,7 +2214,8 @@
    "defs": [
     "assistance; aid",
     "to help; to assist"
-   ]
+   ],
+   "audio": "audio/2-4.mp3"
   },
   {
    "id": "2-5",
@@ -2081,7 +2228,8 @@
     "newspaper",
     "newsprint",
     "CL:份[fen4],期[qi1],張|张[zhang1]"
-   ]
+   ],
+   "audio": "audio/2-5.mp3"
   },
   {
    "id": "2-6",
@@ -2096,7 +2244,8 @@
     "ratio",
     "to gesture",
     "(Taiwan pr. [bi4] in some compounds derived from Classical Chinese)"
-   ]
+   ],
+   "audio": "audio/2-6.mp3"
   },
   {
    "id": "2-7",
@@ -2114,7 +2263,8 @@
     "to fasten with a pin or clip",
     "to stick in; to insert (in order to hinder movement)",
     "(noun suffix) category (as in 性別|性别[xing4 bie2], 派別|派别[pai4 bie2])"
-   ]
+   ],
+   "audio": "audio/2-7.mp3"
   },
   {
    "id": "2-8",
@@ -2156,7 +2306,8 @@
     "to go beyond; to exceed",
     "(used after a verb to indicate an outward direction or a positive result)",
     "classifier for dramas, plays, operas etc"
-   ]
+   ],
+   "audio": "audio/2-10.mp3"
   },
   {
    "id": "2-11",
@@ -2171,7 +2322,8 @@
     "to thread; to string together",
     "to wear; to put on (clothes, shoes etc.)",
     "verb complement indicating thoroughness or completion"
-   ]
+   ],
+   "audio": "audio/2-11.mp3"
   },
   {
    "id": "2-12",
@@ -2185,7 +2337,8 @@
     "vessel",
     "ship",
     "CL:條|条[tiao2],艘[sou1],隻|只[zhi1]"
-   ]
+   ],
+   "audio": "audio/2-12.mp3"
   },
   {
    "id": "2-13",
@@ -2208,7 +2361,8 @@
     "sequence",
     "hypo- (chemistry)",
     "classifier for enumerated events: time"
-   ]
+   ],
+   "audio": "audio/2-13.mp3"
   },
   {
    "id": "2-14",
@@ -2226,7 +2380,8 @@
     "(bound form) (Taiwan pr. [zong4]) retainer; attendant",
     "(bound form) (Taiwan pr. [zong4]) assistant; auxiliary; subordinate",
     "(bound form) (Taiwan pr. [zong4]) related by common paternal grandfather or earlier ancestor"
-   ]
+   ],
+   "audio": "audio/2-14.mp3"
   },
   {
    "id": "2-15",
@@ -2249,7 +2404,8 @@
     "to let slip",
     "to evade",
     "to inlay with gold or silver"
-   ]
+   ],
+   "audio": "audio/2-15.mp3"
   },
   {
    "id": "2-16",
@@ -2273,7 +2429,8 @@
     "everyone",
     "influential family",
     "great expert"
-   ]
+   ],
+   "audio": "audio/2-17.mp3"
   },
   {
    "id": "2-18",
@@ -2284,7 +2441,8 @@
    "zhuyin": "ㄉㄢˋ ㄕˋ",
    "defs": [
     "but; however"
-   ]
+   ],
+   "audio": "audio/2-18.mp3"
   },
   {
    "id": "2-19",
@@ -2299,7 +2457,8 @@
     "to (a place); until (a time); up to (a point)",
     "(verb complement indicating arriving at a place or reaching a point)",
     "considerate; thoughtful; thorough"
-   ]
+   ],
+   "audio": "audio/2-19.mp3"
   },
   {
    "id": "2-20",
@@ -2336,7 +2495,8 @@
    "defs": [
     "younger brother",
     "CL:個|个[ge4],位[wei4]"
-   ]
+   ],
+   "audio": "audio/2-22.mp3"
   },
   {
    "id": "2-23",
@@ -2360,7 +2520,8 @@
    "defs": [
     "to understand",
     "to comprehend"
-   ]
+   ],
+   "audio": "audio/2-24.mp3"
   },
   {
    "id": "2-25",
@@ -2372,7 +2533,8 @@
    "defs": [
     "room",
     "CL:間|间[jian1]"
-   ]
+   ],
+   "audio": "audio/2-25.mp3"
   },
   {
    "id": "2-26",
@@ -2384,7 +2546,8 @@
    "defs": [
     "very; really",
     "unusual; extraordinary"
-   ]
+   ],
+   "audio": "audio/2-26.mp3"
   },
   {
    "id": "2-27",
@@ -2399,7 +2562,8 @@
     "attendant",
     "customer service personnel",
     "CL:個|个[ge4],位[wei4]"
-   ]
+   ],
+   "audio": "audio/2-27.mp3"
   },
   {
    "id": "2-28",
@@ -2414,7 +2578,8 @@
     "above average",
     "loud",
     "your (honorific)"
-   ]
+   ],
+   "audio": "audio/2-28.mp3"
   },
   {
    "id": "2-29",
@@ -2425,7 +2590,8 @@
    "zhuyin": "ㄍㄠˋ ˙ㄙㄨ",
    "defs": [
     "to tell; to inform; to let know"
-   ]
+   ],
+   "audio": "audio/2-29.mp3"
   },
   {
    "id": "2-30",
@@ -2437,7 +2603,8 @@
    "defs": [
     "older brother",
     "CL:個|个[ge4],位[wei4]"
-   ]
+   ],
+   "audio": "audio/2-30.mp3"
   },
   {
    "id": "2-31",
@@ -2456,7 +2623,8 @@
     "(grammatical equivalent of 被)",
     "(grammatical equivalent of 把)",
     "(sentence intensifier)"
-   ]
+   ],
+   "audio": "audio/2-31.mp3"
   },
   {
    "id": "2-32",
@@ -2468,7 +2636,8 @@
    "defs": [
     "bus",
     "CL:輛|辆[liang4],班[ban1]"
-   ]
+   ],
+   "audio": "audio/2-32.mp3"
   },
   {
    "id": "2-33",
@@ -2479,7 +2648,8 @@
    "zhuyin": "ㄍㄨㄥ ㄐㄧㄣ",
    "defs": [
     "kilogram (kg)"
-   ]
+   ],
+   "audio": "audio/2-33.mp3"
   },
   {
    "id": "2-34",
@@ -2491,7 +2661,8 @@
    "defs": [
     "company; firm; corporation",
     "CL:家[jia1]"
-   ]
+   ],
+   "audio": "audio/2-34.mp3"
   },
   {
    "id": "2-35",
@@ -2505,7 +2676,8 @@
     "(bound form) highly valued; precious",
     "(bound form) noble; of high rank",
     "(prefix) (honorific) your"
-   ]
+   ],
+   "audio": "audio/2-35.mp3"
   },
   {
    "id": "2-36",
@@ -2538,7 +2710,8 @@
    "zhuyin": "ㄏㄞˊ ˙ㄗ",
    "defs": [
     "child"
-   ]
+   ],
+   "audio": "audio/2-37.mp3"
   },
   {
    "id": "2-38",
@@ -2549,7 +2722,8 @@
    "zhuyin": "ㄏㄠˇ ㄔ",
    "defs": [
     "tasty; delicious"
-   ]
+   ],
+   "audio": "audio/2-38.mp3"
   },
   {
    "id": "2-39",
@@ -2570,7 +2744,8 @@
     "(bound form) size; type; category (e.g. 五號電池|五号电池[wu3 hao4 dian4 chi2])",
     "(TCM) to feel (the pulse) (used in 號脈|号脉[hao4 mai4])",
     "classifier for numbered people or items"
-   ]
+   ],
+   "audio": "audio/2-39.mp3"
   },
   {
    "id": "2-40",
@@ -2589,7 +2764,8 @@
     "to hide (sth) away",
     "to vilify",
     "(loanword) to hack (computing)"
-   ]
+   ],
+   "audio": "audio/2-40.mp3"
   },
   {
    "id": "2-41",
@@ -2603,7 +2779,8 @@
     "popular",
     "revolutionary",
     "bonus"
-   ]
+   ],
+   "audio": "audio/2-41.mp3"
   },
   {
    "id": "2-42",
@@ -2615,7 +2792,8 @@
    "defs": [
     "to welcome",
     "welcome"
-   ]
+   ],
+   "audio": "audio/2-42.mp3"
   },
   {
    "id": "2-43",
@@ -2639,7 +2817,8 @@
    "defs": [
     "to reply; to answer",
     "reply; answer"
-   ]
+   ],
+   "audio": "audio/2-44.mp3"
   },
   {
    "id": "2-45",
@@ -2652,7 +2831,8 @@
     "airport; airfield",
     "(slang) service provider for Shadowsocks or similar software for circumventing Internet censorship",
     "CL:家[jia1],處|处[chu4]"
-   ]
+   ],
+   "audio": "audio/2-45.mp3"
   },
   {
    "id": "2-46",
@@ -2665,7 +2845,8 @@
     "(chicken) egg",
     "hen's egg",
     "CL:個|个[ge4],打[da2]"
-   ]
+   ],
+   "audio": "audio/2-46.mp3"
   },
   {
    "id": "2-47",
@@ -2678,7 +2859,8 @@
     "item",
     "component",
     "classifier for events, things, clothes etc"
-   ]
+   ],
+   "audio": "audio/2-47.mp3"
   },
   {
    "id": "2-48",
@@ -2690,7 +2872,8 @@
    "defs": [
     "classroom",
     "CL:間|间[jian1]"
-   ]
+   ],
+   "audio": "audio/2-48.mp3"
   },
   {
    "id": "2-49",
@@ -2702,7 +2885,8 @@
    "defs": [
     "older sister",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-49.mp3"
   },
   {
    "id": "2-50",
@@ -2716,7 +2900,8 @@
     "to give a presentation",
     "to present (sb for a job etc)",
     "introduction"
-   ]
+   ],
+   "audio": "audio/2-50.mp3"
   },
   {
    "id": "2-51",
@@ -2736,7 +2921,8 @@
     "to admit",
     "(math.) base of a number system",
     "classifier for sections in a building or residential compound"
-   ]
+   ],
+   "audio": "audio/2-51.mp3"
   },
   {
    "id": "2-52",
@@ -2749,7 +2935,8 @@
     "near",
     "close to",
     "approximately"
-   ]
+   ],
+   "audio": "audio/2-52.mp3"
   },
   {
    "id": "2-53",
@@ -2772,7 +2959,8 @@
     "(bound form) to reach; to attain (as in 一蹴而就[yi1 cu4 er2 jiu4])",
     "(pattern: 就[jiu4] ... 也[ye3] ...) even if ... still ...",
     "(pattern: 不[bu4] ... 就[jiu4] ...) if not ... then must be ..."
-   ]
+   ],
+   "audio": "audio/2-53.mp3"
   },
   {
    "id": "2-54",
@@ -2784,7 +2972,8 @@
    "defs": [
     "to think that ...; to feel that ...",
     "to feel (uncomfortable etc)"
-   ]
+   ],
+   "audio": "audio/2-54.mp3"
   },
   {
    "id": "2-55",
@@ -2796,7 +2985,8 @@
    "defs": [
     "(loanword) coffee",
     "CL:杯[bei1]"
-   ]
+   ],
+   "audio": "audio/2-55.mp3"
   },
   {
    "id": "2-56",
@@ -2808,7 +2998,8 @@
    "defs": [
     "to begin; to start",
     "beginning; start"
-   ]
+   ],
+   "audio": "audio/2-56.mp3"
   },
   {
    "id": "2-57",
@@ -2821,7 +3012,8 @@
     "to take an exam",
     "exam",
     "CL:次[ci4]"
-   ]
+   ],
+   "audio": "audio/2-57.mp3"
   },
   {
    "id": "2-58",
@@ -2839,7 +3031,8 @@
     "maybe",
     "perhaps",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-58.mp3"
   },
   {
    "id": "2-59",
@@ -2855,7 +3048,8 @@
     "able to",
     "not bad",
     "pretty good"
-   ]
+   ],
+   "audio": "audio/2-59.mp3"
   },
   {
    "id": "2-60",
@@ -2874,7 +3068,8 @@
     "to levy",
     "tax",
     "form of divination"
-   ]
+   ],
+   "audio": "audio/2-60.mp3"
   },
   {
    "id": "2-61",
@@ -2898,7 +3093,8 @@
     "gratified",
     "pleased",
     "pleasant"
-   ]
+   ],
+   "audio": "audio/2-61.mp3"
   },
   {
    "id": "2-62",
@@ -2909,7 +3105,8 @@
    "zhuyin": "ㄎㄨㄞˋ ㄌㄜˋ",
    "defs": [
     "happy; joyful"
-   ]
+   ],
+   "audio": "audio/2-62.mp3"
   },
   {
    "id": "2-63",
@@ -2924,7 +3121,8 @@
     "to strain",
     "to wear out",
     "to work hard"
-   ]
+   ],
+   "audio": "audio/2-63.mp3"
   },
   {
    "id": "2-64",
@@ -2942,7 +3140,8 @@
     "independent of",
     "one of the Eight Trigrams 八卦[ba1 gua4], symbolizing fire",
     "☲"
-   ]
+   ],
+   "audio": "audio/2-64.mp3"
   },
   {
    "id": "2-65",
@@ -2957,7 +3156,8 @@
     "some",
     "a few",
     "tael, unit of weight equal to 50 grams (modern) or 1⁄16 of a catty 斤[jin1] (old)"
-   ]
+   ],
+   "audio": "audio/2-65.mp3"
   },
   {
    "id": "2-66",
@@ -2972,7 +3172,8 @@
     "route",
     "line (bus etc)",
     "sort; kind"
-   ]
+   ],
+   "audio": "audio/2-66.mp3"
   },
   {
    "id": "2-67",
@@ -2988,7 +3189,8 @@
     "travel",
     "tour",
     "to travel"
-   ]
+   ],
+   "audio": "audio/2-67.mp3"
   },
   {
    "id": "2-68",
@@ -3002,7 +3204,8 @@
     "to betray",
     "to spare no effort",
     "to show off or flaunt"
-   ]
+   ],
+   "audio": "audio/2-68.mp3"
   },
   {
    "id": "2-69",
@@ -3013,7 +3216,8 @@
    "zhuyin": "ㄇㄢˋ",
    "defs": [
     "slow"
-   ]
+   ],
+   "audio": "audio/2-69.mp3"
   },
   {
    "id": "2-70",
@@ -3027,7 +3231,8 @@
     "hurriedly",
     "to hurry",
     "to rush"
-   ]
+   ],
+   "audio": "audio/2-70.mp3"
   },
   {
    "id": "2-71",
@@ -3039,7 +3244,8 @@
    "defs": [
     "each",
     "every"
-   ]
+   ],
+   "audio": "audio/2-71.mp3"
   },
   {
    "id": "2-72",
@@ -3052,7 +3258,8 @@
     "younger sister",
     "young woman",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-72.mp3"
   },
   {
    "id": "2-73",
@@ -3070,7 +3277,8 @@
     "(bound form) class; category; division; phylum",
     "classifier for courses, fields of study, branches of technology, relatives by marriage, guns etc",
     "(suffix) -gate (scandal)"
-   ]
+   ],
+   "audio": "audio/2-73.mp3"
   },
   {
    "id": "2-74",
@@ -3084,7 +3292,8 @@
     "a male",
     "men",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-74.mp3"
   },
   {
    "id": "2-75",
@@ -3095,7 +3304,8 @@
    "zhuyin": "ㄋㄧㄣˊ",
    "defs": [
     "you (courteous, as opposed to informal 你[ni3])"
-   ]
+   ],
+   "audio": "audio/2-75.mp3"
   },
   {
    "id": "2-76",
@@ -3107,7 +3317,8 @@
    "defs": [
     "cow's milk",
     "CL:瓶[ping2],杯[bei1]"
-   ]
+   ],
+   "audio": "audio/2-76.mp3"
   },
   {
    "id": "2-77",
@@ -3118,7 +3329,8 @@
    "zhuyin": "ㄋㄩˇ ㄖㄣˊ",
    "defs": [
     "woman"
-   ]
+   ],
+   "audio": "audio/2-77.mp3"
   },
   {
    "id": "2-78",
@@ -3129,7 +3341,8 @@
    "zhuyin": "ㄆㄤˊ ㄅㄧㄢ",
    "defs": [
     "side; adjacent place"
-   ]
+   ],
+   "audio": "audio/2-78.mp3"
   },
   {
    "id": "2-79",
@@ -3142,7 +3355,8 @@
     "to run",
     "to jog",
     "(military) to march at the double"
-   ]
+   ],
+   "audio": "audio/2-79.mp3"
   },
   {
    "id": "2-80",
@@ -3155,7 +3369,8 @@
     "cheap; inexpensive",
     "a petty advantage",
     "to let sb off lightly"
-   ]
+   ],
+   "audio": "audio/2-80.mp3"
   },
   {
    "id": "2-81",
@@ -3172,7 +3387,8 @@
     "person held for ransom",
     "amateur performance of Chinese opera",
     "classifier for groups, batches, business transactions"
-   ]
+   ],
+   "audio": "audio/2-81.mp3"
   },
   {
    "id": "2-82",
@@ -3183,7 +3399,8 @@
    "zhuyin": "ㄑㄧ ˙ㄗ",
    "defs": [
     "wife"
-   ]
+   ],
+   "audio": "audio/2-82.mp3"
   },
   {
    "id": "2-83",
@@ -3194,7 +3411,8 @@
    "zhuyin": "ㄑㄧˇ ㄔㄨㄤˊ",
    "defs": [
     "to get out of bed; to get up"
-   ]
+   ],
+   "audio": "audio/2-83.mp3"
   },
   {
    "id": "2-84",
@@ -3205,7 +3423,8 @@
    "zhuyin": "ㄑㄧㄢ",
    "defs": [
     "thousand"
-   ]
+   ],
+   "audio": "audio/2-84.mp3"
   },
   {
    "id": "2-85",
@@ -3217,7 +3436,8 @@
    "defs": [
     "clear",
     "fine (weather)"
-   ]
+   ],
+   "audio": "audio/2-85.mp3"
   },
   {
    "id": "2-86",
@@ -3228,7 +3448,8 @@
    "zhuyin": "ㄑㄩˋ ㄋㄧㄢˊ",
    "defs": [
     "last year"
-   ]
+   ],
+   "audio": "audio/2-86.mp3"
   },
   {
    "id": "2-87",
@@ -3244,7 +3465,8 @@
     "to have sb do sth",
     "to make sb (feel sad etc)",
     "by (indicates the agent in a passive clause, like 被[bei4])"
-   ]
+   ],
+   "audio": "audio/2-87.mp3"
   },
   {
    "id": "2-88",
@@ -3258,7 +3480,8 @@
     "to be on duty",
     "to start work",
     "to go to the office"
-   ]
+   ],
+   "audio": "audio/2-88.mp3"
   },
   {
    "id": "2-89",
@@ -3270,7 +3493,8 @@
    "defs": [
     "the body",
     "one's health"
-   ]
+   ],
+   "audio": "audio/2-89.mp3"
   },
   {
    "id": "2-90",
@@ -3281,7 +3505,8 @@
    "zhuyin": "ㄕㄥ ㄅㄧㄥˋ",
    "defs": [
     "to fall ill"
-   ]
+   ],
+   "audio": "audio/2-90.mp3"
   },
   {
    "id": "2-91",
@@ -3293,7 +3518,8 @@
    "defs": [
     "birthday",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-91.mp3"
   },
   {
    "id": "2-92",
@@ -3306,7 +3532,8 @@
     "(concept of) time",
     "(duration of) time",
     "(point in) time"
-   ]
+   ],
+   "audio": "audio/2-92.mp3"
   },
   {
    "id": "2-93",
@@ -3318,7 +3545,8 @@
    "defs": [
     "affair; matter; thing; business",
     "CL:件[jian4],樁|桩[zhuang1]"
-   ]
+   ],
+   "audio": "audio/2-93.mp3"
   },
   {
    "id": "2-94",
@@ -3330,7 +3558,8 @@
    "defs": [
     "wristwatch",
     "CL:塊|块[kuai4],隻|只[zhi1],個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-94.mp3"
   },
   {
    "id": "2-95",
@@ -3356,7 +3585,8 @@
     "to give (as a present)",
     "to see (sb) off",
     "to accompany; to go along with"
-   ]
+   ],
+   "audio": "audio/2-96.mp3"
   },
   {
    "id": "2-97",
@@ -3370,7 +3600,8 @@
     "as a result",
     "so",
     "the reason why"
-   ]
+   ],
+   "audio": "audio/2-97.mp3"
   },
   {
    "id": "2-98",
@@ -3381,7 +3612,8 @@
    "zhuyin": "ㄊㄚ",
    "defs": [
     "it"
-   ]
+   ],
+   "audio": "audio/2-98.mp3"
   },
   {
    "id": "2-99",
@@ -3394,7 +3626,8 @@
     "to kick",
     "to play (e.g. soccer)",
     "(slang) butch (in a lesbian relationship)"
-   ]
+   ],
+   "audio": "audio/2-99.mp3"
   },
   {
    "id": "2-100",
@@ -3411,7 +3644,8 @@
     "to inscribe",
     "to mention",
     "CL:個|个[ge4],道[dao4]"
-   ]
+   ],
+   "audio": "audio/2-100.mp3"
   },
   {
    "id": "2-101",
@@ -3422,7 +3656,8 @@
    "zhuyin": "ㄊㄧㄠˋ ㄨˇ",
    "defs": [
     "to dance"
-   ]
+   ],
+   "audio": "audio/2-101.mp3"
   },
   {
    "id": "2-102",
@@ -3436,7 +3671,8 @@
     "in addition",
     "foreign",
     "external"
-   ]
+   ],
+   "audio": "audio/2-102.mp3"
   },
   {
    "id": "2-103",
@@ -3451,7 +3687,8 @@
     "whole",
     "complete",
     "entire"
-   ]
+   ],
+   "audio": "audio/2-103.mp3"
   },
   {
    "id": "2-104",
@@ -3482,7 +3719,8 @@
     "night",
     "CL:個|个[ge4]",
     "in the evening"
-   ]
+   ],
+   "audio": "audio/2-105.mp3"
   },
   {
    "id": "2-106",
@@ -3495,7 +3733,8 @@
     "because of",
     "for",
     "to"
-   ]
+   ],
+   "audio": "audio/2-106.mp3"
   },
   {
    "id": "2-107",
@@ -3506,7 +3745,8 @@
    "zhuyin": "ㄨㄣˋ",
    "defs": [
     "to ask; to inquire"
-   ]
+   ],
+   "audio": "audio/2-107.mp3"
   },
   {
    "id": "2-108",
@@ -3521,7 +3761,8 @@
     "issue",
     "topic",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-108.mp3"
   },
   {
    "id": "2-109",
@@ -3533,7 +3774,8 @@
    "defs": [
     "watermelon",
     "CL:顆|颗[ke1]"
-   ]
+   ],
+   "audio": "audio/2-109.mp3"
   },
   {
    "id": "2-110",
@@ -3545,7 +3787,8 @@
    "defs": [
     "to hope",
     "a hope; a wish"
-   ]
+   ],
+   "audio": "audio/2-110.mp3"
   },
   {
    "id": "2-111",
@@ -3559,7 +3802,8 @@
     "to develop (photographs)",
     "to shuffle (cards etc)",
     "to erase (a recording)"
-   ]
+   ],
+   "audio": "audio/2-111.mp3"
   },
   {
    "id": "2-112",
@@ -3581,7 +3825,8 @@
     "all along",
     "(suffix) suitable for ...",
     "oriented to ..."
-   ]
+   ],
+   "audio": "audio/2-112.mp3"
   },
   {
    "id": "2-113",
@@ -3593,7 +3838,8 @@
    "defs": [
     "hour",
     "CL:個|个[ge4]"
-   ]
+   ],
+   "audio": "audio/2-113.mp3"
   },
   {
    "id": "2-114",
@@ -3605,7 +3851,8 @@
    "defs": [
     "to laugh; to smile",
     "to laugh at"
-   ]
+   ],
+   "audio": "audio/2-114.mp3"
   },
   {
    "id": "2-115",
@@ -3618,7 +3865,8 @@
     "new",
     "newly",
     "meso- (chemistry)"
-   ]
+   ],
+   "audio": "audio/2-115.mp3"
   },
   {
    "id": "2-116",
@@ -3630,7 +3878,8 @@
    "defs": [
     "family name; surname",
     "to be surnamed ..."
-   ]
+   ],
+   "audio": "audio/2-116.mp3"
   },
   {
    "id": "2-117",
@@ -3642,7 +3891,8 @@
    "defs": [
     "rest",
     "to rest"
-   ]
+   ],
+   "audio": "audio/2-117.mp3"
   },
   {
    "id": "2-118",
@@ -3655,7 +3905,8 @@
     "snow",
     "CL:場|场[chang2]",
     "(literary) to wipe away (a humiliation etc)"
-   ]
+   ],
+   "audio": "audio/2-118.mp3"
   },
   {
    "id": "2-119",
@@ -3671,7 +3922,8 @@
     "facial expression",
     "pigment",
     "dyestuff"
-   ]
+   ],
+   "audio": "audio/2-119.mp3"
   },
   {
    "id": "2-120",
@@ -3683,7 +3935,8 @@
    "defs": [
     "eye",
     "CL:隻|只[zhi1],雙|双[shuang1]"
-   ]
+   ],
+   "audio": "audio/2-120.mp3"
   },
   {
    "id": "2-121",
@@ -3710,7 +3963,8 @@
     "substance used for a specific purpose (e.g. poisoning, explosion, fermenting)",
     "CL:種|种[zhong3],服[fu4],味[wei4]",
     "to poison"
-   ]
+   ],
+   "audio": "audio/2-122.mp3"
   },
   {
    "id": "2-123",
@@ -3725,7 +3979,8 @@
     "need to; should",
     "if (same as 要是[yao4 shi5])",
     "(bound form) important"
-   ]
+   ],
+   "audio": "audio/2-123.mp3"
   },
   {
    "id": "2-124",
@@ -3738,7 +3993,8 @@
     "also; too; as well; (not ...) either",
     "(used after a verbal or nominal expression X to indicate that X is an extreme or unexpected case) even (X)",
     "(literary) particle having functions similar to 啊[a5]"
-   ]
+   ],
+   "audio": "audio/2-124.mp3"
   },
   {
    "id": "2-125",
@@ -3749,7 +4005,8 @@
    "zhuyin": "ㄧˇ ㄐㄧㄥ",
    "defs": [
     "already"
-   ]
+   ],
+   "audio": "audio/2-125.mp3"
   },
   {
    "id": "2-126",
@@ -3763,7 +4020,8 @@
     "together; in company (with)",
     "altogether; in total",
     "an instance of; a case of (murder, accident, dispute etc)"
-   ]
+   ],
+   "audio": "audio/2-126.mp3"
   },
   {
    "id": "2-127",
@@ -3784,7 +4042,8 @@
     "CL:個|个[ge4]",
     "to give as a small token",
     "to do sth as a gesture of goodwill etc"
-   ]
+   ],
+   "audio": "audio/2-127.mp3"
   },
   {
    "id": "2-128",
@@ -3804,7 +4063,8 @@
     "implicit",
     "hidden",
     "genitalia"
-   ]
+   ],
+   "audio": "audio/2-128.mp3"
   },
   {
    "id": "2-129",
@@ -3815,7 +4075,8 @@
    "zhuyin": "ㄧㄣ ㄨㄟˋ",
    "defs": [
     "because; owing to; on account of"
-   ]
+   ],
+   "audio": "audio/2-129.mp3"
   },
   {
    "id": "2-130",
@@ -3827,7 +4088,8 @@
    "defs": [
     "swimming",
     "to swim"
-   ]
+   ],
+   "audio": "audio/2-130.mp3"
   },
   {
    "id": "2-131",
@@ -3839,7 +4101,8 @@
    "defs": [
     "right side",
     "right, to the right"
-   ]
+   ],
+   "audio": "audio/2-131.mp3"
   },
   {
    "id": "2-132",
@@ -3851,7 +4114,8 @@
    "defs": [
     "fish (CL:條|条[tiao2],尾[wei3])",
     "used in the names of various aquatic animals that are not fish (including abalone 鮑魚|鲍鱼[bao4 yu2], alligators and crocodiles 鱷魚|鳄鱼[e4 yu2] and octopi 章魚|章鱼[zhang1 yu2])"
-   ]
+   ],
+   "audio": "audio/2-132.mp3"
   },
   {
    "id": "2-133",
@@ -3869,7 +4133,8 @@
     "(math.) argument; variable",
     "era (of a reign)",
     "(Tw) (geology) eon"
-   ]
+   ],
+   "audio": "audio/2-133.mp3"
   },
   {
    "id": "2-134",
@@ -3884,7 +4149,8 @@
     "remote",
     "(intensifier in a comparison) by far",
     "much (lower etc)"
-   ]
+   ],
+   "audio": "audio/2-134.mp3"
   },
   {
    "id": "2-135",
@@ -3902,7 +4168,8 @@
     "movement",
     "campaign",
     "CL:場|场[chang3]"
-   ]
+   ],
+   "audio": "audio/2-135.mp3"
   },
   {
    "id": "2-136",
@@ -3919,7 +4186,8 @@
     "no matter how ... (followed by an adjective or verb, and then (usually) 也[ye3] or 都[dou1] for emphasis)",
     "(used to introduce additional information, as in 再則|再则[zai4 ze2], 再就是[zai4 jiu4 shi4] etc)",
     "(literary) to reappear; to reoccur"
-   ]
+   ],
+   "audio": "audio/2-136.mp3"
   },
   {
    "id": "2-137",
@@ -3946,7 +4214,8 @@
     "sheet of paper",
     "classifier for flat objects, sheet",
     "classifier for votes"
-   ]
+   ],
+   "audio": "audio/2-138.mp3"
   },
   {
    "id": "2-139",
@@ -3974,7 +4243,8 @@
    "zhuyin": "ㄓㄤˋ ˙ㄈㄨ",
    "defs": [
     "husband"
-   ]
+   ],
+   "audio": "audio/2-140.mp3"
   },
   {
    "id": "2-141",
@@ -3991,7 +4261,8 @@
     "to seek",
     "to return",
     "to give change"
-   ]
+   ],
+   "audio": "audio/2-141.mp3"
   },
   {
    "id": "2-142",
@@ -4002,7 +4273,8 @@
    "zhuyin": "˙ㄓㄜ",
    "defs": [
     "aspect particle indicating action in progress or ongoing state"
-   ]
+   ],
+   "audio": "audio/2-142.mp3"
   },
   {
    "id": "2-143",
@@ -4018,7 +4290,8 @@
     "real",
     "true",
     "genuine"
-   ]
+   ],
+   "audio": "audio/2-143.mp3"
   },
   {
    "id": "2-144",
@@ -4029,7 +4302,8 @@
    "zhuyin": "ㄓㄥˋ ㄗㄞˋ",
    "defs": [
     "to be in the process of (doing sth); to be currently ...-ing"
-   ]
+   ],
+   "audio": "audio/2-144.mp3"
   },
   {
    "id": "2-145",
@@ -4041,7 +4315,8 @@
    "defs": [
     "to know; to become aware of",
     "also pr. [zhi1dao5]"
-   ]
+   ],
+   "audio": "audio/2-145.mp3"
   },
   {
    "id": "2-146",
@@ -4056,7 +4331,8 @@
     "to intend",
     "to be about to",
     "reserve (fund)"
-   ]
+   ],
+   "audio": "audio/2-146.mp3"
   },
   {
    "id": "2-147",
@@ -4068,7 +4344,8 @@
    "defs": [
     "bicycle; bike",
     "CL:輛|辆[liang4]"
-   ]
+   ],
+   "audio": "audio/2-147.mp3"
   },
   {
    "id": "2-148",
@@ -4090,7 +4367,8 @@
     "through",
     "away (in compound verbs, such as 撤走[che4 zou3])",
     "to change (shape, form, meaning)"
-   ]
+   ],
+   "audio": "audio/2-148.mp3"
   },
   {
    "id": "2-149",
@@ -4102,7 +4380,8 @@
    "defs": [
     "(before an adjective or verb) to the highest degree; (the) most ...; -est",
     "(after 之[zhi1]) best or most extreme example (e.g. 世界之最[shi4 jie4 zhi1 zui4] \"the greatest in the world\")"
-   ]
+   ],
+   "audio": "audio/2-149.mp3"
   },
   {
    "id": "2-150",
@@ -4115,7 +4394,8 @@
     "left",
     "the left side",
     "to the left of"
-   ]
+   ],
+   "audio": "audio/2-150.mp3"
   }
  ],
  "hubs": [

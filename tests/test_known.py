@@ -1,4 +1,4 @@
-"""#tests-list test-known, test-hub-known, #acceptance-data-known, #acceptance-hub-known."""
+"""#tests-list test-known, test-hub-known."""
 
 import unittest
 
@@ -26,6 +26,7 @@ KNOWN = [
 
 class KnownWords(unittest.TestCase):
     def test_reference_words(self):
+        """#acceptance-data-known."""
         for simp, toned, trad, zhuyin, gloss in KNOWN:
             with self.subTest(simp=simp, pinyin=toned):
                 want = [w for w in GRAPH["words"] if w["simp"] == simp
@@ -53,6 +54,7 @@ KNOWN_HUBS = {
 
 class KnownCharacters(unittest.TestCase):
     def test_reference_hubs(self):
+        """#acceptance-hub-known."""
         hubs = {h["char"]: h for h in GRAPH["hubs"]}
         for char, readings in KNOWN_HUBS.items():
             with self.subTest(char=char):
