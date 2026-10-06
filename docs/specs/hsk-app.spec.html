@@ -20,7 +20,7 @@
 
 <section data-spec-section="user-stories" data-anchor="user-stories">
 <h2>User stories</h2>
-<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-install">As a learner on an iPhone, I add the site to my home screen from Safari and get an app icon and name that match the site's look.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-install">As a learner on an iPhone, I add the site to my home screen from Safari and get an app icon and name that say Traditional characters and Zhuyin, Taiwan style, and match the site's look.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-native">As a learner, the installed app opens full screen like a native app: no browser bars, no white flash, no page zoom or bounce, nothing under the notch or home indicator, and the network and the game open inside it.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-offline">As a learner, the installed app works with no connection, including its typefaces and word recordings, and it picks up a new version by itself.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-fast">As a learner on a phone, the site shows its page quickly, before the graph has finished loading.</p>
@@ -36,12 +36,12 @@
 <tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add">
 <td>Add</td>
 <td data-acceptance-scenario>Given a learner on an iPhone viewing the public network in Safari. When the learner taps Share, then "Add to Home Screen", then "Add", which needs the iPhone Share sheet.</td>
-<td data-acceptance-observable>Then the home screen shows the app icon, the character 學 in the site's Chinese sans face on the night color, named "HSK".</td>
+<td data-acceptance-observable>Then the home screen shows the app icon, the Traditional character 學 with its Zhuyin in a column at its right as in a Taiwan textbook, paper on the night color with no red, under the app's home screen name.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add-from-game">
 <td>Add from game</td>
 <td data-acceptance-scenario>Given a learner on an iPhone viewing the public bubbles game in Safari. When the learner adds it to the home screen the same way and taps the new icon.</td>
-<td data-acceptance-observable>Then the same "HSK" icon is added and the app opens on the network.</td>
+<td data-acceptance-observable>Then the same icon and name are added and the app opens on the network.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch">
 <td>Launch</td>
@@ -149,9 +149,10 @@
 <thead><tr><th>Question</th><th>Default</th></tr></thead>
 <tbody>
 <tr data-anchor="default-one-app"><td>How many apps</td><td>One app holding both pages; adding from either page adds the same app, which opens on the network.</td></tr>
-<tr data-anchor="default-name"><td>Name</td><td>"HSK" under the icon; "HSK network" as the full name.</td></tr>
-<tr data-anchor="default-icon"><td>Icon</td><td>學 in Noto Sans CJK TC, the site's Chinese face, in a medium weight, paper color, centered on the night color, with no text, border, or gloss; the glyph fits the maskable safe circle so every icon shape keeps it whole.</td></tr>
-<tr data-anchor="default-launch"><td>Launch screen</td><td>A plain paper-color launch image per current iPhone portrait screen size, so the app opens on the network's own color; no logo, so there is nothing to jump when the page appears.</td></tr>
+<tr data-anchor="default-name"><td>Name</td><td data-spec-tbd="open">Pick one; the name says Traditional and Zhuyin, not HSK, which is the mainland exam. Recommended: <strong>"學 ㄒㄩㄝˊ"</strong> (6 visible characters), the icon read aloud, so name and icon say the same thing. Alternatives: "注音字網" (Zhuyin character network); "ㄅㄆㄇ 正體" (Zhuyin, Traditional script). The full name adds "Traditional words with Zhuyin".</td></tr>
+<tr data-anchor="default-icon"><td>Icon</td><td>The Traditional 學 in Noto Sans CJK TC, the site's Chinese face, medium weight, with its Zhuyin ㄒㄩㄝˊ set top to bottom in a narrow column at its right, the tone mark beside the last symbol, as Taiwan textbooks print it; the character in paper, the Zhuyin in paper at lower contrast, on the night color, a deep ink blue; no Latin text, border, gloss, or red. The pair fits the maskable safe circle so every icon shape keeps it whole.</td></tr>
+<tr data-anchor="default-identity"><td>Identity cues</td><td>Traditional characters and Zhuyin only, Taiwan style: no Simplified form, pinyin, or Latin wordmark in the icon, name, or launch screen, and no red in the icon, launch, or theme colors; the colors are the shared look's paper and ink-blue night, which carry these cues already.</td></tr>
+<tr data-anchor="default-launch"><td>Launch screen</td><td>A plain paper-color launch image per current iPhone portrait screen size: the warm off-white of a Taiwan textbook page and the network's own color, so the app opens with nothing to jump when the page appears.</td></tr>
 <tr data-anchor="default-orientation"><td>Orientation</td><td>Any; the network refits, and the game keeps its own portrait layout rules.</td></tr>
 <tr data-anchor="default-offline-scope"><td>What is saved offline</td><td>Every published file, recordings included, on the first visit, so the game speaks offline without the learner having heard a word first.</td></tr>
 <tr data-anchor="default-update"><td>When an update shows</td><td>On the next open after it downloaded; an open session is never reloaded under the learner.</td></tr>
@@ -173,7 +174,7 @@
 <tbody>
 <tr data-anchor="manifest-id"><td>id, start address, scope</td><td>The site root, written relative to the manifest, which sits at the site root</td><td>Resolves to the project path on Pages and to / in local preview; both pages lie inside the scope, so moving between them never leaves the app.</td></tr>
 <tr data-anchor="manifest-display"><td>display</td><td>standalone</td><td>Full screen with the status bar, no browser bars.</td></tr>
-<tr data-anchor="manifest-names"><td>name, short name</td><td>"HSK network", "HSK"</td><td>The short name fits under a home screen icon.</td></tr>
+<tr data-anchor="manifest-names"><td>name, short name</td><td>The chosen full name and home screen name from the defaults</td><td>The home screen name fits under an icon, at most 12 visible characters.</td></tr>
 <tr data-anchor="manifest-colors"><td>background and theme color</td><td>Paper</td><td>Matches the network, where the app opens.</td></tr>
 <tr data-anchor="manifest-icons"><td>icons</td><td>192 and 512 pixel squares for any shape, and a 512 pixel maskable square</td><td>Android and desktop installs; iOS reads its own icon line below.</td></tr>
 </tbody>
