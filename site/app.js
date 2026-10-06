@@ -67,6 +67,22 @@
     fit();
     // Text typed while the data loaded gets its results now.
     if (document.activeElement === input) refreshResults();
+    openWordLink();
+    window.addEventListener("hashchange", openWordLink);
+  }
+
+  // A #word=<id> address focuses that word as picking it in search does (spec #page-word-link).
+  function openWordLink() {
+    const w = linkedWord(location.hash);
+    if (w) pick(w);
+  }
+
+  function linkedWord(hash) {
+    const m = /^#word=(.+)$/.exec(hash);
+    let id = null;
+    try { id = m && decodeURIComponent(m[1]); } catch (e) { return null; }
+    const d = id && byId.get(id);
+    return d && d.kind === "word" ? d : null;
   }
 
   function push(map, k, v) {
