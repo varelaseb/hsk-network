@@ -67,6 +67,22 @@
     fit();
     // Text typed while the data loaded gets its results now.
     if (document.activeElement === input) refreshResults();
+    openWordLink();
+    window.addEventListener("hashchange", openWordLink);
+  }
+
+  // A #word=<id> address focuses that word as picking it in search does (spec #page-word-link).
+  function openWordLink() {
+    const w = linkedWord(location.hash);
+    if (w) pick(w);
+  }
+
+  function linkedWord(hash) {
+    const m = /^#word=(.+)$/.exec(hash);
+    let id = null;
+    try { id = m && decodeURIComponent(m[1]); } catch (e) { return null; }
+    const d = id && byId.get(id);
+    return d && d.kind === "word" ? d : null;
   }
 
   function push(map, k, v) {
@@ -606,13 +622,14 @@
 
   function fillSources(meta) {
     if (meta.cedictRelease) document.getElementById("cedict-release").textContent = meta.cedictRelease;
-    const src = meta.hskSource;
-    if (src) {
-      const a = document.getElementById("hsk-source");
+    // A source "url@commit" links to that commit's tree.
+    [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource]].forEach(([id, src]) => {
+      if (!src) return;
+      const a = document.getElementById(id);
       const at = src.lastIndexOf("@");
       a.href = at > 0 ? src.slice(0, at) + "/tree/" + src.slice(at + 1) : src;
       a.title = src;
-    }
+    });
   }
 
   function debounce(fn, ms) {

@@ -1,0 +1,5 @@
+Word recordings: Yue Tan (Université de Caen, Shtooka), via hugolpz/audio-cmn.
+Source: https://github.com/hugolpz/audio-cmn (commit ff9ed3d0c631195bd2c06f39450f3264c7124040, folder 64k/hsk).
+License: CC BY-SA 3.0 US, https://creativecommons.org/licenses/by-sa/3.0/us/
+Each file is copied unchanged and renamed to its word id. Unmodified clips
+beside the site code form a collection; the license does not extend to the code.

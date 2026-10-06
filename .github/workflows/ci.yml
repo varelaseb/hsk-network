@@ -16,5 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Test
-        run: python3 -m unittest discover -s tests -v
+        run: python3 -m unittest discover -s tests -v && node --test 'tests/**/*.test.mjs'

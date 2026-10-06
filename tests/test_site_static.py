@@ -1,4 +1,4 @@
-"""Static: the published site loads only its own files (spec #acceptance-static, #test-static)."""
+"""Static: the published site loads only its own files (spec #test-static)."""
 
 import hashlib
 import re
@@ -68,6 +68,7 @@ class StaticSiteTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(D3_FILE.read_bytes()).hexdigest(), D3_SHA256)
 
     def test_html_loads_only_site_files(self):
+        """#acceptance-static, #acceptance-game-static: every site page, the game included."""
         for page in SITE.rglob("*.html"):
             refs = Refs()
             refs.feed(page.read_text(encoding="utf-8"))
@@ -81,7 +82,11 @@ class StaticSiteTest(unittest.TestCase):
                         self.assertTrue(target.is_file(), "missing site file")
             for _, _, value in refs.anchors:
                 if is_local(value) and not value.startswith("#"):
-                    self.assertTrue((page.parent / value).is_file(), value)
+                    # A directory link ("../") opens that directory's index.html.
+                    target = page.parent / value.split("#")[0]
+                    if value.split("#")[0].endswith("/"):
+                        target = target / "index.html"
+                    self.assertTrue(target.is_file(), value)
 
     def test_css_loads_only_site_files(self):
         for sheet in SITE.rglob("*.css"):
@@ -109,7 +114,8 @@ class StaticSiteTest(unittest.TestCase):
             if path.suffix not in TEXT_SUFFIXES:
                 continue
             text = path.read_text(encoding="utf-8")
-            allowed = D3_ALLOWED if path == D3_FILE else anchor_urls if path.suffix == ".html" else set()
+            # Text files (licenses, credits) may name only addresses the pages link.
+            allowed = D3_ALLOWED if path == D3_FILE else anchor_urls if path.suffix in {".html", ".txt"} else set()
             for url in set(URL_RE.findall(text)):
                 with self.subTest(file=str(path.relative_to(SITE)), url=url):
                     self.assertIn(url, allowed)
