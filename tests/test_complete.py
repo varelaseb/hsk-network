@@ -3,7 +3,7 @@
 import json
 import unittest
 
-from graph_data import GRAPH, ROOT
+from graph_data import GRAPH, ROOT, word_reading
 
 
 class Complete(unittest.TestCase):
@@ -24,9 +24,11 @@ class Complete(unittest.TestCase):
     def test_every_word_is_filled(self):
         for w in GRAPH["words"]:
             with self.subTest(id=w["id"]):
-                for key in ("trad", "pinyin", "zhuyin"):
+                for key in ("trad", "pinyin"):
                     self.assertTrue(w[key])
-                self.assertTrue(w["defs"] and all(w["defs"]))
+                zhuyin, defs = word_reading(w)
+                self.assertTrue(zhuyin)
+                self.assertTrue(defs and all(defs))
 
     def test_meta(self):
         self.assertRegex(GRAPH["meta"]["cedictRelease"], r"^\d{4}-\d{2}-\d{2}$")

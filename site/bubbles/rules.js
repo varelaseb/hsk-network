@@ -32,11 +32,13 @@
 //       the pronunciation choice, voices = speechSynthesis.getVoices().
 //       src is the game-relative recording path; voice is a Taiwan Mandarin
 //       voice that runs on the device (localService); null says nothing.
-//   lookupChar(ch, chars) -> { char, readings [{ zhuyin, def }] }
-//       character card (spec #rule-inspect): chars = graph.json `chars`
-//       ({ '<char>': { readings [{pinyin, zhuyin, defs}] } }). Each reading's
-//       Zhuyin and first definition; never pinyin. No table or entry: readings
-//       [] (the card shows the character alone).
+//   wordReading(entry, chars) -> { zhuyin, defs }
+//       a word entry's Zhuyin and definitions: its own, or for a one-character
+//       word, those of the reading it names in chars (graph.json `chars`).
+//   charReadings(ch, chars) -> [{ zhuyin, defs }]
+//       character card (spec #rule-inspect): every reading of ch's chars entry,
+//       read through wordReading; never pinyin. The build gives every word
+//       character an entry (hsk-network #char-coverage).
 
 export const COLS = 8;
 export const ROW_H = Math.sqrt(3) / 2;
@@ -75,6 +77,13 @@ function makeRng(seed) {
 }
 
 // ---- Words
+
+// hsk-network spec #chars-words: a one-character word names a reading of its
+// character's table entry instead of carrying Zhuyin and definitions.
+export function wordReading(entry, chars) {
+  const r = "reading" in entry ? chars[entry.trad].readings[entry.reading] : entry;
+  return { zhuyin: r.zhuyin, defs: r.defs };
+}
 
 export function makeLexicon(words, levels) {
   const on = new Set(levels.map(Number));
@@ -520,9 +529,9 @@ export function pronunciation(found, on, voices) {
   return voice ? { voice, text: found.word } : null;
 }
 
-// ---- Character lookup (spec #rule-inspect): the shared character table only.
+// ---- Character lookup (spec #rule-inspect): the shared character table, one
+// read path with words.
 
-export function lookupChar(ch, chars) {
-  const readings = (chars && Object.hasOwn(chars, ch) && chars[ch].readings) || [];
-  return { char: ch, readings: readings.map((r) => ({ zhuyin: r.zhuyin, def: (r.defs && r.defs[0]) || "" })) };
+export function charReadings(ch, chars) {
+  return chars[ch].readings.map((_, reading) => wordReading({ trad: ch, reading }, chars));
 }
