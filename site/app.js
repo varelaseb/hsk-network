@@ -396,6 +396,7 @@
         div.appendChild(el("div", "c-zhuyin", r.zhuyin)).lang = "zh-Hant";
         div.appendChild(el("p", "c-defs", r.defs.join("; ")));
       });
+      if (d.radical || d.parts) card.appendChild(breakdown(d));
       const ws = (hubWords.get(d.id) || []).filter(function (w) { return shown.has(w.id); });
       card.appendChild(el("p", "c-defs", ws.length + " words contain this character"));
       const ul = el("ul", "c-words");
@@ -414,6 +415,34 @@
     card.hidden = false;
     card.scrollTop = 0;
     placeCard(d);
+  }
+
+  // Radical and Parts rows (spec #page-breakdown). A hub built before breakdown data shows neither.
+  function breakdown(d) {
+    const dl = el("dl", "c-breakdown");
+    if (d.radical) {
+      const r = d.radical;
+      dl.appendChild(el("dt", null, "Radical"));
+      const dd = dl.appendChild(el("dd"));
+      dd.appendChild(el("span", "b-char", r.char)).lang = "zh-Hant";
+      dd.appendChild(el("span", "b-num", "#" + r.number));
+      dd.appendChild(el("span", "b-mean", r.meaning));
+      if (r.zhuyin) dd.appendChild(el("span", "b-zy", r.zhuyin)).lang = "zh-Hant";
+    }
+    dl.appendChild(el("dt", null, "Parts"));
+    const parts = d.parts || [];
+    if (!parts.length) {
+      dl.appendChild(el("dd", "b-none", "Not split further"));
+      return dl;
+    }
+    const ul = dl.appendChild(el("dd")).appendChild(el("ul", "b-parts"));
+    parts.forEach(function (p) {
+      const li = ul.appendChild(el("li"));
+      li.appendChild(el("span", "b-char", p.char)).lang = "zh-Hant";
+      if (p.zhuyin) li.appendChild(el("span", "b-zy", p.zhuyin)).lang = "zh-Hant";
+      li.appendChild(el("span", "b-mean", p.meaning));
+    });
+    return dl;
   }
 
   function hideCard() {
@@ -621,7 +650,9 @@
   // ---------- Sources ----------
 
   function fillSources(meta) {
-    if (meta.cedictRelease) document.getElementById("cedict-release").textContent = meta.cedictRelease;
+    [["cedict-release", meta.cedictRelease], ["unihan-version", meta.unihanVersion], ["ids-date", meta.idsDate]].forEach(([id, v]) => {
+      if (v) document.getElementById(id).textContent = v;
+    });
     // A source "url@commit" links to that commit's tree.
     [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource]].forEach(([id, src]) => {
       if (!src) return;
