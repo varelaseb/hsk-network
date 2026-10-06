@@ -101,8 +101,6 @@ values = ["xuesheng"]
 cannot_host = "needs the public GitHub Pages address after a merge to main; this environment serves a local preview of the candidate head"
 [entry.criteria.acceptance-game-hosted]
 cannot_host = "needs the public GitHub Pages game address after a merge to main; this environment serves a local preview of the candidate head"
-[entry.criteria.acceptance-reduced-network]
-cannot_host = "needs a device asking for reduced motion; the capture browser does not emulate prefers-reduced-motion"
 
 # Navigation hints (jev-capture.spec.html#jc-target-nav). Game page address options
 # (site/bubbles/game.js): ?fixture=pop|fall|clear|over starts Play on a fixed board, ?seed=N fixes the
