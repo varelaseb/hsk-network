@@ -21,10 +21,12 @@
 <h2>User stories</h2>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-explore">As a learner, I see every HSK 1 and HSK 2 word as a network in which words sharing a character gather around that character, so I learn characters through related words.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-inspect">As a learner, I hover or tap a word to see its Traditional form, Zhuyin, English definitions, and HSK level, and I tap a character hub to see its Zhuyin, its English, and the words that contain it, each with a short English gloss.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-breakdown">As a learner, I see in a character hub's card its radical and the parts it is built from, each with a short English meaning and, where the part is a character itself, its Zhuyin, so I learn to read characters by their parts.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-search">As a learner, I type into a search box to find a word and the graph brings it into view.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-levels">As a learner, I switch each HSK level on or off so I can study one level's words at a time.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-phone">As a learner on a phone, I can read, pan, zoom, and tap the graph as comfortably as on a desktop.</p>
 <p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-sources">As a learner, I can see where the vocabulary and definitions come from and under which licenses.</p>
+<p data-user-story data-user-facing="true" data-guided-journey="no" data-anchor="story-breakdown-sources">As a learner, I can see where the radicals, parts, and part meanings come from and under which terms.</p>
 <p data-user-story data-user-facing="false" data-anchor="story-maintain">As a maintainer, I rebuild the word data with one command, and an automated test suite proves the data correct on every pull request.</p>
 </section>
 
@@ -42,6 +44,12 @@
 <tr data-acceptance-criterion data-anchor="acceptance-tap" data-story="story-phone story-inspect"><td>Tap</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner taps a word node.</td><td data-acceptance-observable>Then the same word card opens at the bottom of the screen without covering the search box.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-dismiss" data-story="story-phone story-inspect"><td>Dismiss</td><td data-acceptance-scenario>Given a learner on a phone with a word card open. When the learner taps empty space in the graph.</td><td data-acceptance-observable>Then the card closes and the full graph is visible again.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hub-card" data-story="story-inspect"><td>Hub card</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a character hub.</td><td data-acceptance-observable>Then a card shows that character with the Zhuyin and English definitions of each of its readings, lists the words that contain it, each with its first English definition shown as text beside it, and highlights those words in the graph.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-breakdown" data-story="story-breakdown"><td>Breakdown</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then the hub card shows a "Radical" row with the radical, its radical number, its English meaning, and its Zhuyin, and a "Parts" row listing each part with its English meaning, with Zhuyin beside each part that is a character itself and none beside a part that is only a radical form.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-breakdown-single" data-story="story-breakdown"><td>Single part</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character that is not split into parts.</td><td data-acceptance-observable>Then the hub card shows its "Radical" row and a "Parts" row that reads "Not split further".</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-breakdown-phone" data-story="story-breakdown story-phone"><td>Breakdown on a phone</td><td data-acceptance-scenario>Given a learner on a phone in portrait viewing the graph. When the learner taps the hub of a character built from three parts.</td><td data-acceptance-observable>Then the bottom sheet shows the Radical and Parts rows in full, each part's meaning readable without zooming, and the page does not scroll sideways.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-breakdown-known" data-story="story-breakdown story-maintain"><td>Known breakdowns</td><td data-acceptance-scenario>Given the built hub data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected radical and radical number and the expected parts, each part with a meaning containing the expected English word, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-breakdown-complete" data-story="story-breakdown story-maintain"><td>Every hub broken down</td><td data-acceptance-scenario>Given the built hub data. When every hub is checked.</td><td data-acceptance-observable>Then every hub has a radical with a number and a meaning, and every part has a meaning, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-breakdown-fail" data-story="story-maintain"><td>Unresolved part</td><td data-acceptance-scenario>Given a maintainer rebuilding the data. When a hub character's parts include one with no dictionary entry and no override exists for it, which needs an induced failure: a fixture description with an unknown part.</td><td data-acceptance-observable>Then the build fails and names that character, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hub-known" data-story="story-inspect story-maintain"><td>Known characters</td><td data-acceptance-scenario>Given the built hub data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected readings in Zhuyin, each with a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-data-known" data-story="story-inspect story-maintain"><td>Known words</td><td data-acceptance-scenario>Given the built word data. When the reference words in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected Traditional form, Zhuyin, and a definition containing the expected English gloss, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-search-hanzi" data-story="story-search"><td>Search by character</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner types a word's Traditional characters into the search box and picks it from the results.</td><td data-acceptance-observable>Then the graph pans and zooms to that word, highlights it and its neighbors, and opens its card.</td></tr>
@@ -55,6 +63,7 @@
 <tr data-acceptance-criterion data-anchor="acceptance-phone-fit" data-story="story-phone"><td>Phone layout</td><td data-acceptance-scenario>Given a learner on a phone in portrait. When the learner opens the public site.</td><td data-acceptance-observable>Then the graph fills the screen below the search box, the page does not scroll sideways, and word labels are readable after zooming in.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-phone-zoom" data-story="story-phone"><td>Pinch and pan</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner pinches outward with two fingers, then drags one finger across the graph.</td><td data-acceptance-observable>Then the graph zooms in around the pinch and then pans with the finger, needing a two-finger pinch and a one-finger drag gesture.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, and credits the graph library and its license.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-sources-breakdown" data-story="story-breakdown-sources"><td>Breakdown sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits the BabelStone IDS data and its maintainer with a link, credits the Unicode Unihan database with its version and a link to the Unicode License, and names the date of the IDS file the data was built from.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-static" data-story="story-explore story-maintain"><td>Static</td><td data-acceptance-scenario>Given the published site files. When their references are checked.</td><td data-acceptance-observable>Then the page loads only files from its own site, with no runtime API, key, or third-party request, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-ci" data-story="story-maintain"><td>CI</td><td data-acceptance-scenario>Given a maintainer with an open pull request. When the maintainer views its checks.</td><td data-acceptance-observable>Then a test check has run the full test suite and shows pass or fail.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hosted" data-story="story-explore"><td>Hosted</td><td data-acceptance-scenario>Given a learner with only the public address. When the learner opens it after a change merges to main.</td><td data-acceptance-observable>Then the site loads with the merged version of the graph.</td></tr>
@@ -66,8 +75,8 @@
 
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
 <h2>Modular boundaries</h2>
-<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists and CC-CEDICT into the graph data: matching, Traditional forms, Zhuyin, definitions, hubs, and links.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file and the build's error list.</span></p>
-<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards, search, legend, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file and the vendored graph library only and holds no dictionary logic.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, Unihan, and the IDS data into the graph data: matching, Traditional forms, Zhuyin, definitions, hubs, links, and each hub's radical and parts.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, plus that file's schema below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT, Unihan, and the IDS data at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file and the build's error list.</span></p>
+<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards including the hub breakdown, search, legend, and the Sources footer.</span> <span data-boundary-seam>Caller-facing seam: the public page.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file and the vendored graph library only and holds no dictionary logic.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
 <p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span> <span data-boundary-scope>Observable scope: check status and the live site.</span></p>
 </section>
 
@@ -87,6 +96,9 @@
 <tr data-anchor="default-reading"><td>Reading aid</td><td>Zhuyin with tone marks in word and hub cards, and Zhuyin in search; pinyin is never shown or searched.</td></tr>
 <tr data-anchor="default-level"><td>Level cue</td><td>Color by HSK level, named in a legend and in the card.</td></tr>
 <tr data-anchor="default-level-panel"><td>Level filter</td><td>The legend is the level panel: one on/off switch per HSK level, both on at load.</td></tr>
+<tr data-anchor="default-parts"><td>What a part is</td><td>One level of the character's Ideographic Description Sequence, so 好 is 女 + 子 and 學 is not split down to strokes; parts are not split again.</td></tr>
+<tr data-anchor="default-breakdown-where">
+<td>Where the breakdown shows</td><td>Only in hub cards; word cards are unchanged.</td></tr>
 <tr data-anchor="default-data"><td>Data</td><td>Built once into a static file by a script in the repository; no runtime API and no keys.</td></tr>
 </tbody>
 </table>
@@ -145,6 +157,9 @@
 <tbody>
 <tr data-anchor="source-hsk"><td>HSK 2.0 word lists, <a href="https://github.com/clem109/hsk-vocabulary">clem109/hsk-vocabulary</a> levels 1 and 2</td><td>Which words, their level, Simplified form, and toned pinyin</td><td>Copied unchanged into the repository with its source URL and commit noted beside it</td><td>MIT; cited in the Sources footer</td></tr>
 <tr data-anchor="source-cedict"><td><a href="https://www.mdbg.net/chinese/dictionary?page=cedict">CC-CEDICT</a></td><td>Traditional form, numbered pinyin, English definitions</td><td>Downloaded by the build command into an ignored cache; never committed</td><td>CC BY-SA 4.0; credited with links and release date in the Sources footer; the graph data file is shared under the same license</td></tr>
+<tr data-anchor="source-unihan"><td><a href="https://www.unicode.org/charts/unihan.html">Unicode Unihan database</a> and its CJK radicals table, at one pinned Unicode version</td><td>Each character's Kangxi radical number (kRSUnicode, first value), the radical's character, and English meanings of radicals and parts (kDefinition)</td><td>Downloaded by the build command into an ignored cache; never committed</td><td>Unicode License V3, which permits any use with its notice kept; the notice is committed beside the HSK lists, and the Sources footer credits Unicode with the version and links the license</td></tr>
+<tr data-anchor="source-ids"><td><a href="https://babelstone.co.uk/CJK/IDS.TXT">BabelStone IDS</a>, maintained by Andrew West</td><td>Each character's Ideographic Description Sequence, with region tags that pick the Taiwan glyph form</td><td>Downloaded by the build command into an ignored cache; never committed; its file date is recorded in the graph data</td><td>The file states IDS are facts free for any use with no attribution required; credited anyway with a link in the Sources footer</td></tr>
+<tr data-anchor="source-rejected"><td>Rejected</td><td>Make Me a Hanzi dictionary; CJKVI IDS</td><td>Not used</td><td>Make Me a Hanzi's dictionary is LGPL 3, which cannot merge into a graph data file shared under CC BY-SA 4.0, and several of its splits follow the mainland glyph, such as 看 as 手 + 目; CJKVI IDS is GPL 2 via CHISE, and BabelStone IDS is its corrected successor</td></tr>
 </tbody>
 </table>
 </div>
@@ -160,6 +175,16 @@
 </ol>
 <h3 data-anchor="hub-reading-heading">Character readings</h3>
 <p data-anchor="hub-reading">A hub's readings are the lowercase single-character CC-CEDICT entries whose Traditional form is that character, one reading per distinct pinyin in dictionary order, each with its Zhuyin and its definitions merged and dropped by the match rules above; capitalized entries count only when no lowercase entry exists, and a character with no entry at all fails the build and names it.</p>
+<h3 data-anchor="breakdown-heading">Character breakdown</h3>
+<ol data-anchor="breakdown-rules">
+<li data-anchor="breakdown-radical">A hub's radical is the Kangxi radical named by the first kRSUnicode value of its character, shown as that radical's character from the CJK radicals table, with its radical number.</li>
+<li data-anchor="breakdown-parts">A hub's parts are the top-level components of its character's IDS sequence tagged T (Taiwan), or its first sequence when none is tagged T; repeated parts are listed once, in sequence order.</li>
+<li data-anchor="breakdown-single">A character whose IDS sequence is the character itself has no parts.</li>
+<li data-anchor="breakdown-meaning">A meaning is the first semicolon clause of the Unihan kDefinition that does not name a radical, without parenthetical text, cut at its first comma.</li>
+<li data-anchor="breakdown-zhuyin">A radical or part is a character itself when it has a lowercase single-character CC-CEDICT entry, by Traditional or Simplified form, with a definition that does not mention "radical"; it then shows the Zhuyin of its first reading by the character readings rule below, and otherwise shows no Zhuyin.</li>
+<li data-anchor="breakdown-fail">A part or radical with no meaning, such as a stroke, an unencoded component, or a rare form with no kDefinition, fails the build and names the hub character.</li>
+<li data-anchor="breakdown-override">The committed override file also takes one entry per such character, naming its parts and each part's meaning, or no parts, with a one-line reason; an override entry may also replace a misleading derived meaning, with its reason.</li>
+</ol>
 <h3 data-anchor="zhuyin-heading">Zhuyin</h3>
 <p data-anchor="zhuyin-convert">Each numbered pinyin syllable converts to Zhuyin by a complete syllable table, keeping dictionary tones with no tone sandhi.</p>
 <p data-anchor="zhuyin-spacing">Syllables are separated by one space.</p>
@@ -181,7 +206,9 @@
 <pre data-anchor="schema-example"><code>{
   "meta": {
     "cedictRelease": "2026-10-01",
-    "hskSource": "https://github.com/clem109/hsk-vocabulary@&lt;commit&gt;"
+    "hskSource": "https://github.com/clem109/hsk-vocabulary@&lt;commit&gt;",
+    "unihanVersion": "18.0.0",
+    "idsDate": "2025-06-27"
   },
   "words": [
     {
@@ -200,6 +227,11 @@
       "char": "學",
       "readings": [
         { "pinyin": "xue2", "zhuyin": "ㄒㄩㄝˊ", "defs": ["to learn", "to study"] }
+      ],
+      "radical": { "char": "子", "number": 39, "meaning": "offspring", "zhuyin": "ㄗˇ" },
+      "parts": [
+        { "char": "𦥯", "meaning": "to learn" },
+        { "char": "子", "meaning": "offspring", "zhuyin": "ㄗˇ" }
       ]
     }
   ],
@@ -267,6 +299,8 @@
 <p data-anchor="page-levels-last">The last level that is on cannot be switched off.</p>
 <p data-anchor="page-color">HSK 1 and HSK 2 use a color pair distinguishable with common color blindness; the legend and the card both name the level in text.</p>
 <p data-anchor="page-touch">Every tappable control and the search box are at least 44px tall, and the search box text is at least 16px so phones do not zoom on focus.</p>
+<p data-anchor="page-breakdown">A hub card shows, below the readings and above the word list, a "Radical" row (radical, its number, meaning, Zhuyin) and a "Parts" row listing each part as the part, its Zhuyin when it has one, and its meaning; a character with no parts reads "Not split further".</p>
+<p data-anchor="page-breakdown-wrap">On a phone the Parts row wraps onto further lines rather than widening the sheet.</p>
 <p data-anchor="page-sources">A "Sources" footer link opens the credits named in the Sources acceptance criterion.</p>
 </section>
 
@@ -294,6 +328,8 @@
 <ul data-anchor="tests-list">
 <li data-anchor="test-known">Known words: at least ten reference words, including 學生, 喜歡, 長 in both readings, 得 in both readings, 中國, and 女兒, each checked for Traditional form, exact Zhuyin, and an expected English gloss.</li>
 <li data-anchor="test-hub-known">Known characters: at least 學 and 子, each hub checked for its readings' exact Zhuyin and an expected English gloss.</li>
+<li data-anchor="test-breakdown-known">Known breakdowns: at least 學, 好, and 時 from the built hub data, each checked for radical, radical number, parts, and an expected English word in each meaning.</li>
+<li data-anchor="test-breakdown-rules">Breakdown rules: the rules above against a few fixture Unihan and IDS lines, including 明 as 日 + 月, a T-tagged sequence chosen over the first, a single-part character, a radical form shown without Zhuyin, an unresolved part failing the build, and an override.</li>
 <li data-anchor="test-zhuyin">Zhuyin conversion: every tone, neutral tone, erhua, ü syllables, and zero-initial syllables such as yi, wu, and yu.</li>
 <li data-anchor="test-complete">Completeness: every entry of both committed HSK lists appears once, with its level, and nothing else.</li>
 <li data-anchor="test-links">Links: hubs and links recomputed from the words' Traditional forms equal the committed ones.</li>
