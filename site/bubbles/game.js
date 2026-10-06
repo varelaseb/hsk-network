@@ -1,12 +1,13 @@
 // HSK bubbles game page (docs/specs/hsk-bubbles.spec.html, Screens and feel).
 // Owns screens, aiming, drawing and animation, word cards, pronunciation
-// playback, effect sounds and vibration, settings, and best score. All game rules come from rules.js.
+// playback, character cards, effect sounds and vibration, settings, and best score. All game rules come from rules.js.
 // Address options: ?fixture=pop|fall|clear|over starts Play on a fixed board,
 // ?seed=N fixes the seed.
 
 import {
   COLS, ROW_H, LINE_ROW, LINE_Y, LAUNCHER, HEIGHT, MIN_ANGLE, MAX_ANGLE,
   createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
+  wordReading, charReadings,
 } from "./rules.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
@@ -62,6 +63,7 @@ const FONT = '"PingFang TC", "Heiti TC", "Noto Sans CJK TC", "Noto Sans TC", "Mi
 const LEVEL_COLOR = { 1: "#0072b2", 2: "#e69f00" };
 
 let words = [];
+let chars = {};       // graph.json character table, read through by wordReading
 let demoBoard = null; // still board behind the start screen
 let screen = "start";
 let game = null;       // rules state after the last shot
@@ -487,6 +489,7 @@ function renderHud() {
 
 function show(name) {
   screen = name;
+  closeInspect(); // a screen change never leaves a character card behind
   for (const [k, node] of Object.entries(screens)) node.hidden = k !== name;
   hud.hidden = !(name === "playing" || name === "paused");
   if (name === "playing") startLoop();
@@ -513,6 +516,8 @@ function newGame() {
   scoreEl.textContent = "0";
   cards.length = 0;
   hideCard(true);
+  inspecting = false;
+  press = null;
   bannerEl.hidden = true;
   Object.assign(aimer, { on: false, below: false, mouseDown: false, cancelled: false, swapTap: null });
   hintEl.textContent = coarse.matches ? "Drag to aim, lift to shoot" : "Move to aim, click to shoot";
@@ -568,8 +573,8 @@ function gameOver() {
     if (first) row.href = `../#word=${encodeURIComponent(first.id)}`;
     row.lang = "zh-Hant";
     row.append(el("span", "p-trad", word));
-    row.append(el("span", "p-zy", entries.map((e) => e.zhuyin).filter(uniq).join(" / ")));
-    const def = el("span", "p-def", first ? first.defs[0] || "" : "");
+    row.append(el("span", "p-zy", entries.map((e) => wordReading(e, chars).zhuyin).filter(uniq).join(" / ")));
+    const def = el("span", "p-def", first ? wordReading(first, chars).defs[0] || "" : "");
     def.lang = "en";
     row.append(def);
     li.append(row);
@@ -602,6 +607,7 @@ function nextCard() {
   if (!w) { hideCard(); return; }
   cardShowing = true;
   cardResting = false;
+  inspecting = false;
   cardGen++;
   const levels = w.entries.map((e) => e.level).filter(uniq);
   cardEl.className = `wcard l${levels[0]}`;
@@ -619,9 +625,10 @@ function nextCard() {
   // One reading per entry sharing this Traditional form.
   for (const e of w.entries) {
     const line = el("div", "k-reading");
-    const zy = el("span", "k-zy", e.zhuyin);
+    const { zhuyin, defs } = wordReading(e, chars);
+    const zy = el("span", "k-zy", zhuyin);
     zy.lang = "zh-Hant";
-    line.append(zy, el("span", "k-def", e.defs[0] || ""));
+    line.append(zy, el("span", "k-def", defs[0] || ""));
     cardEl.append(line);
   }
   cardEl.hidden = false;
@@ -647,6 +654,59 @@ function dismissCard() {
   cardEl.classList.add("out");
   const gen = ++cardGen;
   after(220, () => { if (gen === cardGen) cardEl.hidden = true; });
+}
+
+// ---- Character cards (spec #rule-inspect): right-click, or hold a bubble
+// still for half a second and lift. Never shoots or swaps; the next tap,
+// click, or key closes the card. Shares the word card's place and look.
+
+let inspecting = false;
+
+function inspect(p) {
+  if (!game || screen !== "playing" || (cardShowing && !cardResting)) return;
+  const ch = bubbleAt(p);
+  if (!ch) return;
+  cardShowing = false;
+  cardResting = false;
+  inspecting = true;
+  cardGen++;
+  cardEl.className = "wcard ccard";
+  cardEl.replaceChildren();
+  const head = el("div", "k-head");
+  const trad = el("span", "k-trad", ch);
+  trad.lang = "zh-Hant";
+  head.append(trad);
+  cardEl.append(head);
+  for (const { zhuyin, defs } of charReadings(ch, chars)) {
+    const line = el("div", "k-reading");
+    const zy = el("span", "k-zy", zhuyin);
+    zy.lang = "zh-Hant";
+    line.append(zy);
+    const def = el("span", "k-def", defs[0] || "");
+    def.lang = "en";
+    line.append(def);
+    cardEl.append(line);
+  }
+  cardEl.hidden = false;
+}
+
+function closeInspect() {
+  if (!inspecting) return false;
+  inspecting = false;
+  cardEl.hidden = true;
+  return true;
+}
+
+// The character under a point: a board bubble, the current, or the next one.
+function bubbleAt(p) {
+  if (!view) return null;
+  if (game.current && Math.hypot(p.x - LAUNCHER.x, p.y - LAUNCHER.y) < 0.5) return game.current;
+  if (game.next && Math.hypot(p.x - NEXT.x, p.y - NEXT.y) < NEXT.scale / 2 + 0.05) return game.next;
+  for (const b of cells(view.board)) {
+    const c = center(view.board, b);
+    if (Math.hypot(p.x - c.x, p.y - c.y) < 0.5) return b.ch;
+  }
+  return null;
 }
 
 // ---- Shooting
@@ -780,6 +840,16 @@ function doSwap() {
 }
 
 // ---- Input: press and drag to aim, lift to shoot; mouse hovers to aim.
+// A touch held still on a bubble for HOLD_MS, then lifted, inspects instead.
+
+const HOLD_MS = 500;
+const HOLD_SLOP = 0.3; // bubble units a held thumb may drift
+let press = null;      // { id, x, y, at } touch press that may become an inspect
+
+// The tap, click, or key that closes a character card does nothing else.
+document.addEventListener("pointerdown", (e) => {
+  if (closeInspect() && e.target === canvas) e.stopImmediatePropagation();
+}, true);
 
 function toUnits(e) {
   const r = canvas.getBoundingClientRect();
@@ -799,8 +869,10 @@ const onLauncher = (p) => Math.hypot(p.x - LAUNCHER.x, p.y - LAUNCHER.y) < 0.75 
 canvas.addEventListener("pointerdown", (e) => {
   if (screen !== "playing") return;
   e.preventDefault();
+  if (e.pointerType === "mouse" && e.button !== 0) return;
   const p = toUnits(e);
   aimer.cancelled = false;
+  press = e.pointerType === "mouse" ? null : { id: e.pointerId, x: p.x, y: p.y, at: performance.now() };
   if (onLauncher(p)) {
     aimer.swapTap = { id: e.pointerId, x: p.x, y: p.y };
     canvas.setPointerCapture(e.pointerId);
@@ -823,6 +895,7 @@ canvas.addEventListener("pointerdown", (e) => {
 canvas.addEventListener("pointermove", (e) => {
   if (screen !== "playing") return;
   const p = toUnits(e);
+  if (press && press.id === e.pointerId && Math.hypot(p.x - press.x, p.y - press.y) > HOLD_SLOP) press = null;
   const tap = aimer.swapTap;
   if (tap && tap.id === e.pointerId) {
     // Dragging up off the launcher turns the press into aiming.
@@ -846,6 +919,16 @@ canvas.addEventListener("pointermove", (e) => {
 canvas.addEventListener("pointerup", (e) => {
   if (screen !== "playing") return;
   const p = toUnits(e);
+  const held = press && press.id === e.pointerId && performance.now() - press.at >= HOLD_MS && bubbleAt(press) ? press : null;
+  if (press && press.id === e.pointerId) press = null;
+  if (held) {
+    // A still hold inspects: no shot, no swap.
+    if (aimer.swapTap && aimer.swapTap.id === e.pointerId) aimer.swapTap = null;
+    if (aimer.id === e.pointerId) { aimer.id = null; aimer.on = false; }
+    aimer.cancelled = false;
+    inspect(held);
+    return;
+  }
   const tap = aimer.swapTap;
   if (tap && tap.id === e.pointerId) {
     aimer.swapTap = null;
@@ -872,6 +955,7 @@ canvas.addEventListener("pointerup", (e) => {
 });
 
 canvas.addEventListener("pointercancel", (e) => {
+  press = null;
   if (aimer.id === e.pointerId) aimer.id = null;
   aimer.on = false;
   aimer.swapTap = null;
@@ -880,9 +964,18 @@ canvas.addEventListener("pointercancel", (e) => {
 canvas.addEventListener("pointerleave", (e) => {
   if (e.pointerType === "mouse") aimer.on = false;
 });
-canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+canvas.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  // A phone long-press also fires contextmenu; its lift inspects instead.
+  if (press || (e.pointerType && e.pointerType !== "mouse")) return;
+  inspect(toUnits(e));
+});
 
 document.addEventListener("keydown", (e) => {
+  if (closeInspect()) {
+    e.preventDefault();
+    return;
+  }
   if (screen === "playing") {
     if (e.key === "Escape") {
       aimer.cancelled = true;
@@ -1069,6 +1162,7 @@ fetch("../data/graph.json")
   .then((r) => r.json())
   .then((data) => {
     words = data.words;
+    chars = data.chars;
     $("cedict-release").textContent = data.meta?.cedictRelease || "(unknown)";
     playBtn.disabled = false;
     playBtn.textContent = "Play";

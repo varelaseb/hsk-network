@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, and audio-cmn.
+"""Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, and BabelStone IDS.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #graph-model, #hub-reading, #audio-rules). Python standard library only.
+#schema-example, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules, #audio-rules).
+Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
 """
@@ -17,6 +18,7 @@ import tempfile
 import unicodedata
 import urllib.parse
 import urllib.request
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -29,6 +31,12 @@ OUT = ROOT / "site" / "data" / "graph.json"
 CACHE_DIR = ROOT / ".cache"
 CEDICT_URL = "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
 CEDICT_CACHE = CACHE_DIR / "cedict_1_0_ts_utf-8_mdbg.txt.gz"
+UNIHAN_VERSION = "18.0.0"
+UNIHAN_URL = f"https://www.unicode.org/Public/{UNIHAN_VERSION}/ucd/Unihan.zip"
+RADICALS_URL = f"https://www.unicode.org/Public/{UNIHAN_VERSION}/ucd/CJKRadicals.txt"
+UNIHAN_CACHE = CACHE_DIR / f"unicode-{UNIHAN_VERSION}"
+IDS_URL = "https://babelstone.co.uk/CJK/IDS.TXT"
+IDS_CACHE = CACHE_DIR / "IDS.TXT"
 DOWNLOAD_TIMEOUT = 60  # seconds
 LEVELS = (1, 2)
 POINTER_PREFIXES = ("variant of", "old variant of", "see ", "surname ")
@@ -220,7 +228,27 @@ def _merge(cands):
             if d not in defs:
                 defs.append(d)
     kept = [d for d in defs if not d.startswith(POINTER_PREFIXES)]
-    return kept or defs
+    return [_bracket_zhuyin(d) for d in kept or defs]
+
+
+_BRACKET = re.compile(r"\[([^\[\]]*)\]")
+_SYLLABLE = re.compile(r"[A-Za-zü:]+[1-5]")
+
+
+def _bracket_zhuyin(definition):
+    """#default-reading: bracketed CC-CEDICT pinyin in a definition becomes Zhuyin,
+    brackets kept: 'CL:棵[ke1]' -> 'CL:棵[ㄎㄜ]'. Takes CC-CEDICT's spellings
+    'zhi1dao5' and 'nu : 3'. Other bracketed text stays."""
+    def sub(m):
+        text = re.sub(r"\s*:\s*", ":", m.group(1))
+        syllables = _SYLLABLE.findall(text)
+        if not syllables or "".join(syllables) != "".join(text.split()):
+            return m.group(0)
+        try:
+            return f"[{to_zhuyin(normalize_numbered(syllables))}]"
+        except ValueError:
+            return m.group(0)
+    return _BRACKET.sub(sub, definition)
 
 
 def match_entry(entry, index, override=None):
@@ -280,19 +308,26 @@ def build_links(words):
     return hubs, links
 
 
-def hub_readings(char, by_trad):
+def char_readings(char, single, mandarin=None):
     """#hub-reading: one reading per distinct pinyin of char's own entries.
 
-    Lowercase entries only, capitalized ones only when no lowercase exists.
+    single: single_char_index(). Entries by Traditional form, else by Simplified
+    form for a radical or part that is a character only as written there
+    (#breakdown-zhuyin). Lowercase entries only, capitalized ones only when no
+    lowercase exists. mandarin: char's first Unihan kMandarin value (toned);
+    the reading matching it comes first, the rest stay in dictionary order.
     Raises ValueError when char has no entry or a reading has no Zhuyin.
     """
-    cands = by_trad.get(char, [])
+    cands = single[0].get(char) or single[1].get(char, [])
     if not cands:
-        raise ValueError("no CC-CEDICT entry")
+        raise ValueError(f"{char} has no CC-CEDICT entry")
     cands = [c for c in cands if not c["cap"]] or cands
     groups = {}
     for c in cands:
         groups.setdefault(c["pinyin"], []).append(c)
+    standard = mandarin and normalize_toned(mandarin)
+    if standard in groups:
+        groups = {standard: groups.pop(standard), **groups}
     return [{"pinyin": py, "zhuyin": to_zhuyin(py), "defs": _merge(cs)}
             for py, cs in groups.items()]
 
@@ -336,7 +371,150 @@ def audio_source():
     return f"{note['url']}@{note['commit']}"
 
 
-def build(cedict_entries, release, hsk_entries, overrides):
+# ---------------------------------------------------------------- breakdown
+
+# Ideographic Description Characters and their operand counts.
+_IDC_ARITY = {chr(c): 2 for c in range(0x2FF0, 0x3000)}
+_IDC_ARITY.update({"⿲": 3, "⿳": 3, "⿾": 1, "⿿": 1, "㇯": 2})
+_IDS_TOKEN = re.compile(r"\{\d+\}|.")
+_RADICAL_WORD = re.compile(r"radical", re.I)
+
+
+def parse_unihan(fields):
+    """Lines of Unihan_*.txt -> (kRSUnicode first value, kDefinition, kMandarin
+    first value) by character."""
+    rs, kdef, mandarin = {}, {}, {}
+    for line in fields:
+        p = line.rstrip("\n").split("\t")
+        if len(p) != 3 or not p[0].startswith("U+"):
+            continue
+        ch = chr(int(p[0][2:], 16))
+        if p[1] == "kRSUnicode":
+            rs[ch] = p[2].split()[0]
+        elif p[1] == "kDefinition":
+            kdef[ch] = p[2]
+        elif p[1] == "kMandarin":
+            mandarin[ch] = p[2].split()[0]
+    return rs, kdef, mandarin
+
+
+def parse_radicals(lines):
+    """CJKRadicals.txt -> {radical number as written: CJK unified ideograph}."""
+    out = {}
+    for line in lines:
+        line = line.split("#")[0].strip()
+        if line:
+            num, _, uni = (f.strip() for f in line.split(";"))
+            out[num] = chr(int(uni, 16))
+    return out
+
+
+def parse_ids(lines):
+    """BabelStone IDS.TXT -> ({char: [sequence fields]}, file date)."""
+    ids, date = {}, None
+    for line in lines:
+        line = line.lstrip("\ufeff").rstrip("\r\n")
+        if line.startswith("#"):
+            m = re.match(r"# File Date: (\d{4}-\d{2}-\d{2})", line)
+            if m:
+                date = m.group(1)
+            continue
+        p = line.split("\t")
+        if len(p) > 2:
+            ids[p[1]] = p[2:]
+    return ids, date
+
+
+def ids_parts(char, sequences):
+    """#breakdown-parts, #breakdown-single: top-level components, deduplicated.
+
+    Uses the first sequence tagged T, else the first. A component that is
+    itself a nested description is returned as its description string.
+    """
+    tagged = [s for s in sequences if "T" in s.partition("$")[2]]
+    seq = (tagged or sequences)[0].partition("$")[0].lstrip("^").lstrip("〾")
+    tokens = _IDS_TOKEN.findall(seq)
+
+    def operand(i):  # -> index after the operand starting at i
+        n = _IDC_ARITY.get(tokens[i], 0)
+        i += 1
+        for _ in range(n):
+            i = operand(i)
+        return i
+
+    if not tokens or tokens[0] not in _IDC_ARITY:
+        return [] if "".join(tokens) == char else ["".join(tokens)]
+    parts, i = [], 1
+    while i < len(tokens):
+        j = operand(i)
+        parts.append("".join(tokens[i:j]))
+        i = j
+    return list(dict.fromkeys(parts))
+
+
+def meaning(kdefinition):
+    """#breakdown-meaning: first clause not naming a radical, no parentheses, cut at comma."""
+    for clause in (kdefinition or "").split(";"):
+        if _RADICAL_WORD.search(clause):
+            continue
+        text = re.sub(r"\([^)]*\)", "", clause).split(",")[0].strip()
+        if text:
+            return text
+    return None
+
+
+def is_character(ch, single):
+    """#breakdown-zhuyin: ch has a lowercase entry, by Traditional then Simplified
+    form, with a definition not mentioning "radical"."""
+    by_trad, by_simp = ([e for e in ix.get(ch, []) if not e["cap"]] for ix in single)
+    pool = by_trad or by_simp
+    return any(not _RADICAL_WORD.search(d) for e in pool for d in _merge([e]))
+
+
+def single_char_index(cedict_entries):
+    """({char: [entries by Traditional form]}, {char: [by Simplified form]}),
+    single-character CC-CEDICT entries in dictionary order, capitalized included."""
+    by_trad, by_simp = {}, {}
+    for e in cedict_entries:
+        if len(e["trad"]) == 1:
+            by_trad.setdefault(e["trad"], []).append(e)
+        if len(e["simp"]) == 1:
+            by_simp.setdefault(e["simp"], []).append(e)
+    return by_trad, by_simp
+
+
+def hub_breakdown(char, chars, override=None):
+    """#breakdown-rules: return (radical, parts, meanings) or raise ValueError naming what failed.
+
+    radical: {"char", "number"}; parts: [char]; meanings: [(char, meaning)] for
+    the radical, then each part.
+    chars: {"rs", "kdef", "mandarin", "radicals", "ids"} from Unihan, CJKRadicals, and IDS.
+    override: may hold "parts" ([{"char", "meaning"}], or [] for none) replacing
+    the derived parts, and "radicalMeaning" replacing the derived radical meaning.
+    """
+    override = override or {}
+    if char not in chars["rs"]:
+        raise ValueError("no kRSUnicode")
+    num = chars["rs"][char].split(".")[0]
+    rad = chars["radicals"][num]
+    rad_meaning = override.get("radicalMeaning") or meaning(chars["kdef"].get(rad))
+    if not rad_meaning:
+        raise ValueError(f"radical {rad} has no meaning")
+    radical = {"char": rad, "number": int(num.rstrip("'"))}
+    if "parts" in override:
+        parts = {p["char"]: p["meaning"] for p in override["parts"]}
+    else:
+        if char not in chars["ids"]:
+            raise ValueError("no IDS sequence")
+        parts = {p: rad_meaning if p == rad else meaning(chars["kdef"].get(p)) if len(p) == 1 else None
+                 for p in ids_parts(char, chars["ids"][char])}
+        missing = [p for p, m in parts.items() if not m]
+        if missing:
+            raise ValueError(f"part {', '.join(missing)} has no meaning")
+    return radical, list(parts), [(rad, rad_meaning), *parts.items()]
+
+
+def build(cedict_entries, release, hsk_entries, overrides, chars):
     index = index_by_simp(cedict_entries)
     words, problems = [], []
     for e in hsk_entries:
@@ -352,24 +530,79 @@ def build(cedict_entries, release, hsk_entries, overrides):
         words.append({"id": e["id"], "level": e["level"], "trad": trad,
                       "simp": e["simp"], "pinyin": pinyin, "zhuyin": zhuyin,
                       "defs": defs})
-    unused = sorted(set(overrides) - {e["id"] for e in hsk_entries})
+    hub_overrides = {i: o for i, o in overrides.items() if i.startswith("c-")}
+    unused = sorted(set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries})
     problems += [f"{i}: override names no HSK entry" for i in unused]
     if problems:
         raise BuildError(problems)
     hubs, links = build_links(words)
-    by_trad = {}
-    for c in cedict_entries:
-        by_trad.setdefault(c["trad"], []).append(c)
-    for h in hubs:
+    single = single_char_index(cedict_entries)
+    table = {}  # #chars-table: char -> {"readings"?, "meaning"?}
+
+    def readings(ch):
+        entry = table.setdefault(ch, {})
+        if "readings" not in entry:
+            entry["readings"] = char_readings(ch, single, chars.get("mandarin", {}).get(ch))
+        return entry["readings"]
+
+    for w in words:  # #chars-words
+        if len(w["trad"]) != 1:
+            continue
         try:
-            h["readings"] = hub_readings(h["char"], by_trad)
+            pinyins = [r["pinyin"] for r in readings(w["trad"])]
+            if w["pinyin"] not in pinyins:
+                raise ValueError(f"reading {w['pinyin']} missing from {w['trad']}'s entry")
+        except ValueError as err:
+            problems.append(f"{w['id']} {w['simp']}: {err}")
+            continue
+        del w["zhuyin"], w["defs"]
+        w["reading"] = pinyins.index(w["pinyin"])
+    for w in words:  # #char-coverage: every character of every word
+        for ch in dict.fromkeys(w["trad"]):
+            try:
+                readings(ch)
+            except ValueError as err:
+                problems.append(f"{w['id']} {w['simp']}: {err}")
+    for h in hubs:  # a hub's character is a word's, so it has its readings
+        try:
+            override = hub_overrides.get(h["id"])
+            if override and override["char"] != h["char"]:
+                raise ValueError(f"override names {override['char']}")
+            h["radical"], h["parts"], meanings = hub_breakdown(h["char"], chars, override)
+            for ch, m in meanings:
+                entry = table.setdefault(ch, {})
+                if entry.setdefault("meaning", m) != m:
+                    raise ValueError(f"{ch} has differing meanings {entry['meaning']}, {m}")
+                if is_character(ch, single):
+                    readings(ch)
         except ValueError as err:
             problems.append(f"{h['id']} {h['char']}: {err}")
+    problems += [f"{i}: override names no hub"
+                 for i in sorted(set(hub_overrides) - {h["id"] for h in hubs})]
     if problems:
         raise BuildError(problems)
     return {"meta": {"cedictRelease": release, "hskSource": hsk_source(),
-                     "audioSource": audio_source()},
-            "words": words, "hubs": hubs, "links": links}
+                     "audioSource": audio_source(), "unihanVersion": chars.get("unihanVersion"),
+                     "idsDate": chars.get("idsDate")},
+            "words": words, "chars": table, "hubs": hubs, "links": links}
+
+
+def load_chars(refresh=False):
+    """Download (once) and parse Unihan, CJKRadicals, and IDS into build()'s chars."""
+    zpath, rpath = UNIHAN_CACHE / "Unihan.zip", UNIHAN_CACHE / "CJKRadicals.txt"
+    for url, path in ((UNIHAN_URL, zpath), (RADICALS_URL, rpath)):
+        if not path.exists():
+            download(url, path)
+    if refresh or not IDS_CACHE.exists():
+        download(IDS_URL, IDS_CACHE)
+    with zipfile.ZipFile(zpath) as z:
+        lines = [l for name in ("Unihan_IRGSources.txt", "Unihan_Readings.txt")
+                 for l in z.read(name).decode("utf-8").splitlines()]
+    rs, kdef, mandarin = parse_unihan(lines)
+    radicals = parse_radicals(rpath.read_text(encoding="utf-8").splitlines())
+    ids, date = parse_ids(IDS_CACHE.read_text(encoding="utf-8").splitlines())
+    return {"rs": rs, "kdef": kdef, "mandarin": mandarin, "radicals": radicals, "ids": ids,
+            "unihanVersion": UNIHAN_VERSION, "idsDate": date}
 
 
 # ---------------------------------------------------------------- audio
@@ -451,12 +684,12 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--cedict", type=Path, help="local CC-CEDICT file (.txt or .gz)")
     ap.add_argument("--refresh", action="store_true",
-                    help="re-download CC-CEDICT and the audio-cmn file list")
+                    help="re-download CC-CEDICT, IDS, and the audio-cmn file list")
     args = ap.parse_args(argv)
     try:
         overrides = load_overrides()
         entries, release = load_cedict(args.cedict, args.refresh)
-        graph = build(entries, release, load_hsk(), overrides)
+        graph = build(entries, release, load_hsk(), overrides, load_chars(args.refresh))
         note = audio_note()
         index = load_audio_index(note, args.refresh)
     except BuildError as err:

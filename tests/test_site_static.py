@@ -161,5 +161,26 @@ class LevelPanelTest(unittest.TestCase):
         self.assertGreaterEqual(int(height.group(1)), 44)
 
 
+class BreakdownSourcesTest(unittest.TestCase):
+    """#acceptance-sources-breakdown: the Sources footer credits BabelStone IDS and Unihan."""
+
+    def test_sources_credit_ids_and_unihan(self):
+        refs = Refs()
+        html = (SITE / "index.html").read_text(encoding="utf-8")
+        refs.feed(html)
+        links = {v for _, _, v in refs.anchors}
+        for url in ("https://babelstone.co.uk/CJK/IDS.TXT",
+                    "https://www.unicode.org/charts/unihan.html",
+                    "https://www.unicode.org/license.txt"):
+            self.assertIn(url, links)
+        self.assertIn("Andrew West", html)
+        # app.js fills these from the graph data meta.
+        for slot in ('id="ids-date"', 'id="unihan-version"'):
+            self.assertIn(slot, html)
+        app = (SITE / "app.js").read_text(encoding="utf-8")
+        for key in ("meta.idsDate", "meta.unihanVersion"):
+            self.assertIn(key, app)
+
+
 if __name__ == "__main__":
     unittest.main()
