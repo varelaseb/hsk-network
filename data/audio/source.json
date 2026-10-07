@@ -5,5 +5,10 @@
   "speaker": "Yue Tan (Université de Caen, Shtooka)",
   "license": "CC BY-SA 3.0 US",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/us/",
-  "note": "Files cmn-<Simplified>.mp3 from the folder above, at the commit above, copied unchanged into site/audio/<word id>.mp3 by scripts/build_data.py."
+  "syllables": {
+    "folder": "64k/syllabs",
+    "speaker": "Chen Wang",
+    "license": "CC BY-SA (version not stated by the source)"
+  },
+  "note": "Word files cmn-<Simplified>.mp3 from the folder above, at the commit above, copied unchanged into site/audio/<word id>.mp3; syllable files cmn-<syllable>.mp3 from the syllables folder, same commit, copied unchanged into site/audio/s/<syllable>.mp3; both by scripts/build_data.py."
 }

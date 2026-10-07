@@ -3,7 +3,7 @@
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
 #schema-example, #schema-sense, #senses-table, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules,
-#drawing-rules, #drawing-file, #drawing-schema, #audio-rules).
+#drawing-rules, #drawing-file, #drawing-schema, #audio-rules, #syllable-audio-rules, #schema-syllables).
 Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
@@ -29,6 +29,7 @@ HSK_DIR = ROOT / "data" / "hsk"
 AUDIO_NOTE = ROOT / "data" / "audio" / "source.json"
 AUDIO_OUT = ROOT / "site" / "audio"
 AUDIO_CREDITS = AUDIO_OUT / "CREDITS.txt"
+SYLLABLE_OUT = AUDIO_OUT / "s"
 OVERRIDES = ROOT / "data" / "overrides.json"
 OUT = ROOT / "site" / "data" / "graph.json"
 CACHE_DIR = ROOT / ".cache"
@@ -659,7 +660,8 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
                       "simp": e["simp"], "pinyin": pinyin, "zhuyin": zhuyin,
                       **cleaned})
     hub_overrides = {i: o for i, o in overrides.items() if i.startswith("c-")}
-    unused = sorted(set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries})
+    unused = sorted(i for i in set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries}
+                    if not i.startswith("s-"))
     problems += [f"{i}: override names no HSK entry" for i in unused]
     if problems:
         raise BuildError(problems)
@@ -958,8 +960,8 @@ def _github_repo(note):
     return note["url"].removeprefix("https://github.com/")
 
 
-def load_audio_index(note, refresh=False):
-    """Return {simp: file name} for every recording in the pinned folder."""
+def load_audio_index(note, folder, refresh=False):
+    """Return {stem: file name} for every cmn-<stem>.mp3 in folder at the pinned commit."""
     tree = _audio_cache(note) / "tree.json"
     if refresh or not tree.exists():
         download(f"https://api.github.com/repos/{_github_repo(note)}/git/trees/"
@@ -967,36 +969,123 @@ def load_audio_index(note, refresh=False):
     data = json.loads(tree.read_text(encoding="utf-8"))
     if data.get("truncated"):
         raise BuildError([f"{note['url']}: file list truncated"])
-    prefix = note["folder"] + "/cmn-"
+    prefix = folder + "/cmn-"
     return {e["path"][len(prefix):-4]: e["path"].rsplit("/", 1)[1]
             for e in data["tree"]
             if e["type"] == "blob" and e["path"].startswith(prefix) and e["path"].endswith(".mp3")}
 
 
-def write_audio(words, index, note):
-    """Copy each word's recording unchanged to site/audio/<id>.mp3; drop stale ones."""
-    cache = _audio_cache(note)
-    AUDIO_OUT.mkdir(parents=True, exist_ok=True)
+# #symbols-table: each Zhuyin symbol's name syllable, said in the first tone.
+# ㄝ (ê) has no recording in the set, so it needs none (#symbols-why).
+SYMBOL_NAME_SYLLABLES = (
+    "bo1 po1 mo1 fo1 de1 te1 ne1 le1 ge1 ke1 he1 ji1 qi1 xi1 zhi1 chi1 shi1 ri1 zi1 ci1 si1 "
+    "yi1 wu1 yu1 "
+    "a1 o1 e1 ai1 ei1 ao1 ou1 an1 en1 ang1 eng1 er1").split()
+
+
+def syllable_key(numbered):
+    """#syllable-key: a normalized syllable ('nu:3', 'Ri4') -> its recording name ('nv3', 'ri4')."""
+    return numbered.lower().replace("u:", "v")
+
+
+def needed_syllables(graph):
+    """#syllable-which: every syllable a card can show, plus every symbol name syllable.
+
+    Walks every "pinyin" in the graph (words, readings, measure words,
+    references). An erhua r5 is said as the symbol ㄦ, so needs none (#syllable-erhua).
+    """
+    found = set(SYMBOL_NAME_SYLLABLES)
+
+    def walk(o):
+        if isinstance(o, dict):
+            if isinstance(o.get("pinyin"), str):
+                found.update(syllable_key(x) for x in o["pinyin"].split())
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+
+    walk(graph)
+    found.discard("r5")
+    return found
+
+
+def attach_syllables(graph, index, overrides=None):
+    """#syllable-fail, #syllable-override, #syllable-field: set graph["syllables"].
+
+    index maps each listed syllable to its file. An override "s-<syllable>"
+    names the set's other spelling ("spelling") or states it has none
+    ("none": true). A needed tone 1 to 4 syllable with neither fails the
+    build. Returns (resolved index, neutral-tone syllables with none).
+    """
+    overrides = {i[2:]: o for i, o in (overrides or {}).items() if i.startswith("s-")}
+    needed = needed_syllables(graph)
+    files, problems = {}, []
+    for x in sorted(needed):
+        o = overrides.get(x)
+        if o and o.get("none"):
+            continue
+        if o:
+            if o["spelling"] in index:
+                files[x] = index[o["spelling"]]
+            else:
+                problems.append(f"syllable {x}: override spelling {o['spelling']} has no recording")
+        elif x in index:
+            files[x] = index[x]
+        elif not x.endswith("5"):
+            problems.append(f"syllable {x}: no recording in the syllable set")
+    problems += [f"s-{x}: override names no needed syllable" for x in sorted(set(overrides) - needed)]
+    if problems:
+        raise BuildError(problems)
+    out = {}
+    for k, v in graph.items():
+        if k != "syllables":
+            out[k] = v
+        if k == "words":
+            out["syllables"] = sorted(files)
+    graph.clear()
+    graph.update(out)
+    return files, sorted(x for x in needed if x.endswith("5") and x not in files)
+
+
+def _copy_pinned(note, folder, name, target):
+    cached = _audio_cache(note) / folder / name
+    if not cached.exists():
+        download(f"https://raw.githubusercontent.com/{_github_repo(note)}/{note['commit']}/"
+                 f"{folder}/{urllib.parse.quote(name)}", cached)
+    target.write_bytes(cached.read_bytes())
+
+
+def write_audio(graph, index, syllable_index, note):
+    """Copy each word's recording unchanged to site/audio/<id>.mp3 and each listed
+    syllable's to site/audio/s/<syllable>.mp3; drop stale ones."""
+    syl = note["syllables"]
+    SYLLABLE_OUT.mkdir(parents=True, exist_ok=True)
     keep = set()
-    for w in words:
+    for w in graph["words"]:
         if "audio" not in w:
             continue
-        name = index[w["simp"]]
-        cached = cache / name
-        if not cached.exists():
-            download(f"https://raw.githubusercontent.com/{_github_repo(note)}/{note['commit']}/"
-                     f"{note['folder']}/{urllib.parse.quote(name)}", cached)
         target = ROOT / "site" / w["audio"]
-        target.write_bytes(cached.read_bytes())
-        keep.add(target.name)
-    for old in AUDIO_OUT.glob("*.mp3"):
-        if old.name not in keep:
+        _copy_pinned(note, note["folder"], index[w["simp"]], target)
+        keep.add(target)
+    for x in graph["syllables"]:
+        target = SYLLABLE_OUT / f"{x}.mp3"
+        _copy_pinned(note, syl["folder"], syllable_index[x], target)
+        keep.add(target)
+    for old in [*AUDIO_OUT.glob("*.mp3"), *SYLLABLE_OUT.glob("*.mp3")]:
+        if old not in keep:
             old.unlink()
     AUDIO_CREDITS.write_text(
         f"Word recordings: {note['speaker']}, via {_github_repo(note)}.\n"
         f"Source: {note['url']} (commit {note['commit']}, folder {note['folder']}).\n"
         f"License: {note['license']}, {note['licenseUrl']}\n"
-        "Each file is copied unchanged and renamed to its word id. Unmodified clips\n"
+        "\n"
+        f"Syllable recordings (s/): {syl['speaker']}, via {_github_repo(note)}.\n"
+        f"Source: {note['url']} (commit {note['commit']}, folder {syl['folder']}).\n"
+        f"License: {syl['license']}, as stated in the source's README\n"
+        "\n"
+        "Each file is copied unchanged and renamed to its word id or syllable. Unmodified clips\n"
         "beside the site code form a collection; the license does not extend to the code.\n",
         encoding="utf-8")
 
@@ -1016,14 +1105,16 @@ def main(argv=None):
         drawing = build_drawing(graph["hubs"], glyphs, chars["rs"], overrides, glyphwiki_date)
         del glyphs
         note = audio_note()
-        index = load_audio_index(note, args.refresh)
+        index = load_audio_index(note, note["folder"], args.refresh)
+        syllable_index = load_audio_index(note, note["syllables"]["folder"])
+        syllable_index, silent = attach_syllables(graph, syllable_index, overrides)
     except BuildError as err:
         print(f"build failed, {len(err.problems)} entries:", file=sys.stderr)
         for p in err.problems:
             print(f"  {p}", file=sys.stderr)
         return 1
     missing = attach_audio(graph["words"], index)
-    write_audio(graph["words"], index, note)
+    write_audio(graph, index, syllable_index, note)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(graph, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     DRAWING_OUT.write_text(json.dumps(drawing, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
@@ -1038,6 +1129,8 @@ def main(argv=None):
           f"{len(missing)} words have none:", file=sys.stderr)
     for w in missing:
         print(f"  {w['id']} {w['simp']}", file=sys.stderr)
+    print(f"wrote {SYLLABLE_OUT.relative_to(ROOT)}: {len(graph['syllables'])} syllable recordings; "
+          f"{len(silent)} neutral-tone syllables have none: {' '.join(silent)}", file=sys.stderr)
     return 0
 
 
