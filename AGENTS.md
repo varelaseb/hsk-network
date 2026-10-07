@@ -10,6 +10,7 @@ Canonical spec: [docs/specs/hsk-network.spec.html](docs/specs/hsk-network.spec.h
 - `data/`: vendored HSK 2.0 lists (copied unchanged, source URL and commit noted beside them) and the match override file.
 - `site/bubbles/`: HSK bubbles game. `rules.js` is the pure game rules module (exports documented at its top).
 - `scripts/build_data.py`: data pipeline. Writes `site/data/graph.json`.
+- `site/fonts/`: vendored subset WOFF2 fonts (Noto Sans CJK TC, Geist), their OFL licenses, `source.json` (pinned releases), `coverage.json` (subset characters, hashes, Chinese-face missing characters). Built by `scripts/build_fonts.py`.
 - `tests/`: unittest suite; `tests/bubbles/*.test.mjs`: game rule tests (Node built-in test runner).
 - `docs/specs/`: canonical specs. Never published.
 - `.github/workflows/`: `ci.yml` (tests), `pages.yml` (deploy `site/`).
@@ -20,6 +21,7 @@ Python 3 and Node 22+ standard libraries only. Nothing to install, no `package.j
 
 - Build data: `python3 scripts/build_data.py`
 - Test: `python3 -m unittest discover -s tests -v && node --test 'tests/**/*.test.mjs'`
+- Build fonts (maintainer only, needs fontTools; never in CI): `python3 -m venv /tmp/fonts-venv && /tmp/fonts-venv/bin/pip install fonttools brotli && /tmp/fonts-venv/bin/python scripts/build_fonts.py`
 - Preview: `python3 -m http.server -d site 8000`
 
 ## Data refresh
@@ -27,6 +29,10 @@ Python 3 and Node 22+ standard libraries only. Nothing to install, no `package.j
 1. Run the build. It downloads CC-CEDICT into an ignored cache; never commit the cache.
 2. If it names failing entries, add one override per entry in `data/` (CC-CEDICT Traditional form, pinyin, one-line reason) and rebuild.
 3. Run the tests, then commit `site/data/graph.json` deliberately; its diff shows what changed.
+
+## Font refresh
+
+Run the font build after any change that adds characters to `site/data/graph.json` or the pages (the fonts test fails until you do), then commit `site/fonts/`. It downloads the pinned releases in `site/fonts/source.json` into the ignored cache and fails on a missing Zhuyin symbol, tone mark, or budget overrun.
 
 ## Validation
 

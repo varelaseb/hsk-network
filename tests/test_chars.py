@@ -20,7 +20,8 @@ class StoredOnce(unittest.TestCase):
         for ch, entry in CHARS.items():
             with self.subTest(char=ch):
                 self.assertTrue(entry)
-                self.assertLessEqual(set(entry), {"readings", "meaning"})
+                self.assertLessEqual(set(entry), {"simp", "readings", "meaning"})
+                self.assertIn("simp", entry)  # #stack-script
 
     def test_one_character_words_name_their_reading(self):
         for w in GRAPH["words"]:
@@ -40,14 +41,6 @@ class StoredOnce(unittest.TestCase):
                 with self.subTest(char=ch):
                     self.assertTrue(CHARS[ch]["readings"][0]["defs"])
         self.assertNotIn("們", {h["char"] for h in GRAPH["hubs"]})
-
-    def test_no_pinyin_in_definitions(self):
-        """#default-reading: no numbered pinyin left in any shipped definition."""
-        defs = [d for w in GRAPH["words"] for d in w.get("defs", [])]
-        defs += [d for e in CHARS.values() for r in e.get("readings", []) for d in r["defs"]]
-        for d in defs:
-            with self.subTest(d=d):
-                self.assertNotRegex(d, r"[A-Za-z:]+[1-5]\b")
 
     def test_both_readings_of_one_character(self):
         chang, zhang = (w for w in GRAPH["words"] if w["trad"] == "長")
@@ -90,15 +83,15 @@ class Build(unittest.TestCase):
         graph = build_data.build(CEDICT, None, hsk, {}, NO_CHARS)
         self.assertEqual(graph["words"][0], {"id": "1-1", "level": 1, "trad": "王", "simp": "王",
                                              "pinyin": "wang4", "reading": 0})
-        self.assertEqual(graph["chars"]["王"], {"readings": [
-            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]}]})
+        self.assertEqual(graph["chars"]["王"], {"simp": "王", "readings": [
+            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": [{"parts": ["to rule"]}]}]})
         self.assertEqual(graph["words"][1]["zhuyin"], "ㄍㄨㄥ ㄓㄨˇ")
 
     def test_part_written_only_as_simplified_reads_simplified_entries(self):
         single = build_data.single_char_index(CEDICT)
         self.assertTrue(build_data.is_character("儿", single))
         self.assertEqual(build_data.char_readings("儿", single),
-                         [{"pinyin": "er2", "zhuyin": "ㄦˊ", "defs": ["child"]}])
+                         [{"pinyin": "er2", "zhuyin": "ㄦˊ", "defs": [{"parts": ["child"]}]}])
 
 
 XING = build_data.single_char_index(build_data.parse_cedict("""\

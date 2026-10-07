@@ -17,3 +17,8 @@ def word_reading(w):
     """A word's (zhuyin, defs): its own, or for a one-character word, through chars (#chars-words)."""
     r = CHARS[w["trad"]]["readings"][w["reading"]] if "reading" in w else w
     return r["zhuyin"], r["defs"]
+
+
+def sense_text(sense):
+    """A sense's plain text, each reference read as its Traditional form or Zhuyin (#schema-sense)."""
+    return "".join(p if isinstance(p, str) else p.get("trad", p["zhuyin"]) for p in sense["parts"])

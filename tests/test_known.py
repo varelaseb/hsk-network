@@ -2,7 +2,7 @@
 
 import unittest
 
-from graph_data import CHARS, GRAPH, build_data, word_reading
+from graph_data import CHARS, GRAPH, build_data, sense_text, word_reading
 
 # (simplified, toned list pinyin, traditional, zhuyin, expected gloss)
 KNOWN = [
@@ -34,7 +34,7 @@ class KnownWords(unittest.TestCase):
                 self.assertEqual(len(want), 1, f"{simp} {zhuyin} not found once")
                 w = want[0]
                 self.assertEqual(w["trad"], trad)
-                defs = word_reading(w)[1]
+                defs = [sense_text(s) for s in word_reading(w)[1]]
                 self.assertTrue(any(gloss in d for d in defs), defs)
 
     def test_both_readings_are_distinct_nodes(self):
@@ -61,7 +61,8 @@ class KnownCharacters(unittest.TestCase):
                 got = CHARS[char]["readings"]
                 self.assertEqual([r["zhuyin"] for r in got], [z for z, _ in readings])
                 for r, (_, gloss) in zip(got, readings):
-                    self.assertTrue(any(gloss in d for d in r["defs"]), r["defs"])
+                    defs = [sense_text(s) for s in r["defs"]]
+                    self.assertTrue(any(gloss in d for d in defs), defs)
 
     def test_every_hub_has_readings_with_defs(self):
         for h in GRAPH["hubs"]:
