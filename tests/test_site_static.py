@@ -1,14 +1,22 @@
 """Static: the published site loads only its own files (spec #test-static)."""
 
 import hashlib
+import json
 import re
+import sys
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
 
-SITE = Path(__file__).resolve().parent.parent / "site"
+ROOT = Path(__file__).resolve().parent.parent
+SITE = ROOT / "site"
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import build_offline as bo  # noqa: E402
+
+WORKER = SITE / bo.WORKER
 # Data files are content, not loads; app.js only turns meta.hskSource into a clicked link.
-TEXT_SUFFIXES = {".html", ".js", ".css", ".txt", ".svg"}
+TEXT_SUFFIXES = {".html", ".js", ".css", ".txt", ".svg", ".webmanifest"}
 URL_RE = re.compile(r"""(?:[a-z][a-z0-9+.-]*:)?//[^\s"'`)<>\\]+""", re.I)
 
 # The vendored D3 build, pinned (npm d3@7.9.0 dist/d3.min.js).
@@ -96,12 +104,29 @@ class StaticSiteTest(unittest.TestCase):
 
     def test_scripts_fetch_only_site_files(self):
         for script in SITE.rglob("*.js"):
-            if script == D3_FILE:
+            # The worker forwards the page's own requests; test_worker_fetches_only_site_files covers it.
+            if script in (D3_FILE, WORKER):
                 continue
             text = script.read_text(encoding="utf-8")
             for call in re.findall(r"""\b(?:fetch|import|importScripts|XMLHttpRequest|WebSocket|EventSource|sendBeacon)\s*\(\s*(['"`][^'"`]*['"`])?""", text):
                 with self.subTest(script=script.name, call=call):
                     self.assertTrue(call and is_local(call.strip("'\"`")), "non-literal or external request")
+
+    def test_worker_fetches_only_site_files(self):
+        """The worker saves only listed site files; tests/offline.test.mjs proves it fetches nothing else."""
+        files, _ = bo.read_block(WORKER.read_text(encoding="utf-8"))
+        for f in files:
+            with self.subTest(file=f):
+                self.assertTrue(is_local(f))
+                self.assertTrue((SITE / f).resolve().is_relative_to(SITE.resolve()))
+                self.assertTrue((SITE / f).is_file())
+
+    def test_manifest_loads_only_site_files(self):
+        m = json.loads((SITE / "manifest.webmanifest").read_text(encoding="utf-8"))
+        for ref in [m["id"], m["start_url"], m["scope"]] + [i["src"] for i in m["icons"]]:
+            with self.subTest(ref=ref):
+                self.assertTrue(is_local(ref))
+                self.assertTrue((SITE / ref).resolve().is_relative_to(SITE.resolve()))
 
     def test_no_external_address_outside_anchors(self):
         """No site file names an outside address except page links a learner clicks."""
@@ -197,6 +222,69 @@ class BreakdownSourcesTest(unittest.TestCase):
         app = (SITE / "app.js").read_text(encoding="utf-8")
         for key in ("meta.idsDate", "meta.unihanVersion"):
             self.assertIn(key, app)
+
+    def test_sources_credit_glyphwiki(self):
+        refs = Refs()
+        html = (SITE / "index.html").read_text(encoding="utf-8")
+        refs.feed(html)
+        links = {v for _, _, v in refs.anchors}
+        self.assertIn("https://glyphwiki.org/", links)
+        self.assertIn("data/glyphwiki-LICENSE.txt", links)
+        self.assertTrue((SITE / "data" / "glyphwiki-LICENSE.txt").is_file())
+        self.assertIn('id="glyphwiki-date"', html)
+        self.assertIn("meta.glyphwikiDate", (SITE / "app.js").read_text(encoding="utf-8"))
+
+
+# Okabe-Ito palette (Okabe and Ito 2008), designed to stay apart under common color blindness.
+OKABE_ITO = {"#e69f00", "#56b4e9", "#009e73", "#f0e442", "#0072b2", "#d55e00", "#cc79a7", "#000000"}
+
+
+def luminance(hex_color):
+    rgb = [int(hex_color[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    lin = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in rgb]
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((luminance(a), luminance(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+class StrokeColorsTest(unittest.TestCase):
+    """#acceptance-strokes-colors: part colors and radical outline at 3:1 or more on both cards."""
+
+    def setUp(self):
+        css = (SITE / "style.css").read_text(encoding="utf-8")
+        root = re.search(r":root\s*\{(.*?)\}", css, re.S).group(1)
+        self.tok = {k: v.lower() for k, v in re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;", root)}
+        self.parts = [self.tok["part-%d" % i] for i in (1, 2, 3)]
+        # The dark card takes the night tokens.
+        dark = re.search(r"@media \(prefers-color-scheme: dark\)\s*\{\s*\.card\s*\{(.*?)\}", css, re.S).group(1)
+        dvar = dict(re.findall(r"--([\w-]+):\s*var\(--([\w-]+)\)", dark))
+        self.light = {"bg": self.tok["surface"], "ink": self.tok["ink"]}
+        self.dark = {"bg": self.tok[dvar["surface"]], "ink": self.tok[dvar["ink"]]}
+        # The outline is drawn in the card's ink.
+        self.assertRegex(css, r"\.s-ink, \.s-out \{ stroke: var\(--ink\); \}")
+
+    def test_part_colors_reach_3_to_1_on_both_cards(self):
+        for card in (self.light, self.dark):
+            for c in self.parts:
+                self.assertGreaterEqual(contrast(c, card["bg"]), 3, (c, card["bg"]))
+
+    def test_radical_outline_reaches_15_to_1_on_both_cards(self):
+        for card in (self.light, self.dark):
+            self.assertGreaterEqual(contrast(card["ink"], card["bg"]), 15, card)
+
+    def test_part_colors_are_okabe_ito_apart_from_levels(self):
+        levels = {self.tok["hsk1"], self.tok["hsk2"]}
+        self.assertEqual(len(set(self.parts)), 3)
+        for c in self.parts:
+            self.assertIn(c, OKABE_ITO)
+            self.assertNotIn(c, levels)
+
+    def test_contrast_matches_spec_table(self):
+        self.assertEqual([round(contrast(c, self.light["bg"]), 1) for c in self.parts], [3.9, 3.4, 3.1])
+        self.assertEqual([round(contrast(c, self.dark["bg"]), 1) for c in self.parts], [4.7, 5.4, 6.0])
 
 
 if __name__ == "__main__":

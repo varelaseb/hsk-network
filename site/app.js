@@ -16,11 +16,15 @@ const HUB_R = 9;
 // Script setting, shared with the game (#default-script-setting).
 const SCRIPT_KEY = "hskScript";
 const SCRIPT_LABEL = { zhuyin: "Zhuyin", pinyin: "Pinyin" };
+// Part colors by place in the Parts row, named for assistive technology; the colors
+// themselves are style.css --part-1.. (#strokes-colors).
+const PART_NAMES = ["vermillion", "bluish green", "reddish purple"];
 const PLACEHOLDER = { zhuyin: "Search character, Zhuyin, English", pinyin: "Search character, pinyin, English" };
 
 const svg = d3.select("#graph");
 const stage = document.getElementById("stage");
 const controls = document.getElementById("controls");
+const sourcesLink = document.querySelector("#sources summary");
 const statusEl = document.getElementById("status");
 const card = document.getElementById("card");
 const input = document.getElementById("search");
@@ -32,6 +36,7 @@ const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let words = [], hubs = [], nodes = [], links = [];
 let chars = {};             // character table (spec #chars-table)
+let drawings = {};          // hub character -> { strokes, parts, radical } (spec #drawing-schema)
 const byId = new Map();
 const wordHubs = new Map(); // word id -> [hub]
 const hubWords = new Map(); // hub id -> [word]
@@ -45,18 +50,23 @@ let script = readScript();
 
 syncScript();
 
-fetch("data/graph.json")
-  .then(function (r) {
+// The graph data and the drawing data load together (#drawing-file).
+Promise.all([fetch("data/graph.json"), fetch("data/drawing.json")].map(function (req) {
+  return req.then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
+  });
+}))
+  .then(function (files) {
+    drawings = files[1].hubs;
+    init(files[0], files[1].meta);
   })
-  .then(init)
   .catch(function (err) {
     statusEl.textContent = "Could not load the word data (" + err.message + ").";
   });
 
-function init(data) {
-  fillSources(data.meta || {});
+function init(data, drawingMeta) {
+  fillSources(Object.assign({}, data.meta, drawingMeta));
   chars = data.chars;
   words = data.words.map(function (w) {
     const n = Object.assign({}, w, wordReading(w, chars), { kind: "word" });
@@ -83,7 +93,11 @@ function init(data) {
   statusEl.textContent = "";
   fit();
   // The settled graph fades in (#motion-load).
-  requestAnimationFrame(function () { root.classed("in", true); });
+  requestAnimationFrame(function () {
+    root.classed("in", true);
+    // Offline copy saves only after the page has drawn (hsk-app spec #offline).
+    navigator.serviceWorker?.register("sw.js").catch(function () {});
+  });
   // Text typed while the data loaded gets its results now.
   if (document.activeElement === input) refreshResults();
   openWordLink();
@@ -363,11 +377,13 @@ function stageSize() {
   return { w: stage.clientWidth || 1, h: stage.clientHeight || 1 };
 }
 
-// The part of the stage the floating controls and the Sources link leave clear.
+// The part of the stage the floating controls and the Sources link leave clear;
+// both already sit inside the safe areas (#fit-safe).
 function clearArea() {
   const s = stageSize();
   const top = Math.min(controls.getBoundingClientRect().bottom, s.h / 3);
-  return { top: top, bottom: s.h - 52, w: s.w, h: s.h };
+  const bottom = Math.max(sourcesLink.getBoundingClientRect().top, s.h * 2 / 3);
+  return { top: top, bottom: bottom, w: s.w, h: s.h };
 }
 
 function bounds() {
@@ -551,34 +567,130 @@ function showCard(d, pin) {
   card.classList.add("in");
 }
 
-// Radical and Parts rows (spec #page-breakdown). A hub built before breakdown data shows neither.
-// Meaning and reading (of the first reading, when the part is a character) come from chars.
+// Radical and Parts rows (spec #page-breakdown), opened by the hub's drawn character
+// (#page-strokes). Meaning and reading (of the first reading, when the part is a
+// character) come from chars; strokes from the drawing data, always the Traditional form.
 function breakdown(d) {
-  const dl = el("dl", "c-breakdown");
+  const dr = drawings[d.char];
+  const parts = d.parts || [];
+  const color = strokeColors(parts, dr);
+  const wrap = el("div", "c-breakdown");
+  const draw = wrap.appendChild(drawingNode(d, dr, color));
+  const dl = wrap.appendChild(el("dl", "b-rows"));
+  let pressed = null;
+  // Pressing keeps the button's strokes colored and pales the rest; again clears (#page-strokes-light).
+  function press(b, strokes) {
+    if (pressed) pressed.setAttribute("aria-pressed", "false");
+    pressed = pressed === b ? null : b;
+    if (pressed) pressed.setAttribute("aria-pressed", "true");
+    const keep = pressed ? new Set(strokes) : null;
+    draw.querySelectorAll("path").forEach(function (path) {
+      path.classList.toggle("pale", !!keep && !keep.has(+path.dataset.s));
+    });
+  }
+  function button(parent, strokes, colors, radical) {
+    const b = parent.appendChild(el("button", "b-btn"));
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    b.appendChild(swatch(colors, radical));
+    b.addEventListener("click", function () { press(b, strokes); });
+    return b;
+  }
   if (d.radical) {
     const r = d.radical, c = chars[r.char];
     dl.appendChild(el("dt", "c-cap", "Radical"));
-    const dd = dl.appendChild(el("dd"));
-    dd.appendChild(han(charLabel(r.char, script, chars), "b-char"));
-    dd.appendChild(el("span", "b-num", "#" + r.number));
-    if (c.readings) dd.appendChild(pieceNode(renderReading(c.readings[0], script)));
-    dd.appendChild(el("span", "b-mean", c.meaning));
+    const colors = uniq(dr.radical.map(function (s) { return color[s]; }));
+    const b = button(dl.appendChild(el("dd")), dr.radical, colors, true);
+    b.appendChild(han(charLabel(r.char, script, chars), "b-char"));
+    b.appendChild(el("span", "b-num", "#" + r.number));
+    if (c.readings) b.appendChild(pieceNode(renderReading(c.readings[0], script)));
+    b.appendChild(el("span", "b-mean", c.meaning));
   }
   dl.appendChild(el("dt", "c-cap", "Parts"));
-  const parts = d.parts || [];
   if (!parts.length) {
     dl.appendChild(el("dd", "b-none", "Not split further"));
-    return dl;
+    return wrap;
   }
   const ul = dl.appendChild(el("dd")).appendChild(el("ul", "b-parts"));
-  parts.forEach(function (p) {
+  parts.forEach(function (p, i) {
     const c = chars[p];
-    const li = ul.appendChild(el("li"));
-    li.appendChild(han(charLabel(p, script, chars), "b-char"));
-    if (c.readings) li.appendChild(pieceNode(renderReading(c.readings[0], script)));
-    li.appendChild(el("span", "b-mean", c.meaning));
+    const b = button(ul.appendChild(el("li")), dr.parts[p], [i], false);
+    b.appendChild(han(charLabel(p, script, chars), "b-char"));
+    if (c.readings) b.appendChild(pieceNode(renderReading(c.readings[0], script)));
+    b.appendChild(el("span", "b-mean", c.meaning));
   });
-  return dl;
+  return wrap;
+}
+
+// Color of each stroke: its part's place in the Parts row, or with no parts the first
+// color for the radical's strokes; -1 is the card's ink (#page-strokes-color, #page-strokes-radical).
+function strokeColors(parts, dr) {
+  const color = dr.strokes.map(function () { return -1; });
+  if (parts.length) {
+    parts.forEach(function (p, i) { dr.parts[p].forEach(function (s) { color[s] = i; }); });
+  } else {
+    dr.radical.forEach(function (s) { color[s] = 0; });
+  }
+  return color;
+}
+
+function uniq(xs) {
+  return xs.filter(function (x, i) { return xs.indexOf(x) === i; });
+}
+
+function svgEl(tag, cls) {
+  const e = document.createElementNS(d3.namespaces.svg, tag);
+  if (cls) e.setAttribute("class", cls);
+  return e;
+}
+
+function strokeClass(k) {
+  return k < 0 ? "s-ink" : "s-p" + (k + 1);
+}
+
+// Every stroke an even round-ended line on the 200-unit grid; the radical's outline band
+// sits under all colored strokes (#page-strokes, #page-strokes-radical).
+function drawingNode(d, dr, color) {
+  const svg = svgEl("svg", "b-draw");
+  svg.setAttribute("viewBox", "0 0 200 200");
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", drawingName(d, color));
+  dr.radical.forEach(function (s) { svg.appendChild(strokePath(dr.strokes[s], s, "s-out")); });
+  dr.strokes.forEach(function (path, s) { svg.appendChild(strokePath(path, s, strokeClass(color[s]))); });
+  return svg;
+}
+
+function strokePath(dAttr, s, cls) {
+  const p = svgEl("path", cls);
+  p.setAttribute("d", dAttr);
+  p.dataset.s = s;
+  return p;
+}
+
+// Named by its character and its parts in order with their color names (#page-strokes-name).
+function drawingName(d, color) {
+  const parts = d.parts || [];
+  const named = parts.length
+    ? parts.map(function (p, i) { return charLabel(p, script, chars) + " " + PART_NAMES[i]; }).join(", ")
+    : "not split further";
+  const rad = d.radical ? "; radical " + charLabel(d.radical.char, script, chars) + " outlined" +
+    (parts.length ? "" : " in " + PART_NAMES[0]) : "";
+  return d.char + " drawn: " + named + rad;
+}
+
+// A short line drawn like a stroke: one segment per color, outlined for the radical
+// (#page-strokes-swatch). The label beside it names the part.
+function swatch(colors, radical) {
+  const svg = svgEl("svg", "b-sw");
+  svg.setAttribute("viewBox", "0 0 28 14");
+  svg.setAttribute("aria-hidden", "true");
+  const step = 18 / colors.length;
+  const seg = colors.map(function (k, i) {
+    return "M" + (5 + i * step) + " 7 L" + (5 + (i + 1) * step) + " 7";
+  });
+  if (radical) seg.forEach(function (p) { svg.appendChild(strokePath(p, -1, "s-out")); });
+  seg.forEach(function (p, i) { svg.appendChild(strokePath(p, -1, strokeClass(colors[i]))); });
+  return svg;
 }
 
 // Fades and sinks away, then empties (#motion-card, #motion-sheet).
@@ -814,10 +926,19 @@ input.addEventListener("keydown", function (e) {
   }
 });
 
+// ---------- Phone fit (hsk-app #fit-zoom, #fit-bounce) ----------
+
+// iOS ignores CSS for pinch and page drags: the graph takes every gesture, and
+// only the results list, the card, and the Sources body scroll, each within itself.
+document.addEventListener("gesturestart", (e) => e.preventDefault());
+document.addEventListener("touchmove", (e) => {
+  if (!e.target.closest("#graph, .results, .card, .sources-body")) e.preventDefault();
+}, { passive: false });
+
 // ---------- Sources ----------
 
 function fillSources(meta) {
-  [["cedict-release", meta.cedictRelease], ["unihan-version", meta.unihanVersion], ["ids-date", meta.idsDate]].forEach(([id, v]) => {
+  [["cedict-release", meta.cedictRelease], ["unihan-version", meta.unihanVersion], ["ids-date", meta.idsDate], ["glyphwiki-date", meta.glyphwikiDate]].forEach(([id, v]) => {
     if (v) document.getElementById(id).textContent = v;
   });
   // A source "url@commit" links to that commit's tree.

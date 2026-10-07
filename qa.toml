@@ -1,6 +1,6 @@
 # QA capture target: HSK network static site and its bubbles game (jev-capture.spec.html#jc-target),
-# for docs/specs/hsk-network.spec.html and docs/specs/hsk-bubbles.spec.html. Story and criterion keys
-# are unique across both specs, so each entry below belongs to exactly one of them.
+# for docs/specs/hsk-network.spec.html, docs/specs/hsk-bubbles.spec.html, and docs/specs/hsk-app.spec.html.
+# Story and criterion keys are unique across the specs, so each entry below belongs to exactly one of them.
 # Python stdlib only: no setup, rebuild, or env file. The site is served unchanged from site/.
 
 # Paths searched for a test naming a no-browser criterion's anchor.
@@ -40,6 +40,11 @@ touch = true
 # Look and motion, on a phone. acceptance-glide is driven in story-search and acceptance-sheet in
 # story-phone (each criterion runs in its first listed user-facing story), so both keep their own.
 [entry.stories.story-look]
+viewport = { width = 390, height = 844 }
+touch = true
+# Hub drawings, on a phone: acceptance-strokes-phone runs in story-strokes (its first listed story)
+# and needs portrait, so the whole story keeps it.
+[entry.stories.story-strokes]
 viewport = { width = 390, height = 844 }
 touch = true
 # story-read and story-script keep the desktop site root default.
@@ -184,3 +189,50 @@ selectors = ["#play"]
 [nav.acceptance-review-link]
 path = "?fixture=over"
 selectors = ["#play"]
+
+# App shell (docs/specs/hsk-app.spec.html). Every story starts at the network on a phone, with touch.
+# Criteria needing the iPhone Share sheet, the installed home screen app, airplane mode, a notch, or
+# a phone turn stay as written; capture reports what it cannot drive. story-app-maintain criteria are
+# unit-tested (each runs in its first listed story).
+[entry.stories.story-install]
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-native]
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-offline]
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-fast]
+viewport = { width = 390, height = 844 }
+touch = true
+
+# App shell: game starts.
+[nav.acceptance-add-from-game]
+path = "/bubbles/"
+# Review screen: the over board ends the game, as acceptance-review-link.
+[nav.acceptance-word-in-app]
+path = "/bubbles/?fixture=over"
+selectors = ["#play"]
+
+# Network: hub drawings (word ids in site/data/graph.json, hub data in site/data/drawing.json).
+# Each opens a word whose hub the learner then taps. acceptance-strokes-dark needs the device's dark
+# appearance (prefers-color-scheme); qa.toml has no color-scheme option, so it has no hint here.
+[nav.acceptance-strokes-draw]
+path = "/#word=1-102" # 說話: hub 話, parts 訁 and 舌
+[nav.acceptance-strokes-radical-mark]
+path = "/#word=1-102" # 說話: hub 話, radical 言 is part 訁
+[nav.acceptance-strokes-part]
+path = "/#word=1-102"
+[nav.acceptance-strokes-radical]
+path = "/#word=1-102"
+[nav.acceptance-strokes-move]
+path = "/#word=1-102"
+[nav.acceptance-strokes-clear]
+path = "/#word=1-102"
+[nav.acceptance-strokes-repeat]
+path = "/#word=1-24" # 多: part 夕 twice
+[nav.acceptance-strokes-single]
+path = "/#word=1-85" # 人: not split, its own radical
+[nav.acceptance-strokes-phone]
+path = "/#word=2-28" # 高: parts 亠, 口, 冋
