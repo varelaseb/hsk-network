@@ -1,5 +1,5 @@
 // BEGIN OFFLINE LIST (written by scripts/build_offline.py; do not edit by hand)
-const VERSION = "eb5d19af6e12";
+const VERSION = "9ed2d05a1058";
 const FILES = [
   "app.js",
   "audio/1-1.mp3",
@@ -286,6 +286,8 @@ const FILES = [
   "bubbles/game.js",
   "bubbles/index.html",
   "bubbles/rules.js",
+  "data/drawing.json",
+  "data/glyphwiki-LICENSE.txt",
   "data/graph.json",
   "fonts/coverage.json",
   "fonts/geist.OFL.txt",
