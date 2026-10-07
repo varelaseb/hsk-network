@@ -1054,7 +1054,7 @@ function fillSources(meta) {
     if (v) document.getElementById(id).textContent = v;
   });
   // A source "url@commit" links to that commit's tree.
-  [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource]].forEach(([id, src]) => {
+  [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource], ["syllable-source", meta.audioSource]].forEach(([id, src]) => {
     if (!src) return;
     const a = document.getElementById(id);
     const at = src.lastIndexOf("@");
