@@ -61,7 +61,7 @@ class Match(unittest.TestCase):
 
     def test_pointer_only_kept_when_nothing_else(self):
         self.assertEqual(match("王", "Wáng")[2], ["surname Wang"])
-        self.assertEqual(match("着", "zhe")[2], ["variant of 著|着[˙ㄓㄜ]"])
+        self.assertEqual(match("着", "zhe")[2], ["variant of 著|着[zhe5]"])
 
     def test_no_candidate_fails(self):
         with self.assertRaisesRegex(ValueError, "no CC-CEDICT candidate"):
@@ -115,7 +115,7 @@ class Match(unittest.TestCase):
         [word] = build_data.build(ENTRIES, RELEASE, hsk, overrides, NO_CHARS)["words"]
         self.assertEqual(word, {"id": "2-16", "level": 2, "trad": "打籃球", "simp": "打篮球",
                                 "pinyin": "da3 lan2 qiu2", "zhuyin": "ㄉㄚˇ ㄌㄢˊ ㄑㄧㄡˊ",
-                                "defs": ["to play basketball"]})
+                                "defs": [{"parts": ["to play basketball"]}]})
 
     def test_duplicate_override_id_fails_naming_it(self):
         with tempfile.TemporaryDirectory() as d:
@@ -155,18 +155,19 @@ class HubReading(unittest.TestCase):
 
     def test_lowercase_readings_per_pinyin_in_dictionary_order_merged(self):
         self.assertEqual(build_data.char_readings("王", SINGLE), [
-            {"pinyin": "wang2", "zhuyin": "ㄨㄤˊ", "defs": ["king", "monarch"]},
-            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": ["to rule"]},
+            {"pinyin": "wang2", "zhuyin": "ㄨㄤˊ", "defs": [{"parts": ["king"]}, {"parts": ["monarch"]}]},
+            {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": [{"parts": ["to rule"]}]},
         ])
 
     def test_pointer_only_reading_keeps_pointer(self):
         readings = build_data.char_readings("得", SINGLE)
         self.assertEqual([r["zhuyin"] for r in readings], ["ㄉㄜˊ", "˙ㄉㄜ", "ㄉㄟˇ"])
-        self.assertEqual(readings[1]["defs"], ["see 得[ㄉㄜˊ]"])
+        self.assertEqual(readings[1]["defs"], [{"parts": [
+            "see ", {"trad": "得", "simp": "得", "pinyin": "de2", "zhuyin": "ㄉㄜˊ"}]}])
 
     def test_capitalized_counts_only_without_lowercase(self):
         self.assertEqual(build_data.char_readings("李", SINGLE),
-                         [{"pinyin": "li3", "zhuyin": "ㄌㄧˇ", "defs": ["surname Li"]}])
+                         [{"pinyin": "li3", "zhuyin": "ㄌㄧˇ", "defs": [{"parts": ["surname Li"]}]}])
 
     def test_build_names_each_word_char_without_entry(self):
         """#char-coverage: hub or not, every word character needs an entry."""
@@ -187,41 +188,10 @@ class HubReading(unittest.TestCase):
         graph = build_data.build(ENTRIES, RELEASE, hsk, {}, NO_CHARS)
         self.assertEqual(graph["hubs"], [])
         self.assertEqual(graph["chars"], {
-            "學": {"readings": [{"pinyin": "xue2", "zhuyin": "ㄒㄩㄝˊ", "defs": ["to learn"]}]},
-            "生": {"readings": [{"pinyin": "sheng1", "zhuyin": "ㄕㄥ", "defs": ["to be born"]}]}})
-
-
-class DefPinyin(unittest.TestCase):
-    """#default-reading: bracketed pinyin in definitions becomes Zhuyin, brackets kept."""
-
-    def test_converts_bracketed_pinyin(self):
-        cases = {
-            "abbr. for 北京[Bei3 jing1]": "abbr. for 北京[ㄅㄟˇ ㄐㄧㄥ]",
-            "CL:棵[ke1],個|个[ge4]": "CL:棵[ㄎㄜ],個|个[ㄍㄜˋ]",
-            "Taiwan pr. [han4]": "Taiwan pr. [ㄏㄢˋ]",
-            "(also pr. [yi3 zi5])": "(also pr. [ㄧˇ ˙ㄗ])",
-            "also pr. [zhi1dao5]": "also pr. [ㄓ ˙ㄉㄠ]",
-            "used in 女紅|女红[nu : 3 gong1]": "used in 女紅|女红[ㄋㄩˇ ㄍㄨㄥ]",
-            "a horse[ma3 r5]": "a horse[ㄇㄚˇ ㄦ]",
-        }
-        for raw, want in cases.items():
-            with self.subTest(raw=raw):
-                self.assertEqual(build_data._bracket_zhuyin(raw), want)
-
-    def test_leaves_other_bracketed_text(self):
-        for raw in ["[T xu4]", "[tuh-ku]", "[a1 b2, c3]", "no brackets"]:
-            with self.subTest(raw=raw):
-                self.assertEqual(build_data._bracket_zhuyin(raw), raw)
-
-    def test_words_and_chars_inherit_it(self):
-        entries = build_data.parse_cedict(["京 京 [jing1] /capital/abbr. for 北京[Bei3 jing1]/",
-                                           "城市 城市 [cheng2 shi4] /city; cf. 京[jing1]/",
-                                           "城 城 [cheng2] /city/", "市 市 [shi4] /market/"])[0]
-        hsk = [{"id": "1-1", "level": 1, "simp": "京", "pinyin": "jīng"},
-               {"id": "1-2", "level": 1, "simp": "城市", "pinyin": "chéng shì"}]
-        graph = build_data.build(entries, RELEASE, hsk, {}, NO_CHARS)
-        self.assertEqual(graph["chars"]["京"]["readings"][0]["defs"], ["capital", "abbr. for 北京[ㄅㄟˇ ㄐㄧㄥ]"])
-        self.assertEqual(graph["words"][1]["defs"], ["city; cf. 京[ㄐㄧㄥ]"])
+            "學": {"simp": "学", "readings": [{"pinyin": "xue2", "zhuyin": "ㄒㄩㄝˊ",
+                                              "defs": [{"parts": ["to learn"]}]}]},
+            "生": {"simp": "生", "readings": [{"pinyin": "sheng1", "zhuyin": "ㄕㄥ",
+                                              "defs": [{"parts": ["to be born"]}]}]}})
 
 
 class Download(unittest.TestCase):
