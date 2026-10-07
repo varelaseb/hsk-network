@@ -182,6 +182,17 @@ class Credits(unittest.TestCase):
                 with self.subTest(file=name, key=key):
                     self.assertIn(note[key], text)
 
+    def test_footer_credits_syllables(self):
+        """#acceptance-sources, #source-syllables: speaker, source link, and license of the syllables."""
+        note = build_data.audio_note()
+        footer = re.search(r'<details id="sources">.*?</details>',
+                           (SITE / "index.html").read_text(encoding="utf-8"), re.S).group(0)
+        line = re.search(r"<p>Syllable recordings.*?</p>", footer, re.S).group(0)
+        self.assertIn(note["syllables"]["speaker"], line)
+        self.assertIn(note["syllables"]["license"].split(" (")[0] + " (version not stated by the source", line)
+        self.assertIn(f'id="syllable-source" href="{note["url"]}"', line)
+        self.assertIn('href="audio/CREDITS.txt"', line)
+
 
 if __name__ == "__main__":
     unittest.main()

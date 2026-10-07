@@ -1,5 +1,5 @@
 // BEGIN OFFLINE LIST (written by scripts/build_offline.py; do not edit by hand)
-const VERSION = "bf48f9d00bf6";
+const VERSION = "57edd80d22d7";
 const FILES = [
   "app.js",
   "audio/1-1.mp3",
