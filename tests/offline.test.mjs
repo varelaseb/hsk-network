@@ -1,5 +1,5 @@
 // Offline worker tests (docs/specs/hsk-app.spec.html #test-worker, #acceptance-update-quiet,
-// #acceptance-offline-first): site/sw.js run with a stubbed cache, fetch, and clients.
+// #acceptance-offline-fail): site/sw.js run with a stubbed cache, fetch, and clients.
 // Run: node --test tests/offline.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
