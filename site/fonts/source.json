@@ -1,0 +1,27 @@
+{
+  "note": "Pinned upstream releases, cut to the shown characters by scripts/build_fonts.py; licenses copied unchanged from the same tags.",
+  "fonts": {
+    "noto-sans-cjk-tc": {
+      "family": "Noto Sans CJK TC",
+      "designer": "Adobe and Google",
+      "url": "https://github.com/notofonts/noto-cjk",
+      "release": "Sans2.004",
+      "asset": "https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/01_NotoSansCJK-OTF-VF.zip",
+      "sha256": "d5e33aebad9f8a0c0896a4a29199ef85ca966134db164426c74e83e6f13c43cd",
+      "member": "Variable/OTF/NotoSansCJKtc-VF.otf",
+      "license": "SIL OFL 1.1",
+      "licenseUrl": "https://raw.githubusercontent.com/notofonts/noto-cjk/Sans2.004/LICENSE"
+    },
+    "geist": {
+      "family": "Geist",
+      "designer": "Vercel with Basement Studio",
+      "url": "https://github.com/vercel/geist-font",
+      "release": "v1.7.2",
+      "asset": "https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip",
+      "sha256": "7fc800d2ac6b92844895196e5041aca55d814c15db70c44f79b3b83ab82b04e2",
+      "member": "geist-font/Geist/webfonts/Geist[wght].woff2",
+      "license": "SIL OFL 1.1",
+      "licenseUrl": "https://raw.githubusercontent.com/vercel/geist-font/v1.7.2/OFL.txt"
+    }
+  }
+}

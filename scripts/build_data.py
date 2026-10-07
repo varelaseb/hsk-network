@@ -2,7 +2,7 @@
 """Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, and BabelStone IDS.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules, #audio-rules).
+#schema-example, #schema-sense, #senses-table, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules, #audio-rules).
 Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
@@ -222,33 +222,133 @@ def load_cedict(path=None, refresh=False):
 
 
 def _merge(cands):
+    """#match-merge, #match-drop: raw definitions, dictionary order, de-duplicated."""
     defs = []
     for c in cands:
         for d in c["defs"]:
             if d not in defs:
                 defs.append(d)
     kept = [d for d in defs if not d.startswith(POINTER_PREFIXES)]
-    return [_bracket_zhuyin(d) for d in kept or defs]
+    return kept or defs
 
 
-_BRACKET = re.compile(r"\[([^\[\]]*)\]")
+# ---------------------------------------------------------------- senses
+
+_HAN_CHAR = r"[\u3006\u3007\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\U00020000-\U0003ffff·]"
+_HAN = rf"[0-9A-Za-z]*(?:{_HAN_CHAR}[0-9A-Za-z]*)+"  # a cited form: Han, maybe with digits or Latin
+_CITE = rf"({_HAN})(?:\|({_HAN}))?\[([^\[\]]*)\]"
+_TOKEN = re.compile(rf"{_CITE}|\[([^\[\]]*)\]")
+_CL_LIST = rf"CL:\s*{_HAN}(?:\|{_HAN})?\[[^\[\]]*\](?:\s*,\s*{_HAN}(?:\|{_HAN})?\[[^\[\]]*\])*"
+_CL_PAREN = re.compile(rf"\s*\(\s*({_CL_LIST})\s*\)")
+_CL_BARE = re.compile(rf"[\s;,]*({_CL_LIST})")
+_LEADING_TAG = re.compile(r"^\(([^()]*)\)\s*(\S.*)$")
 _SYLLABLE = re.compile(r"[A-Za-zü:]+[1-5]")
+_NUMBERED = re.compile(r"\b([A-Za-zü:]+)([1-5])\b")
+# #sense-tag: tags that open a sense, abbreviations spelled out.
+TAGS = {"coll.": "colloquial", "Tw": "Taiwan", "lit.": "literally", "fig.": "figuratively",
+        "math.": "mathematics", "abbr.": "short for", "onom.": "onomatopoeia",
+        **{t: t for t in ("bound form", "literary", "classical", "archaic", "old", "dialect",
+                          "Beijing dialect", "slang", "loanword", "polite", "vulgar",
+                          "military", "sports", "physics")}}
+# #sense-pr, #sense-abbr: spelled out in plain text, in this order.
+_SPELL = [(re.compile(r"\bTaiwan pr\."), "Taiwan reading"), (re.compile(r"\bpr\."), "pronounced"),
+          (re.compile(r"\bsb\b"), "someone"), (re.compile(r"\bsth\b"), "something"),
+          (re.compile(r"\besp\."), "especially")]
 
 
-def _bracket_zhuyin(definition):
-    """#default-reading: bracketed CC-CEDICT pinyin in a definition becomes Zhuyin,
-    brackets kept: 'CL:棵[ke1]' -> 'CL:棵[ㄎㄜ]'. Takes CC-CEDICT's spellings
-    'zhi1dao5' and 'nu : 3'. Other bracketed text stays."""
-    def sub(m):
-        text = re.sub(r"\s*:\s*", ":", m.group(1))
-        syllables = _SYLLABLE.findall(text)
-        if not syllables or "".join(syllables) != "".join(text.split()):
-            return m.group(0)
-        try:
-            return f"[{to_zhuyin(normalize_numbered(syllables))}]"
-        except ValueError:
-            return m.group(0)
-    return _BRACKET.sub(sub, definition)
+def _pinyin(text):
+    """CC-CEDICT bracket text -> (pinyin, zhuyin), or None when it is not pinyin.
+
+    Takes CC-CEDICT's spellings 'zhi1dao5' and 'nu : 3'; pinyin keeps its case
+    as numbered syllables separated by one space."""
+    text = re.sub(r"\s*:\s*", ":", text)
+    syllables = _SYLLABLE.findall(text)
+    if not syllables or "".join(syllables) != "".join(text.split()):
+        return None
+    try:
+        return " ".join(syllables), to_zhuyin(normalize_numbered(syllables))
+    except ValueError:
+        return None
+
+
+def _ref(trad, simp, bracket):
+    """#sense-ref: a citation -> reference, or None when its bracket is not pinyin."""
+    py = _pinyin(bracket)
+    if py is None:
+        return None
+    return {"trad": trad, "simp": simp or trad, "pinyin": py[0], "zhuyin": py[1]}
+
+
+def _spell(text):
+    for pattern, words in _SPELL:
+        text = pattern.sub(words, text)
+    return text
+
+
+def parse_sense(definition):
+    """#senses-table: one CC-CEDICT definition -> (sense or None, measure words).
+
+    sense: {"tag"?, "parts": [text | reference]}; None when nothing is left
+    after its "CL:" lists leave (#sense-cl). Measure words are references in
+    order, as cited."""
+    mw = []
+
+    def take(m):
+        for item in m.group(1)[3:].split(","):
+            cm = re.fullmatch(_CITE, item.strip())
+            mw.append(_ref(cm.group(1), cm.group(2), cm.group(3)) or item.strip())
+        return ""
+
+    text = _CL_BARE.sub(take, _CL_PAREN.sub(take, definition)).strip(" ;,")
+    if any(isinstance(m, str) for m in mw):
+        raise ValueError(f"measure word without pinyin: {definition!r}")
+    sense = {}
+    m = _LEADING_TAG.match(text)
+    if m and m.group(1) in TAGS:
+        sense["tag"], text = TAGS[m.group(1)], m.group(2)
+    parts, at = [], 0
+    for m in _TOKEN.finditer(text):
+        ref = _ref(*m.group(1, 2, 3)) if m.group(1) else _pinyin(m.group(4))
+        if ref is None:
+            continue
+        if isinstance(ref, tuple):  # #sense-pr: a reading reference
+            ref = {"pinyin": ref[0], "zhuyin": ref[1]}
+        parts += [_spell(text[at:m.start()]), ref]
+        at = m.end()
+    parts.append(_spell(text[at:]))
+    parts = [p for p in parts if p != ""]
+    if not any(not isinstance(p, str) or p.strip() for p in parts):
+        return None, mw
+    sense["parts"] = parts
+    return sense, mw
+
+
+def simplified_only(cedict_entries):
+    """#sense-fail: characters CC-CEDICT knows only as a Simplified form."""
+    trad = {ch for e in cedict_entries for ch in e["trad"]}
+    return {ch for e in cedict_entries for ch in e["simp"]} - trad
+
+
+def senses(definitions, simp_only=frozenset()):
+    """#senses-table, #sense-fail: definitions -> {"defs": [sense], "mw"?: [reference]}.
+
+    Raises ValueError naming a sense whose plain text still holds a Simplified-only
+    character, a tone-numbered syllable, a vertical bar, or a square bracket."""
+    defs, mw = [], []
+    for d in definitions:
+        sense, found = parse_sense(d)
+        mw += [r for r in found if r not in mw]
+        if sense is None:
+            continue
+        plain = "".join(p for p in sense["parts"] if isinstance(p, str))
+        bad = ("|" in plain or "[" in plain or "]" in plain
+               or any(ch in simp_only for ch in plain)
+               or any(b.lower() == "r" or b.lower().replace("v", "u:") in SYLLABLES
+                      for b, _ in _NUMBERED.findall(plain)))
+        if bad:
+            raise ValueError(f"unclean sense {d!r}")
+        defs.append(sense)
+    return {"defs": defs, **({"mw": mw} if mw else {})}
 
 
 def match_entry(entry, index, override=None):
@@ -308,7 +408,7 @@ def build_links(words):
     return hubs, links
 
 
-def char_readings(char, single, mandarin=None):
+def char_readings(char, single, mandarin=None, simp_only=frozenset()):
     """#hub-reading: one reading per distinct pinyin of char's own entries.
 
     single: single_char_index(). Entries by Traditional form, else by Simplified
@@ -316,7 +416,9 @@ def char_readings(char, single, mandarin=None):
     (#breakdown-zhuyin). Lowercase entries only, capitalized ones only when no
     lowercase exists. mandarin: char's first Unihan kMandarin value (toned);
     the reading matching it comes first, the rest stay in dictionary order.
-    Raises ValueError when char has no entry or a reading has no Zhuyin.
+    Each reading's definitions become senses (#sense-scope).
+    Raises ValueError when char has no entry, a reading has no Zhuyin, or a
+    sense is unclean (#sense-fail).
     """
     cands = single[0].get(char) or single[1].get(char, [])
     if not cands:
@@ -328,8 +430,22 @@ def char_readings(char, single, mandarin=None):
     standard = mandarin and normalize_toned(mandarin)
     if standard in groups:
         groups = {standard: groups.pop(standard), **groups}
-    return [{"pinyin": py, "zhuyin": to_zhuyin(py), "defs": _merge(cs)}
+    return [{"pinyin": py, "zhuyin": to_zhuyin(py), **senses(_merge(cs), simp_only)}
             for py, cs in groups.items()]
+
+
+def char_simp(char, single, mandarin=None, in_words=None):
+    """#stack-script: char's Simplified form: as the HSK words write it (in_words),
+    else from the CC-CEDICT entries of its standard reading (#hub-reading order),
+    else char itself when no entry has it as Traditional form."""
+    if in_words:
+        return in_words
+    cands = single[0].get(char, [])
+    cands = [c for c in cands if not c["cap"]] or cands
+    if not cands:
+        return char
+    standard = mandarin and normalize_toned(mandarin)
+    return next((c for c in cands if c["pinyin"] == standard), cands[0])["simp"]
 
 
 def load_hsk():
@@ -516,6 +632,7 @@ def hub_breakdown(char, chars, override=None):
 
 def build(cedict_entries, release, hsk_entries, overrides, chars):
     index = index_by_simp(cedict_entries)
+    simp_only = simplified_only(cedict_entries)
     words, problems = [], []
     for e in hsk_entries:
         override = overrides.get(e["id"])
@@ -524,12 +641,13 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
                 raise ValueError(f"override names {override['simp']}, list has {e['simp']}")
             trad, pinyin, defs = match_entry(e, index, override)
             zhuyin = to_zhuyin(pinyin)
+            cleaned = senses(defs, simp_only)
         except ValueError as err:
             problems.append(f"{e['id']} {e['simp']} [{e['pinyin']}]: {err}")
             continue
         words.append({"id": e["id"], "level": e["level"], "trad": trad,
                       "simp": e["simp"], "pinyin": pinyin, "zhuyin": zhuyin,
-                      "defs": defs})
+                      **cleaned})
     hub_overrides = {i: o for i, o in overrides.items() if i.startswith("c-")}
     unused = sorted(set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries})
     problems += [f"{i}: override names no HSK entry" for i in unused]
@@ -537,12 +655,12 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
         raise BuildError(problems)
     hubs, links = build_links(words)
     single = single_char_index(cedict_entries)
-    table = {}  # #chars-table: char -> {"readings"?, "meaning"?}
+    table = {}  # #chars-table: char -> {"simp", "readings"?, "meaning"?}
 
     def readings(ch):
         entry = table.setdefault(ch, {})
         if "readings" not in entry:
-            entry["readings"] = char_readings(ch, single, chars.get("mandarin", {}).get(ch))
+            entry["readings"] = char_readings(ch, single, chars.get("mandarin", {}).get(ch), simp_only)
         return entry["readings"]
 
     for w in words:  # #chars-words
@@ -556,6 +674,7 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
             problems.append(f"{w['id']} {w['simp']}: {err}")
             continue
         del w["zhuyin"], w["defs"]
+        w.pop("mw", None)
         w["reading"] = pinyins.index(w["pinyin"])
     for w in words:  # #char-coverage: every character of every word
         for ch in dict.fromkeys(w["trad"]):
@@ -577,6 +696,13 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
                     readings(ch)
         except ValueError as err:
             problems.append(f"{h['id']} {h['char']}: {err}")
+    in_words = {}  # trad char -> Simplified as the first word containing it writes it
+    for w in words:
+        for t, s in zip(w["trad"], w["simp"]):
+            in_words.setdefault(t, s)
+    for ch, entry in table.items():
+        simp = char_simp(ch, single, chars.get("mandarin", {}).get(ch), in_words.get(ch))
+        table[ch] = {"simp": simp, **entry}
     problems += [f"{i}: override names no hub"
                  for i in sorted(set(hub_overrides) - {h["id"] for h in hubs})]
     if problems:
