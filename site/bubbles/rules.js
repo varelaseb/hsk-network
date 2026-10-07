@@ -8,25 +8,32 @@
 // flips on each ceiling drop. Cells are { r, c }.
 //
 // Seam for the game page:
-//   createGame({ words, levels, seed, board?, current?, next?, round? }) -> game
+//   createGame({ words, levels, seed, board?, deck?, current?, next?, round? }) -> game
 //       words: graph.json `words`; levels: e.g. [1, 2]; seed: integer.
-//       board/current/next/round: optional fixture start.
+//       board/deck/current/next/round: optional fixture start; a board
+//       without a deck plays every word with a character on it or in hand.
 //   aim(game, angleDeg) -> { path, hit, end, cell }
 //       guide: path points from LAUNCHER (bends at walls), hit = bubble cell
 //       or null for the ceiling, cell = where the shot would settle.
 //   shoot(game, angleDeg) -> { game, events }   events null once game.over
 //       events: { path, settled {r,c,ch}, words [{word, cells, entries}]
 //       (longest first; entries are graph.json word objects), popped, fallen
-//       (cells with ch, as on the board before removal), points, combo,
-//       score, roundClear null | {round, bonus}, ceilingDrop, gameOver }
+//       (cells with ch, as on the board before removal, left-over bubbles
+//       of finished deck words included), wordsLeft (the round's unfinished
+//       deck words; 0 on round clear), points, combo, score,
+//       roundClear null | {round, bonus}, ceilingDrop, gameOver }
 //       When roundClear, game.board is already the next round's board.
 //   swap(game) -> game                current and next trade places
-//   game: { board {shift, rows}, current, next, score, round, combo,
-//           misses, history (popped words, newest first, each once), over }
+//   game: { board {shift, rows}, deck (the round's words), left (unfinished
+//           deck words; left.length is words left), current, next, score,
+//           round, combo, misses, history (popped words, newest first, each
+//           once), over }
+//   Only unfinished deck words pop; every board bubble and every drawn
+//   launcher bubble is a character of one (spec #decision-deck).
 //   Geometry: COLS, ROW_H, LINE_ROW (a bubble at row >= LINE_ROW is below the
 //   bottom line), LINE_Y, LAUNCHER {x, y}, HEIGHT, MIN_ANGLE, MAX_ANGLE,
 //   center(board, cell) -> {x, y}, lowestRow(board) (danger glow when
-//   lowestRow === LINE_ROW - 1), roundShots(round).
+//   lowestRow === LINE_ROW - 1), roundShots(round), roundDeck(round).
 //   pronunciation(found, on, voices) -> { src } | { voice, text } | null
 //       how a popped word is said: found = shoot's events.words item, on =
 //       the pronunciation choice, voices = speechSynthesis.getVoices().
@@ -102,9 +109,15 @@ export function makeLexicon(words, levels) {
     if (!entries.has(w.trad)) entries.set(w.trad, []);
     entries.get(w.trad).push(w);
   }
+  return deckLexicon({ entries }, [...entries.keys()]);
+}
+
+// The lexicon narrowed to `words` (a round's unfinished deck words): only
+// these pop, and only their characters are needed (spec #decision-deck).
+export function deckLexicon(lex, words) {
   const byChar = new Map();
   const byLen = { 2: [], 3: [], 4: [] };
-  for (const word of entries.keys()) {
+  for (const word of words) {
     const chars = [...word];
     byLen[chars.length].push(word);
     chars.forEach((ch, index) => {
@@ -112,7 +125,7 @@ export function makeLexicon(words, levels) {
       byChar.get(ch).push({ word, chars, index });
     });
   }
-  return { entries, list: [...entries.keys()], byChar, byLen };
+  return { entries: lex.entries, list: [...words], byChar, byLen };
 }
 
 // ---- Board grid
@@ -304,32 +317,80 @@ function reachableCells(board) {
   return [...seen.values()];
 }
 
-// Board characters that complete a word when shot into a reachable cell.
+// Characters of lex's words that complete one when shot into a reachable cell.
 export function completingChars(board, lex) {
   const out = new Set();
   const spots = reachableCells(board);
-  for (const ch of boardChars(board)) {
+  for (const ch of [...lex.byChar.keys()].sort()) {
     if (spots.some((cell) => findWords(put(board, cell, ch), cell, lex).length)) out.add(ch);
   }
   return out;
 }
 
-// ---- Launcher choice: 3 in 4 a completing character, else any board
-// character; forced completing when the partner bubble completes nothing.
+// Longest run through `cell` reading chars in order (either way along the
+// chain) with cell's bubble as chars[index].
+function runThrough(board, cell, chars, index) {
+  const used = new Set([key(cell)]);
+  const walk = (pos, i, step) => {
+    if (i < 0 || i === chars.length) return 0;
+    let best = 0;
+    for (const n of neighbors(board, pos)) {
+      if (used.has(key(n)) || at(board, n) !== chars[i]) continue;
+      used.add(key(n));
+      best = Math.max(best, 1 + walk(n, i + step, step));
+      used.delete(key(n));
+    }
+    return best;
+  };
+  return 1 + walk(cell, index + 1, 1) + walk(cell, index - 1, -1);
+}
 
-function drawLauncher(board, lex, rng, partner) {
-  const chars = boardChars(board);
-  if (!chars.length) return null;
+// Characters that, shot into a reachable cell, touch a bubble they read with
+// as two neighboring characters of a word, growing that word's longest run on
+// the board, so each shot rebuilds it further (spec #decision-spawn).
+export function extendingChars(board, lex) {
+  const out = new Set();
+  const spots = reachableCells(board);
+  const on = cells(board);
+  for (const word of lex.list) {
+    const chars = [...word];
+    const run = (b, cell, ch) => Math.max(0, ...chars.map((x, i) => (x === ch ? runThrough(b, cell, chars, i) : 0)));
+    const best = Math.max(0, ...on.map((x) => run(board, x, x.ch)));
+    for (const ch of new Set(chars)) {
+      if (spots.some((cell) => run(put(board, cell, ch), cell, ch) > best)) out.add(ch);
+    }
+  }
+  return out;
+}
+
+// ---- Launcher pair, from the unfinished deck words in lex (spec
+// #decision-spawn). When some word can be completed by one shot: 3 in 4 a
+// completing character, else any needed one, and next is forced completing
+// when current completes nothing. When none can: every bubble extends a word.
+// `held` (the old next) stays current only if it still fits this board.
+
+function launcher(board, lex, rng, held) {
+  const chars = [...lex.byChar.keys()].sort();
+  if (!chars.length) return [null, null];
   const completing = [...completingChars(board, lex)].sort();
-  if (!completing.length) return rng.pick(chars);
-  if (partner !== undefined && !completing.includes(partner)) return rng.pick(completing);
-  return rng.next() < 0.75 ? rng.pick(completing) : rng.pick(chars);
+  const extending = completing.length ? [] : [...extendingChars(board, lex)].sort();
+  const pool = completing.length || !extending.length ? chars : extending;
+  const draw = (partner) => {
+    if (!completing.length) return rng.pick(pool);
+    if (partner !== undefined && !completing.includes(partner)) return rng.pick(completing);
+    return rng.next() < 0.75 ? rng.pick(completing) : rng.pick(chars);
+  };
+  const current = pool.includes(held) ? held : draw();
+  return [current, draw(current)];
 }
 
 // ---- Boards: whole words laid along chains of touching cells.
 
 export const roundRows = (round) => Math.min(4 + round, 9);
 export const roundShots = (round) => Math.max(9 - round, 4);
+export const roundDeck = (round) => Math.min(7 + round, 12);
+
+const dealDeck = (lex, round, rng) => rng.shuffle(lex.list).slice(0, roundDeck(round));
 
 function chainFrom(board, start, length, rows, rng) {
   const used = new Set([key(start)]);
@@ -347,19 +408,24 @@ function chainFrom(board, start, length, rows, rng) {
   return grow([start]);
 }
 
-function buildBoard(lex, rows, rng) {
+// Deck words are laid in a shuffled cycle, so the first pass lays each one in
+// the top rows; a word that does not fit a cell yields to the next.
+function buildBoard(deck, rows, rng) {
   let board = { shift: 0, rows: [] };
   for (let r = 0; r < rows; r++) board.rows.push(emptyRow(board, r));
   const groups = [];
+  const cycle = rng.shuffle(deck);
+  let turn = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < rowWidth(board, r); c++) {
-      if (at(board, { r, c }) || !lex.list.length) continue;
-      for (let attempt = 0; attempt < 8; attempt++) {
-        const chars = [...rng.pick(lex.list)];
+      if (at(board, { r, c }) || !cycle.length) continue;
+      for (let attempt = 0; attempt < cycle.length; attempt++) {
+        const chars = [...cycle[(turn + attempt) % cycle.length]];
         const chain = chainFrom(board, { r, c }, chars.length, rows, rng);
         if (!chain) continue;
         chain.forEach((cell, i) => (board.rows[cell.r][cell.c] = chars[i]));
         groups.push(chain);
+        turn += attempt + 1;
         break;
       }
     }
@@ -381,8 +447,11 @@ function newTopRow(board, lex, rng) {
     const left = width - c;
     const fits = [2, 3, 4].filter((n) => n <= left && lex.byLen[n].length);
     const clean = fits.filter((n) => left - n !== 1);
-    if (!fits.length) break;
-    const chars = [...rng.pick(lex.byLen[rng.pick(clean.length ? clean : fits)])];
+    // No whole word fits the cells left: the start of one fills them, so the
+    // row has no gap a bubble below could hang free from.
+    const chars = fits.length
+      ? [...rng.pick(lex.byLen[rng.pick(clean.length ? clean : fits)])]
+      : [...rng.pick(lex.list)].slice(0, left);
     if (rng.next() < 0.5) chars.reverse();
     for (const ch of chars) row[c++] = ch;
   }
@@ -397,20 +466,42 @@ function ceilingDrop(board, lex, rng) {
 
 // ---- Game
 
-export function createGame({ words, levels = [1, 2], seed = 1, board, current, next, round = 1, score = 0 }) {
+// Deck words still unfinished: not popped and with a character on the board.
+// Then every bubble no unfinished word needs drops, with whatever it held up,
+// repeating until none is left over (spec #decision-deck).
+function settleDeck(board, left) {
+  const drop = [];
+  for (;;) {
+    const on = new Set(cells(board).map((x) => x.ch));
+    left = left.filter((w) => [...w].some((ch) => on.has(ch)));
+    const need = new Set(left.flatMap((w) => [...w]));
+    const orphans = cells(board).filter((x) => !need.has(x.ch));
+    if (!orphans.length) return { board, left, drop };
+    board = removeCells(board, orphans);
+    const loose = fallen(board);
+    board = removeCells(board, loose);
+    drop.push(...orphans, ...loose);
+  }
+}
+
+export function createGame({ words, levels = [1, 2], seed = 1, board, deck, current, next, round = 1, score = 0 }) {
   const lexicon = makeLexicon(words, levels);
   const rng = makeRng(seed);
-  const b = board ?? buildBoard(lexicon, roundRows(round), rng);
-  const cur = current ?? drawLauncher(b, lexicon, rng);
-  const nxt = next ?? drawLauncher(b, lexicon, rng, cur);
+  // A fixture board without a deck plays every word with a character in play.
+  const inPlay = board && new Set([...cells(board).map((x) => x.ch), current, next]);
+  const d = deck ?? (board ? lexicon.list.filter((w) => [...w].some((ch) => inPlay.has(ch))) : dealDeck(lexicon, round, rng));
+  const b = board ?? buildBoard(d, roundRows(round), rng);
+  const lex = deckLexicon(lexicon, d);
+  const [cur, nxt] = current && next ? [current, next] : launcher(b, lex, rng, current);
   return {
     lexicon,
     levels: [...levels],
     seed: rng.state,
     board: b,
+    deck: [...d],
+    left: [...d],
     current: cur,
     next: nxt,
-    drawn: [current == null && cur, next == null && nxt].filter(Boolean),
     score,
     round,
     streak: 0,
@@ -421,7 +512,7 @@ export function createGame({ words, levels = [1, 2], seed = 1, board, current, n
   };
 }
 
-export const swap = (game) => ({ ...game, current: game.next, next: game.current, drawn: [] });
+export const swap = (game) => ({ ...game, current: game.next, next: game.current });
 
 export function shoot(game, angleDeg) {
   if (game.over) return { game, events: null };
@@ -431,14 +522,15 @@ export function shoot(game, angleDeg) {
   return result;
 }
 
-// Everything after the current bubble settles into `cell`, in spec order:
-// words, pop, fall, score, round clear, ceiling, game over.
+// Everything after the current bubble settles into `cell`, in spec order
+// (#rule-resolve): words, pop, fall, finish deck words and drop left-overs,
+// score, round clear, ceiling, game over.
 export function resolveShot(game, cell) {
   if (game.over) return { game, events: null };
   const lex = game.lexicon;
   const rng = makeRng(game.seed);
   let board = put(game.board, cell, game.current);
-  const words = findWords(board, cell, lex);
+  const words = findWords(board, cell, deckLexicon(lex, game.left));
 
   const length = new Map();
   for (const w of words) {
@@ -449,8 +541,13 @@ export function resolveShot(game, cell) {
     return { r, c, ch: at(board, { r, c }) };
   });
   board = removeCells(board, popped);
-  const drop = popped.length ? fallen(board) : [];
-  board = removeCells(board, drop);
+  const loose = popped.length ? fallen(board) : [];
+  board = removeCells(board, loose);
+  const names = words.map((w) => w.word);
+  const settled = settleDeck(board, game.left.filter((w) => !names.includes(w)));
+  board = settled.board;
+  let left = settled.left;
+  const drop = [...loose, ...settled.drop];
 
   const streak = popped.length ? game.streak + 1 : 0;
   const combo = Math.min(Math.max(streak, 1), 5);
@@ -460,43 +557,38 @@ export function resolveShot(game, cell) {
   let score = game.score + points;
   let misses = popped.length ? 0 : game.misses + 1;
   let round = game.round;
+  let deck = game.deck;
   let roundClear = null;
   let ceiling = false;
 
-  if (!cells(board).length) {
+  if (!left.length) {
     roundClear = { round, bonus: 1000 * round };
     score += roundClear.bonus;
     round += 1;
     misses = 0;
-    board = buildBoard(lex, roundRows(round), rng);
+    deck = dealDeck(lex, round, rng);
+    left = [...deck];
+    board = buildBoard(deck, roundRows(round), rng);
   } else if (misses >= roundShots(round)) {
-    board = ceilingDrop(board, lex, rng);
+    board = ceilingDrop(board, deckLexicon(lex, left), rng);
     ceiling = true;
     misses = 0;
   }
   const over = lowestRow(board) >= LINE_ROW;
 
-  let current = game.next;
-  let next;
-  let drawn;
-  if (roundClear) {
-    current = drawLauncher(board, lex, rng);
-    next = drawLauncher(board, lex, rng, current);
-    drawn = [current, next];
-  } else {
-    next = over ? null : drawLauncher(board, lex, rng, current);
-    drawn = [next];
-  }
+  const [current, next] = over
+    ? [game.next, null]
+    : launcher(board, deckLexicon(lex, left), rng, roundClear ? undefined : game.next);
 
-  const names = words.map((w) => w.word);
   const history = [...names, ...game.history.filter((w) => !names.includes(w))];
   const after = {
     ...game,
     seed: rng.state,
     board,
+    deck,
+    left,
     current,
     next,
-    drawn,
     score,
     round,
     streak,
@@ -513,6 +605,7 @@ export function resolveShot(game, cell) {
       words,
       popped,
       fallen: drop,
+      wordsLeft: roundClear ? 0 : left.length,
       points,
       combo,
       score,
