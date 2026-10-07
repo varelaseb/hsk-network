@@ -35,7 +35,10 @@
 //       counts differ: { kind: "line", han: piece, reading: piece }
 //           (#zhuyin-fallback: the reading on one line under the characters)
 //   hanLang(mode) -> "zh-Hant" | "zh-Hans"   language tag for Chinese text in the
-//       mode, so the face shows Taiwan or mainland glyph forms (#face-lang).
+//       mode, for voices and assistive technology; never the glyph shape (#face-lang).
+//   hanFaces(mode) -> CSS font family list of the Chinese faces the mode names:
+//       pinyin names the mainland forms face before the Chinese face, Zhuyin
+//       never names it (#face-forms). The page sets html[data-script] for CSS.
 //   wordLabel(word, mode) -> string     word.trad or word.simp
 //   charLabel(ch, mode, chars) -> string
 //       ch, or in pinyin mode its Simplified form from chars (graph.json
@@ -53,6 +56,8 @@ export const DEFAULT_MODE = "zhuyin";
 
 const isPinyin = (mode) => mode === "pinyin";
 export const hanLang = (mode) => (isPinyin(mode) ? "zh-Hans" : "zh-Hant");
+export const hanFaces = (mode) =>
+  (isPinyin(mode) ? '"Noto Sans CJK TC Mainland", "Noto Sans CJK TC"' : '"Noto Sans CJK TC"');
 
 // ---- Pinyin tone marks.
 
