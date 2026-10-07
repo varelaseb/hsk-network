@@ -17,9 +17,9 @@ import { pieceNode, headwordNode } from "../headword.js";
 const FILLER = ["杯北不出打腦視影", "出打腦視影東多", "視影東多杯北不出", "多杯北不出打腦", "不出打腦視影東多", "腦視影東多杯北",
   "東多杯北不出打腦", "北不出打腦視影", "打腦視影東多杯北", "影東多杯北不出", "杯北不出打腦視影", "出打腦學影東多"];
 const FIXTURES = {
-  pop: { rows: ["中國喜歡火車站.", "..學...."], current: "生", next: "中" },
-  fall: { rows: ["中國喜歡火車站.", "..學....", "...校....", "...杯子.."], current: "生", next: "中" },
-  clear: { rows: ["...學...."], current: "生", next: "學" },
+  pop: { rows: ["中國喜歡火車站.", "..學...."], deck: ["中國", "喜歡", "火車站", "學生"], current: "生", next: "中" },
+  fall: { rows: ["中國喜歡火車站.", "..學....", "...校....", "...杯子.."], deck: ["中國", "喜歡", "火車站", "學生", "學校", "杯子"], current: "生", next: "中" },
+  clear: { rows: ["...學...."], deck: ["學生"], current: "生", next: "學" },
   over: { rows: FILLER, current: "生", next: "兒" },
 };
 
@@ -60,6 +60,7 @@ const screens = { start: $("start"), paused: $("paused"), over: $("over") };
 const hud = $("hud");
 const scoreEl = $("score");
 const roundEl = $("round");
+const wordsLeftEl = $("words-left");
 const comboEl = $("combo");
 const hintEl = $("hint");
 const cardEl = $("wcard");
@@ -492,6 +493,7 @@ function tickScore() {
 
 function renderHud() {
   roundEl.textContent = `Round ${game.round}`;
+  wordsLeftEl.textContent = `${game.left.length} ${game.left.length === 1 ? "word" : "words"} left`;
   comboEl.hidden = game.combo <= 1;
   comboEl.textContent = `×${game.combo}`;
 }
@@ -515,7 +517,7 @@ function newGame() {
     words,
     levels: settings.levels,
     seed,
-    ...(f && { board: parseBoard(f.rows), current: f.current, next: f.next }),
+    ...(f && { board: parseBoard(f.rows), deck: f.deck, current: f.current, next: f.next }),
   });
   view = { board: game.board, dropFrom: -(lowestRow(game.board) + 2) * ROW_H, dropAt: reduced.matches ? null : 0, dropDur: 520 };
   flight = null;

@@ -6,8 +6,8 @@ import { readFileSync } from "node:fs";
 import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
   makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
-  createGame, shoot, resolveShot, swap, completingChars, boardChars,
-  roundRows, roundShots, lowestRow, pronunciation, wordReading, charReadings, readingOf,
+  createGame, shoot, resolveShot, swap, completingChars, boardChars, cells, deckLexicon,
+  roundRows, roundShots, roundDeck, lowestRow, pronunciation, wordReading, charReadings, readingOf,
 } from "../../site/bubbles/rules.js";
 
 const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
@@ -18,6 +18,8 @@ const WORDS = [
 const LEX = makeLexicon(WORDS, [1, 2]);
 const keys = (cells) => [...new Set(cells.map(({ r, c }) => `${r},${c}`))].sort();
 const popped = (board, cell, lex = LEX) => keys(findWords(board, cell, lex).flatMap((w) => w.cells));
+const fixture = (rows, extra = {}) =>
+  createGame({ words: WORDS, seed: 5, board: parseBoard(rows), current: "生", next: "中", ...extra });
 const GRAPH = JSON.parse(readFileSync(new URL("../../site/data/graph.json", import.meta.url), "utf8"));
 
 // test-detect
@@ -89,7 +91,7 @@ test("fall: popping a word drops what hung only from it; a miss drops nothing", 
   const { events } = resolveShot(game, { r: 1, c: 1 });
   assert.deepEqual(keys(events.popped), ["1,0", "1,1"]);
   assert.deepEqual(keys(events.fallen), ["2,0"]);
-  game = createGame({ words: WORDS, seed: 1, board, current: "你", next: "中" });
+  game = createGame({ words: WORDS, seed: 1, board, current: "國", next: "中" });
   assert.deepEqual(resolveShot(game, { r: 1, c: 1 }).events.fallen, []);
 });
 
@@ -146,32 +148,162 @@ test("flight: a shot settles into the cell its guide predicts", () => {
   assert.deepEqual(events.path, a.path);
 });
 
-// test-spawn
+// test-spawn, test-decks
+const LEVELS = [[1], [1, 2]];
+const needed = (game) => new Set(game.left.flatMap((w) => [...w]));
+const assertNoOrphan = (game, tag) => {
+  const need = needed(game);
+  for (const x of cells(game.board)) assert.ok(need.has(x.ch), `${tag}: orphan ${x.ch} at ${x.r},${x.c}`);
+};
+const assertLauncher = (game, tag) => {
+  const need = needed(game);
+  for (const ch of game.drawn) assert.ok(need.has(ch), `${tag}: drew ${ch}, needed by no unfinished deck word`);
+  const done = completingChars(game.board, deckLexicon(game.lexicon, game.left));
+  assert.ok(done.has(game.current) || done.has(game.next), `${tag}: neither ${game.current} nor ${game.next} completes`);
+};
+
 function playRandom(seed, shots, levels, check) {
   let game = createGame({ words: GRAPH.words, levels, seed });
   let s = seed * 7919 + 13;
   const rnd = () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648);
+  check(game, null);
   for (let i = 0; i < shots && !game.over; i++) {
-    check(game);
-    ({ game } = shoot(game, 10 + rnd() * 160));
+    let events;
+    ({ game, events } = shoot(game, 10 + rnd() * 160));
+    check(game, events);
   }
 }
 
-test("spawn: launcher bubbles come from the board and keep the game playable (acceptance-spawn)", () => {
-  let checked = 0;
-  for (let seed = 1; seed <= 30; seed++) {
-    playRandom(seed, 25, seed % 3 === 0 ? [1] : [1, 2], (game) => {
-      const chars = new Set(boardChars(game.board));
-      const done = completingChars(game.board, game.lexicon);
-      if (done.size) {
-        assert.ok(done.has(game.current) || done.has(game.next), `seed ${seed}: neither ${game.current} nor ${game.next} completes`);
-        checked++;
-      }
-      if (!game.drawn) return;
-      for (const ch of game.drawn) assert.ok(chars.has(ch), `seed ${seed}: drew ${ch} not on board`);
-    });
+// Test player: shoots the current bubble where a word pops, else swaps and
+// shoots the next one there, else (never expected) shoots straight up.
+function popAngle(game, ch) {
+  const lex = deckLexicon(game.lexicon, game.left);
+  for (let a = MIN_ANGLE; a <= 170; a++) {
+    const { cell } = aim(game, a);
+    if (!cell) continue;
+    const rows = game.board.rows.map((row) => [...row]);
+    while (rows.length <= cell.r) rows.push(new Array((cell.r + game.board.shift) & 1 ? COLS - 1 : COLS).fill(null));
+    rows[cell.r][cell.c] = ch;
+    if (findWords({ shift: game.board.shift, rows }, cell, lex).length) return a;
   }
-  assert.ok(checked > 100);
+  return null;
+}
+
+test("decks: no board bubble is an orphan after any shot or ceiling drop (acceptance-no-orphan)", () => {
+  let drops = 0;
+  let shots = 0;
+  for (const levels of LEVELS) {
+    for (let seed = 1; seed <= 20; seed++) {
+      playRandom(seed, 30, levels, (game, events) => {
+        assertNoOrphan(game, `levels ${levels} seed ${seed}`);
+        assert.deepEqual(fallen(game.board), []);
+        if (events?.ceilingDrop) drops++;
+        shots++;
+      });
+    }
+  }
+  assert.ok(drops > 10, `ceiling drops seen: ${drops}`);
+  assert.ok(shots > 500);
+});
+
+test("decks: launcher bubbles are needed characters and the current or next completes (acceptance-spawn)", () => {
+  let checked = 0;
+  for (const levels of LEVELS) {
+    for (let seed = 1; seed <= 15; seed++) {
+      playRandom(seed, 25, levels, (game) => {
+        if (game.over) return;
+        assertLauncher(game, `levels ${levels} seed ${seed}`);
+        checked++;
+      });
+    }
+  }
+  assert.ok(checked > 300);
+});
+
+test("decks: a test player who pops every shot clears every round with no ceiling drop (acceptance-round-completes)", () => {
+  let rounds = 0;
+  for (const levels of LEVELS) {
+    for (let seed = 1; seed <= 12; seed++) {
+      let game = createGame({ words: GRAPH.words, levels, seed });
+      const tag = () => `levels ${levels} seed ${seed} round ${game.round}`;
+      while (game.round <= 3) {
+        assertNoOrphan(game, tag());
+        assertLauncher(game, tag());
+        let a = popAngle(game, game.current);
+        if (a === null) {
+          a = popAngle(game, game.next);
+          assert.notEqual(a, null, `${tag()}: no popping shot for ${game.current} or ${game.next}`);
+          game = swap(game);
+        }
+        const before = game.left.length;
+        const { game: after, events } = shoot(game, a);
+        assert.ok(events.words.length, `${tag()}: shot did not pop`);
+        assert.equal(events.ceilingDrop, false, tag());
+        if (events.roundClear) {
+          assert.equal(after.round, game.round + 1);
+          assert.equal(after.left.length, roundDeck(after.round));
+          rounds++;
+        } else {
+          assert.ok(events.wordsLeft < before, `${tag()}: words left did not drop`);
+          assert.equal(events.wordsLeft, after.left.length);
+        }
+        game = after;
+      }
+    }
+  }
+  assert.equal(rounds, 2 * 12 * 3);
+});
+
+test("decks: deck size per round, distinct words, each laid on the new board", () => {
+  assert.deepEqual([1, 2, 3, 5, 6, 9].map(roundDeck), [8, 9, 10, 12, 12, 12]);
+  for (const levels of LEVELS) {
+    for (let seed = 1; seed <= 20; seed++) {
+      for (const round of [1, 4]) {
+        const game = createGame({ words: GRAPH.words, levels, seed, round });
+        assert.equal(game.deck.length, roundDeck(round));
+        assert.equal(new Set(game.deck).size, game.deck.length);
+        assert.deepEqual(game.left, game.deck);
+        for (const w of game.deck) {
+          assert.ok([...w].length >= 2 && [...w].length <= 4, w);
+          assert.ok(game.lexicon.entries.get(w).every((e) => levels.includes(e.level)), w);
+          assert.ok([...w].every((ch) => boardChars(game.board).includes(ch)), `seed ${seed}: ${w} not laid`);
+        }
+      }
+    }
+  }
+});
+
+test("decks: a finished word's left-over bubbles drop and score as fallen; shared characters stay", () => {
+  // 學生 pops; the other 生 is left over; 學 stays for 學校.
+  const game = createGame({ words: WORDS, seed: 5, board: parseBoard(["學.中國生學校."]), deck: ["學生", "中國", "學校"], current: "生", next: "中" });
+  assert.deepEqual(game.left, ["學生", "中國", "學校"]);
+  const { events, game: after } = resolveShot(game, { r: 0, c: 1 });
+  assert.deepEqual(events.words.map((w) => w.word), ["學生"]);
+  assert.deepEqual(keys(events.fallen), ["0,4"]);
+  assert.equal(events.points, 400 + 50);
+  assert.equal(events.wordsLeft, 2);
+  assert.deepEqual(after.left, ["中國", "學校"]);
+  assert.deepEqual(boardChars(after.board), ["中", "國", "學", "校"].sort());
+});
+
+test("decks: only unfinished deck words pop (acceptance-detect)", () => {
+  // 學生 is an HSK word but not in this deck; a finished word never pops again.
+  const g = createGame({ words: WORDS, seed: 5, board: parseBoard(["學.中國學..."]), deck: ["中國", "學校"], current: "生", next: "中" });
+  const miss = resolveShot(g, { r: 0, c: 1 });
+  assert.deepEqual(miss.events.words, []);
+  assert.equal(miss.game.misses, 1);
+  const done = createGame({ words: WORDS, seed: 5, board: parseBoard(["學.中國學生.."]), deck: ["學生", "中國"], current: "生", next: "學" });
+  let { game } = resolveShot(done, { r: 0, c: 1 });
+  assert.deepEqual(game.left, ["中國"]);
+  assert.deepEqual(boardChars(game.board), ["中", "國"].sort());
+});
+
+test("decks: popping a deck word drops words left by one (acceptance-words-left)", () => {
+  const game = fixture(["學.中國.校..", "......."], { deck: ["學生", "中國", "學校"] });
+  assert.equal(game.left.length, 3);
+  const { events, game: after } = resolveShot(game, { r: 0, c: 1 });
+  assert.equal(events.wordsLeft, 2);
+  assert.equal(after.left.length, 2);
 });
 
 test("spawn: one level gives only that level's characters", () => {
@@ -196,18 +328,16 @@ test("spawn: same seed, levels, and shots replay the same game", () => {
   assert.deepEqual(run(), run());
 });
 
-test("spawn: new boards are whole words, every bubble hangs from the ceiling", () => {
+test("spawn: new boards are whole deck words, every bubble hangs from the ceiling", () => {
   for (let seed = 1; seed <= 20; seed++) {
     const game = createGame({ words: GRAPH.words, levels: [1, 2], seed });
     assert.deepEqual(fallen(game.board), []);
     assert.equal(lowestRow(game.board), roundRows(1) - 1);
-    assert.ok(boardChars(game.board).length >= 20);
+    assertNoOrphan(game, `seed ${seed}`);
   }
 });
 
 // test-progress
-const fixture = (rows, extra = {}) =>
-  createGame({ words: WORDS, seed: 5, board: parseBoard(rows), current: "生", next: "中", ...extra });
 
 test("progress: popped characters score 100 times word length", () => {
   const { events, game } = resolveShot(fixture(["學.中國....", "......."]), { r: 0, c: 1 });
@@ -227,18 +357,18 @@ test("progress: fallen bubbles score 50 each, doubling for every 5 in one drop",
 });
 
 test("progress: combo multiplies consecutive popping shots, a miss resets", () => {
-  let game = fixture(["學.國學.國中."]);
+  let game = { ...fixture(["學.中.喜.謝謝"], { deck: ["學生", "中國", "喜歡", "謝謝"] }), streak: 0 };
   const mults = [];
   let r;
-  for (const [ch, c] of [["生", 1], ["生", 4], ["國", 7], ["中", 1]]) {
+  for (const [ch, c] of [["生", 1], ["國", 3], ["歡", 5]]) {
     r = resolveShot({ ...game, current: ch }, { r: 0, c });
     game = r.game;
     mults.push(r.events.combo);
   }
-  assert.deepEqual(mults, [1, 2, 3, 4]);
-  assert.equal(r.events.points, 400 * 4);
-  assert.equal(game.score, 400 * (1 + 2 + 3 + 4));
-  const miss = resolveShot({ ...game, current: "你" }, { r: 0, c: 0 });
+  assert.deepEqual(mults, [1, 2, 3]);
+  assert.equal(r.events.points, 400 * 3);
+  assert.equal(game.score, 400 * (1 + 2 + 3));
+  const miss = resolveShot({ ...game, current: "謝" }, { r: 1, c: 0 });
   assert.equal(miss.events.points, 0);
   assert.equal(miss.game.combo, 1);
 });
@@ -284,14 +414,23 @@ test("progress: clearing the board scores the round bonus and starts the next ro
   assert.equal(events.score, 1400);
   assert.equal(game.round, 2);
   assert.equal(lowestRow(game.board), roundRows(2) - 1);
-  assert.ok(new Set(boardChars(game.board)).has(game.current));
+  assert.ok(needed(game).has(game.current));
   assert.equal(game.over, false);
+});
+
+test("progress: popping the last deck word clears the round (acceptance-round)", () => {
+  const { events, game } = resolveShot(fixture(["學.中國....", "......."], { words: GRAPH.words, deck: ["學生"] }), { r: 0, c: 1 });
+  assert.deepEqual(events.roundClear, { round: 1, bonus: 1000 });
+  assert.equal(events.fallen.length, 2); // 中國 was left over
+  assert.equal(game.round, 2);
+  assert.equal(game.deck.length, roundDeck(2));
+  assert.deepEqual(game.left, game.deck);
 });
 
 test("progress: a bubble settling below the line ends the game", () => {
   const rows = ["中國中國中國中國"];
   for (let r = 1; r < LINE_ROW; r++) rows.push(r % 2 ? "國......" : "中.......");
-  const game = fixture(rows, { current: "你" });
+  const game = fixture(rows, { current: "學", deck: ["中國", "學生"] });
   assert.equal(lowestRow(game.board), LINE_ROW - 1);
   const { events, game: after } = resolveShot(game, { r: LINE_ROW, c: 0 });
   assert.equal(events.gameOver, true);
@@ -309,11 +448,11 @@ test("progress: a ceiling drop that pushes a bubble below the line ends the game
 });
 
 test("progress: popped words are kept newest first, each once", () => {
-  let game = fixture(["學.學.學中..", "......."]);
+  let game = fixture(["學.學.學中..", "......."], { deck: ["學生", "中國", "學校"] });
   ({ game } = resolveShot({ ...game, current: "生" }, { r: 0, c: 1 }));
   ({ game } = resolveShot({ ...game, current: "國" }, { r: 0, c: 6 }));
-  ({ game } = resolveShot({ ...game, current: "生" }, { r: 0, c: 3 }));
-  assert.deepEqual(game.history, ["學生", "中國"]);
+  ({ game } = resolveShot({ ...game, current: "校" }, { r: 0, c: 3 }));
+  assert.deepEqual(game.history, ["學校", "中國", "學生"]);
 });
 
 test("swap trades current and next", () => {
