@@ -6,7 +6,7 @@ Canonical spec: [docs/specs/hsk-network.spec.html](docs/specs/hsk-network.spec.h
 
 ## Layout
 
-- `site/`: published directory, served unchanged by GitHub Pages. `index.html`, `app.js`, `style.css`, `vendor/d3.v7.min.js` (pinned, ISC), `data/graph.json` (built, committed).
+- `site/`: published directory, served unchanged by GitHub Pages. `index.html`, `app.js`, `style.css`, `vendor/d3.v7.min.js` (pinned, ISC), `data/graph.json` and `data/drawing.json` (built, committed; GlyphWiki license beside it).
 - `data/`: vendored HSK 2.0 lists (copied unchanged, source URL and commit noted beside them) and the match override file.
 - `site/bubbles/`: HSK bubbles game. `rules.js` is the pure game rules module (exports documented at its top).
 - `scripts/build_data.py`: data pipeline. Writes `site/data/graph.json`.

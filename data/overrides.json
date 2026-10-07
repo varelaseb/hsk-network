@@ -195,7 +195,13 @@
   "id": "c-不",
   "char": "不",
   "parts": [],
-  "reason": "pictograph; its IDS splits it into strokes with no meaning"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    0
+   ]
+  },
+  "reason": "pictograph; its IDS splits it into strokes with no meaning; drawing: radical 一 is its top stroke"
  },
  {
   "id": "c-電",
@@ -246,7 +252,24 @@
     "meaning": "line"
    }
   ],
-  "reason": "IDS writes 小 as 𡭔 and its last stroke as ㇒; both have no kDefinition"
+  "strokes": {
+   "parts": {
+    "小": [
+     0,
+     1,
+     2
+    ],
+    "丿": [
+     3
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2
+   ]
+  },
+  "reason": "IDS writes 小 as 𡭔 and its last stroke as ㇒; both have no kDefinition; drawing: its glyph draws loose strokes"
  },
  {
   "id": "c-看",
@@ -282,25 +305,56 @@
   "id": "c-能",
   "char": "能",
   "parts": [],
-  "reason": "pictograph of a bear; its parts 䏍 and 𫧇 have no fitting meaning"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "reason": "pictograph of a bear; its parts 䏍 and 𫧇 have no fitting meaning; drawing: radical 肉 is the 月 at the bottom left"
  },
  {
   "id": "c-年",
   "char": "年",
   "parts": [],
-  "reason": "pictograph of a man carrying grain; its parts are unencoded or lack a kDefinition"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    2,
+    3,
+    4
+   ]
+  },
+  "reason": "pictograph of a man carrying grain; its parts are unencoded or lack a kDefinition; drawing: radical 干 is the middle and long horizontals and the long vertical"
  },
  {
   "id": "c-上",
   "char": "上",
   "parts": [],
-  "reason": "indicative sign, a mark above a line; ⺊ has no kDefinition"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    2
+   ]
+  },
+  "reason": "indicative sign, a mark above a line; ⺊ has no kDefinition; drawing: radical 一 is the bottom stroke"
  },
  {
   "id": "c-午",
   "char": "午",
   "parts": [],
-  "reason": "pictograph of a pestle; its part 𠂉 has no kDefinition"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    2,
+    3
+   ]
+  },
+  "reason": "pictograph of a pestle; its part 𠂉 has no kDefinition; drawing: radical 十 is the long horizontal and the vertical"
  },
  {
   "id": "c-是",
@@ -327,7 +381,16 @@
   "id": "c-我",
   "char": "我",
   "parts": [],
-  "reason": "pictograph of a pronged halberd; IDS splits it into strokes and an unencoded form"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    1,
+    4,
+    5,
+    6
+   ]
+  },
+  "reason": "pictograph of a pronged halberd; IDS splits it into strokes and an unencoded form; drawing: radical 戈 is the long horizontal, the slanted hook, its sweep, and the dot"
  },
  {
   "id": "c-生",
@@ -348,7 +411,26 @@
     "meaning": "soil"
    }
   ],
-  "reason": "its outer part is an unencoded form of 才, its sound part"
+  "strokes": {
+   "parts": {
+    "才": [
+     0,
+     1,
+     2
+    ],
+    "土": [
+     3,
+     4,
+     5
+    ]
+   },
+   "radical": [
+    3,
+    4,
+    5
+   ]
+  },
+  "reason": "its outer part is an unencoded form of 才, its sound part; drawing: its glyph draws loose strokes"
  },
  {
   "id": "c-小",
@@ -366,7 +448,14 @@
   "id": "c-以",
   "char": "以",
   "parts": [],
-  "reason": "pictograph; IDS splits it into 人 and strokes with no meaning"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    3,
+    4
+   ]
+  },
+  "reason": "pictograph; IDS splits it into 人 and strokes with no meaning; drawing: radical 人 is the two right strokes"
  },
  {
   "id": "c-邊",
@@ -393,7 +482,16 @@
   "id": "c-為",
   "char": "為",
   "parts": [],
-  "reason": "pictograph of a hand leading an elephant; IDS splits it into strokes"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    8,
+    9,
+    10,
+    11
+   ]
+  },
+  "reason": "pictograph of a hand leading an elephant; IDS splits it into strokes; drawing: radical 火 is the four dots below"
  },
  {
   "id": "c-面",
@@ -424,7 +522,13 @@
   "char": "中",
   "parts": [],
   "radicalMeaning": "line",
-  "reason": "indicative sign, a line through a center; kDefinition of radical 丨 starts with a Hangzhou numeral sense"
+  "strokes": {
+   "parts": {},
+   "radical": [
+    4
+   ]
+  },
+  "reason": "indicative sign, a line through a center; kDefinition of radical 丨 starts with a Hangzhou numeral sense; drawing: radical 丨 is the long vertical"
  },
  {
   "id": "c-回",
@@ -440,7 +544,29 @@
    }
   ],
   "radicalMeaning": "enclosure",
-  "reason": "kDefinition of 囗 starts with erect, a sense it does not have here"
+  "strokes": {
+   "parts": {
+    "囗": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "口": [
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3
+   ]
+  },
+  "reason": "kDefinition of 囗 starts with erect, a sense it does not have here; drawing: its glyph draws loose strokes"
  },
  {
   "id": "c-麼",
@@ -456,5 +582,304 @@
    }
   ],
   "reason": "kDefinition of 幺 starts with one; tiny is its sense here"
+ },
+ {
+  "id": "c-氣",
+  "char": "氣",
+  "strokes": {
+   "parts": {
+    "气": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "米": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  "reason": "drawing: its glyph draws 气 and 米 as loose strokes"
+ },
+ {
+  "id": "c-出",
+  "char": "出",
+  "strokes": {
+   "parts": {
+    "屮": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "凵": [
+     4,
+     5,
+     6
+    ]
+   },
+   "radical": [
+    4,
+    5,
+    6
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes; 屮 is the top cup and the long vertical"
+ },
+ {
+  "id": "c-大",
+  "char": "大",
+  "strokes": {
+   "parts": {
+    "一": [
+     0
+    ],
+    "人": [
+     1,
+     2
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
+ },
+ {
+  "id": "c-高",
+  "char": "高",
+  "strokes": {
+   "parts": {
+    "亠": [
+     0,
+     1
+    ],
+    "口": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "冋": [
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  },
+  "reason": "drawing: its glyph joins 亠 with the top 口 and the frame of 冋 in one unencoded component"
+ },
+ {
+  "id": "c-家",
+  "char": "家",
+  "strokes": {
+   "parts": {
+    "宀": [
+     0,
+     1,
+     2,
+     10
+    ],
+    "豕": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    10
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes, the dot of 宀 last"
+ },
+ {
+  "id": "c-天",
+  "char": "天",
+  "strokes": {
+   "parts": {
+    "一": [
+     0
+    ],
+    "大": [
+     1,
+     2,
+     3
+    ]
+   },
+   "radical": [
+    1,
+    2,
+    3
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
+ },
+ {
+  "id": "c-見",
+  "char": "見",
+  "strokes": {
+   "parts": {
+    "目": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "儿": [
+     6,
+     7
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
+ },
+ {
+  "id": "c-果",
+  "char": "果",
+  "strokes": {
+   "parts": {
+    "日": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "木": [
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "radical": [
+    5,
+    6,
+    7,
+    8
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes; the vertical through 日 is 木's"
+ },
+ {
+  "id": "c-去",
+  "char": "去",
+  "strokes": {
+   "parts": {
+    "土": [
+     0,
+     1,
+     2
+    ],
+    "厶": [
+     3,
+     4,
+     5
+    ]
+   },
+   "radical": [
+    3,
+    4,
+    5
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
+ },
+ {
+  "id": "c-下",
+  "char": "下",
+  "strokes": {
+   "parts": {
+    "一": [
+     0
+    ],
+    "卜": [
+     1,
+     2
+    ]
+   },
+   "radical": [
+    0
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
+ },
+ {
+  "id": "c-再",
+  "char": "再",
+  "strokes": {
+   "parts": {
+    "一": [
+     6
+    ],
+    "冉": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "radical": [
+    2,
+    3,
+    4
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes, the top 一 last; radical 冂 is the frame of 冉"
  }
 ]
