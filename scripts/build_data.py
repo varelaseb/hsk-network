@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-"""Build site/data/graph.json and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, and BabelStone IDS.
+"""Build site/data/graph.json, site/data/drawing.json, and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, BabelStone IDS, and GlyphWiki.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
-#schema-example, #schema-sense, #senses-table, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules, #audio-rules).
+#schema-example, #schema-sense, #senses-table, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules,
+#drawing-rules, #drawing-file, #drawing-schema, #audio-rules).
 Python standard library only.
 
 Usage: python3 scripts/build_data.py [--cedict PATH] [--refresh]
 """
 
 import argparse
+import datetime
 import gzip
 import json
 import os
 import re
 import sys
+import tarfile
 import tempfile
 import unicodedata
 import urllib.parse
@@ -37,7 +40,13 @@ RADICALS_URL = f"https://www.unicode.org/Public/{UNIHAN_VERSION}/ucd/CJKRadicals
 UNIHAN_CACHE = CACHE_DIR / f"unicode-{UNIHAN_VERSION}"
 IDS_URL = "https://babelstone.co.uk/CJK/IDS.TXT"
 IDS_CACHE = CACHE_DIR / "IDS.TXT"
+GLYPHWIKI_URL = "https://glyphwiki.org/dump.tar.gz"
+GLYPHWIKI_CACHE = CACHE_DIR / "glyphwiki"
+GLYPHWIKI_MEMBERS = ("dump_newest_only.txt", "LICENSE.txt")
+DRAWING_OUT = ROOT / "site" / "data" / "drawing.json"
+DRAWING_LICENSE = ROOT / "site" / "data" / "glyphwiki-LICENSE.txt"
 DOWNLOAD_TIMEOUT = 60  # seconds
+USER_AGENT = "hsk-network-build"  # GlyphWiki's host refuses the default Python agent
 LEVELS = (1, 2)
 POINTER_PREFIXES = ("variant of", "old variant of", "see ", "surname ")
 
@@ -199,7 +208,8 @@ def download(url, path):
     print(f"downloading {url}", file=sys.stderr)
     fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".part")
     try:
-        with os.fdopen(fd, "wb") as f, urllib.request.urlopen(url, timeout=DOWNLOAD_TIMEOUT) as r:
+        with os.fdopen(fd, "wb") as f, urllib.request.urlopen(
+            urllib.request.Request(url, headers={"User-Agent": USER_AGENT}), timeout=DOWNLOAD_TIMEOUT) as r:
             f.write(r.read())
         os.replace(tmp, path)
     except BaseException:
@@ -731,6 +741,191 @@ def load_chars(refresh=False):
             "unihanVersion": UNIHAN_VERSION, "idsDate": date}
 
 
+# ---------------------------------------------------------------- drawing
+
+_GLYPH_CODE = re.compile(r"u([0-9a-f]{4,6})(?=-|$)")
+# KAGE points per stroke type (type 1 line, 2 curve, 3 and 4 bends, 6 double curve,
+# 7 line then curve); a type not listed keeps every point it has.
+_KAGE_POINTS = {1: 2, 2: 3, 3: 3, 4: 3, 6: 4, 7: 4}
+_ALIAS_BOX = ["0", "0", "0", "0", "200", "200"]
+
+
+def parse_glyphwiki(lines):
+    """GlyphWiki dump_newest_only.txt lines -> {glyph name: KAGE data}."""
+    glyphs = {}
+    for line in lines:
+        p = line.split("|")
+        if len(p) == 3:
+            glyphs[p[0].strip()] = p[2].strip()
+    return glyphs
+
+
+def glyph_code(name):
+    """The character a GlyphWiki glyph name stands for, such as 訁 for u8a01-tv01@3, or None."""
+    m = _GLYPH_CODE.match(name.split("@")[0])
+    return chr(int(m.group(1), 16)) if m else None
+
+
+def _kage_type(fields):
+    """A KAGE line's stroke type; hundreds carry options; 0 is meta and skipped."""
+    try:
+        return int(fields[0]) % 100
+    except ValueError:
+        return 0
+
+
+def _glyph_lines(glyphs, name):
+    """KAGE lines of a glyph, meta lines dropped; "@n" pins a version, the dump holds the newest."""
+    data = glyphs.get(name.split("@")[0])
+    if data is None:
+        raise ValueError(f"glyph {name} is missing")
+    return [f for f in (l.split(":") for l in data.split("$")) if _kage_type(f)]
+
+
+def _followed(glyphs, name):
+    """#drawing-glyph: a glyph that only points to another is followed to it."""
+    lines, seen = _glyph_lines(glyphs, name), {name}
+    while len(lines) == 1 and lines[0][0] == "99" and lines[0][1:7] == _ALIAS_BOX:
+        name = lines[0][7].split("@")[0]
+        if name in seen:
+            raise ValueError(f"glyph {name} points to itself")
+        seen.add(name)
+        lines = _glyph_lines(glyphs, name)
+    return lines
+
+
+def _line_strokes(glyphs, f, depth=0):
+    """One KAGE line -> [(type, [(x, y), ...])] on the 200 grid, a component expanded into its box."""
+    t = _kage_type(f)
+    if t != 99:
+        nums = [float(v) for v in f[3:11] if v != ""]
+        pts = list(zip(nums[0::2], nums[1::2]))
+        return [(t, pts[:_KAGE_POINTS.get(t, len(pts))])]
+    if depth > 20:
+        raise ValueError(f"component {f[7]} nests too deep")
+    sub = [s for g in _glyph_lines(glyphs, f[7]) for s in _line_strokes(glyphs, g, depth + 1)]
+    # KAGE's stretch fields (1, 2, 9, 10) are ignored: no hub glyph uses them.
+    x1, y1, x2, y2 = (float(v) for v in f[3:7])
+    return [(k, [(x1 + x * (x2 - x1) / 200, y1 + y * (y2 - y1) / 200) for x, y in pts]) for k, pts in sub]
+
+
+def _num(v):
+    s = f"{v:.1f}".rstrip("0").rstrip(".")
+    return "0" if s == "-0" else s
+
+
+def stroke_path(t, pts):
+    """#drawing-strokes: a KAGE stroke as an SVG centerline path."""
+    xy = [f"{_num(x)} {_num(y)}" for x, y in pts]
+    if t == 2 and len(xy) == 3:
+        return f"M{xy[0]} Q{xy[1]} {xy[2]}"
+    if t == 6 and len(xy) == 4:
+        return f"M{xy[0]} C{xy[1]} {xy[2]} {xy[3]}"
+    if t == 7 and len(xy) == 4:
+        return f"M{xy[0]} L{xy[1]} Q{xy[2]} {xy[3]}"
+    return "M" + " L".join(xy)
+
+
+def _is_radical_form(ch, number, rs):
+    """#drawing-radical: ch is radical number itself, with no extra strokes, so 訁 counts for 言."""
+    num, _, extra = rs.get(ch, "").partition(".")
+    return num.rstrip("'") == str(number) and extra == "0"
+
+
+def hub_drawing(hub, glyphs, rs, override=None):
+    """#drawing-rules: {"glyph", "strokes", "parts", "radical"} for a graph hub, or ValueError.
+
+    hub: a graph hub ({"char", "radical": {"number"}, "parts"}); rs: Unihan kRSUnicode by
+    character; override: its "strokes" ({"parts": {part: [positions]}, "radical": [positions]})
+    replaces the derived positions (#drawing-override).
+    """
+    char = hub["char"]
+    code = f"u{ord(char):04x}"
+    name = f"{code}-t" if f"{code}-t" in glyphs else code
+    if name not in glyphs:
+        raise ValueError(f"no GlyphWiki glyph {code}")
+    groups = [(glyph_code(f[7]) if _kage_type(f) == 99 else None, _line_strokes(glyphs, f))
+              for f in _followed(glyphs, name)]
+    strokes = [stroke_path(*s) for _, sub in groups for s in sub]
+    if override and "strokes" in override:
+        parts, radical = _override_positions(hub, len(strokes), override["strokes"])
+    else:
+        parts, rest, pos = {p: [] for p in hub["parts"]}, [], 0
+        for part, sub in groups:
+            (parts[part] if part in parts else rest).extend(range(pos, pos + len(sub)))
+            pos += len(sub)
+        unnamed = [p for p, ix in parts.items() if not ix]
+        if len(unnamed) > 1:
+            raise ValueError(f"parts {', '.join(unnamed)} are not components of {name}")
+        if unnamed:
+            parts[unnamed[0]], rest = rest, []
+        if parts and rest:
+            raise ValueError(f"strokes {rest} belong to no part")
+        number = hub["radical"]["number"]
+        if _is_radical_form(char, number, rs):
+            radical = list(range(len(strokes)))
+        else:
+            radical = next((ix for p, ix in parts.items() if _is_radical_form(p, number, rs)), [])
+    empty = [p for p, ix in parts.items() if not ix] + ([hub["radical"]["char"]] if not radical else [])
+    if empty:
+        raise ValueError(f"{', '.join(empty)} names no stroke")
+    return {"glyph": name, "strokes": strokes, "parts": parts, "radical": radical}
+
+
+def _override_positions(hub, count, strokes):
+    """#drawing-override, #drawing-fail: an override's (parts, radical), checked."""
+    parts, radical = strokes.get("parts", {}), strokes.get("radical", [])
+    if list(parts) != hub["parts"]:
+        raise ValueError(f"override strokes name parts {', '.join(parts) or 'none'}, hub has "
+                         f"{', '.join(hub['parts']) or 'none'}")
+    named = [i for ix in parts.values() for i in ix]
+    outside = sorted({i for i in named + radical if not 0 <= i < count})
+    if outside:
+        raise ValueError(f"override positions {outside} fall outside the {count} strokes")
+    overlap = sorted({i for i in named if named.count(i) > 1} | {i for i in radical if radical.count(i) > 1})
+    if overlap:
+        raise ValueError(f"override positions {overlap} overlap")
+    left = sorted(set(range(count)) - set(named)) if parts else []
+    if left:
+        raise ValueError(f"override leaves strokes {left} out")
+    return {p: sorted(ix) for p, ix in parts.items()}, sorted(radical)
+
+
+def build_drawing(hubs, glyphs, rs, overrides, date):
+    """#drawing-file, #drawing-schema: the drawing data for the graph's hubs, or BuildError
+    naming each failing character (#drawing-fail)."""
+    out, problems = {}, []
+    for h in hubs:
+        try:
+            out[h["char"]] = hub_drawing(h, glyphs, rs, overrides.get(h["id"]))
+        except ValueError as err:
+            problems.append(f"{h['id']} {h['char']}: {err}")
+    if problems:
+        raise BuildError(problems)
+    return {"meta": {"glyphwikiDate": date}, "hubs": out}
+
+
+def load_glyphwiki(refresh=False):
+    """Download (once) the GlyphWiki dump into the cache, keeping only its newest glyphs and
+    license. Returns (glyphs, dump date, license path)."""
+    paths = [GLYPHWIKI_CACHE / m for m in GLYPHWIKI_MEMBERS]
+    if refresh or not all(p.exists() for p in paths):
+        tgz = GLYPHWIKI_CACHE / "dump.tar.gz"
+        download(GLYPHWIKI_URL, tgz)
+        with tarfile.open(tgz, "r:gz") as tar:
+            for m in tar:
+                if m.name in GLYPHWIKI_MEMBERS:
+                    tmp = GLYPHWIKI_CACHE / f"{m.name}.part"
+                    tmp.write_bytes(tar.extractfile(m).read())
+                    os.utime(tmp, (m.mtime, m.mtime))
+                    os.replace(tmp, GLYPHWIKI_CACHE / m.name)
+        tgz.unlink()
+    with open(paths[0], encoding="utf-8") as f:
+        glyphs = parse_glyphwiki(f)
+    date = datetime.datetime.fromtimestamp(paths[0].stat().st_mtime, datetime.timezone.utc).date()
+    return glyphs, date.isoformat(), paths[1]
+
+
 # ---------------------------------------------------------------- audio
 
 
@@ -810,12 +1005,16 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--cedict", type=Path, help="local CC-CEDICT file (.txt or .gz)")
     ap.add_argument("--refresh", action="store_true",
-                    help="re-download CC-CEDICT, IDS, and the audio-cmn file list")
+                    help="re-download CC-CEDICT, IDS, GlyphWiki, and the audio-cmn file list")
     args = ap.parse_args(argv)
     try:
         overrides = load_overrides()
         entries, release = load_cedict(args.cedict, args.refresh)
-        graph = build(entries, release, load_hsk(), overrides, load_chars(args.refresh))
+        chars = load_chars(args.refresh)
+        graph = build(entries, release, load_hsk(), overrides, chars)
+        glyphs, glyphwiki_date, glyphwiki_license = load_glyphwiki(args.refresh)
+        drawing = build_drawing(graph["hubs"], glyphs, chars["rs"], overrides, glyphwiki_date)
+        del glyphs
         note = audio_note()
         index = load_audio_index(note, args.refresh)
     except BuildError as err:
@@ -827,9 +1026,13 @@ def main(argv=None):
     write_audio(graph["words"], index, note)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(graph, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    DRAWING_OUT.write_text(json.dumps(drawing, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    DRAWING_LICENSE.write_bytes(glyphwiki_license.read_bytes())
     print(f"wrote {OUT.relative_to(ROOT)}: {len(graph['words'])} words, "
           f"{len(graph['hubs'])} hubs, {len(graph['links'])} links, "
           f"CC-CEDICT {release}", file=sys.stderr)
+    print(f"wrote {DRAWING_OUT.relative_to(ROOT)}: {len(drawing['hubs'])} hubs, "
+          f"GlyphWiki {glyphwiki_date}", file=sys.stderr)
     recorded = sum("audio" in w for w in graph["words"])
     print(f"wrote {AUDIO_OUT.relative_to(ROOT)}: {recorded} recordings; "
           f"{len(missing)} words have none:", file=sys.stderr)
