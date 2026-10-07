@@ -20,11 +20,6 @@ body.game {
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  overscroll-behavior: none;
-  position: fixed;
-  inset: 0;
 }
 
 .app {
