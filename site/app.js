@@ -84,7 +84,11 @@ function init(data) {
   statusEl.textContent = "";
   fit();
   // The settled graph fades in (#motion-load).
-  requestAnimationFrame(function () { root.classed("in", true); });
+  requestAnimationFrame(function () {
+    root.classed("in", true);
+    // Offline copy saves only after the page has drawn (hsk-app spec #offline).
+    navigator.serviceWorker?.register("sw.js").catch(function () {});
+  });
   // Text typed while the data loaded gets its results now.
   if (document.activeElement === input) refreshResults();
   openWordLink();

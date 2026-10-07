@@ -1228,6 +1228,8 @@ Promise.all([data, hanFace])
     demoBoard = createGame({ words, levels: [1, 2], seed: 20261006 }).board;
     view = { board: demoBoard, dropAt: null };
     draw();
+    // Offline copy saves only after the board has drawn (hsk-app spec #offline).
+    requestAnimationFrame(() => navigator.serviceWorker?.register("../sw.js").catch(() => {}));
   })
   .catch(() => {
     playBtn.textContent = "Could not load words";
