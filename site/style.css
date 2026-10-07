@@ -9,6 +9,15 @@
   font-display: swap;
 }
 
+/* Mainland forms face (#face-forms): named only in pinyin mode, so never preloaded. */
+@font-face {
+  font-family: "Noto Sans CJK TC Mainland";
+  src: url("fonts/noto-sans-cjk-tc-mainland.woff2") format("woff2");
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Geist";
   src: url("fonts/geist.woff2") format("woff2");
@@ -79,6 +88,10 @@
   --dur-reduced: 120ms;
 }
 
+/* Pinyin mode: the mainland forms face before the Chinese face, for every text style (#face-forms). */
+:root[data-script="pinyin"] {
+  --font: "Geist", "Noto Sans CJK TC Mainland", "Noto Sans CJK TC", system-ui, sans-serif;
+}
 
 /* ---------- Base (shared by both pages) ---------- */
 

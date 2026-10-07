@@ -1,5 +1,5 @@
 // BEGIN OFFLINE LIST (written by scripts/build_offline.py; do not edit by hand)
-const VERSION = "937de5e36cb8";
+const VERSION = "6cf273db2f01";
 const FILES = [
   "app.js",
   "audio/1-1.mp3",
@@ -292,6 +292,7 @@ const FILES = [
   "fonts/coverage.json",
   "fonts/geist.OFL.txt",
   "fonts/geist.woff2",
+  "fonts/noto-sans-cjk-tc-mainland.woff2",
   "fonts/noto-sans-cjk-tc.OFL.txt",
   "fonts/noto-sans-cjk-tc.woff2",
   "fonts/source.json",
