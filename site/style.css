@@ -42,6 +42,7 @@
   --paper: #f6f4ef;
   --night: #0f1424;
   --surface: #ffffff;
+  --surface-night: #181e31;
   --ink: #1b1b1f;
   --ink-night: #f6f4ef;
   --muted: #5d5b57;
@@ -51,6 +52,7 @@
   --hsk1: #0072b2;
   --hsk2: #e69f00;
   --hub: #8b877f;
+  --hover: var(--paper);  /* row hover and selection fill on surfaces */
   /* Part strokes (#strokes-colors): the Okabe-Ito colors left after the level blue and orange. */
   --part-1: #d55e00;
   --part-2: #009e73;
@@ -316,7 +318,7 @@ button { font: inherit; color: inherit; }
   font-size: var(--fs-label);
   cursor: pointer;
 }
-.results li[aria-selected="true"], .results li:hover { background: var(--paper); }
+.results li[aria-selected="true"], .results li:hover { background: var(--hover); }
 .results li.empty { color: var(--muted); cursor: default; background: none; }
 .results .r-han { font-size: 20px; line-height: 1.2; flex: none; }
 .results .r-def { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
@@ -400,10 +402,10 @@ button { font: inherit; color: inherit; }
 .word.l1 rect { fill: var(--hsk1); }
 .word.l2 rect { fill: var(--hsk2); }
 .word text { font-size: 14px; }
-.word.l1 text { fill: var(--surface); }
-.word.l2 text { fill: var(--ink); }
+.word.l1 text { fill: #ffffff; }  /* labels sit on the fixed level and hub fills, in both appearances */
+.word.l2 text { fill: #1b1b1f; }
 .hub circle { fill: var(--hub); stroke: var(--paper); stroke-width: 1.5; }
-.hub text { fill: var(--surface); font-size: 10px; }
+.hub text { fill: #ffffff; font-size: 10px; }
 
 /* Level off (#motion-level): words and links fade, then stop taking taps. */
 .link.off { stroke-opacity: 0; }
@@ -577,7 +579,7 @@ button { font: inherit; color: inherit; }
   text-align: left;
   cursor: pointer;
 }
-.c-words button:hover { background: var(--paper); }
+.c-words button:hover { background: var(--hover); }
 .c-words .w-han { font-size: 20px; }
 .c-words .w-reading { color: var(--muted); }
 .c-words .w-han, .c-words .w-reading, .c-words .swatch { flex: none; }
@@ -637,14 +639,21 @@ button { font: inherit; color: inherit; }
   from { opacity: 0; }
 }
 
-/* Dark appearance: the card takes the night tokens; part colors stay (#acceptance-strokes-dark). */
+/* Dark appearance (#color-dark, #color-table dark column): follows the device setting live;
+   both pages take the night page, the dark surface, and light ink and muted; part colors stay
+   (#acceptance-strokes-dark). The swap sits on body, not :root, because the game reads its
+   bubble paper and ink from :root (game.js), and bubbles keep their look on the night board.
+   On night the hairline alone carries a surface's edge (#color-depth). */
 @media (prefers-color-scheme: dark) {
-  .card {
-    --surface: var(--night);
-    --paper: color-mix(in srgb, var(--ink-night) 8%, var(--night));  /* hover fills inside the card */
+  :root { background: var(--night); color-scheme: dark; }
+  body {
+    --paper: var(--night);
+    --surface: var(--surface-night);
     --ink: var(--ink-night);
     --muted: var(--muted-night);
     --line: var(--line-night);
+    --hover: color-mix(in srgb, var(--ink-night) 8%, var(--surface-night));
+    --shadow: 0 0 0 transparent;
     color: var(--ink);
   }
 }

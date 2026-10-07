@@ -1,5 +1,5 @@
 // BEGIN OFFLINE LIST (written by scripts/build_offline.py; do not edit by hand)
-const VERSION = "4e18367ff2e7";
+const VERSION = "937de5e36cb8";
 const FILES = [
   "app.js",
   "audio/1-1.mp3",
@@ -311,6 +311,17 @@ const FILES = [
   "icons/launch-1320x2868.png",
   "icons/launch-750x1334.png",
   "icons/launch-828x1792.png",
+  "icons/launch-dark-1125x2436.png",
+  "icons/launch-dark-1170x2532.png",
+  "icons/launch-dark-1179x2556.png",
+  "icons/launch-dark-1206x2622.png",
+  "icons/launch-dark-1242x2688.png",
+  "icons/launch-dark-1260x2736.png",
+  "icons/launch-dark-1284x2778.png",
+  "icons/launch-dark-1290x2796.png",
+  "icons/launch-dark-1320x2868.png",
+  "icons/launch-dark-750x1334.png",
+  "icons/launch-dark-828x1792.png",
   "index.html",
   "manifest.webmanifest",
   "senses.js",

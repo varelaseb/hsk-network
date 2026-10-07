@@ -19,12 +19,14 @@ LOOK = bi.look_colors()
 # Any GitHub Pages project path: the site root is the directory holding the manifest.
 BASE = "https://owner.github.io/repo/"
 PAGES = {"index.html": LOOK["paper"], "bubbles/index.html": LOOK["night"]}
+SCHEMES = ("light", "dark")
 
 
 class Head(HTMLParser):
     def __init__(self):
         super().__init__()
         self.links, self.metas, self.styles, self._in_head, self._style = [], {}, [], True, False
+        self.themes = []  # (media or None, color) of every theme-color line
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -36,6 +38,8 @@ class Head(HTMLParser):
             self.links.append(a)
         elif tag == "meta" and "name" in a:
             self.metas[a["name"]] = a.get("content")
+            if a["name"] == "theme-color":
+                self.themes.append((a.get("media"), a.get("content", "").lower()))
         elif tag == "style":
             self._style = True
 
@@ -46,6 +50,19 @@ class Head(HTMLParser):
     def handle_data(self, data):
         if self._style:
             self.styles.append(data)
+
+    def theme(self, scheme):
+        """The theme colors that apply in an appearance."""
+        return [c for m, c in self.themes if m is None or m == f"(prefers-color-scheme: {scheme})"]
+
+    def background(self, scheme):
+        """The inline html background in an appearance; a dark block overrides the plain one."""
+        css = "".join(self.styles)
+        dark = re.search(r"@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*html\s*\{[^}]*background(?:-color)?:\s*(#[0-9a-fA-F]{6})", css)
+        plain = re.match(r"\s*html\s*\{[^}]*background(?:-color)?:\s*(#[0-9a-fA-F]{6})", css)
+        if scheme == "dark" and dark:
+            return dark.group(1).lower()
+        return plain.group(1).lower() if plain else None
 
     def rel(self, rel):
         return [link for link in self.links if link.get("rel") == rel]
@@ -141,30 +158,35 @@ class HeadsTest(unittest.TestCase):
         self.assertEqual(targets, {MANIFEST.resolve()})
 
     def test_theme_and_inline_background_are_the_page_color(self):
-        """#head-color: paper for the network, night for the game, set in the head before any sheet."""
+        """#head-color: paper for the network, night for the game, night for both in the dark
+        appearance, set in the head before any sheet."""
         for page, color in PAGES.items():
             h = head(page)
-            with self.subTest(page=page):
-                self.assertEqual(h.metas.get("theme-color", "").lower(), color)
-                inline = "".join(h.styles)
-                m = re.search(r"html\s*\{[^}]*background(?:-color)?:\s*(#[0-9a-fA-F]{6})", inline)
-                self.assertIsNotNone(m, "no inline html background")
-                self.assertEqual(m.group(1).lower(), color)
-                text = (SITE / page).read_text(encoding="utf-8")
-                self.assertLess(text.index("<style>"), text.index('rel="stylesheet"'))
+            for scheme in SCHEMES:
+                want = color if scheme == "light" else LOOK["night"]
+                with self.subTest(page=page, scheme=scheme):
+                    self.assertEqual(h.theme(scheme), [want])
+                    self.assertEqual(h.background(scheme), want)
+            text = (SITE / page).read_text(encoding="utf-8")
+            self.assertLess(text.index("<style>"), text.index('rel="stylesheet"'))
 
-    def test_launch_images_on_network_only_one_per_screen(self):
-        """#head-launch: plain paper launch images, linked from the network page only."""
+    def test_launch_images_on_network_only_a_pair_per_screen(self):
+        """#head-launch: per iPhone screen a plain paper image for the light appearance and a
+        plain night one for the dark, chosen by prefers-color-scheme, linked from the network only."""
         self.assertEqual(head("bubbles/index.html").rel("apple-touch-startup-image"), [])
         links = head("index.html").rel("apple-touch-startup-image")
-        want = {bi.launch_media(*s): "icons/" + bi.launch_name(*s) for s in bi.LAUNCH}
+        want = {bi.launch_media(*s, scheme): "icons/" + bi.launch_name(*s, scheme)
+                for s in bi.LAUNCH for scheme in SCHEMES}
         self.assertEqual({link["media"]: link["href"] for link in links}, want)
-        self.assertEqual(len(links), len(bi.LAUNCH))
-        for w, h, r in bi.LAUNCH:
-            with self.subTest(screen=(w, h, r)):
-                data = (SITE / "icons" / bi.launch_name(w, h, r)).read_bytes()
-                self.assertEqual(bi.png_size(data), (w * r, h * r))
-                self.assertEqual(plain_png_color(data), LOOK["paper"])
+        self.assertEqual(len(links), 2 * len(bi.LAUNCH))
+        for scheme, color in (("light", LOOK["paper"]), ("dark", LOOK["night"])):
+            for w, h, r in bi.LAUNCH:
+                with self.subTest(screen=(w, h, r), scheme=scheme):
+                    media = bi.launch_media(w, h, r, scheme)
+                    self.assertTrue(media.endswith(f"(prefers-color-scheme: {scheme})"))
+                    data = (SITE / "icons" / bi.launch_name(w, h, r, scheme)).read_bytes()
+                    self.assertEqual(bi.png_size(data), (w * r, h * r))
+                    self.assertEqual(plain_png_color(data), color)
 
 
 def plain_png_color(data):

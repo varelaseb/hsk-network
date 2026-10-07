@@ -40,13 +40,18 @@ LAUNCH = [(440, 956, 3), (420, 912, 3), (430, 932, 3), (402, 874, 3), (393, 852,
           (390, 844, 3), (375, 812, 3), (414, 896, 3), (414, 896, 2), (375, 667, 2)]
 
 
-def launch_name(w, h, r):
-    return f"launch-{w * r}x{h * r}.png"
+# Appearance: launch image color, file name part (#head-launch: a paper and a night image per screen).
+SCHEMES = {"light": ("paper", ""), "dark": ("night", "-dark")}
 
 
-def launch_media(w, h, r):
+def launch_name(w, h, r, scheme="light"):
+    return f"launch{SCHEMES[scheme][1]}-{w * r}x{h * r}.png"
+
+
+def launch_media(w, h, r, scheme="light"):
     return (f"(device-width: {w}px) and (device-height: {h}px) and "
-            f"(-webkit-device-pixel-ratio: {r}) and (orientation: portrait)")
+            f"(-webkit-device-pixel-ratio: {r}) and (orientation: portrait) and "
+            f"(prefers-color-scheme: {scheme})")
 
 
 def look_colors(css=None):
@@ -151,8 +156,9 @@ def main():
     for name, (side, _) in MANIFEST_ICONS.items():
         _save(draw_icon(face, side, colors), name)
     _save(draw_icon(face, HOME_ICON[1], colors), HOME_ICON[0])
-    for w, h, r in LAUNCH:
-        _save(_plain(w * r, h * r, colors["paper"]), launch_name(w, h, r))
+    for scheme, (color, _) in SCHEMES.items():
+        for w, h, r in LAUNCH:
+            _save(_plain(w * r, h * r, colors[color]), launch_name(w, h, r, scheme))
 
 
 def _plain(w, h, color):
