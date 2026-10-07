@@ -92,6 +92,7 @@ button { font: inherit; color: inherit; }
   font-weight: var(--w-medium);
   letter-spacing: var(--ls-caption);
   color: var(--muted-night);
+  white-space: nowrap;
 }
 .combo {
   padding: 0 7px;
