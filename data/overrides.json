@@ -881,5 +881,15 @@
    ]
   },
   "reason": "drawing: its glyph draws loose strokes, the top 一 last; radical 冂 is the frame of 冉"
+ },
+ {
+  "id": "s-ju4",
+  "spelling": "jv4",
+  "reason": "the set records ju4 under the spelling jv4; ju1 to ju3 are spelled ju"
+ },
+ {
+  "id": "s-bia1",
+  "none": true,
+  "reason": "the set has no bia1, the onomatopoeic reading of 吧; the device voice says it"
  }
 ]

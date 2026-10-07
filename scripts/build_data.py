@@ -660,7 +660,8 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
                       "simp": e["simp"], "pinyin": pinyin, "zhuyin": zhuyin,
                       **cleaned})
     hub_overrides = {i: o for i, o in overrides.items() if i.startswith("c-")}
-    unused = sorted(set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries})
+    unused = sorted(i for i in set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries}
+                    if not i.startswith("s-"))
     problems += [f"{i}: override names no HSK entry" for i in unused]
     if problems:
         raise BuildError(problems)
@@ -1010,25 +1011,42 @@ def needed_syllables(graph):
     return found
 
 
-def attach_syllables(graph, index):
-    """#syllable-fail, #syllable-field: set graph["syllables"]; return neutral ones with none.
+def attach_syllables(graph, index, overrides=None):
+    """#syllable-fail, #syllable-override, #syllable-field: set graph["syllables"].
 
-    A needed tone 1 to 4 syllable with no recording fails the build.
+    index maps each listed syllable to its file. An override "s-<syllable>"
+    names the set's other spelling ("spelling") or states it has none
+    ("none": true). A needed tone 1 to 4 syllable with neither fails the
+    build. Returns (resolved index, neutral-tone syllables with none).
     """
+    overrides = {i[2:]: o for i, o in (overrides or {}).items() if i.startswith("s-")}
     needed = needed_syllables(graph)
-    failing = sorted(x for x in needed if x not in index and not x.endswith("5"))
-    if failing:
-        raise BuildError([f"syllable {x}: no recording in the syllable set" for x in failing])
-    recorded = sorted(x for x in needed if x in index)
+    files, problems = {}, []
+    for x in sorted(needed):
+        o = overrides.get(x)
+        if o and o.get("none"):
+            continue
+        if o:
+            if o["spelling"] in index:
+                files[x] = index[o["spelling"]]
+            else:
+                problems.append(f"syllable {x}: override spelling {o['spelling']} has no recording")
+        elif x in index:
+            files[x] = index[x]
+        elif not x.endswith("5"):
+            problems.append(f"syllable {x}: no recording in the syllable set")
+    problems += [f"s-{x}: override names no needed syllable" for x in sorted(set(overrides) - needed)]
+    if problems:
+        raise BuildError(problems)
     out = {}
     for k, v in graph.items():
         if k != "syllables":
             out[k] = v
         if k == "words":
-            out["syllables"] = recorded
+            out["syllables"] = sorted(files)
     graph.clear()
     graph.update(out)
-    return sorted(x for x in needed if x not in index)
+    return files, sorted(x for x in needed if x.endswith("5") and x not in files)
 
 
 def _copy_pinned(note, folder, name, target):
@@ -1065,7 +1083,7 @@ def write_audio(graph, index, syllable_index, note):
         "\n"
         f"Syllable recordings (s/): {syl['speaker']}, via {_github_repo(note)}.\n"
         f"Source: {note['url']} (commit {note['commit']}, folder {syl['folder']}).\n"
-        f"License: {syl['license']}, {syl['licenseUrl']}\n"
+        f"License: {syl['license']}, as stated in the source's README\n"
         "\n"
         "Each file is copied unchanged and renamed to its word id or syllable. Unmodified clips\n"
         "beside the site code form a collection; the license does not extend to the code.\n",
@@ -1089,7 +1107,7 @@ def main(argv=None):
         note = audio_note()
         index = load_audio_index(note, note["folder"], args.refresh)
         syllable_index = load_audio_index(note, note["syllables"]["folder"])
-        silent = attach_syllables(graph, syllable_index)
+        syllable_index, silent = attach_syllables(graph, syllable_index, overrides)
     except BuildError as err:
         print(f"build failed, {len(err.problems)} entries:", file=sys.stderr)
         for p in err.problems:
