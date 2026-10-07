@@ -327,17 +327,61 @@ export function completingChars(board, lex) {
   return out;
 }
 
-// ---- Launcher choice, from the unfinished deck words in lex: 3 in 4 a
-// completing character, else any needed character; forced completing when the
-// partner bubble completes nothing.
+// Longest run through `cell` reading chars in order (either way along the
+// chain) with cell's bubble as chars[index].
+function runThrough(board, cell, chars, index) {
+  const used = new Set([key(cell)]);
+  const walk = (pos, i, step) => {
+    if (i < 0 || i === chars.length) return 0;
+    let best = 0;
+    for (const n of neighbors(board, pos)) {
+      if (used.has(key(n)) || at(board, n) !== chars[i]) continue;
+      used.add(key(n));
+      best = Math.max(best, 1 + walk(n, i + step, step));
+      used.delete(key(n));
+    }
+    return best;
+  };
+  return 1 + walk(cell, index + 1, 1) + walk(cell, index - 1, -1);
+}
 
-function drawLauncher(board, lex, rng, partner) {
+// Characters that, shot into a reachable cell, touch a bubble they read with
+// as two neighboring characters of a word, growing that word's longest run on
+// the board, so each shot rebuilds it further (spec #decision-spawn).
+export function extendingChars(board, lex) {
+  const out = new Set();
+  const spots = reachableCells(board);
+  const on = cells(board);
+  for (const word of lex.list) {
+    const chars = [...word];
+    const run = (b, cell, ch) => Math.max(0, ...chars.map((x, i) => (x === ch ? runThrough(b, cell, chars, i) : 0)));
+    const best = Math.max(0, ...on.map((x) => run(board, x, x.ch)));
+    for (const ch of new Set(chars)) {
+      if (spots.some((cell) => run(put(board, cell, ch), cell, ch) > best)) out.add(ch);
+    }
+  }
+  return out;
+}
+
+// ---- Launcher pair, from the unfinished deck words in lex (spec
+// #decision-spawn). When some word can be completed by one shot: 3 in 4 a
+// completing character, else any needed one, and next is forced completing
+// when current completes nothing. When none can: every bubble extends a word.
+// `held` (the old next) stays current only if it still fits this board.
+
+function launcher(board, lex, rng, held) {
   const chars = [...lex.byChar.keys()].sort();
-  if (!chars.length) return null;
+  if (!chars.length) return [null, null];
   const completing = [...completingChars(board, lex)].sort();
-  if (!completing.length) return rng.pick(chars);
-  if (partner !== undefined && !completing.includes(partner)) return rng.pick(completing);
-  return rng.next() < 0.75 ? rng.pick(completing) : rng.pick(chars);
+  const extending = completing.length ? [] : [...extendingChars(board, lex)].sort();
+  const pool = completing.length || !extending.length ? chars : extending;
+  const draw = (partner) => {
+    if (!completing.length) return rng.pick(pool);
+    if (partner !== undefined && !completing.includes(partner)) return rng.pick(completing);
+    return rng.next() < 0.75 ? rng.pick(completing) : rng.pick(chars);
+  };
+  const current = pool.includes(held) ? held : draw();
+  return [current, draw(current)];
 }
 
 // ---- Boards: whole words laid along chains of touching cells.
@@ -403,8 +447,11 @@ function newTopRow(board, lex, rng) {
     const left = width - c;
     const fits = [2, 3, 4].filter((n) => n <= left && lex.byLen[n].length);
     const clean = fits.filter((n) => left - n !== 1);
-    if (!fits.length) break;
-    const chars = [...rng.pick(lex.byLen[rng.pick(clean.length ? clean : fits)])];
+    // No whole word fits the cells left: the start of one fills them, so the
+    // row has no gap a bubble below could hang free from.
+    const chars = fits.length
+      ? [...rng.pick(lex.byLen[rng.pick(clean.length ? clean : fits)])]
+      : [...rng.pick(lex.list)].slice(0, left);
     if (rng.next() < 0.5) chars.reverse();
     for (const ch of chars) row[c++] = ch;
   }
@@ -445,8 +492,7 @@ export function createGame({ words, levels = [1, 2], seed = 1, board, deck, curr
   const d = deck ?? (board ? lexicon.list.filter((w) => [...w].some((ch) => inPlay.has(ch))) : dealDeck(lexicon, round, rng));
   const b = board ?? buildBoard(d, roundRows(round), rng);
   const lex = deckLexicon(lexicon, d);
-  const cur = current ?? drawLauncher(b, lex, rng);
-  const nxt = next ?? drawLauncher(b, lex, rng, cur);
+  const [cur, nxt] = current && next ? [current, next] : launcher(b, lex, rng, current);
   return {
     lexicon,
     levels: [...levels],
@@ -456,7 +502,6 @@ export function createGame({ words, levels = [1, 2], seed = 1, board, deck, curr
     left: [...d],
     current: cur,
     next: nxt,
-    drawn: [current == null && cur, next == null && nxt].filter(Boolean),
     score,
     round,
     streak: 0,
@@ -467,7 +512,7 @@ export function createGame({ words, levels = [1, 2], seed = 1, board, deck, curr
   };
 }
 
-export const swap = (game) => ({ ...game, current: game.next, next: game.current, drawn: [] });
+export const swap = (game) => ({ ...game, current: game.next, next: game.current });
 
 export function shoot(game, angleDeg) {
   if (game.over) return { game, events: null };
@@ -531,18 +576,9 @@ export function resolveShot(game, cell) {
   }
   const over = lowestRow(board) >= LINE_ROW;
 
-  const need = deckLexicon(lex, left);
-  let current = game.next;
-  let next;
-  let drawn;
-  if (roundClear) {
-    current = drawLauncher(board, need, rng);
-    next = drawLauncher(board, need, rng, current);
-    drawn = [current, next];
-  } else {
-    next = over ? null : drawLauncher(board, need, rng, current);
-    drawn = [next];
-  }
+  const [current, next] = over
+    ? [game.next, null]
+    : launcher(board, deckLexicon(lex, left), rng, roundClear ? undefined : game.next);
 
   const history = [...names, ...game.history.filter((w) => !names.includes(w))];
   const after = {
@@ -553,7 +589,6 @@ export function resolveShot(game, cell) {
     left,
     current,
     next,
-    drawn,
     score,
     round,
     streak,

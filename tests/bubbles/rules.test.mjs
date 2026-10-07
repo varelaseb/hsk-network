@@ -5,8 +5,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   COLS, LINE_ROW, LAUNCHER, ROW_H, MIN_ANGLE,
-  makeLexicon, parseBoard, findWords, fallen, trace, aim, center,
-  createGame, shoot, resolveShot, swap, completingChars, boardChars, cells, deckLexicon,
+  makeLexicon, parseBoard, findWords, fallen, trace, aim, center, neighbors, at,
+  createGame, shoot, resolveShot, swap, completingChars, extendingChars, boardChars, cells, deckLexicon,
   roundRows, roundShots, roundDeck, lowestRow, pronunciation, wordReading, charReadings, readingOf,
 } from "../../site/bubbles/rules.js";
 
@@ -149,17 +149,26 @@ test("flight: a shot settles into the cell its guide predicts", () => {
 });
 
 // test-spawn, test-decks
-const LEVELS = [[1], [1, 2]];
+const LEVELS = [[1], [2], [1, 2]];
 const needed = (game) => new Set(game.left.flatMap((w) => [...w]));
 const assertNoOrphan = (game, tag) => {
   const need = needed(game);
   for (const x of cells(game.board)) assert.ok(need.has(x.ch), `${tag}: orphan ${x.ch} at ${x.r},${x.c}`);
 };
+// spec #decision-spawn on the launcher pair: both needed; the current or next
+// completes a word, or, when none can be completed by one shot, both extend one.
 const assertLauncher = (game, tag) => {
   const need = needed(game);
-  for (const ch of game.drawn) assert.ok(need.has(ch), `${tag}: drew ${ch}, needed by no unfinished deck word`);
-  const done = completingChars(game.board, deckLexicon(game.lexicon, game.left));
-  assert.ok(done.has(game.current) || done.has(game.next), `${tag}: neither ${game.current} nor ${game.next} completes`);
+  const pair = [game.current, game.next];
+  for (const ch of pair) assert.ok(need.has(ch), `${tag}: launcher ${ch}, needed by no unfinished deck word`);
+  const lex = deckLexicon(game.lexicon, game.left);
+  const done = completingChars(game.board, lex);
+  if (done.size) {
+    assert.ok(pair.some((ch) => done.has(ch)), `${tag}: neither ${pair} completes`);
+  } else {
+    const ext = extendingChars(game.board, lex);
+    for (const ch of pair) assert.ok(ext.has(ch), `${tag}: ${ch} extends no word (${[...ext]})`);
+  }
 };
 
 function playRandom(seed, shots, levels, check) {
@@ -174,20 +183,91 @@ function playRandom(seed, shots, levels, check) {
   }
 }
 
-// Test player: shoots the current bubble where a word pops, else swaps and
-// shoots the next one there, else (never expected) shoots straight up.
+// Test player helpers: the first angle where ch pops a word, or where it lands
+// touching a bubble it reads with as two neighboring characters of a word.
+function shotWith(game, cell, ch) {
+  const rows = game.board.rows.map((row) => [...row]);
+  while (rows.length <= cell.r) rows.push(new Array((rows.length + game.board.shift) & 1 ? COLS - 1 : COLS).fill(null));
+  rows[cell.r][cell.c] = ch;
+  return { shift: game.board.shift, rows };
+}
 function popAngle(game, ch) {
   const lex = deckLexicon(game.lexicon, game.left);
   for (let a = MIN_ANGLE; a <= 170; a++) {
     const { cell } = aim(game, a);
-    if (!cell) continue;
-    const rows = game.board.rows.map((row) => [...row]);
-    while (rows.length <= cell.r) rows.push(new Array((cell.r + game.board.shift) & 1 ? COLS - 1 : COLS).fill(null));
-    rows[cell.r][cell.c] = ch;
-    if (findWords({ shift: game.board.shift, rows }, cell, lex).length) return a;
+    if (cell && findWords(shotWith(game, cell, ch), cell, lex).length) return a;
   }
   return null;
 }
+// Longest in-order run of chars through cell, as chars[index].
+function runLen(board, cell, chars, index) {
+  const k = ({ r, c }) => `${r},${c}`;
+  const used = new Set([k(cell)]);
+  const go = (pos, i, step) => {
+    if (i < 0 || i >= chars.length) return 0;
+    let best = 0;
+    for (const n of neighbors(board, pos)) {
+      if (used.has(k(n)) || at(board, n) !== chars[i]) continue;
+      used.add(k(n));
+      best = Math.max(best, 1 + go(n, i + step, step));
+      used.delete(k(n));
+    }
+    return best;
+  };
+  return 1 + go(cell, index + 1, 1) + go(cell, index - 1, -1);
+}
+// Where ch extends a word: reads two or more of its characters in order; the
+// longest such run wins. Returns { a, n } or null.
+function extendShot(game, ch) {
+  const lex = deckLexicon(game.lexicon, game.left);
+  let best = null;
+  for (let a = MIN_ANGLE; a <= 170; a++) {
+    const { cell } = aim(game, a);
+    if (!cell) continue;
+    const board = shotWith(game, cell, ch);
+    for (const { chars, index } of lex.byChar.get(ch) ?? []) {
+      const n = runLen(board, cell, chars, index);
+      if (n >= 2 && (!best || n > best.n)) best = { a, n };
+    }
+  }
+  return best;
+}
+const extendAngle = (game, ch) => extendShot(game, ch)?.a ?? null;
+
+test("spawn: a word too short for one shot is rebuilt by extension; only the full word pops (acceptance-spawn)", () => {
+  const words = [...WORDS, W("j", 1, "打電話"), W("k", 1, "電話")];
+  for (let seed = 1; seed <= 20; seed++) {
+    let game = createGame({ words, seed, board: parseBoard(["電......."]), deck: ["打電話"] });
+    assert.deepEqual(completingChars(game.board, deckLexicon(game.lexicon, game.left)), new Set());
+    assertLauncher(game, `seed ${seed}`);
+    for (const ch of [game.current, game.next]) assert.ok(["打", "話"].includes(ch), ch);
+    // Extend once: 電話 is an HSK word but not in the deck, so nothing pops.
+    let r = shoot(game, extendAngle(game, game.current));
+    assert.deepEqual(r.events.words, [], `seed ${seed}`);
+    game = r.game;
+    assertLauncher(game, `seed ${seed} after extend`);
+    let a = popAngle(game, game.current);
+    if (a === null) {
+      game = swap(game);
+      a = popAngle(game, game.current);
+    }
+    assert.notEqual(a, null, `seed ${seed}: no completing shot after extension`);
+    r = shoot(game, a);
+    assert.deepEqual(r.events.words.map((w) => w.word), ["打電話"]);
+    assert.ok(r.events.roundClear);
+  }
+});
+
+test("spawn: the held next is redrawn when a pop leaves it needed by no word (acceptance-spawn)", () => {
+  // Next 國 is needed only by 中國. Popping 學生 drops 中, its last bubble, so
+  // 中國 finishes and 國 must not become current.
+  const board = parseBoard(["學.校.....", "中......"]);
+  const game = createGame({ words: WORDS, seed: 2, board, deck: ["學生", "學校", "中國"], current: "生", next: "國" });
+  const { game: after } = resolveShot(game, { r: 0, c: 1 });
+  assert.deepEqual(after.left, ["學校"]);
+  assert.notEqual(after.current, "國");
+  assertLauncher(after, "after pop");
+});
 
 test("decks: no board bubble is an orphan after any shot or ceiling drop (acceptance-no-orphan)", () => {
   let drops = 0;
@@ -220,38 +300,50 @@ test("decks: launcher bubbles are needed characters and the current or next comp
   assert.ok(checked > 300);
 });
 
-test("decks: a test player who pops every shot clears every round with no ceiling drop (acceptance-round-completes)", () => {
+test("decks: a test player who pops or extends every shot clears rounds 1 to 7 with no ceiling drop (acceptance-round-completes)", () => {
   let rounds = 0;
+  let extends_ = 0;
+  const SEEDS = 8;
   for (const levels of LEVELS) {
-    for (let seed = 1; seed <= 12; seed++) {
+    for (let seed = 1; seed <= SEEDS; seed++) {
       let game = createGame({ words: GRAPH.words, levels, seed });
       const tag = () => `levels ${levels} seed ${seed} round ${game.round}`;
-      while (game.round <= 3) {
+      while (game.round <= 7) {
         assertNoOrphan(game, tag());
         assertLauncher(game, tag());
         let a = popAngle(game, game.current);
         if (a === null) {
           a = popAngle(game, game.next);
-          assert.notEqual(a, null, `${tag()}: no popping shot for ${game.current} or ${game.next}`);
-          game = swap(game);
+          if (a !== null) game = swap(game);
         }
+        const pops = a !== null;
+        if (!pops) {
+          const [cur, nxt] = [extendShot(game, game.current), extendShot(game, game.next)];
+          const useNext = nxt && (!cur || nxt.n > cur.n);
+          if (useNext) game = swap(game);
+          a = (useNext ? nxt : cur)?.a ?? null;
+          extends_++;
+        }
+        assert.notEqual(a, null, `${tag()}: no pop or extend shot for ${game.current} or ${game.next}`);
         const before = game.left.length;
         const { game: after, events } = shoot(game, a);
-        assert.ok(events.words.length, `${tag()}: shot did not pop`);
+        assert.equal(events.words.length > 0, pops, `${tag()}: pop expected ${pops}`);
         assert.equal(events.ceilingDrop, false, tag());
+        assert.equal(events.gameOver, false, tag());
         if (events.roundClear) {
           assert.equal(after.round, game.round + 1);
           assert.equal(after.left.length, roundDeck(after.round));
           rounds++;
         } else {
-          assert.ok(events.wordsLeft < before, `${tag()}: words left did not drop`);
+          if (pops) assert.ok(events.wordsLeft < before, `${tag()}: words left did not drop`);
           assert.equal(events.wordsLeft, after.left.length);
         }
         game = after;
       }
     }
   }
-  assert.equal(rounds, 2 * 12 * 3);
+  assert.equal(rounds, LEVELS.length * SEEDS * 7);
+  assert.ok(extends_ > 0, "no round needed an extension");
 });
 
 test("decks: deck size per round, distinct words, each laid on the new board", () => {
