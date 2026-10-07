@@ -23,7 +23,8 @@
 //       voices = speechSynthesis.getVoices(). src is site-relative; null says
 //       nothing (and a speaker button for it is not shown).
 //   readVoice(store) -> boolean       the stored Voice setting; store is
-//                                     localStorage-like ({ getItem })
+//                                     localStorage-like ({ getItem }) or null
+//                                     (storage off: on)
 //
 // Page exports (browser only; nothing runs at import):
 //   useGraph(graph)        the graph data the page loaded (syllables, words)
@@ -111,6 +112,13 @@ let unlockSrc = null;
 let player = null;
 const listeners = new Set();
 
+// The page's store, or null with storage off (the localStorage getter itself
+// throws then). Every Voice read and write goes through it, so the setting
+// falls back to on and a change lasts this visit (hsk-bubbles #feel-store).
+function store() {
+  try { return g.localStorage || null; } catch { return null; }
+}
+
 const speech = () => g.speechSynthesis || null;
 const voices = () => (speech() ? speech().getVoices() : []);
 const url = (src) => new URL(src, import.meta.url).href;
@@ -123,7 +131,7 @@ function watch() {
   // A change on the other page in another tab follows here.
   g.addEventListener("storage", (e) => {
     if (e.key !== VOICE_KEY) return;
-    on = readVoice(g.localStorage);
+    on = readVoice(store());
     if (!on) stop();
     notify();
   });
@@ -139,7 +147,7 @@ export function useGraph(graph) {
 
 export function voiceOn() {
   if (on === null) {
-    on = g.localStorage ? readVoice(g.localStorage) : true;
+    on = readVoice(store());
     watch();
   }
   return on;
@@ -147,7 +155,7 @@ export function voiceOn() {
 
 export function setVoice(value) {
   on = Boolean(value);
-  try { g.localStorage.setItem(VOICE_KEY, on ? "on" : "off"); } catch { /* storage off: lasts this visit */ }
+  try { store()?.setItem(VOICE_KEY, on ? "on" : "off"); } catch { /* storage off: lasts this visit */ }
   if (!on) stop();
   notify();
 }
