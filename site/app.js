@@ -21,6 +21,7 @@ const PLACEHOLDER = { zhuyin: "Search character, Zhuyin, English", pinyin: "Sear
 const svg = d3.select("#graph");
 const stage = document.getElementById("stage");
 const controls = document.getElementById("controls");
+const sourcesLink = document.querySelector("#sources summary");
 const statusEl = document.getElementById("status");
 const card = document.getElementById("card");
 const input = document.getElementById("search");
@@ -363,11 +364,13 @@ function stageSize() {
   return { w: stage.clientWidth || 1, h: stage.clientHeight || 1 };
 }
 
-// The part of the stage the floating controls and the Sources link leave clear.
+// The part of the stage the floating controls and the Sources link leave clear;
+// both already sit inside the safe areas (#fit-safe).
 function clearArea() {
   const s = stageSize();
   const top = Math.min(controls.getBoundingClientRect().bottom, s.h / 3);
-  return { top: top, bottom: s.h - 52, w: s.w, h: s.h };
+  const bottom = Math.max(sourcesLink.getBoundingClientRect().top, s.h * 2 / 3);
+  return { top: top, bottom: bottom, w: s.w, h: s.h };
 }
 
 function bounds() {
@@ -813,6 +816,15 @@ input.addEventListener("keydown", function (e) {
     renderResults();
   }
 });
+
+// ---------- Phone fit (hsk-app #fit-zoom, #fit-bounce) ----------
+
+// iOS ignores CSS for pinch and page drags: the graph takes every gesture, and
+// only the results list, the card, and the Sources body scroll, each within itself.
+document.addEventListener("gesturestart", (e) => e.preventDefault());
+document.addEventListener("touchmove", (e) => {
+  if (!e.target.closest("#graph, .results, .card, .sources-body")) e.preventDefault();
+}, { passive: false });
 
 // ---------- Sources ----------
 
