@@ -1,6 +1,6 @@
 # QA capture target: HSK network static site and its bubbles game (jev-capture.spec.html#jc-target),
-# for docs/specs/hsk-network.spec.html and docs/specs/hsk-bubbles.spec.html. Story and criterion keys
-# are unique across both specs, so each entry below belongs to exactly one of them.
+# for docs/specs/hsk-network.spec.html, docs/specs/hsk-bubbles.spec.html, and docs/specs/hsk-app.spec.html.
+# Story and criterion keys are unique across the specs, so each entry below belongs to exactly one of them.
 # Python stdlib only: no setup, rebuild, or env file. The site is served unchanged from site/.
 
 # Paths searched for a test naming a no-browser criterion's anchor.
@@ -188,6 +188,31 @@ path = "?fixture=over"
 selectors = ["#play"]
 [nav.acceptance-review-link]
 path = "?fixture=over"
+selectors = ["#play"]
+
+# App shell (docs/specs/hsk-app.spec.html). Every story starts at the network on a phone, with touch.
+# Criteria needing the iPhone Share sheet, the installed home screen app, airplane mode, a notch, or
+# a phone turn stay as written; capture reports what it cannot drive. story-app-maintain criteria are
+# unit-tested (each runs in its first listed story).
+[entry.stories.story-install]
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-native]
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-offline]
+viewport = { width = 390, height = 844 }
+touch = true
+[entry.stories.story-fast]
+viewport = { width = 390, height = 844 }
+touch = true
+
+# App shell: game starts.
+[nav.acceptance-add-from-game]
+path = "/bubbles/"
+# Review screen: the over board ends the game, as acceptance-review-link.
+[nav.acceptance-word-in-app]
+path = "/bubbles/?fixture=over"
 selectors = ["#play"]
 
 # Network: hub drawings (word ids in site/data/graph.json, hub data in site/data/drawing.json).

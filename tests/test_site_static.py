@@ -1,14 +1,22 @@
 """Static: the published site loads only its own files (spec #test-static)."""
 
 import hashlib
+import json
 import re
+import sys
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
 
-SITE = Path(__file__).resolve().parent.parent / "site"
+ROOT = Path(__file__).resolve().parent.parent
+SITE = ROOT / "site"
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import build_offline as bo  # noqa: E402
+
+WORKER = SITE / bo.WORKER
 # Data files are content, not loads; app.js only turns meta.hskSource into a clicked link.
-TEXT_SUFFIXES = {".html", ".js", ".css", ".txt", ".svg"}
+TEXT_SUFFIXES = {".html", ".js", ".css", ".txt", ".svg", ".webmanifest"}
 URL_RE = re.compile(r"""(?:[a-z][a-z0-9+.-]*:)?//[^\s"'`)<>\\]+""", re.I)
 
 # The vendored D3 build, pinned (npm d3@7.9.0 dist/d3.min.js).
@@ -96,12 +104,29 @@ class StaticSiteTest(unittest.TestCase):
 
     def test_scripts_fetch_only_site_files(self):
         for script in SITE.rglob("*.js"):
-            if script == D3_FILE:
+            # The worker forwards the page's own requests; test_worker_fetches_only_site_files covers it.
+            if script in (D3_FILE, WORKER):
                 continue
             text = script.read_text(encoding="utf-8")
             for call in re.findall(r"""\b(?:fetch|import|importScripts|XMLHttpRequest|WebSocket|EventSource|sendBeacon)\s*\(\s*(['"`][^'"`]*['"`])?""", text):
                 with self.subTest(script=script.name, call=call):
                     self.assertTrue(call and is_local(call.strip("'\"`")), "non-literal or external request")
+
+    def test_worker_fetches_only_site_files(self):
+        """The worker saves only listed site files; tests/offline.test.mjs proves it fetches nothing else."""
+        files, _ = bo.read_block(WORKER.read_text(encoding="utf-8"))
+        for f in files:
+            with self.subTest(file=f):
+                self.assertTrue(is_local(f))
+                self.assertTrue((SITE / f).resolve().is_relative_to(SITE.resolve()))
+                self.assertTrue((SITE / f).is_file())
+
+    def test_manifest_loads_only_site_files(self):
+        m = json.loads((SITE / "manifest.webmanifest").read_text(encoding="utf-8"))
+        for ref in [m["id"], m["start_url"], m["scope"]] + [i["src"] for i in m["icons"]]:
+            with self.subTest(ref=ref):
+                self.assertTrue(is_local(ref))
+                self.assertTrue((SITE / ref).resolve().is_relative_to(SITE.resolve()))
 
     def test_no_external_address_outside_anchors(self):
         """No site file names an outside address except page links a learner clicks."""
