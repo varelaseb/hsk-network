@@ -3,10 +3,11 @@
    sense, reading, and headword is rendered by the shared senses.js module
    (spec hsk-network #sense-render). Loaded as a module, after d3. */
 import {
-  MODES, DEFAULT_MODE, renderSense, renderMeasureWords, renderReading,
-  wordLabel, charLabel, textOf, hanLang,
+  MODES, DEFAULT_MODE, renderSense, renderReading,
+  wordLabel, charLabel, textOf, hanLang, renderRef, toneMarks,
 } from "./senses.js";
 import { pieceNode, appendPieces, headwordNode } from "./headword.js";
+import * as voice from "./voice.js";
 
 const MAX_RESULTS = 20;
 const FOCUS_SCALE = 2.4;
@@ -30,6 +31,7 @@ const card = document.getElementById("card");
 const input = document.getElementById("search");
 const resultsEl = document.getElementById("results");
 const scriptBtn = document.getElementById("script");
+const voiceBtn = document.getElementById("voice");
 const levelBtns = Array.from(document.querySelectorAll(".level"));
 const sheetQuery = window.matchMedia("(hover: none), (max-width: 600px)");
 const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -68,6 +70,7 @@ Promise.all([fetch("data/graph.json"), fetch("data/drawing.json")].map(function 
 function init(data, drawingMeta) {
   fillSources(Object.assign({}, data.meta, drawingMeta));
   chars = data.chars;
+  voice.useGraph(data);
   words = data.words.map(function (w) {
     const n = Object.assign({}, w, wordReading(w, chars), { kind: "word" });
     // Traditional and Simplified forms have equal length, so the pill fits both scripts.
@@ -491,15 +494,28 @@ function sensesNode(defs, mw) {
     const r = renderSense(sense, script);
     const li = ul.appendChild(el("li"));
     if (r.tag) li.appendChild(el("span", "c-tag", r.tag));
-    appendPieces(li, r.pieces);
+    sense.parts.forEach(function (part) {
+      if (typeof part === "string") li.appendChild(document.createTextNode(part));
+      else appendRef(li, part);
+    });
   });
-  const m = renderMeasureWords(mw, script);
-  if (m.length) {
+  if (mw && mw.length) {
     const p = frag.appendChild(el("p", "c-mw"));
     p.appendChild(el("span", "c-cap", "Measure words"));
-    appendPieces(p.appendChild(el("span", "c-mw-list")), m);
+    const list = p.appendChild(el("span", "c-mw-list"));
+    mw.forEach(function (ref, i) {
+      if (i) list.appendChild(document.createTextNode(" · "));
+      appendRef(list, ref);
+    });
   }
   return frag;
+}
+
+// A reference or measure word as senses.js renders it, its reading one tappable
+// syllable at a time (#speak-line).
+function appendRef(parent, ref) {
+  appendPieces(parent, renderRef(ref, script).slice(0, -1));
+  parent.appendChild(lineReading(ref));
 }
 
 function firstGloss(defs) {
@@ -513,14 +529,107 @@ function levelTag(level) {
   return p;
 }
 
+// ---------- Sounds in cards (#speak-table) ----------
+// Which sound each tap asks for; voice.js chooses how, or whether, it is said.
+
+const sounds = new WeakMap();  // card element -> the sound a tap on it says
+let sayBtns = [];              // [button, sound] in the open card
+
+function speaks(node, sound) {
+  sounds.set(node, sound);
+  node.classList.add("say");
+}
+
+// One sound per syllable: its numbered pinyin and, when the characters line up, its
+// Traditional character (what the device voice says).
+function syllableSounds(ref) {
+  const ys = String(ref.pinyin).split(" ").filter(Boolean);
+  const cs = ref.trad ? Array.from(ref.trad) : [];
+  return ys.map(function (y, i) {
+    return { syllable: y, char: cs.length === ys.length ? cs[i] : undefined };
+  });
+}
+
+// A reading on one line, each syllable its own span: Zhuyin spaced as headword.js
+// spaces it, pinyin unspaced as senses.js joins it.
+function lineReading(ref) {
+  let node;
+  if (script === "pinyin") {
+    node = el("span", "py");
+    node.lang = "zh-Latn-pinyin";
+    toneMarks(ref.pinyin).split(" ").forEach(function (y) { node.appendChild(el("span", null, y)); });
+  } else {
+    node = pieceNode(renderReading(ref, script));
+  }
+  const ss = syllableSounds(ref);
+  Array.from(node.children).forEach(function (span, i) { if (ss[i]) speaks(span, ss[i]); });
+  return node;
+}
+
+// A card headword whose characters, pinyin, tone marks, and Zhuyin symbols say their
+// sound (#speak-char, #speak-symbol); game cards build the same headword without this.
+function speakingHeadword(word) {
+  const box = headwordNode(word, script);
+  const ss = syllableSounds(word);
+  if (box.classList.contains("hw-line")) {
+    box.querySelector(".hw-reading").replaceChildren(lineReading(word));
+  } else if (box.classList.contains("hw-ruby")) {
+    box.querySelectorAll("ruby").forEach(function (r, i) { speaks(r, ss[i]); });
+  } else {
+    box.querySelectorAll(".hw-cell").forEach(function (cell, i) {
+      cell.querySelectorAll(".hw-char, .zy-dot, .zy-tone").forEach(function (n) { speaks(n, ss[i]); });
+      cell.querySelectorAll(".zy-sym").forEach(function (n) { speaks(n, { symbol: n.firstChild.textContent }); });
+    });
+  }
+  return box;
+}
+
+// The headword with the speaker button on its right (#page-card-content), named by
+// what it says (#speak-name); hidden when nothing can say it (#speak-off).
+function headRow(word, sound, name) {
+  const row = el("div", "c-head");
+  row.appendChild(speakingHeadword(word));
+  const b = row.appendChild(el("button", "c-say"));
+  b.type = "button";
+  b.setAttribute("aria-label", "Say " + name);
+  b.appendChild(voiceBtn.querySelector("svg").cloneNode(true));  // the Voice icon, its slash hidden
+  b.hidden = !voice.canSay(sound);
+  b.addEventListener("click", function () { voice.say(sound); });
+  sayBtns.push([b, sound]);
+  return row;
+}
+
+// A tap on a character, syllable, or symbol says it (#ix-reading-tap); with Voice off
+// voice.js says nothing.
+card.addEventListener("click", function (e) {
+  for (let n = e.target; n && n !== card; n = n.parentNode) {
+    if (sounds.has(n)) { voice.say(sounds.get(n)); return; }
+  }
+});
+
+// The Voice control (#page-voice, #ix-voice), shared with the game through voice.js.
+function syncVoice() {
+  const on = voice.voiceOn();
+  voiceBtn.setAttribute("aria-checked", String(on));
+  voiceBtn.querySelector(".voice-state").textContent = on ? "Voice on" : "Voice off";
+  card.classList.toggle("voice-on", on);
+  sayBtns.forEach(function (bs) { bs[0].hidden = !voice.canSay(bs[1]); });
+}
+
+voiceBtn.addEventListener("click", function () { voice.setVoice(!voice.voiceOn()); });
+voice.onChange(syncVoice);
+syncVoice();
+
 // ---------- Card ----------
 
 let leaveTimer = 0;
 
 function showCard(d, pin) {
   clearTimeout(leaveTimer);
+  if (cardFor && cardFor !== d) voice.stop();
   cardFor = d;
   card.replaceChildren();
+  sayBtns = [];
   card.classList.toggle("pinned", pin);
   if (pin) {
     const close = el("button", "c-close", "×");
@@ -531,14 +640,16 @@ function showCard(d, pin) {
   }
   card.appendChild(el("div", "c-grip")).setAttribute("aria-hidden", "true");
   if (d.kind === "word") {
-    card.appendChild(headwordNode(d, script));
+    card.appendChild(headRow(d, { word: d.trad, audio: d.audio }, wordLabel(d, script)));
     card.appendChild(sensesNode(d.defs, d.mw));
     card.appendChild(levelTag(d.level));
   } else {
     const entry = chars[d.char];
     entry.readings.forEach(function (r) {
       const div = card.appendChild(el("div", "c-reading"));
-      div.appendChild(headwordNode({ trad: d.char, simp: entry.simp, pinyin: r.pinyin, zhuyin: r.zhuyin }, script));
+      const reading = { trad: d.char, simp: entry.simp, pinyin: r.pinyin, zhuyin: r.zhuyin };
+      const name = charLabel(d.char, script, chars) + " " + renderReading(r, script).text;
+      div.appendChild(headRow(reading, { syllable: r.pinyin, char: d.char }, name));
       div.appendChild(sensesNode(r.defs, r.mw));
     });
     if (d.radical || d.parts) card.appendChild(breakdown(d));
@@ -697,6 +808,7 @@ function swatch(colors, radical) {
 // Fades and sinks away, then empties (#motion-card, #motion-sheet).
 function hideCard() {
   if (card.hidden) return;
+  voice.stop();
   cardFor = null;
   card.classList.remove("in");
   clearTimeout(leaveTimer);
@@ -943,7 +1055,7 @@ function fillSources(meta) {
     if (v) document.getElementById(id).textContent = v;
   });
   // A source "url@commit" links to that commit's tree.
-  [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource]].forEach(([id, src]) => {
+  [["hsk-source", meta.hskSource], ["audio-source", meta.audioSource], ["syllable-source", meta.audioSource]].forEach(([id, src]) => {
     if (!src) return;
     const a = document.getElementById(id);
     const at = src.lastIndexOf("@");

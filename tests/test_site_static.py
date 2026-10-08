@@ -171,8 +171,9 @@ class LevelPanelTest(unittest.TestCase):
     def test_one_switch_per_level_on_at_load(self):
         page = Switches()
         page.feed((SITE / "index.html").read_text(encoding="utf-8"))
-        self.assertEqual([a.get("data-level") for _, a in page.switches], ["1", "2"])
-        for tag, a in page.switches:
+        levels = [(t, a) for t, a in page.switches if "level" in a.get("class", "").split()]
+        self.assertEqual([a.get("data-level") for _, a in levels], ["1", "2"])
+        for tag, a in levels:
             with self.subTest(level=a.get("data-level")):
                 self.assertEqual(tag, "button")
                 self.assertEqual(a.get("aria-checked"), "true")
@@ -201,6 +202,39 @@ class ScriptControlTest(unittest.TestCase):
         css = (SITE / "style.css").read_text(encoding="utf-8")
         rule = re.search(r"(?m)^\.script\s*\{([^}]*)\}", css)
         self.assertGreaterEqual(int(re.search(r"min-height:\s*(\d+)px", rule.group(1)).group(1)), 44)
+
+
+class VoiceControlTest(unittest.TestCase):
+    """Voice control and card sounds (#page-voice, #page-touch, #page-card-content,
+    #boundary-voice, #acceptance-voice-network): a switch beside the script control reading
+    "Voice on", full-size speaker buttons, every sound and the setting through voice.js."""
+
+    def test_control_beside_script_reads_voice_on(self):
+        html = (SITE / "index.html").read_text(encoding="utf-8")
+        self.assertRegex(html, r'id="script"[^\n]*\n\s*<button type="button" id="voice" class="voice" role="switch" aria-checked="true"')
+        self.assertRegex(html, r'<span class="voice-state">Voice on</span>')
+
+    def test_control_and_speaker_button_are_at_least_44px(self):
+        css = (SITE / "style.css").read_text(encoding="utf-8")
+        voice = re.search(r"(?m)^\.voice\s*\{([^}]*)\}", css).group(1)
+        self.assertGreaterEqual(int(re.search(r"min-height:\s*(\d+)px", voice).group(1)), 44)
+        say = re.search(r"(?m)^\.c-say\s*\{([^}]*)\}", css).group(1)
+        self.assertGreaterEqual(int(re.search(r"(?m)^\s*width:\s*(\d+)px", say).group(1)), 44)
+        self.assertGreaterEqual(int(re.search(r"(?m)^\s*height:\s*(\d+)px", say).group(1)), 44)
+
+    def test_one_voice_module(self):
+        app = (SITE / "app.js").read_text(encoding="utf-8")
+        self.assertIn('import * as voice from "./voice.js";', app)
+        for second in ("new Audio", "speechSynthesis", "hskVoice"):
+            with self.subTest(second=second):
+                self.assertNotIn(second, app)
+
+    def test_game_cards_carry_no_speaker(self):
+        # The shared headword builder stays silent; only the network card adds sounds.
+        hw = (SITE / "headword.js").read_text(encoding="utf-8")
+        for name in ("voice", "c-say", "addEventListener"):
+            with self.subTest(name=name):
+                self.assertNotIn(name, hw)
 
 
 class BreakdownSourcesTest(unittest.TestCase):

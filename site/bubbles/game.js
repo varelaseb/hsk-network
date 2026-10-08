@@ -1,16 +1,17 @@
 // HSK bubbles game page (docs/specs/hsk-bubbles.spec.html, Screens and feel).
-// Owns screens, aiming, drawing and animation, word cards, pronunciation
-// playback, character cards, effect sounds and vibration, settings, and best score. All game rules come from rules.js.
+// Owns screens, aiming, drawing and animation, word cards, when to say a
+// popped word (sounds come from ../voice.js), character cards, effect sounds and vibration, settings, and best score. All game rules come from rules.js.
 // Address options: ?fixture=pop|fall|clear|over starts Play on a fixed board,
 // ?seed=N fixes the seed.
 
 import {
   COLS, ROW_H, LINE_ROW, LINE_Y, LAUNCHER, HEIGHT, MIN_ANGLE, MAX_ANGLE,
-  createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard, pronunciation,
+  createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard,
   readingOf,
 } from "./rules.js";
 import { DEFAULT_MODE, MODES, renderSense, renderReading, wordLabel, charLabel, hanLang as langFor, hanFaces } from "../senses.js";
 import { pieceNode, headwordNode } from "../headword.js";
+import * as voice from "../voice.js";
 
 // ---- Fixtures for acceptance checks (HSK 1 and 2 words from graph.json).
 
@@ -26,7 +27,7 @@ const FIXTURES = {
 // ---- Settings, remembered on this device only.
 
 const STORE = "hskBubbles";
-const settings = Object.assign({ best: 0, levels: [1, 2], say: true, sound: false, hinted: false }, readStore());
+const settings = Object.assign({ best: 0, levels: [1, 2], sound: false, hinted: false }, readStore());
 function readStore() {
   try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; }
 }
@@ -539,7 +540,7 @@ function newGame() {
 function pause() {
   if (screen !== "playing") return;
   aimer.on = false;
-  stopSaying();
+  voice.stop();
   show("paused");
   $("resume").focus();
 }
@@ -560,7 +561,7 @@ function recordBest() {
 }
 
 function quit() {
-  stopSaying();
+  voice.stop();
   recordBest();
   game = null;
   view = demoBoard && { board: demoBoard, dropAt: null };
@@ -1028,61 +1029,27 @@ document.addEventListener("touchmove", (e) => {
   if (!e.target.closest(".sheet, .scroll")) e.preventDefault();
 }, { passive: false });
 
-// ---- Pronunciation: on at first; each popped word is said as its card shows.
-
-const voiceEl = new Audio();
-const speech = window.speechSynthesis || null;
+// ---- Pronunciation: the site-wide Voice setting (hsk-network #default-voice-setting);
+// each popped word is said as its card shows.
 
 function say(found) {
-  const how = pronunciation(found, settings.say, speech ? speech.getVoices() : []);
-  if (!how) return;
-  if (how.src) {
-    voiceEl.src = how.src;
-    voiceEl.muted = false;
-    voiceEl.play().catch(() => { /* blocked or missing: stay silent */ });
-    return;
-  }
-  const u = new SpeechSynthesisUtterance(how.text);
-  u.voice = how.voice;
-  u.lang = how.voice.lang;
-  speech.speak(u);
-}
-
-function stopSaying() {
-  voiceEl.pause();
-  if (speech) speech.cancel();
-}
-
-// Phone browsers play later sound only from a player a tap has started, so
-// the Play tap starts the recording player muted and wakes the device voice.
-let unlocked = false;
-function unlockSay() {
-  if (unlocked || !settings.say) return;
-  unlocked = true;
-  const any = words.find((w) => w.audio);
-  if (any) {
-    voiceEl.src = `../${any.audio}`;
-    voiceEl.muted = true;
-    voiceEl.play().then(() => { if (voiceEl.muted) voiceEl.pause(); }, () => {}).finally(() => { voiceEl.muted = false; });
-  }
-  if (speech) speech.speak(new SpeechSynthesisUtterance(""));
+  voice.say({ word: found.word, audio: found.entries.find((e) => e.audio)?.audio });
 }
 
 function renderSay() {
+  const on = voice.voiceOn();
   for (const b of sayBtns) {
-    b.setAttribute("aria-checked", settings.say ? "true" : "false");
-    b.querySelector(".sound-state").textContent = settings.say ? "Voice on" : "Voice off";
-    b.title = settings.say ? "Pronunciation on" : "Pronunciation off";
+    b.setAttribute("aria-checked", on ? "true" : "false");
+    b.querySelector(".sound-state").textContent = on ? "Voice on" : "Voice off";
+    b.title = on ? "Pronunciation on" : "Pronunciation off";
   }
 }
 
 sayBtns.forEach((b) => b.addEventListener("click", () => {
-  settings.say = !settings.say;
-  saveStore();
-  renderSay();
-  if (settings.say) unlockSay();
-  else stopSaying();
+  voice.setVoice(!voice.voiceOn());
+  if (voice.voiceOn()) voice.unlock();
 }));
+voice.onChange(renderSay);
 
 // ---- Effects (sounds and vibration): off until the learner turns them on.
 
@@ -1202,8 +1169,8 @@ levelBtns.forEach((b) => b.addEventListener("click", () => {
 
 // ---- Buttons
 
-playBtn.addEventListener("click", () => { unlockSay(); newGame(); });
-$("again").addEventListener("click", () => { unlockSay(); newGame(); });
+playBtn.addEventListener("click", () => { voice.unlock(); newGame(); });
+$("again").addEventListener("click", () => { voice.unlock(); newGame(); });
 $("pause").addEventListener("click", pause);
 $("resume").addEventListener("click", resume);
 $("quit").addEventListener("click", quit);
@@ -1227,6 +1194,7 @@ const data = fetch("../data/graph.json").then((r) => r.json());
 Promise.all([data, hanFace])
   .then(([graph]) => {
     words = graph.words;
+    voice.useGraph(graph);
     chars = graph.chars;
     $("cedict-release").textContent = graph.meta?.cedictRelease || "(unknown)";
     playBtn.disabled = false;

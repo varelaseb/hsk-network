@@ -47,7 +47,12 @@ touch = true
 [entry.stories.story-strokes]
 viewport = { width = 390, height = 844 }
 touch = true
-# story-read and story-script keep the desktop site root default.
+# Hearing a card, on a phone: acceptance-speak-phone runs in story-hear-card (its first listed story)
+# and needs portrait with touch, so the whole story keeps it.
+[entry.stories.story-hear-card]
+viewport = { width = 390, height = 844 }
+touch = true
+# story-read, story-script, and story-voice-setting keep the desktop site root default.
 
 # Bubbles game stories start at the game page on a phone. The network's story-open-game
 # (acceptance-play-link) keeps the desktop site root default.
@@ -236,3 +241,28 @@ path = "/#word=1-24" # 多: part 夕 twice
 path = "/#word=1-85" # 人: not split, its own radical
 [nav.acceptance-strokes-phone]
 path = "/#word=2-28" # 高: parts 亠, 口, 冋
+
+# Network: hearing a card (word ids in site/data/graph.json; Zhuyin is the default script, Voice is on
+# by default). 電腦 (dian4 nao3): word recording, both syllables and its measure word 臺 (tai2)
+# recorded, tones 1 to 4.
+[nav.acceptance-speak-word]
+path = "/#word=1-17" # 電腦
+[nav.acceptance-speak-reading]
+path = "/#word=2-8" # 長 (chang2): hub 長, readings zhang3 then chang2
+[nav.acceptance-speak-syllable]
+path = "/#word=1-17" # 電腦: second character 腦 (nao3)
+[nav.acceptance-speak-symbol]
+path = "/#word=1-17" # 電腦: columns ㄉㄧㄢˋ and ㄋㄠˇ
+[nav.acceptance-speak-line]
+path = "/#word=1-17" # 電腦: measure word 臺 (tai2)
+# #script switches the default Zhuyin to pinyin with the card open.
+[nav.acceptance-speak-pinyin]
+path = "/#word=1-17" # 電腦
+selectors = ["#script"]
+
+# Network: Voice setting. acceptance-voice-network and acceptance-voice-off start at the story's site
+# root with Voice on (first visit), so they have no hint. acceptance-voice-shared: #voice turns Voice
+# off on the network; the learner then opens the game (its When) through the Play link.
+[nav.acceptance-voice-shared]
+path = "/"
+selectors = ["#voice"]
