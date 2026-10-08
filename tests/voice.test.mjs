@@ -1,5 +1,6 @@
 // Tests for site/voice.js (docs/specs/hsk-network.spec.html #test-voice,
-// #acceptance-speak-choice, #acceptance-symbol-names; hsk-bubbles.spec.html
+// #acceptance-speak-choice, #acceptance-speak-choice-unrecorded,
+// #acceptance-symbol-names; hsk-bubbles.spec.html
 // #acceptance-say-source). Run: node --test tests/voice.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -24,22 +25,24 @@ const ROWS = [
 ];
 
 for (const [row, rec, bare, src, text] of ROWS) {
-  test(`${row}: recording, else on-device Taiwan voice, else nothing; never a network voice; off says nothing`, () => {
-    // With a recording: it plays, whatever voices exist.
+  test(`acceptance-speak-choice: ${row} with a recording plays it; off says nothing`, () => {
     assert.deepEqual(choose(rec, true, SYL, [tw]), { src });
     assert.deepEqual(choose(rec, true, SYL, []), { src });
-    // Without: a Taiwan Mandarin voice on the device says it.
+    assert.equal(choose(rec, false, SYL, [tw]), null);
+  });
+
+  test(`acceptance-speak-choice-unrecorded: ${row} without a recording: on-device Taiwan voice, else nothing; never a network voice; off says nothing`, () => {
+    // A Taiwan Mandarin voice on the device says it.
     assert.deepEqual(choose(bare, true, SYL, [en, cn, twCloud, tw]), { voice: tw, text });
     assert.equal(choose(bare, true, SYL, [twAndroid]).voice, twAndroid);
     assert.equal(choose(bare, true, SYL, [twHant]).voice, twHant);
-    // Neither: nothing (no speaker button). Off-device voices never used.
+    // No such voice: nothing (no speaker button, silent tap). Off-device voices never used.
     assert.equal(choose(bare, true, SYL, [en, cn]), null);
     assert.equal(choose(bare, true, SYL, [twCloud]), null);
     assert.equal(choose(bare, true, SYL, [{ lang: "zh-TW" }]), null);
     assert.equal(choose(bare, true, SYL, []), null);
     assert.equal(choose(bare, true, SYL, undefined), null);
     // Voice off: nothing.
-    assert.equal(choose(rec, false, SYL, [tw]), null);
     assert.equal(choose(bare, false, SYL, [tw]), null);
   });
 }

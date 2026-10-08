@@ -36,11 +36,11 @@
 <tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add">
 <td>Add</td>
 <td data-acceptance-scenario>Given a learner on an iPhone viewing the public network in Safari. When the learner taps Share, then "Add to Home Screen", then "Add", which needs the iPhone Share sheet.</td>
-<td data-acceptance-observable>Then the home screen shows the app icon, the Traditional character 學 with its Zhuyin in a column at its right as in a Taiwan textbook, paper on the night color with no red, under the app's home screen name.</td>
+<td data-acceptance-observable>Then the home screen shows the app icon, its Traditional character with that character's Zhuyin in a column at its right as in a Taiwan textbook, paper on the night color with no red, under the app's home screen name.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add-from-game">
 <td>Add from game</td>
-<td data-acceptance-scenario>Given a learner on an iPhone viewing the public bubbles game in Safari. When the learner adds it to the home screen the same way and taps the new icon.</td>
+<td data-acceptance-scenario>Given a learner on an iPhone viewing the public bubbles game in Safari. When the learner taps Share, then "Add to Home Screen", then "Add", which needs the iPhone Share sheet, and then taps the new icon.</td>
 <td data-acceptance-observable>Then the same icon and name are added and the app opens on the network.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch">
@@ -60,17 +60,22 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-word-in-app">
 <td>Word in app</td>
-<td data-acceptance-scenario>Given a learner in the installed app on the bubbles review screen. When the learner opens a popped word in the network.</td>
+<td data-acceptance-scenario>Given a learner in the installed app on the bubbles review screen. When the learner taps a popped word in its list.</td>
 <td data-acceptance-observable>Then the network opens inside the app, with no browser bar, focused on that word with its card open.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-safe-area">
 <td>Safe area</td>
-<td data-acceptance-scenario>Given a learner in the installed app on an iPhone with a notch or island and a home indicator. When the learner opens the network and taps a word node.</td>
+<td data-acceptance-scenario>Given a learner in the installed app on an iPhone with a notch and a home indicator. When the learner opens the network and taps a word node.</td>
+<td data-acceptance-observable>Then the search box sits fully below the status bar, the word card ends above the home indicator, and the graph fills the screen behind both edges.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-safe-area-island">
+<td>Safe area, island</td>
+<td data-acceptance-scenario>Given a learner in the installed app on an iPhone with a Dynamic Island and a home indicator. When the learner opens the network and taps a word node.</td>
 <td data-acceptance-observable>Then the search box sits fully below the status bar, the word card ends above the home indicator, and the graph fills the screen behind both edges.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-landscape">
 <td>Landscape</td>
-<td data-acceptance-scenario>Given a learner in the installed app viewing the network. When the learner turns the phone to landscape.</td>
+<td data-acceptance-scenario>Given a learner in the installed app viewing the network. When the learner turns the phone to landscape, which needs a phone turn.</td>
 <td data-acceptance-observable>Then the search box and level panel sit clear of the notch side and the graph refits the screen.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-page-zoom">
@@ -80,13 +85,13 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-bounce">
 <td>No bounce</td>
-<td data-acceptance-scenario>Given a learner on a phone viewing the network. When the learner drags one finger down from the search box toward the bottom of the screen.</td>
+<td data-acceptance-scenario>Given a learner on a phone viewing the network. When the learner drags one finger down from the search box toward the bottom of the screen, which needs a one-finger drag.</td>
 <td data-acceptance-observable>Then the page does not slide or reveal blank space above the search box, and the search box stays in place.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-network">
 <td>Offline network</td>
-<td data-acceptance-scenario>Given a learner who opened the installed app once with a connection. When the learner turns on airplane mode and opens the app.</td>
-<td data-acceptance-observable>Then the network loads with its characters in the site's own Chinese face, and tapping a word opens its card.</td>
+<td data-acceptance-scenario>Given a learner who opened the installed app once with a connection. When the learner turns on airplane mode, opens the app, and taps a word node.</td>
+<td data-acceptance-observable>Then the network loads with its characters in the site's own Chinese face, and the word's card opens.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-game">
 <td>Offline game</td>
@@ -100,8 +105,8 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-update">
 <td>Update</td>
-<td data-acceptance-scenario>Given a learner who installed the app before a change merged to main. When the learner opens the app with a connection, waits ten seconds, closes it from the app switcher, and opens it again, which needs a ten-second wait.</td>
-<td data-acceptance-observable>Then the second open shows the merged version.</td>
+<td data-acceptance-scenario>Given a learner who installed the app before a new version of the site was published. When the learner opens the app with a connection, waits ten seconds, closes it from the app switcher, and opens it again, which needs a ten-second wait.</td>
+<td data-acceptance-observable>Then the second open shows the new version.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-update-quiet">
 <td>No reload mid-use</td>
@@ -115,17 +120,22 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint">
 <td>First paint</td>
-<td data-acceptance-scenario>Given a learner on a phone on a slow connection who has never visited the site. When the learner opens the public network.</td>
-<td data-acceptance-observable>Then the page in the device's appearance, paper in the light one and night in the dark one, with the search box and level panel shows before the graph appears, with no flash of another background color.</td>
+<td data-acceptance-scenario>Given a learner on a phone in the light appearance on a slow connection who has never visited the site. When the learner opens the public network.</td>
+<td data-acceptance-observable>Then the page on paper with the search box and level panel shows before the graph appears, with no flash of another background color.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint-dark">
+<td>Dark first paint</td>
+<td data-acceptance-scenario>Given a learner on a phone in the dark appearance on a slow connection who has never visited the site. When the learner opens the public network.</td>
+<td data-acceptance-observable>Then the page on night with the search box and level panel shows before the graph appears, with no flash of another background color.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-install story-app-maintain" data-anchor="acceptance-manifest">
 <td>Manifest</td>
-<td data-acceptance-scenario>Given the published site files. When the app manifest and both pages' heads are checked.</td>
+<td data-acceptance-scenario>Given a maintainer with the published site files. When the maintainer's tests check the app manifest and both pages' heads.</td>
 <td data-acceptance-observable>Then both pages name the one manifest and the home screen icon, the manifest's start and scope lie inside the site's project path, it opens standalone, its colors equal the look's paper and night, and every icon it names exists at its stated size, including a maskable one, proven by a unit test: no screen shows it.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline story-app-maintain" data-anchor="acceptance-file-list">
 <td>File list</td>
-<td data-acceptance-scenario>Given the published site files. When the offline worker's file list and version are checked.</td>
+<td data-acceptance-scenario>Given a maintainer with the published site files. When the maintainer's tests check the offline worker's file list and version.</td>
 <td data-acceptance-observable>Then the list names every published file exactly once and nothing else, and the version equals the one computed from the files' contents, proven by a unit test: no screen shows it.</td>
 </tr>
 </tbody>
@@ -229,31 +239,13 @@
 <li data-anchor="offline-list">The list is every file in the published site directory except the worker script itself, sorted; the version is a short hash over each listed file's path and contents.</li>
 <li data-anchor="offline-block">The list and version are written into a marked block at the top of the worker script by the offline list command, so any site change changes the worker's bytes; a test recomputes both and fails when the block is stale.</li>
 <li data-anchor="offline-static">The worker fetches only the site's own files, so the site still makes no third-party request.</li>
-<li data-anchor="offline-preview">Local preview and the QA service serve the same worker from the site root; it behaves the same on a loopback address.</li>
+<li data-anchor="offline-preview">Local preview serves the same worker from the site root; it behaves the same on a loopback address.</li>
 </ul>
-</section>
-
-<section data-anchor="budget">
-<div class="sec-head">
-<span class="sec-num">05</span>
-<h2 data-anchor="budget-heading">Sizes</h2>
-<p class="sec-note" data-anchor="budget-note">Measurements, not limits: polish comes first, and a size worth questioning is raised at review.</p>
-</div>
-<div class="table-scroll" data-anchor="budget-scroll">
-<table data-anchor="budget-table">
-<thead><tr><th>What</th><th>Measured, about</th></tr></thead>
-<tbody>
-<tr data-anchor="budget-offline"><td>Offline copy: every listed file</td><td>3.8 MB, of which recordings 2.7 MB</td></tr>
-<tr data-anchor="budget-first"><td>First screen of the network: page, style, scripts, graph library, faces, graph data</td><td>0.9 MB uncompressed</td></tr>
-</tbody>
-</table>
-</div>
-<p data-anchor="budget-why">The pull request states the measured sizes after the change; the offline save runs after the page is drawn, so its size never delays the first screen.</p>
 </section>
 
 <section data-anchor="build">
 <div class="sec-head">
-<span class="sec-num">06</span>
+<span class="sec-num">05</span>
 <h2 data-anchor="build-heading">Build and tests</h2>
 <p class="sec-note" data-anchor="build-note">Plain files; the site directory is still published unchanged.</p>
 </div>
@@ -266,7 +258,7 @@
 <li data-anchor="test-manifest">Manifest: parses; id, start, and scope resolve inside the site path from the manifest's own address; display standalone; names; colors equal the look's paper and night where named; each icon file exists with the stated pixel size read from its header, one maskable.</li>
 <li data-anchor="test-heads">Heads: both pages link the same manifest and the 180 pixel icon, carry the app-capable and title lines and viewport-fit cover, and set the theme color and inline background to their own look color.</li>
 <li data-anchor="test-file-list">File list: the worker's list and version equal the ones recomputed from the site directory.</li>
-<li data-anchor="test-worker">Worker: with a stubbed cache and fetch, a complete install saves every listed file, an interrupted one leaves the old copy serving, activation deletes older copies, and no client is reloaded.</li>
+<li data-anchor="test-worker">Worker: a complete install saves every listed file, an interrupted one leaves the old copy serving, activation deletes older copies, and no client is reloaded.</li>
 <li data-anchor="test-static-app">Static: the existing site reference check covers the manifest and the worker.</li>
 <li data-anchor="test-phone">Phone check: a headless phone viewport loads the network and the game, then loads both again offline, with no console error and no request outside the site.</li>
 </ul>

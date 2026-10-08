@@ -90,6 +90,14 @@ viewport = { width = 390, height = 844 }
 touch = true
 [entry.stories.story-game-maintain]
 url = "{site}/bubbles/"
+# Character lookup: acceptance-inspect-touch, -touch-current, and -touch-next need a phone with touch.
+# entry has no per-criterion viewport or touch, so the whole story keeps them; the desktop
+# acceptance-inspect-desktop criteria still right-click with the mouse, which the game handles in a
+# touch context too.
+[entry.stories.story-inspect-char]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
 # Network story-levels stays at the site root (desktop default).
 
 # Search fill values, all from site/data/graph.json.
@@ -106,6 +114,14 @@ values = ["學生"]
 # Pinyin of 學生 (xue2 sheng5) without tone marks.
 [entry.criteria.acceptance-script-search]
 values = ["xuesheng"]
+[entry.criteria.acceptance-reduced-network]
+values = ["學生"]
+# Hub 學 and four words that share it.
+[entry.criteria.acceptance-cluster]
+values = ["學", "學生", "學校", "學習", "同學"]
+# Home screen icon character 學, Zhuyin ㄒㄩㄝˊ in its column.
+[entry.criteria.acceptance-add]
+values = ["學", "ㄒㄩㄝˊ"]
 
 [entry.criteria.acceptance-hosted]
 cannot_host = "needs the public GitHub Pages address after a merge to main; this environment serves a local preview of the candidate head"
