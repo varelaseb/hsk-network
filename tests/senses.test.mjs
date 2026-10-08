@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   MODES, DEFAULT_MODE, toneMarks, pinyinWord, renderReading, renderRef, renderSense,
-  renderMeasureWords, textOf, wordLabel, charLabel, headword, hanLang,
+  renderMeasureWords, textOf, wordLabel, charLabel, headword, hanLang, hanFaces,
 } from "../site/senses.js";
 
 const graph = JSON.parse(readFileSync(new URL("../site/data/graph.json", import.meta.url), "utf8"));
@@ -229,4 +229,10 @@ test("hanLang tags Chinese text zh-Hant in Zhuyin mode and zh-Hans in pinyin mod
   assert.equal(hanLang("zhuyin"), "zh-Hant");
   assert.equal(hanLang("pinyin"), "zh-Hans");
   assert.equal(hanLang("other"), "zh-Hant");
+});
+
+test("hanFaces: pinyin names the mainland forms face first, Zhuyin never (#face-forms)", () => {
+  assert.equal(hanFaces("pinyin"), '"Noto Sans CJK TC Mainland", "Noto Sans CJK TC"');
+  assert.equal(hanFaces("zhuyin"), '"Noto Sans CJK TC"');
+  assert.equal(hanFaces("other"), '"Noto Sans CJK TC"');
 });

@@ -158,6 +158,7 @@ function readScript() {
 }
 
 function syncScript() {
+  document.documentElement.dataset.script = script; // CSS names the mode's faces (#face-forms)
   scriptBtn.textContent = SCRIPT_LABEL[script];
   scriptBtn.setAttribute("aria-label", "Script: " + SCRIPT_LABEL[script]);
   scriptBtn.title = "Switch to " + SCRIPT_LABEL[script === "pinyin" ? "zhuyin" : "pinyin"];

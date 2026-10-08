@@ -9,7 +9,7 @@ import {
   createGame, aim, shoot, swap, center, cells, lowestRow, roundShots, parseBoard,
   readingOf,
 } from "./rules.js";
-import { DEFAULT_MODE, MODES, renderSense, renderReading, wordLabel, charLabel, hanLang as langFor } from "../senses.js";
+import { DEFAULT_MODE, MODES, renderSense, renderReading, wordLabel, charLabel, hanLang as langFor, hanFaces } from "../senses.js";
 import { pieceNode, headwordNode } from "../headword.js";
 import * as voice from "../voice.js";
 
@@ -78,7 +78,6 @@ const coarse = matchMedia("(pointer: coarse)");
 // Look tokens (hsk-network #look), read once from ../style.css.
 const tokens = getComputedStyle(document.documentElement);
 const tok = (name, fallback) => tokens.getPropertyValue(name).trim() || fallback;
-const HAN_FACE = '"Noto Sans CJK TC"';
 const SANS = '"Geist", system-ui, sans-serif';
 const INK = tok("--ink", "#1b1b1f");
 const PAPER = tok("--paper", "#f6f4ef");
@@ -87,7 +86,7 @@ const INK_NIGHT = tok("--ink-night", "#f6f4ef");
 const LINE_NIGHT = tok("--line-night", "rgba(255, 255, 255, .14)");
 const LEVEL_COLOR = { 1: tok("--hsk1", "#0072b2"), 2: tok("--hsk2", "#e69f00") };
 const DANGER = "#ff6b5e";
-let fontReady = false;  // bubbles are drawn only once the Chinese face has loaded
+let facesReady = null;  // script whose Chinese faces have loaded; bubbles draw only for it (#face-forms)
 
 let words = [];
 let chars = {};       // graph.json character table, read through readingOf
@@ -147,7 +146,7 @@ function sprite(ch) {
   const c = size / 2;
   const rad = c * 0.93;
   // Paper disc with a soft lower shade, ink Chinese-face character in Medium (#scale-weights),
-  // drawn in the script's language so its glyph forms follow (#face-lang).
+  // in the faces the script names, so the glyph shape comes from the face (#face-forms).
   g.fillStyle = PAPER;
   g.beginPath();
   g.arc(c, c, rad, 0, Math.PI * 2);
@@ -158,9 +157,7 @@ function sprite(ch) {
   g.fillStyle = shade;
   g.fill();
   g.fillStyle = INK;
-  img.lang = hanLang();
-  if ("lang" in g) g.lang = img.lang; // canvas text language, where supported
-  g.font = `500 ${Math.round(size * 0.58)}px ${HAN_FACE}`;
+  g.font = `500 ${Math.round(size * 0.58)}px ${hanFaces(script)}`;
   g.textAlign = "center";
   g.textBaseline = "middle";
   g.fillText(label, c, c + size * 0.035);
@@ -218,7 +215,7 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(backdrop, 0, 0);
   ctx.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
-  if (!view || !fontReady) return;
+  if (!view || facesReady !== script) return;
 
   if (fx.shake) {
     const t = (clock - fx.shake.at) / 260;
@@ -1114,6 +1111,7 @@ soundBtns.forEach((b) => b.addEventListener("click", () => {
 // ---- Script setting: relabels bubbles and cards; the network reads the same key.
 
 function renderScript() {
+  document.documentElement.dataset.script = script; // CSS names the mode's faces (#face-forms)
   for (const b of scriptBtns) {
     b.setAttribute("aria-checked", script === "pinyin" ? "true" : "false");
     b.querySelector(".script-state").textContent = script === "pinyin" ? "Pinyin" : "Zhuyin";
@@ -1125,7 +1123,17 @@ function setScript(mode) {
   if (mode === script) return;
   script = mode;
   renderScript();
-  sprites = new Map(); // bubbles redraw with their new labels
+  sprites = new Map(); // bubbles redraw with their new labels, once their faces load
+  loadFaces(mode).then(() => faceLoaded(mode));
+}
+
+// Bubbles are drawn only once the Chinese faces the script names have loaded (#face-forms);
+// the load settles even if a face fails, so the game never hangs on it.
+const loadFaces = (mode) => document.fonts.load(`500 32px ${hanFaces(mode)}`, "學学").catch(() => {});
+function faceLoaded(mode) {
+  if (mode !== script) return;
+  facesReady = mode;
+  sprites = new Map();
   draw();
 }
 
@@ -1179,9 +1187,8 @@ recordBest();
 new ResizeObserver(layout).observe(app);
 if (window.visualViewport) visualViewport.addEventListener("resize", layout);
 
-// Bubbles are drawn only once the Chinese face has loaded (#feel-type); the
-// load settles even if the face fails, so the game never hangs on it.
-const hanFace = document.fonts.load(`500 32px ${HAN_FACE}`, "學").catch(() => {});
+const startScript = script;
+const hanFace = loadFaces(startScript);
 const data = fetch("../data/graph.json").then((r) => r.json());
 
 Promise.all([data, hanFace])
@@ -1190,13 +1197,12 @@ Promise.all([data, hanFace])
     voice.useGraph(graph);
     chars = graph.chars;
     $("cedict-release").textContent = graph.meta?.cedictRelease || "(unknown)";
-    fontReady = true;
-    sprites = new Map();
     playBtn.disabled = false;
     playBtn.textContent = "Play";
     // A still board behind the start screen.
     demoBoard = createGame({ words, levels: [1, 2], seed: 20261006 }).board;
     view = { board: demoBoard, dropAt: null };
+    if (startScript === script) facesReady = script; // after a switch, its own load sets it
     draw();
     // Offline copy saves only after the board has drawn (hsk-app spec #offline).
     requestAnimationFrame(() => navigator.serviceWorker?.register("../sw.js").catch(() => {}));

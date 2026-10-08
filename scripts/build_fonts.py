@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Cut the two vendored typefaces down to what the site and game show.
 
-Spec: docs/specs/hsk-network.spec.html (#type-faces, #face-subset, #face-budget,
-#face-coverage, #boundary-fonts, #stack-fonts).
+Spec: docs/specs/hsk-network.spec.html (#type-faces, #face-subset, #face-forms,
+#face-budget, #face-coverage, #boundary-fonts, #stack-fonts).
 
 Maintainer command, run only when the shown characters change. Needs fontTools and
 brotli, so run it from a throwaway environment, never from CI:
@@ -30,12 +30,17 @@ COVERAGE = FONTS / "coverage.json"
 GRAPH = SITE / "data" / "graph.json"
 
 HAN, LATIN = "noto-sans-cjk-tc", "geist"
-BUDGET = {HAN: 232_000, LATIN: 23_000, "total": 255_000}  # bytes, #face-budget
+# Mainland forms face: cut from the Chinese release, each character mapped straight to its
+# mainland glyph, so the shape comes from the face, never the language tag (#face-lang, #face-forms).
+MAINLAND = "noto-sans-cjk-tc-mainland"
+# Bytes, #face-budget; the Chinese budget caps the Chinese face and the mainland forms face together.
+BUDGET = {HAN: 232_000, LATIN: 23_000, "total": 255_000}
 # Variable weight ranges kept (#face-cjk, #face-latin, #scale-weights).
 WEIGHTS = {HAN: (400, 500), LATIN: (400, 600)}
-# OpenType language systems whose locl forms ship: mainland and Taiwan (#face-lang).
-# Japanese, Korean, and Hong Kong alternates are dropped; the site never tags those languages.
-HAN_LANGS = {"ZHS ", "ZHT "}
+# OpenType language systems kept in the Chinese face: Taiwan only (#face-subset). Mainland,
+# Japanese, Korean, and Hong Kong alternates are dropped; mainland shapes live in the forms face.
+HAN_LANGS = {"ZHT "}
+MAINLAND_LANG = "ZHS "  # its locl forms are baked into the mainland forms face
 
 ZHUYIN = "".join(chr(c) for c in range(0x3105, 0x312A))  # all 37 symbols, ㄅ to ㄩ
 TONE_MARKS = "ˊˇˋ˙"
@@ -84,6 +89,35 @@ def shown_chars(graph, texts):
     return found | set(ZHUYIN) | set(TONE_MARKS)
 
 
+def pinyin_chars(graph):
+    """Characters the graph data file shows in pinyin mode (senses.js wordLabel, charLabel, renderRef).
+
+    Words and references show their Simplified form, else Traditional; a single character
+    (character entry, hub, radical, part) shows its character entry's Simplified form, else itself.
+    """
+    chars = graph["chars"]
+    label = lambda ch: chars.get(ch, {}).get("simp") or ch
+    found = set()
+
+    def visit(value):
+        if isinstance(value, dict):
+            if "trad" in value:
+                found.update(value.get("simp") or value["trad"])
+            for v in value.values():
+                visit(v)
+        elif isinstance(value, list):
+            for v in value:
+                visit(v)
+
+    visit(graph["words"])
+    visit(chars)
+    singles = set(chars)
+    for hub in graph["hubs"]:
+        singles |= {hub["char"], hub["radical"]["char"], *hub["parts"]}
+    found |= {label(ch) for ch in singles}
+    return {ch for s in found for ch in s if is_han(ch)}
+
+
 def latin_chars():
     out = set(PINYIN_LETTERS) | set(COMBINING_TONES)
     for lo, hi in LATIN_RANGES:
@@ -108,24 +142,56 @@ def _fetch(url, sha256, name):
     return data
 
 
-def _subset(data, wanted, features, weights, langs=None):
+def _locl(font, lang):
+    """Glyph substitutions the locl feature makes for one Han language system."""
+    gsub = font["GSUB"].table
+    lookups = set()
+    for rec in gsub.ScriptList.ScriptRecord:
+        for ls in rec.Script.LangSysRecord:
+            if ls.LangSysTag == lang:
+                for i in ls.LangSys.FeatureIndex:
+                    feat = gsub.FeatureList.FeatureRecord[i]
+                    if feat.FeatureTag == "locl":
+                        lookups |= set(feat.Feature.LookupListIndex)
+    subs = {}
+    for i in sorted(lookups):
+        lookup = gsub.LookupList.Lookup[i]
+        for st in lookup.SubTable:
+            if lookup.LookupType == 7:
+                st = st.ExtSubTable
+            if getattr(st, "LookupType", lookup.LookupType) == 1:
+                for src, dst in st.mapping.items():
+                    subs.setdefault(src, dst)
+    return subs
+
+
+def _subset(data, wanted, features, weights, langs=None, forms=None):
+    """Subset to the wanted characters; with forms, keep only those whose glyph that
+    language's locl changes, each mapped straight to its changed glyph."""
     from fontTools import subset
     from fontTools.ttLib import TTFont
     from fontTools.varLib import instancer
     font = TTFont(io.BytesIO(data), recalcTimestamp=False)  # same input, same bytes
     cmap = set(font.getBestCmap())
-    font = instancer.instantiateVariableFont(font, {"wght": weights})
+    if forms is not None:
+        subs, best = _locl(font, forms), dict(font.getBestCmap())  # a copy: the tables change below
+        wanted = {ch for ch in wanted if ord(ch) in best and best[ord(ch)] in subs}
+        for table in font["cmap"].tables:
+            for c in list(table.cmap):
+                if chr(c) in wanted:
+                    table.cmap[c] = subs[best[c]]
     if langs is not None:
         for tag in ("GSUB", "GPOS"):
             for rec in font[tag].table.ScriptList.ScriptRecord if tag in font else []:
                 rec.Script.LangSysRecord = [ls for ls in rec.Script.LangSysRecord if ls.LangSysTag in langs]
                 rec.Script.LangSysCount = len(rec.Script.LangSysRecord)
     opts = subset.Options()
-    opts.flavor = "woff2"
-    opts.layout_features = sorted(set(opts.layout_features) | set(features))
+    opts.layout_features = [] if forms is not None else sorted(set(opts.layout_features) | set(features))
     sub = subset.Subsetter(opts)
     sub.populate(unicodes=sorted(ord(c) for c in wanted if ord(c) in cmap))
     sub.subset(font)
+    # Weight range limited after the cut: instancing a few hundred glyphs, not the whole face.
+    font = instancer.instantiateVariableFont(font, {"wght": weights})
     out = io.BytesIO()
     font.flavor = "woff2"
     font.save(out)
@@ -136,18 +202,20 @@ def main():
     source = json.loads(SOURCE.read_text(encoding="utf-8"))["fonts"]
     graph = json.loads(GRAPH.read_text(encoding="utf-8"))
     need = shown_chars(graph, page_texts())
-    coverage, total = {}, 0
     # Must-haves: a face lacking one of these fails the build. Geist has no precomposed
     # ǐ ǒ ǔ or ü with a tone, so pinyin needs the combining marks over plain letters.
-    musts = {HAN: set(ZHUYIN) | set(TONE_MARKS),
+    musts = {HAN: set(ZHUYIN) | set(TONE_MARKS), MAINLAND: set(),
              LATIN: {chr(c) for c in range(0x20, 0x7F)} | set("üÜ") | set(COMBINING_TONES)}
-    for key, wanted, features, langs in ((HAN, need | punct_chars(), [], HAN_LANGS),
-                                         (LATIN, latin_chars(), ["tnum"], None)):
-        note = source[key]
+    coverage, total, sizes = {}, 0, {}
+    for key, src, wanted, features, langs, forms in (
+            (HAN, HAN, need | punct_chars(), [], HAN_LANGS, None),
+            (MAINLAND, HAN, pinyin_chars(graph), [], None, MAINLAND_LANG),
+            (LATIN, LATIN, latin_chars(), ["tnum"], None, None)):
+        note = source[src]
         raw = _fetch(note["asset"], note["sha256"], note["asset"].rsplit("/", 1)[1])
         if "member" in note:
             raw = zipfile.ZipFile(io.BytesIO(raw)).read(note["member"])
-        woff2, covered, cmap = _subset(raw, wanted, features, WEIGHTS[key], langs)
+        woff2, covered, cmap = _subset(raw, wanted, features, WEIGHTS[src], langs, forms)
         if musts[key] - cmap:
             sys.exit(f"{note['family']} lacks {''.join(sorted(musts[key] - cmap))}")
         entry = {}
@@ -159,14 +227,16 @@ def main():
                 print(f"{note['family']} lacks {entry['missing']}", file=sys.stderr)
         name = f"{key}.woff2"
         (FONTS / name).write_bytes(woff2)
-        lic = _fetch(note["licenseUrl"], None, f"{key}-{note['release']}-OFL.txt")
-        (FONTS / f"{key}.OFL.txt").write_bytes(lic)
+        lic = _fetch(note["licenseUrl"], None, f"{src}-{note['release']}-OFL.txt")
+        (FONTS / f"{src}.OFL.txt").write_bytes(lic)  # one license per typeface
         coverage[key] = {"file": name, "bytes": len(woff2), "sha256": hashlib.sha256(woff2).hexdigest(),
                          "chars": "".join(sorted(covered)), **entry}
         total += len(woff2)
+        sizes[src] = sizes.get(src, 0) + len(woff2)
         print(f"{name}: {len(covered)} characters, {len(woff2)} bytes", file=sys.stderr)
-        if len(woff2) > BUDGET[key]:
-            sys.exit(f"{name} is over its {BUDGET[key]} byte budget")
+    for src, size in sizes.items():
+        if size > BUDGET[src]:
+            sys.exit(f"{src} faces total {size} bytes, over the {BUDGET[src]} byte budget")
     if total > BUDGET["total"]:
         sys.exit(f"fonts total {total} bytes, over the {BUDGET['total']} byte budget")
     COVERAGE.write_text(json.dumps(coverage, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

@@ -284,19 +284,52 @@ def contrast(a, b):
     return (la + 0.05) / (lb + 0.05)
 
 
+def look_tokens():
+    """Light tokens from :root and the dark appearance's swap, each resolved to a hex color."""
+    css = (SITE / "style.css").read_text(encoding="utf-8")
+    root = re.search(r":root\s*\{(.*?)\}", css, re.S).group(1)
+    tok = {k: v.lower() for k, v in re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;", root)}
+    block = re.search(r"@media \(prefers-color-scheme: dark\)\s*\{.*?\bbody\s*\{(.*?)\}", css, re.S).group(1)
+    dark = dict(tok)
+    dark.update({k: tok[v] for k, v in re.findall(r"--([\w-]+):\s*var\(--([\w-]+)\)\s*;", block) if v in tok})
+    return css, tok, dark
+
+
+class DarkColorsTest(unittest.TestCase):
+    """#acceptance-dark-colors, #test-dark: on the night page and the dark surface, ink and muted
+    reach 4.5:1, level and hub colors 3:1, where each is used."""
+
+    def setUp(self):
+        _, self.tok, self.dark = look_tokens()
+
+    def test_dark_takes_the_table_column(self):
+        d = self.dark
+        self.assertEqual((d["paper"], d["surface"], d["ink"], d["muted"]),
+                         ("#0f1424", "#181e31", "#f6f4ef", "#a9b0c2"))
+
+    def test_text_reaches_4_5_to_1(self):
+        for bg in (self.dark["paper"], self.dark["surface"]):
+            for fg in (self.dark["ink"], self.dark["muted"]):
+                self.assertGreaterEqual(contrast(fg, bg), 4.5, (fg, bg))
+
+    def test_levels_and_hub_reach_3_to_1_where_used(self):
+        # Levels: graph nodes on the night page, swatches and card marks on the dark surface.
+        for bg in (self.dark["paper"], self.dark["surface"]):
+            for fg in (self.dark["hsk1"], self.dark["hsk2"]):
+                self.assertGreaterEqual(contrast(fg, bg), 3, (fg, bg))
+        # Hub: graph nodes on the night page only.
+        self.assertGreaterEqual(contrast(self.dark["hub"], self.dark["paper"]), 3)
+
+
 class StrokeColorsTest(unittest.TestCase):
     """#acceptance-strokes-colors: part colors and radical outline at 3:1 or more on both cards."""
 
     def setUp(self):
-        css = (SITE / "style.css").read_text(encoding="utf-8")
-        root = re.search(r":root\s*\{(.*?)\}", css, re.S).group(1)
-        self.tok = {k: v.lower() for k, v in re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;", root)}
+        css, self.tok, dark = look_tokens()
         self.parts = [self.tok["part-%d" % i] for i in (1, 2, 3)]
-        # The dark card takes the night tokens.
-        dark = re.search(r"@media \(prefers-color-scheme: dark\)\s*\{\s*\.card\s*\{(.*?)\}", css, re.S).group(1)
-        dvar = dict(re.findall(r"--([\w-]+):\s*var\(--([\w-]+)\)", dark))
+        # The dark card is the dark surface with the dark ink.
         self.light = {"bg": self.tok["surface"], "ink": self.tok["ink"]}
-        self.dark = {"bg": self.tok[dvar["surface"]], "ink": self.tok[dvar["ink"]]}
+        self.dark = {"bg": dark["surface"], "ink": dark["ink"]}
         # The outline is drawn in the card's ink.
         self.assertRegex(css, r"\.s-ink, \.s-out \{ stroke: var\(--ink\); \}")
 
@@ -318,7 +351,7 @@ class StrokeColorsTest(unittest.TestCase):
 
     def test_contrast_matches_spec_table(self):
         self.assertEqual([round(contrast(c, self.light["bg"]), 1) for c in self.parts], [3.9, 3.4, 3.1])
-        self.assertEqual([round(contrast(c, self.dark["bg"]), 1) for c in self.parts], [4.7, 5.4, 6.0])
+        self.assertEqual([round(contrast(c, self.dark["bg"]), 1) for c in self.parts], [4.3, 4.8, 5.4])
 
 
 if __name__ == "__main__":

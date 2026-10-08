@@ -45,8 +45,13 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch">
 <td>Launch</td>
-<td data-acceptance-scenario>Given a learner who added the app to the home screen. When the learner taps its icon.</td>
+<td data-acceptance-scenario>Given a learner whose device uses the light appearance who added the app to the home screen. When the learner taps its icon.</td>
 <td data-acceptance-observable>Then the network opens full screen with no address bar or browser toolbar, the screen shows the paper color from the first frame with no white flash, and the status bar sits on paper with dark text.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch-dark">
+<td>Dark launch</td>
+<td data-acceptance-scenario>Given a learner whose device uses the dark appearance who added the app to the home screen. When the learner taps its icon.</td>
+<td data-acceptance-observable>Then the network opens full screen, the screen shows the night color from the first frame with no paper or white flash, and the status bar text is light.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-play-in-app">
 <td>Play in app</td>
@@ -111,7 +116,7 @@
 <tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint">
 <td>First paint</td>
 <td data-acceptance-scenario>Given a learner on a phone on a slow connection who has never visited the site. When the learner opens the public network.</td>
-<td data-acceptance-observable>Then the paper page with the search box and level panel shows before the graph appears, with no flash of another background color.</td>
+<td data-acceptance-observable>Then the page in the device's appearance, paper in the light one and night in the dark one, with the search box and level panel shows before the graph appears, with no flash of another background color.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-install story-app-maintain" data-anchor="acceptance-manifest">
 <td>Manifest</td>
@@ -152,7 +157,7 @@
 <tr data-anchor="default-name"><td>Name</td><td>"字串" under the icon (zìchuàn: characters strung together, as the network strings words through shared characters); "字串 · Traditional words with Zhuyin" as the full name. It names Traditional and Zhuyin, not HSK, which is the mainland exam.</td></tr>
 <tr data-anchor="default-icon"><td>Icon</td><td>The Traditional 學 in Noto Sans CJK TC, the site's Chinese face, medium weight, with its Zhuyin ㄒㄩㄝˊ set top to bottom in a narrow column at its right, the tone mark beside the last symbol, as Taiwan textbooks print it; the character in paper, the Zhuyin in paper at lower contrast, on the night color, a deep ink blue; no Latin text, border, gloss, or red. The pair fits the maskable safe circle so every icon shape keeps it whole.</td></tr>
 <tr data-anchor="default-identity"><td>Identity cues</td><td>Traditional characters and Zhuyin only, Taiwan style: no Simplified form, pinyin, or Latin wordmark in the icon, name, or launch screen, and no red in the icon, launch, or theme colors; the colors are the shared look's paper and ink-blue night, which carry these cues already.</td></tr>
-<tr data-anchor="default-launch"><td>Launch screen</td><td>A plain paper-color launch image per current iPhone portrait screen size: the warm off-white of a Taiwan textbook page and the network's own color, so the app opens with nothing to jump when the page appears.</td></tr>
+<tr data-anchor="default-launch"><td>Launch screen</td><td>A plain paper-color launch image per current iPhone portrait screen size: the warm off-white of a Taiwan textbook page and the network's own color, so the app opens with nothing to jump when the page appears; in the dark appearance a plain night-color image of each size instead, matching the dark network.</td></tr>
 <tr data-anchor="default-orientation"><td>Orientation</td><td>Any; the network refits, and the game keeps its own portrait layout rules.</td></tr>
 <tr data-anchor="default-offline-scope"><td>What is saved offline</td><td>Every published file, recordings included, on the first visit, so the game speaks offline without the learner having heard a word first.</td></tr>
 <tr data-anchor="default-update"><td>When an update shows</td><td>On the next open after it downloaded; an open session is never reloaded under the learner.</td></tr>
@@ -182,9 +187,9 @@
 </div>
 <ul data-anchor="head-rules">
 <li data-anchor="head-common">Both pages carry the same app lines: the manifest link, a 180 pixel home screen icon link, the web-app-capable and app title lines, and a viewport covering the whole screen, so adding from either page gives the same app.</li>
-<li data-anchor="head-color">Each page sets its theme color and an inline background in its head to its own look color, paper for the network and night for the game, so the first frame is already the right color and the status bar follows the page.</li>
+<li data-anchor="head-color">Each page sets its theme color and an inline background in its head to its own look color, paper for the network and night for the game, and night for both in <a href="hsk-network.spec.html#color-dark">the dark appearance</a>, so the first frame is already the right color and the status bar follows the page.</li>
 <li data-anchor="head-status">The status bar keeps its own area; its text is dark on paper and light on night.</li>
-<li data-anchor="head-launch">Launch images are linked from the network page only, one per iPhone portrait screen size, each a plain paper image.</li>
+<li data-anchor="head-launch">Launch images are linked from the network page only, one per iPhone portrait screen size, each a plain image in pairs: a paper one for the light appearance and a night one for the dark appearance, chosen by a prefers-color-scheme media condition on each link; the network's theme color carries the same light and dark pair, so a dark-appearance launch shows night from the first frame with no paper flash, and the light appearance stays paper. The manifest names one color, paper, which iPhone launch never shows because the launch images cover it.</li>
 <li data-anchor="head-links">Links between the network and the game stay relative, so they stay inside the scope; links to sources outside the site open over the app and return to it.</li>
 <li data-anchor="head-storage">An installed app keeps its own storage, separate from Safari: the script setting and game settings and best score start fresh in the app; nothing tries to share them.</li>
 </ul>
