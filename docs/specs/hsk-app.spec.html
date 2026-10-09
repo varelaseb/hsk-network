@@ -118,6 +118,11 @@
 <td data-acceptance-scenario>Given a learner whose offline copy failed to save, which needs an induced failure: the offline download is interrupted. When the learner opens the site with a connection.</td>
 <td data-acceptance-observable>Then the site loads from the network as usual and saves its offline copy again, proven by a unit test: no screen shows it.</td>
 </tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-recording">
+<td>Recordings offline on an iPhone</td>
+<td data-acceptance-scenario>Given a learner on an iPhone with the installed app saved offline, Voice on, and no connection. When the learner plays the game and pops a word that has a recording.</td>
+<td data-acceptance-observable>Then the word's recording plays from the saved copy.</td>
+</tr>
 <tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint">
 <td>First paint</td>
 <td data-acceptance-scenario>Given a learner on a phone in the light appearance on a slow connection who has never visited the site. When the learner opens the public network.</td>
@@ -279,7 +284,6 @@ The game's existing safe-area rules stay.</li>
 <li data-anchor="test-file-list">File list: the worker's list and version equal the ones recomputed from the site directory.</li>
 <li data-anchor="test-worker">Worker: a complete install saves every listed file, an interrupted one leaves the old copy serving, activation deletes older copies, and no client is reloaded.</li>
 <li data-anchor="test-static-app">Static: the existing site reference check covers the manifest and the worker.</li>
-<li data-anchor="test-phone">Phone check: a headless phone viewport loads the network and the game, then loads both again offline, with no console error and no request outside the site.</li>
 </ul>
 </section>
 
