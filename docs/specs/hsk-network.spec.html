@@ -52,14 +52,20 @@
 <tr data-acceptance-criterion data-anchor="acceptance-hover" data-story="story-inspect"><td>Hover</td><td data-acceptance-scenario>Given a learner on a desktop browser viewing the graph. When the learner moves the pointer over a word node.</td><td data-acceptance-observable>Then a card shows the word in Traditional characters, its Zhuyin with tone marks, its English definitions, and its HSK level as text.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-tap" data-story="story-phone story-inspect"><td>Tap</td><td data-acceptance-scenario>Given a learner on a phone viewing the graph. When the learner taps a word node.</td><td data-acceptance-observable>Then the same word card opens at the bottom of the screen without covering the search box.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-dismiss" data-story="story-phone story-inspect"><td>Dismiss</td><td data-acceptance-scenario>Given a learner on a phone with a word card open. When the learner taps empty space in the graph.</td><td data-acceptance-observable>Then the card closes and the full graph is visible again.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-card-close" data-story="story-inspect"><td>Close button</td><td data-acceptance-scenario>Given a learner on a desktop browser who clicked a word node, so its card stays open. When the learner clicks the card's close button.</td><td data-acceptance-observable>Then the card closes and the highlight clears.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-hub-card" data-story="story-inspect"><td>Hub card</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a character hub.</td><td data-acceptance-observable>Then a card shows that character with the Zhuyin and English definitions of each of its readings, lists the words that contain it, each with its first English definition shown as text beside it, and highlights those words in the graph.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hub-count" data-story="story-inspect"><td>Hub word list</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps a character hub.</td><td data-acceptance-observable>Then above its word list the card reads how many visible words contain the character, such as "5 words contain this character", and each listed word shows its reading and its level color beside its first English definition.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-hub-word-pick" data-story="story-inspect"><td>Pick from a hub card</td><td data-acceptance-scenario>Given a learner with a hub card open. When the learner taps one of the words it lists.</td><td data-acceptance-observable>Then the graph glides to that word, highlights it and its neighbors, and opens its card.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown" data-story="story-breakdown"><td>Breakdown</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then the hub card shows a "Radical" row with the radical, its radical number, its English meaning, and its Zhuyin, and a "Parts" row listing each part with its English meaning, with Zhuyin beside each part that is a character itself and none beside a part that is only a radical form.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-single" data-story="story-breakdown"><td>Single part</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character that is not split into parts.</td><td data-acceptance-observable>Then the hub card shows its "Radical" row and a "Parts" row that reads "Not split further".</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-phone" data-story="story-breakdown story-phone"><td>Breakdown on a phone</td><td data-acceptance-scenario>Given a learner on a phone in portrait viewing the graph. When the learner taps the hub of a character built from three parts.</td><td data-acceptance-observable>Then the bottom sheet shows the Radical and Parts rows in full, each part's meaning readable without zooming, and the page does not scroll sideways.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-known" data-story="story-breakdown story-maintain"><td>Known breakdowns</td><td data-acceptance-scenario>Given a maintainer with the built hub data. When the reference characters in the test suite are looked up.</td><td data-acceptance-observable>Then each has the expected radical and radical number and the expected parts, each part with a meaning containing the expected English word, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-complete" data-story="story-breakdown story-maintain"><td>Every hub broken down</td><td data-acceptance-scenario>Given a maintainer with the built hub data. When every hub is checked.</td><td data-acceptance-observable>Then every hub has a radical with a number and a meaning, and every part has a meaning, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-chars-once" data-story="story-maintain"><td>Stored once</td><td data-acceptance-scenario>Given a maintainer with the built graph data. When every hub, radical, and part is checked.</td><td data-acceptance-observable>Then each names a character that has exactly one entry in the character table, no hub, radical, or part carries a reading or meaning of its own, and no one-character word carries Zhuyin or definitions of its own but names one reading of its character's entry, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-char-simp" data-story="story-script story-maintain"><td>Character Simplified form</td><td data-acceptance-scenario>Given a maintainer with the built graph data. When each character table entry's Simplified form is checked.</td><td data-acceptance-observable>Then a character an HSK word contains has the Simplified form the first such word writes for it, and any other character has the Simplified form of its standard reading's dictionary entry, or itself when it has none, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-breakdown-fail" data-story="story-maintain"><td>Unresolved part</td><td data-acceptance-scenario>Given a maintainer rebuilding the data. When a hub character's parts include one with no dictionary entry and no override exists for it, which needs an induced failure: a part with no dictionary entry.</td><td data-acceptance-observable>Then the build fails and names that character, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-override-stale" data-story="story-maintain"><td>Stale override</td><td data-acceptance-scenario>Given a maintainer rebuilding the data. When the override file holds an entry naming no HSK list entry or no hub, which needs an induced failure: a stale override entry.</td><td data-acceptance-observable>Then the build fails and names that entry, proven by a unit test: no screen shows it.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-override-mismatch" data-story="story-maintain"><td>Mismatched override</td><td data-acceptance-scenario>Given a maintainer rebuilding the data. When an override entry names a Simplified form or hub character other than the one it overrides, which needs an induced failure: an override for the wrong form.</td><td data-acceptance-observable>Then the build fails and names that entry, proven by a unit test: no screen shows it.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-strokes-draw" data-story="story-strokes"><td>Parts at a glance</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then, with no further tap, the hub card's breakdown shows that character drawn in even simple lines with each part's strokes in that part's own color, and each entry in the "Parts" row shows a swatch of the same color beside the part.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-strokes-radical-mark" data-story="story-strokes"><td>Radical marked</td><td data-acceptance-scenario>Given a learner viewing the graph. When the learner taps the hub of a character whose radical is one of its parts.</td><td data-acceptance-observable>Then, with no further tap, the radical's strokes in the drawing carry the radical outline over their part color, and the "Radical" row shows a swatch with the same outline beside the radical.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-strokes-dark" data-story="story-strokes story-dark"><td>Night look</td><td data-acceptance-scenario>Given a learner whose device uses the dark appearance. When the learner taps the hub of a character built from two or more parts.</td><td data-acceptance-observable>Then the hub card is dark on the dark page with light text, and each part's color, its swatch, and the radical outline stand out clearly against it.</td></tr>
@@ -106,6 +112,8 @@
 <tr data-acceptance-criterion data-anchor="acceptance-voice-network" data-story="story-voice-setting"><td>Voice control</td><td data-acceptance-scenario>Given a learner on a desktop browser opening the site for the first time. When the learner looks at the control row, then taps a word.</td><td data-acceptance-observable>Then a Voice control beside the script control reads "Voice on" and the word card shows its speaker button.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-voice-off" data-story="story-voice-setting"><td>Voice off</td><td data-acceptance-scenario>Given a learner on a desktop browser viewing the graph with Voice on. When the learner taps the Voice control, then taps a word and taps a character of its headword.</td><td data-acceptance-observable>Then the control reads "Voice off", the card shows no speaker button, and nothing plays.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-voice-shared" data-story="story-voice-setting"><td>Voice shared</td><td data-acceptance-scenario>Given a learner who turned Voice off on the network. When the learner opens the bubbles game.</td><td data-acceptance-observable>Then the game's pronunciation control reads "Voice off".</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-voice-tabs" data-story="story-voice-setting"><td>Voice across tabs</td><td data-acceptance-scenario>Given a learner with the network open in one tab and the bubbles game in another, Voice on. When the learner turns Voice off in the game, then returns to the network tab.</td><td data-acceptance-observable>Then the network's Voice control reads "Voice off" without a reload.</td></tr>
+<tr data-acceptance-criterion data-anchor="acceptance-voice-earlier" data-story="story-voice-setting"><td>Earlier game choice</td><td data-acceptance-scenario>Given a learner who turned pronunciation off in the game before the shared Voice setting existed, which a fixture must be added to provide. When the learner opens the network.</td><td data-acceptance-observable>Then the Voice control reads "Voice off".</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-sources" data-story="story-sources"><td>Sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits CC-CEDICT under CC BY-SA 4.0 with links, cites the HSK word list source, names the CC-CEDICT release date the data was built from, credits the word recordings to their speaker and source under CC BY-SA 3.0 US with links, credits the syllable recordings to their speaker and source under CC BY-SA with links, credits the graph library and its license, and credits both typefaces, their designers, and the SIL Open Font License with links.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-sources-breakdown" data-story="story-breakdown-sources"><td>Breakdown sources</td><td data-acceptance-scenario>Given a learner on the public site. When the learner opens the "Sources" footer.</td><td data-acceptance-observable>Then it credits the BabelStone IDS data and its maintainer with a link, credits the Unicode Unihan database with its version and a link to the Unicode License, names the date of the IDS file the data was built from, and credits the GlyphWiki character drawings with a link, their free license, and the date of the GlyphWiki data they were built from.</td></tr>
 <tr data-acceptance-criterion data-anchor="acceptance-static" data-story="story-explore story-maintain"><td>Static</td><td data-acceptance-scenario>Given a maintainer with the published site files. When their references are checked.</td><td data-acceptance-observable>Then the page loads only files from its own site, with no runtime API, key, or third-party request, proven by a unit test: no screen shows it.</td></tr>
@@ -139,11 +147,26 @@
 
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
 <h2>Modular boundaries</h2>
-<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, the pronunciation recordings, Unihan, and the IDS data into the graph data, and GlyphWiki into the drawing data: matching, Traditional forms, Zhuyin, definitions cleaned into readable senses and measure words, hubs, links, which word has a recording, which syllables have a recording, each hub's radical and parts, and each hub's strokes with which strokes belong to each part and to the radical.</span> <span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, the drawing data file, and the word and syllable recordings, plus both files' schemas below.</span> <span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT, the recordings, Unihan, the IDS data, and the GlyphWiki data at build time only, and nothing calls back into it.</span> <span data-boundary-scope>Observable scope: the committed graph data file, the committed drawing data file, the committed word and syllable recordings, and the build's error list.</span></p>
-<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards including the hub breakdown and its drawn character, search, legend, word links, the Play link, the Voice control, speaker buttons and tappable readings in cards, the Sources footer, and the shared look in both appearances: typefaces, type scale, color, and motion, which the game page reuses.</span> <span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span> <span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file, the drawing data file, and the vendored graph library only, and holds no dictionary or stroke logic: it draws the strokes it is given, colors each part's strokes, and outlines the radical's.</span> <span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
-<p data-modular-boundary data-anchor="boundary-voice"><span data-boundary-responsibility>One shared voice module, used by the network page and the game, owns the Voice setting and its storage, the Zhuyin symbol name table, choosing a sound's source by the sound rules below, and playing one sound at a time.</span> <span data-boundary-seam>Caller-facing seam: a page asks whether a sound can be said, to show or hide its speaker button, and asks it to say a word, a reading, a syllable, or a symbol; it reads and changes the Voice setting.</span> <span data-boundary-dependency>Dependency direction: self-contained; both pages depend on it; it reads the graph data the page already loaded and the device's voice list, and knows nothing of cards, bubbles, or the pipeline.</span> <span data-boundary-scope>Observable scope: what a learner hears, the Voice control's state on both pages, and the unit tests of the choice and symbol table.</span></p>
-<p data-modular-boundary data-anchor="boundary-fonts"><span data-boundary-responsibility>The font build owns cutting the two vendored typefaces down to the characters the site and game show, as three files: Geist, the Chinese face, and its mainland forms face.</span> <span data-boundary-seam>Caller-facing seam: one maintainer command that reads the graph data file and the pages' own text and writes the three subset font files and their coverage list.</span> <span data-boundary-dependency>Dependency direction: external provider; it uses the fontTools subsetter at maintainer time only, and the site and tests never call it.</span> <span data-boundary-scope>Observable scope: the committed font files, their coverage list, and the font size budget.</span></p>
-<p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span> <span data-boundary-scope>Observable scope: check status and the live site.</span></p>
+<p data-modular-boundary data-anchor="boundary-pipeline"><span data-boundary-responsibility>The data pipeline owns turning the HSK lists, CC-CEDICT, the pronunciation recordings, Unihan, and the IDS data into the graph data, and GlyphWiki into the drawing data: matching, Traditional forms, Zhuyin, definitions cleaned into readable senses and measure words, hubs, links, which word has a recording, which syllables have a recording, each hub's radical and parts, and each hub's strokes with which strokes belong to each part and to the radical.</span>
+<span data-boundary-seam>Caller-facing seam: one build command that writes the graph data file, the drawing data file, and the word and syllable recordings, plus both files' schemas below.</span>
+<span data-boundary-dependency>Dependency direction: external provider; it downloads CC-CEDICT, the recordings, Unihan, the IDS data, and the GlyphWiki data at build time only, and nothing calls back into it.</span>
+<span data-boundary-scope>Observable scope: the committed graph data file, the committed drawing data file, the committed word and syllable recordings, and the build's error list.</span></p>
+<p data-modular-boundary data-anchor="boundary-site"><span data-boundary-responsibility>The site owns layout, rendering, hover and tap cards including the hub breakdown and its drawn character, search, legend, word links, the Play link, the Voice control, speaker buttons and tappable readings in cards, the Sources footer, and the shared look in both appearances: typefaces, type scale, color, and motion, which the game page reuses.</span>
+<span data-boundary-seam>Caller-facing seam: the public page and its word link address.</span>
+<span data-boundary-dependency>Dependency direction: self-contained; it consumes the graph data file, the drawing data file, and the vendored graph library only, and holds no dictionary or stroke logic: it draws the strokes it is given, colors each part's strokes, and outlines the radical's.</span>
+<span data-boundary-scope>Observable scope: what a learner sees and touches.</span></p>
+<p data-modular-boundary data-anchor="boundary-voice"><span data-boundary-responsibility>One shared voice module, used by the network page and the game, owns the Voice setting and its storage, the Zhuyin symbol name table, choosing a sound's source by the sound rules below, and playing one sound at a time.</span>
+<span data-boundary-seam>Caller-facing seam: a page asks whether a sound can be said, to show or hide its speaker button, and asks it to say a word, a reading, a syllable, or a symbol; it reads and changes the Voice setting.</span>
+<span data-boundary-dependency>Dependency direction: self-contained; both pages depend on it; it reads the graph data the page already loaded and the device's voice list, and knows nothing of cards, bubbles, or the pipeline.</span>
+<span data-boundary-scope>Observable scope: what a learner hears, the Voice control's state on both pages, and the unit tests of the choice and symbol table.</span></p>
+<p data-modular-boundary data-anchor="boundary-fonts"><span data-boundary-responsibility>The font build owns cutting the two vendored typefaces down to the characters the site and game show, as three files: Geist, the Chinese face, and its mainland forms face.</span>
+<span data-boundary-seam>Caller-facing seam: one maintainer command that reads the graph data file and the pages' own text and writes the three subset font files and their coverage list.</span>
+<span data-boundary-dependency>Dependency direction: external provider; it uses the fontTools subsetter at maintainer time only, and the site and tests never call it.</span>
+<span data-boundary-scope>Observable scope: the committed font files, their coverage list, and the font size budget.</span></p>
+<p data-modular-boundary data-anchor="boundary-delivery"><span data-boundary-responsibility>Delivery owns tests on every pull request and publishing the site on every merge to main.</span>
+<span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span>
+<span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages; it runs the repository's own test command and publishes the site directory unchanged.</span>
+<span data-boundary-scope>Observable scope: check status and the live site.</span></p>
 </section>
 
 <section data-anchor="defaults">
@@ -169,8 +192,7 @@
 <tr data-anchor="default-level"><td>Level cue</td><td>Color by HSK level, named in a legend and in the card.</td></tr>
 <tr data-anchor="default-level-panel"><td>Level filter</td><td>The legend is the level panel: one on/off switch per HSK level, both on at load.</td></tr>
 <tr data-anchor="default-parts"><td>What a part is</td><td>One level of the character's Ideographic Description Sequence, so 好 is 女 + 子 and 學 is not split down to strokes; parts are not split again.</td></tr>
-<tr data-anchor="default-breakdown-where">
-<td>Where the breakdown shows</td><td>Only in hub cards; word cards are unchanged.</td></tr>
+<tr data-anchor="default-breakdown-where"><td>Where the breakdown shows</td><td>Only in hub cards; word cards are unchanged.</td></tr>
 <tr data-anchor="default-drawing"><td>How a hub's character is drawn</td><td>GlyphWiki's Taiwan-form stroke skeleton, every stroke a centerline of one even width with round ends, so it reads as the same simple-line style as the site's Chinese typeface; brush-shaped kaishu outlines were rejected, see the sources table.</td></tr>
 <tr data-anchor="default-drawing-what"><td>What the drawing shows</td><td>Every part in its own color and the radical outlined as soon as the card opens; tapping a part or the radical only emphasizes it by turning the rest pale, and nothing needs a tap.</td></tr>
 <tr data-anchor="default-drawing-script"><td>Drawing and script mode</td><td>The drawing is always the Traditional character, the one the Radical and Parts rows break down, in either script mode.</td></tr>
@@ -193,7 +215,7 @@
 <figure data-anchor="model-figure">
 <div class="rail-wrap" data-anchor="model-figure-scroll">
 <svg viewBox="0 0 640 260" style="min-width: 480px" role="img" aria-label="Hub 學 in the center links to word nodes 學生, 學校, 學習 and 同學. 學生 also links to hub 生, which links to the HSK 2 word 生日.">
-<g stroke="#5b5f6b" stroke-width="1.5">
+<g stroke-width="1.5" style="stroke: var(--spec-muted)">
 <line x1="320" y1="130" x2="180" y2="60"></line>
 <line x1="320" y1="130" x2="460" y2="60"></line>
 <line x1="320" y1="130" x2="180" y2="200"></line>
@@ -201,19 +223,19 @@
 <line x1="180" y1="60" x2="60" y2="60"></line>
 <line x1="60" y1="60" x2="60" y2="150"></line>
 </g>
-<circle cx="320" cy="130" r="18" fill="#d9dbe0" stroke="#5b5f6b"></circle>
-<text x="320" y="136" text-anchor="middle" font-size="16" fill="#171719">學</text>
-<circle cx="60" cy="60" r="14" fill="#d9dbe0" stroke="#5b5f6b"></circle>
-<text x="60" y="65" text-anchor="middle" font-size="14" fill="#171719">生</text>
-<g font-size="17" text-anchor="middle" fill="#ffffff">
-<rect x="140" y="42" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="180" y="66">學生</text>
-<rect x="420" y="42" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="460" y="66">學校</text>
-<rect x="140" y="182" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="180" y="206">學習</text>
-<rect x="420" y="182" width="80" height="36" rx="18" fill="#2947c7"></rect><text x="460" y="206">同學</text>
+<circle cx="320" cy="130" r="18" fill="#8b877f" style="stroke: var(--spec-muted)"></circle>
+<text x="320" y="136" text-anchor="middle" font-size="16" style="fill: var(--spec-ink)">學</text>
+<circle cx="60" cy="60" r="14" fill="#8b877f" style="stroke: var(--spec-muted)"></circle>
+<text x="60" y="65" text-anchor="middle" font-size="14" style="fill: var(--spec-ink)">生</text>
+<g font-size="17" text-anchor="middle" style="fill: var(--spec-surface)">
+<rect x="140" y="42" width="80" height="36" rx="18" fill="#0072b2"></rect><text x="180" y="66">學生</text>
+<rect x="420" y="42" width="80" height="36" rx="18" fill="#0072b2"></rect><text x="460" y="66">學校</text>
+<rect x="140" y="182" width="80" height="36" rx="18" fill="#0072b2"></rect><text x="180" y="206">學習</text>
+<rect x="420" y="182" width="80" height="36" rx="18" fill="#0072b2"></rect><text x="460" y="206">同學</text>
 </g>
-<rect x="20" y="150" width="80" height="36" rx="18" fill="#a34a00"></rect>
-<text x="60" y="174" text-anchor="middle" font-size="17" fill="#ffffff">生日</text>
-<text x="20" y="250" font-size="13" fill="#171719">Blue pill: HSK 1 word. Orange pill: HSK 2 word. Gray circle: shared-character hub.</text>
+<rect x="20" y="150" width="80" height="36" rx="18" fill="#e69f00"></rect>
+<text x="60" y="174" text-anchor="middle" font-size="17" style="fill: var(--spec-ink)">生日</text>
+<text x="20" y="250" font-size="13" style="fill: var(--spec-ink)">Blue pill: HSK 1 word. Orange pill: HSK 2 word. Gray circle: shared-character hub.</text>
 </svg>
 </div>
 <figcaption data-anchor="model-figure-caption">Words gather around the hubs of the characters they share; a word with several shared characters bridges clusters.</figcaption>
@@ -253,7 +275,8 @@
 </ol>
 <h3 data-anchor="hub-reading-heading">Character readings</h3>
 <p data-anchor="chars-table">Each per-character fact lives once, in the character table of the graph data file keyed by character: a character's readings and its short meaning are stored there and nowhere else, and hubs, cards, radicals, and parts refer to a character only by the character itself.</p>
-<p data-anchor="chars-words">A one-character word stores no Zhuyin or definitions of its own: it records which reading of its character's table entry the HSK list means, the reading whose pinyin equals the word's matched pinyin, and the site and game read its Zhuyin and definitions through that reading; a one-character word whose reading is missing from its character's entry fails the build and names it. A word of two or more characters keeps its own matched Zhuyin and definitions.</p>
+<p data-anchor="chars-words">A one-character word stores no Zhuyin or definitions of its own: it records which reading of its character's table entry the HSK list means, the reading whose pinyin equals the word's matched pinyin, and the site and game read its Zhuyin and definitions through that reading; a one-character word whose reading is missing from its character's entry fails the build and names it.
+A word of two or more characters keeps its own matched Zhuyin and definitions.</p>
 <p data-anchor="hub-reading">A character's readings, stored in its character table entry for every hub character and every radical or part that is a character itself, are the lowercase single-character CC-CEDICT entries whose Traditional form is that character, or, for a radical or part that is a character itself only by its Simplified form, whose Simplified form is, one reading per distinct pinyin, the reading matching the first value of the character's Unihan kMandarin first and the rest in dictionary order, so the standard reading shows first, such as 舌 ㄕㄜˊ before ㄐㄧ, each with its Zhuyin and its definitions merged and dropped by the match rules above; capitalized entries count only when no lowercase entry exists, and a character with no entry at all fails the build and names it.</p>
 <p data-anchor="char-coverage">Every character in any word's Traditional form has its own entry with readings in the graph data file's character table, by the character readings rule, whether or not it is a hub; the game's character card reads it there.</p>
 <h3 data-anchor="breakdown-heading">Character breakdown</h3>
@@ -314,7 +337,7 @@
 <tr data-anchor="sense-cl"><td><code>CL:塊|块[kuai4],隻|只[zhi1],個|个[ge4]</code></td><td>Every "CL:" list, a whole sense or in parentheses inside one, leaves the sense text and becomes the entry's measure words, in order, each once, each a reference; a sense left empty is dropped.</td><td>Measure words 塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</td></tr>
 <tr data-anchor="sense-ref"><td><code>see 大夫[dai4 fu5]</code>, <code>used in 號脈|号脉[hao4 mai4]</code></td><td>A <code>Traditional|Simplified[pinyin]</code> or <code>Traditional[pinyin]</code> citation becomes a reference holding the Traditional form, the Simplified form (the Traditional one when none is given), the pinyin, and its Zhuyin by the Zhuyin rules; Zhuyin mode shows the Traditional form, a space, and the Zhuyin; pinyin mode shows the Simplified form and the pinyin with tone marks.</td><td>see 大夫 ㄉㄞˋ ˙ㄈㄨ</td></tr>
 <tr data-anchor="sense-pr"><td><code>(Taiwan pr. [ting4])</code>, <code>also pr. [shui2]</code></td><td>A bare bracketed pinyin becomes a reading reference holding the pinyin and its Zhuyin, shown as the Zhuyin; "Taiwan pr." reads "Taiwan reading", "pr." reads "pronounced".</td><td>(Taiwan reading ㄊㄧㄥˋ)</td></tr>
-<tr data-anchor="sense-tag"><td><code>(bound form)</code>, <code>(coll.)</code>, <code>(Tw)</code></td><td>A parenthesized tag that opens a sense becomes the sense's tag, its abbreviation spelled out: coll. colloquial, Tw Taiwan, lit. literally, fig. figuratively, math. mathematics, abbr. short for, onom. onomatopoeia.</td><td>bound form  root; stem</td></tr>
+<tr data-anchor="sense-tag"><td><code>(bound form)</code>, <code>(coll.)</code>, <code>(Tw)</code></td><td>A parenthesized tag from a fixed list that opens a sense becomes the sense's tag: coll. colloquial, Tw Taiwan, lit. literally, fig. figuratively, math. mathematics, abbr. short for, and onom. onomatopoeia spelled out; bound form, literary, classical, archaic, old, dialect, Beijing dialect, slang, loanword, polite, vulgar, military, sports, and physics kept as written; any other opening parenthesis stays in the sense text.</td><td>bound form  root; stem</td></tr>
 <tr data-anchor="sense-abbr"><td><code>to see (sb) off</code></td><td>The abbreviations sb, sth, and esp. anywhere in a sense read someone, something, and especially.</td><td>to see (someone) off</td></tr>
 </tbody>
 </table>
@@ -323,7 +346,6 @@
 <p data-anchor="sense-fail">After cleaning, a sense whose plain text, outside its references, still holds a character CC-CEDICT knows only as a Simplified form, a tone-numbered syllable, a vertical bar, or a square bracket fails the build and names the entry, so a new CC-CEDICT pattern is caught before it ships.</p>
 <p data-anchor="sense-render">One small sense-rendering module, shared by the network page and the game, turns a sense and its references into what the current script mode shows, and owns turning tone-numbered pinyin into tone marks.</p>
 <p data-anchor="sense-scope">The rules apply to word definitions and to character readings alike, so word cards, hub cards, search results, and every game card show the same cleaned text.</p>
-<h3 data-anchor="schema-heading">Graph data file</h3>
 <h3 data-anchor="audio-heading">Matching a word to a recording</h3>
 <ul data-anchor="audio-rules">
 <li data-anchor="audio-match">A word gets the recording whose name is its Simplified form; a word with no such recording gets none and the build lists it, without failing.</li>
@@ -339,6 +361,7 @@
 <li data-anchor="syllable-override">The committed override file resolves each such syllable with a one-line reason, either by naming the set's file that records it under another spelling, such as ju4 recorded as jv4, or by stating that the set has none, such as bia1; a syllable stated as having none has no recording and is said by the device voice.</li>
 <li data-anchor="syllable-field">The graph data file lists the syllables that have a recording, and each is copied to the site's syllable folder under its name; no other syllable file is in the site.</li>
 </ul>
+<h3 data-anchor="schema-heading">Graph data file</h3>
 <p data-anchor="schema-what">One JSON file in the site directory; the pipeline writes it and the site reads it.</p>
 <pre data-anchor="schema-example"><code>{
   "meta": {
@@ -403,49 +426,66 @@
 </div>
 <figure data-anchor="page-figure">
 <div class="rail-wrap" data-anchor="page-figure-scroll">
-<svg viewBox="0 0 720 340" style="min-width: 600px" role="img" aria-label="Desktop: the graph fills the window; a floating search pill top left; HSK 1 and HSK 2 level chips and a dark Play pill top right; a word card floats beside the hovered node with the headword's Zhuyin stacked beside each character, senses one per line, and a measure words line; a small Sources text link bottom left. Phone: the graph fills the screen; the search pill on top, the level chips and Play in one row beneath it; the word card is a bottom sheet with a grab handle.">
-<rect x="10" y="10" width="450" height="320" rx="10" fill="#f6f4ef" stroke="#5b5f6b"></rect>
-<text x="20" y="324" font-size="11" fill="#3d4049">Desktop: graph edge to edge</text>
-<rect x="26" y="26" width="200" height="34" rx="17" fill="#ffffff" stroke="#c7cad1"></rect>
-<text x="42" y="48" font-size="12" fill="#3d4049">Search character, Zhuyin, English</text>
-<rect x="262" y="28" width="62" height="30" rx="15" fill="#ffffff" stroke="#c7cad1"></rect>
-<circle cx="276" cy="43" r="5" fill="#0072b2"></circle><text x="286" y="47" font-size="12" fill="#171719">HSK 1</text>
-<rect x="330" y="28" width="62" height="30" rx="15" fill="#ffffff" stroke="#c7cad1"></rect>
-<circle cx="344" cy="43" r="5" fill="#e69f00"></circle><text x="354" y="47" font-size="12" fill="#171719">HSK 2</text>
-<rect x="398" y="28" width="48" height="30" rx="15" fill="#1b1b1f"></rect>
-<text x="410" y="47" font-size="12" fill="#ffffff">Play</text>
+<svg viewBox="0 0 820 340" style="min-width: 680px" role="img" aria-label="Desktop: the graph fills the window; a floating search pill top left; HSK 1 and HSK 2 level chips, a Zhuyin script chip, a Voice on control, and a dark Play pill top right; a word card floats beside the hovered node with the headword's Zhuyin stacked beside each character and a speaker button on its right, senses one per line, a measure words line, and the level; a small Sources text link bottom left. Phone: the graph fills the screen; the search pill on top, the level chips, script chip, icon-only Voice control, and Play in one row beneath it; the word card is a bottom sheet with a grab handle and the speaker button beside the headword.">
+<g font-size="11">
+<rect x="10" y="10" width="550" height="320" rx="10" style="fill: var(--spec-paper); stroke: var(--spec-muted)"></rect>
+<text x="20" y="324" style="fill: var(--spec-muted)">Desktop: graph edge to edge</text>
+<rect x="26" y="26" width="200" height="34" rx="17" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<text x="38" y="47" font-size="10" style="fill: var(--spec-muted)">Search character, Zhuyin, English</text>
+<rect x="234" y="28" width="58" height="30" rx="15" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<circle cx="247" cy="43" r="5" fill="#0072b2"></circle><text x="256" y="47" style="fill: var(--spec-ink)">HSK 1</text>
+<rect x="298" y="28" width="58" height="30" rx="15" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<circle cx="311" cy="43" r="5" fill="#e69f00"></circle><text x="320" y="47" style="fill: var(--spec-ink)">HSK 2</text>
+<rect x="362" y="28" width="56" height="30" rx="15" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<text x="372" y="47" style="fill: var(--spec-ink)">Zhuyin</text>
+<rect x="424" y="28" width="80" height="30" rx="15" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<path d="M434 40 h3 l4 -4 v14 l-4 -4 h-3 z" style="fill: var(--spec-ink)"></path><path d="M444 39 q3 4 0 8" fill="none" style="stroke: var(--spec-ink)"></path>
+<text x="452" y="47" style="fill: var(--spec-ink)">Voice on</text>
+<rect x="510" y="28" width="42" height="30" rx="15" style="fill: var(--spec-ink)"></rect>
+<text x="519" y="47" style="fill: var(--spec-surface)">Play</text>
 <circle cx="90" cy="150" r="3" fill="#8b877f"></circle><circle cx="130" cy="190" r="3" fill="#8b877f"></circle><circle cx="170" cy="140" r="3" fill="#8b877f"></circle>
-<line x1="90" y1="150" x2="130" y2="190" stroke="#d9d4c9"></line><line x1="130" y1="190" x2="170" y2="140" stroke="#d9d4c9"></line>
+<line x1="90" y1="150" x2="130" y2="190" style="stroke: var(--spec-hairline)"></line><line x1="130" y1="190" x2="170" y2="140" style="stroke: var(--spec-hairline)"></line>
 <rect x="104" y="196" width="30" height="16" rx="5" fill="#0072b2"></rect>
-<rect x="250" y="84" width="196" height="200" rx="14" fill="#ffffff" stroke="#c7cad1"></rect>
-<text x="264" y="130" font-size="34" fill="#171719">學</text>
-<text x="300" y="104" font-size="10" fill="#171719">ㄒ</text><text x="300" y="116" font-size="10" fill="#171719">ㄩ</text><text x="300" y="128" font-size="10" fill="#171719">ㄝ</text><text x="310" y="127" font-size="9" fill="#171719">ˊ</text>
-<text x="318" y="130" font-size="34" fill="#171719">生</text>
-<text x="356" y="100" font-size="10" fill="#171719">˙</text><text x="354" y="112" font-size="10" fill="#171719">ㄕ</text><text x="354" y="124" font-size="10" fill="#171719">ㄥ</text>
-<text x="264" y="160" font-size="13" fill="#171719">student</text>
-<text x="264" y="178" font-size="13" fill="#171719">schoolchild</text>
-<text x="264" y="204" font-size="10" fill="#3d4049">Measure words</text>
-<text x="264" y="222" font-size="12" fill="#171719">個 ㄍㄜˋ · 名 ㄇㄧㄥˊ</text>
-<circle cx="268" cy="252" r="4" fill="#0072b2"></circle><text x="278" y="256" font-size="11" fill="#3d4049">HSK 1</text>
-<text x="26" y="304" font-size="11" fill="#3d4049">Sources</text>
-<rect x="500" y="10" width="200" height="320" rx="22" fill="#f6f4ef" stroke="#5b5f6b"></rect>
-<rect x="512" y="26" width="176" height="32" rx="16" fill="#ffffff" stroke="#c7cad1"></rect>
-<text x="526" y="47" font-size="12" fill="#3d4049">Search</text>
-<rect x="512" y="64" width="56" height="26" rx="13" fill="#ffffff" stroke="#c7cad1"></rect>
-<circle cx="524" cy="77" r="4" fill="#0072b2"></circle><text x="532" y="81" font-size="11" fill="#171719">HSK 1</text>
-<rect x="574" y="64" width="56" height="26" rx="13" fill="#ffffff" stroke="#c7cad1"></rect>
-<circle cx="586" cy="77" r="4" fill="#e69f00"></circle><text x="594" y="81" font-size="11" fill="#171719">HSK 2</text>
-<rect x="644" y="64" width="44" height="26" rx="13" fill="#1b1b1f"></rect>
-<text x="654" y="81" font-size="11" fill="#ffffff">Play</text>
-<text x="572" y="160" font-size="12" fill="#3d4049">graph</text>
-<rect x="500" y="212" width="200" height="118" rx="20" fill="#ffffff" stroke="#c7cad1"></rect>
-<rect x="584" y="220" width="32" height="4" rx="2" fill="#c7cad1"></rect>
-<text x="516" y="262" font-size="28" fill="#171719">學</text>
-<text x="546" y="240" font-size="9" fill="#171719">ㄒ</text><text x="546" y="250" font-size="9" fill="#171719">ㄩ</text><text x="546" y="260" font-size="9" fill="#171719">ㄝ</text><text x="555" y="259" font-size="8" fill="#171719">ˊ</text>
-<text x="562" y="262" font-size="28" fill="#171719">生</text>
-<text x="594" y="236" font-size="9" fill="#171719">˙</text><text x="592" y="246" font-size="9" fill="#171719">ㄕ</text><text x="592" y="256" font-size="9" fill="#171719">ㄥ</text>
-<text x="516" y="286" font-size="12" fill="#171719">student</text>
-<text x="516" y="302" font-size="12" fill="#171719">schoolchild</text>
+<rect x="300" y="84" width="230" height="210" rx="14" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<text x="314" y="130" font-size="34" style="fill: var(--spec-ink)">學</text>
+<text x="350" y="104" font-size="10" style="fill: var(--spec-ink)">ㄒ</text><text x="350" y="116" font-size="10" style="fill: var(--spec-ink)">ㄩ</text><text x="350" y="128" font-size="10" style="fill: var(--spec-ink)">ㄝ</text><text x="360" y="127" font-size="9" style="fill: var(--spec-ink)">ˊ</text>
+<text x="368" y="130" font-size="34" style="fill: var(--spec-ink)">生</text>
+<text x="406" y="100" font-size="10" style="fill: var(--spec-ink)">˙</text><text x="404" y="112" font-size="10" style="fill: var(--spec-ink)">ㄕ</text><text x="404" y="124" font-size="10" style="fill: var(--spec-ink)">ㄥ</text>
+<circle cx="490" cy="114" r="15" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></circle>
+<path d="M482 111 h3 l4 -4 v14 l-4 -4 h-3 z" style="fill: var(--spec-ink)"></path><path d="M492 110 q3 4 0 8" fill="none" style="stroke: var(--spec-ink)"></path>
+<text x="314" y="160" font-size="13" style="fill: var(--spec-ink)">student</text>
+<text x="314" y="178" font-size="13" style="fill: var(--spec-ink)">schoolchild</text>
+<text x="314" y="204" font-size="10" style="fill: var(--spec-muted)">Measure words</text>
+<text x="314" y="222" font-size="12" style="fill: var(--spec-ink)">個 ㄍㄜˋ · 名 ㄇㄧㄥˊ</text>
+<circle cx="318" cy="252" r="4" fill="#0072b2"></circle><text x="328" y="256" style="fill: var(--spec-muted)">HSK 1</text>
+<text x="26" y="304" style="fill: var(--spec-muted)">Sources</text>
+<rect x="590" y="10" width="220" height="320" rx="22" style="fill: var(--spec-paper); stroke: var(--spec-muted)"></rect>
+<rect x="602" y="26" width="196" height="32" rx="16" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<text x="616" y="47" font-size="12" style="fill: var(--spec-muted)">Search</text>
+<g font-size="9.5">
+<rect x="602" y="64" width="44" height="26" rx="13" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<circle cx="611" cy="77" r="3.5" fill="#0072b2"></circle><text x="617" y="80" style="fill: var(--spec-ink)">HSK 1</text>
+<rect x="649" y="64" width="44" height="26" rx="13" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<circle cx="658" cy="77" r="3.5" fill="#e69f00"></circle><text x="664" y="80" style="fill: var(--spec-ink)">HSK 2</text>
+<rect x="696" y="64" width="40" height="26" rx="13" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<text x="699" y="80" style="fill: var(--spec-ink)">Zhuyin</text>
+<rect x="739" y="64" width="26" height="26" rx="13" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<path d="M746 75 h2.5 l3.5 -3.5 v11 l-3.5 -3.5 h-2.5 z" style="fill: var(--spec-ink)"></path><path d="M754 74.5 q2.5 3 0 6" fill="none" style="stroke: var(--spec-ink)"></path>
+<rect x="768" y="64" width="30" height="26" rx="13" style="fill: var(--spec-ink)"></rect>
+<text x="774" y="80" style="fill: var(--spec-surface)">Play</text>
+</g>
+<text x="676" y="160" font-size="12" style="fill: var(--spec-muted)">graph</text>
+<rect x="590" y="212" width="220" height="118" rx="20" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></rect>
+<rect x="684" y="220" width="32" height="4" rx="2" style="fill: var(--spec-muted)"></rect>
+<text x="606" y="262" font-size="28" style="fill: var(--spec-ink)">學</text>
+<text x="636" y="240" font-size="9" style="fill: var(--spec-ink)">ㄒ</text><text x="636" y="250" font-size="9" style="fill: var(--spec-ink)">ㄩ</text><text x="636" y="260" font-size="9" style="fill: var(--spec-ink)">ㄝ</text><text x="645" y="259" font-size="8" style="fill: var(--spec-ink)">ˊ</text>
+<text x="652" y="262" font-size="28" style="fill: var(--spec-ink)">生</text>
+<text x="684" y="236" font-size="9" style="fill: var(--spec-ink)">˙</text><text x="682" y="246" font-size="9" style="fill: var(--spec-ink)">ㄕ</text><text x="682" y="256" font-size="9" style="fill: var(--spec-ink)">ㄥ</text>
+<circle cx="776" cy="248" r="15" style="fill: var(--spec-surface); stroke: var(--spec-muted)"></circle>
+<path d="M768 245 h3 l4 -4 v14 l-4 -4 h-3 z" style="fill: var(--spec-ink)"></path><path d="M778 244 q3 4 0 8" fill="none" style="stroke: var(--spec-ink)"></path>
+<text x="606" y="286" font-size="12" style="fill: var(--spec-ink)">student</text>
+<text x="606" y="302" font-size="12" style="fill: var(--spec-ink)">schoolchild</text>
+</g>
 </svg>
 </div>
 <figcaption data-anchor="page-figure-caption">No bar: the graph runs edge to edge and the controls float over it. Desktop shows the card beside the hovered node; a phone shows it as a bottom sheet that leaves the search box visible.</figcaption>
@@ -461,7 +501,7 @@
 <tr data-anchor="ix-move"><td>Zoom and pan</td><td>Wheel zooms, drag on empty space pans</td><td>Two-finger pinch zooms, one-finger drag pans</td></tr>
 <tr data-anchor="ix-drag"><td>Drag a node</td><td>Moves it; the layout follows</td><td>Same with one finger on the node</td></tr>
 <tr data-anchor="ix-levels"><td>Level panel</td><td>Click a level's switch to hide or show its words</td><td>Tap does the same; each switch is at least 44px tall</td></tr>
-<tr data-anchor="ix-search"><td>Search box</td><td colspan="2">Each keystroke lists up to 20 matches by Traditional or Simplified characters, Zhuyin with or without tone marks, or English, each row showing Traditional form and first definition; picking one focuses it</td></tr>
+<tr data-anchor="ix-search"><td>Search box</td><td colspan="2">Each keystroke lists up to 20 matches among the words of the levels switched on, by Traditional or Simplified characters, by the shown reading with or without tone marks (Zhuyin in Zhuyin mode, pinyin in pinyin mode), or by a whole English word in a definition; a Zhuyin query of two or more symbols, or a pinyin query of three or more letters, also matches inside a reading; exact matches list first, then those starting with the query, then those containing it, each group by level; each row shows the word in the current script, its first definition, and its level; arrow keys and Enter pick a row, Escape clears the box; picking one focuses it</td></tr>
 <tr data-anchor="ix-speaker"><td>Speaker button in a card</td><td>Click says the word, or the reading it sits beside</td><td>Tap does the same; each button is at least 44px</td></tr>
 <tr data-anchor="ix-reading-tap"><td>Character, syllable, or Zhuyin symbol in a card</td><td colspan="2">Click or tap says that one sound, by the speak table below</td></tr>
 <tr data-anchor="ix-voice"><td>Voice control</td><td colspan="2">Click or tap turns pronunciation on or off for the network and the game</td></tr>
@@ -471,7 +511,8 @@
 </div>
 <p data-anchor="page-fit">On load, and on window resize, the view fits the whole settled graph.</p>
 <p data-anchor="page-focus">Focusing a word pans and zooms so it is centered at a readable size, highlights it with its hubs and the words sharing those hubs, and dims the rest.</p>
-<p data-anchor="page-word-link">A site address ending in <code>#word=</code> followed by a word id from the graph data file focuses that word once the graph settles, as picking it in search does; any other or unknown id loads the page as usual. The bubbles game builds these links.</p>
+<p data-anchor="page-word-link">A site address ending in <code>#word=</code> followed by a word id from the graph data file focuses that word once the graph settles, as picking it in search does; any other or unknown id loads the page as usual.
+The bubbles game builds these links.</p>
 <p data-anchor="page-levels">The legend is the level panel: each level is one chip showing its color dot and its name, acting as an on/off switch, both on at load; an off chip shows a hollow dot and muted name.</p>
 <p data-anchor="page-levels-hide">Switching a level off hides its words and their links, hides any hub left with fewer than two visible words, closes a card for a hidden node, and removes that level's words from search results; the layout of visible nodes does not jump.</p>
 <p data-anchor="page-levels-last">The last level that is on cannot be switched off.</p>
@@ -504,14 +545,14 @@
 <div class="rail-wrap" data-anchor="strokes-figure-scroll">
 <svg viewBox="0 0 660 260" style="min-width: 520px" role="img" aria-label="Three hub characters drawn in even simple lines with every part in its own color and no tap needed. 話: 訁 vermillion with a dark outline marking it as the radical, 舌 bluish green. 學: 𦥯 vermillion, 子 bluish green with the radical outline. 還: 辶 vermillion with the radical outline, 睘 bluish green.">
 <g transform="translate(20 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="M26.6 15.0 Q44.6 26.0 49.4 43.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M12.3 47.0 L81.7 47.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M19.0 76.0 L75.0 76.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M19.0 104.0 L75.0 104.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M24.7 132.0 L24.7 173.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M24.7 132.0 L67.5 132.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M67.5 132.0 L67.5 173.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M24.7 173.0 L67.5 173.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M26.6 15.0 Q44.6 26.0 49.4 43.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M12.3 47.0 L81.7 47.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M19.0 76.0 L75.0 76.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M19.0 104.0 L75.0 104.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M24.7 132.0 L24.7 173.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M24.7 132.0 L67.5 132.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M67.5 132.0 L67.5 173.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M24.7 173.0 L67.5 173.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
 <path d="M26.6 15.0 Q44.6 26.0 49.4 43.0" stroke="#D55E00" stroke-width="11"></path>
 <path d="M12.3 47.0 L81.7 47.0" stroke="#D55E00" stroke-width="11"></path>
 <path d="M19.0 76.0 L75.0 76.0" stroke="#D55E00" stroke-width="11"></path>
@@ -528,12 +569,12 @@
 <path d="M168.6 119.0 L168.6 169.0" stroke="#009E73" stroke-width="11"></path>
 <path d="M100.5 169.0 L168.6 169.0" stroke="#009E73" stroke-width="11"></path>
 </g>
-<text x="110" y="236" text-anchor="middle" font-size="14" fill="#171719">話: 訁 speech · 舌 tongue</text>
+<text x="110" y="236" text-anchor="middle" font-size="14" style="fill: var(--spec-ink)">話: 訁 speech · 舌 tongue</text>
 <g transform="translate(240 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="M47.4 113.4 L142.3 113.4" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M142.3 113.4 Q124.4 122.8 101.9 132.2" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M100.0 128.4 L100.0 182.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M18.2 145.4 L182.7 145.4" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M47.4 113.4 L142.3 113.4" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M142.3 113.4 Q124.4 122.8 101.9 132.2" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M100.0 128.4 L100.0 182.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M18.2 145.4 L182.7 145.4" stroke-width="17" style="stroke: var(--spec-ink)"></path>
 <path d="M79.0 19.0 Q65.0 25.6 39.0 30.3" stroke="#D55E00" stroke-width="11"></path>
 <path d="M39.0 30.3 L43.0 92.7" stroke="#D55E00" stroke-width="11"></path>
 <path d="M41.0 47.3 L77.0 47.3" stroke="#D55E00" stroke-width="11"></path>
@@ -554,15 +595,15 @@
 <path d="M100.0 128.4 L100.0 182.0" stroke="#009E73" stroke-width="11"></path>
 <path d="M18.2 145.4 L182.7 145.4" stroke="#009E73" stroke-width="11"></path>
 </g>
-<text x="330" y="236" text-anchor="middle" font-size="14" fill="#171719">學: 𦥯 learn · 子 child</text>
+<text x="330" y="236" text-anchor="middle" font-size="14" style="fill: var(--spec-ink)">學: 𦥯 learn · 子 child</text>
 <g transform="translate(460 10) scale(0.9)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="M26.0 16.0 Q46.0 26.0 55.0 46.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M17.0 65.0 L56.0 65.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M56.0 65.0 L28.0 106.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M30.0 104.0 L61.0 104.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M61.0 104.0 Q60.0 135.0 40.0 156.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M16.0 172.0 C27.0 166.0 44.0 143.0 56.0 167.0" stroke="#1b1b1f" stroke-width="17"></path>
-<path d="M30.0 158.0 C72.0 151.0 20.0 183.0 178.0 177.0" stroke="#1b1b1f" stroke-width="17"></path>
+<path d="M26.0 16.0 Q46.0 26.0 55.0 46.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M17.0 65.0 L56.0 65.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M56.0 65.0 L28.0 106.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M30.0 104.0 L61.0 104.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M61.0 104.0 Q60.0 135.0 40.0 156.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M16.0 172.0 C27.0 166.0 44.0 143.0 56.0 167.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
+<path d="M30.0 158.0 C72.0 151.0 20.0 183.0 178.0 177.0" stroke-width="17" style="stroke: var(--spec-ink)"></path>
 <path d="M83.9 25.6 L83.9 50.9" stroke="#009E73" stroke-width="11"></path>
 <path d="M83.9 25.6 L168.1 25.6" stroke="#009E73" stroke-width="11"></path>
 <path d="M168.1 25.6 L168.1 50.9" stroke="#009E73" stroke-width="11"></path>
@@ -587,8 +628,8 @@
 <path d="M16.0 172.0 C27.0 166.0 44.0 143.0 56.0 167.0" stroke="#D55E00" stroke-width="11"></path>
 <path d="M30.0 158.0 C72.0 151.0 20.0 183.0 178.0 177.0" stroke="#D55E00" stroke-width="11"></path>
 </g>
-<text x="550" y="236" text-anchor="middle" font-size="14" fill="#171719">還: 辶 walk · 睘 look</text>
-<text x="20" y="256" font-size="12" fill="#3d4049">Dark outline: the radical. First part vermillion, second bluish green, third reddish purple.</text>
+<text x="550" y="236" text-anchor="middle" font-size="14" style="fill: var(--spec-ink)">還: 辶 walk · 睘 look</text>
+<text x="20" y="256" font-size="12" style="fill: var(--spec-muted)">Dark outline: the radical. First part vermillion, second bluish green, third reddish purple.</text>
 </svg>
 </div>
 <figcaption data-anchor="strokes-figure-caption">Drawn from GlyphWiki's Taiwan forms in even lines: every part shows in its own color and the radical carries the outline as soon as the card opens.</figcaption>
@@ -664,21 +705,22 @@
 </tbody>
 </table>
 </div>
-<p data-anchor="scale-weights">Geist uses only 400, 500, and 600; the Chinese face uses only 400 and 500: Medium 500 for headwords, graph node labels, and bubbles, Regular 400 for senses and Zhuyin. Hierarchy comes from size and color before weight, and synthetic bold is never used (font-synthesis none).</p>
+<p data-anchor="scale-weights">Geist uses only 400, 500, and 600; the Chinese face uses only 400 and 500: Medium 500 for headwords, graph node labels, and bubbles, Regular 400 for senses and Zhuyin.
+Hierarchy comes from size and color before weight, and synthetic bold is never used (font-synthesis none).</p>
 <h3 data-anchor="zhuyin-layout-heading">Zhuyin layout</h3>
 <figure data-anchor="zhuyin-figure">
 <div class="rail-wrap" data-anchor="zhuyin-figure-scroll">
 <svg viewBox="0 0 520 150" style="min-width: 460px" role="img" aria-label="Headword 學生: after 學 a column of ㄒ ㄩ ㄝ with the second-tone mark to the right of ㄝ; after 生 a column of ㄕ ㄥ with the neutral-tone dot above ㄕ. In lists, the same word on one line: 學生 then ㄒㄩㄝˊ ˙ㄕㄥ.">
-<text x="20" y="20" font-size="12" fill="#3d4049">Headword: columns</text>
-<text x="20" y="100" font-size="64" fill="#171719">學</text>
-<text x="88" y="56" font-size="18" fill="#171719">ㄒ</text><text x="88" y="78" font-size="18" fill="#171719">ㄩ</text><text x="88" y="100" font-size="18" fill="#171719">ㄝ</text><text x="107" y="98" font-size="16" fill="#171719">ˊ</text>
-<text x="124" y="100" font-size="64" fill="#171719">生</text>
-<text x="196" y="44" font-size="18" fill="#171719">˙</text><text x="192" y="64" font-size="18" fill="#171719">ㄕ</text><text x="192" y="86" font-size="18" fill="#171719">ㄥ</text>
-<text x="20" y="136" font-size="11" fill="#3d4049">tone mark right of the last symbol; neutral dot above the column</text>
-<text x="300" y="20" font-size="12" fill="#3d4049">Lists, measure words, references: one line</text>
-<text x="300" y="80" font-size="28" fill="#171719">學生</text>
-<text x="364" y="78" font-size="15" fill="#171719">ㄒㄩㄝˊ ˙ㄕㄥ</text>
-<text x="300" y="116" font-size="15" fill="#171719">塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</text>
+<text x="20" y="20" font-size="12" style="fill: var(--spec-muted)">Headword: columns</text>
+<text x="20" y="100" font-size="64" style="fill: var(--spec-ink)">學</text>
+<text x="88" y="56" font-size="18" style="fill: var(--spec-ink)">ㄒ</text><text x="88" y="78" font-size="18" style="fill: var(--spec-ink)">ㄩ</text><text x="88" y="100" font-size="18" style="fill: var(--spec-ink)">ㄝ</text><text x="107" y="98" font-size="16" style="fill: var(--spec-ink)">ˊ</text>
+<text x="124" y="100" font-size="64" style="fill: var(--spec-ink)">生</text>
+<text x="196" y="44" font-size="18" style="fill: var(--spec-ink)">˙</text><text x="192" y="64" font-size="18" style="fill: var(--spec-ink)">ㄕ</text><text x="192" y="86" font-size="18" style="fill: var(--spec-ink)">ㄥ</text>
+<text x="20" y="136" font-size="11" style="fill: var(--spec-muted)">tone mark right of the last symbol; neutral dot above the column</text>
+<text x="300" y="20" font-size="12" style="fill: var(--spec-muted)">Lists, measure words, references: one line</text>
+<text x="300" y="80" font-size="28" style="fill: var(--spec-ink)">學生</text>
+<text x="364" y="78" font-size="15" style="fill: var(--spec-ink)">ㄒㄩㄝˊ ˙ㄕㄥ</text>
+<text x="300" y="116" font-size="15" style="fill: var(--spec-ink)">塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ</text>
 </svg>
 </div>
 <figcaption data-anchor="zhuyin-figure-caption">Headwords use the Taiwan textbook layout, Zhuyin stacked beside each character; everywhere else Zhuyin runs on one line after its characters.</figcaption>
@@ -700,11 +742,13 @@
 <tr data-anchor="color-line"><td>Line</td><td>#e3dfd6</td><td>#ffffff at 14%</td><td>#ffffff at 14%</td><td>Hairline borders, graph links</td></tr>
 <tr data-anchor="color-levels"><td>Levels</td><td colspan="3">HSK 1 #0072b2, HSK 2 #e69f00, unchanged</td><td>Level meaning only</td></tr>
 <tr data-anchor="color-hub"><td>Hub</td><td>#8b877f</td><td>not used</td><td>#8b877f on the network</td><td>Character hubs</td></tr>
+<tr data-anchor="color-danger"><td>Danger</td><td>not used</td><td>#ff6b5e</td><td>#ff6b5e in the game</td><td>The game's bottom line glow and its last shot-left dot only</td></tr>
 </tbody>
 </table>
 </div>
 <p data-anchor="color-meaning">Color carries meaning only: the two level colors mark levels and nothing else; the primary action, such as Play, is an ink pill; focus is a 2px ink ring, light on the night board.</p>
-<p data-anchor="color-dark">The dark appearance follows the device setting, with no switch in the page, and changes live; in it the network and the game share one look: the night page and board, the dark surface for every card, sheet, chip, search box, results list, and game screen, and light ink and muted text. The ink pill turns light with dark text, and focus is a light ring.</p>
+<p data-anchor="color-dark">The dark appearance follows the device setting, with no switch in the page, and changes live; in it the network and the game share one look: the night page and board, the dark surface for every card, sheet, chip, search box, results list, and game screen, and light ink and muted text.
+The ink pill turns light with dark text, and focus is a light ring.</p>
 <p data-anchor="color-depth">Surfaces separate from the page by one soft shadow and a hairline, the hairline alone carrying the edge on night, with corner radius 14px for cards and sheets and full pills for chips and buttons; no gradients on controls.</p>
 <h3 data-anchor="motion-heading">Motion</h3>
 <div class="table-scroll" data-anchor="motion-scroll">

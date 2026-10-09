@@ -118,6 +118,11 @@
 <td data-acceptance-scenario>Given a learner whose offline copy failed to save, which needs an induced failure: the offline download is interrupted. When the learner opens the site with a connection.</td>
 <td data-acceptance-observable>Then the site loads from the network as usual and saves its offline copy again, proven by a unit test: no screen shows it.</td>
 </tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-recording">
+<td>Recordings offline on an iPhone</td>
+<td data-acceptance-scenario>Given a learner on an iPhone with the installed app saved offline, Voice on, and no connection. When the learner plays the game and pops a word that has a recording.</td>
+<td data-acceptance-observable>Then the word's recording plays from the saved copy.</td>
+</tr>
 <tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint">
 <td>First paint</td>
 <td data-acceptance-scenario>Given a learner on a phone in the light appearance on a slow connection who has never visited the site. When the learner opens the public network.</td>
@@ -146,11 +151,26 @@
 
 <section data-spec-section="modular-boundaries" data-anchor="modular-boundaries">
 <h2>Modular boundaries</h2>
-<p data-modular-boundary data-anchor="boundary-shell"><span data-boundary-responsibility>The app shell owns install identity and launch: the manifest, icons, launch images, and the head of each page (theme color, status bar style, viewport, inline first-paint color), plus the page-level touch and safe-area rules.</span> <span data-boundary-seam>Caller-facing seam: the manifest file and the head lines both pages carry; the network and the game add nothing else to join the app.</span> <span data-boundary-dependency>Dependency direction: self-contained; it reads the shared look's colors and Chinese face and changes no network or game behavior.</span> <span data-boundary-scope>Observable scope: the home screen icon and name, launch, status bar, and page fit.</span></p>
-<p data-modular-boundary data-anchor="boundary-worker"><span data-boundary-responsibility>The offline worker owns saving the published files, answering requests from the saved copy, and replacing the copy when the version changes.</span> <span data-boundary-seam>Caller-facing seam: one worker script at the site root, registered by both pages, whose top holds the file list and version.</span> <span data-boundary-dependency>Dependency direction: self-contained; it fetches only the site's own files and holds no word, game, or settings logic.</span> <span data-boundary-scope>Observable scope: the site working offline and new versions arriving.</span></p>
-<p data-modular-boundary data-anchor="boundary-list-build"><span data-boundary-responsibility>The offline list command owns computing the file list and version from the site directory and writing them into the worker script.</span> <span data-boundary-seam>Caller-facing seam: one standard-library command, run after any site change, and the function the tests call to recompute the list.</span> <span data-boundary-dependency>Dependency direction: self-contained; it reads the site directory only and runs with no network.</span> <span data-boundary-scope>Observable scope: the worker script's list block and the tests that compare it.</span></p>
-<p data-modular-boundary data-anchor="boundary-icon-build"><span data-boundary-responsibility>The icon command owns drawing the icons and launch images from the pinned Noto Sans CJK TC release and the look's colors.</span> <span data-boundary-seam>Caller-facing seam: one maintainer command, run only when the icon or colors change, writing the committed images.</span> <span data-boundary-dependency>Dependency direction: external provider; like the font command it needs a throwaway environment with an imaging library and the font release cache, never CI.</span> <span data-boundary-scope>Observable scope: the committed icon and launch images.</span></p>
-<p data-modular-boundary data-anchor="boundary-app-delivery"><span data-boundary-responsibility>Delivery runs the app tests with the existing suite on every pull request and publishes the app files with the site directory on every merge to main.</span> <span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span> <span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages, unchanged; the site directory is still published unchanged.</span> <span data-boundary-scope>Observable scope: check status and the installable live site.</span></p>
+<p data-modular-boundary data-anchor="boundary-shell"><span data-boundary-responsibility>The app shell owns install identity and launch: the manifest, icons, launch images, and the head of each page (theme color, status bar style, viewport, inline first-paint color), plus the page-level touch and safe-area rules.</span>
+<span data-boundary-seam>Caller-facing seam: the manifest file and the head lines both pages carry; the network and the game add nothing else to join the app.</span>
+<span data-boundary-dependency>Dependency direction: self-contained; it reads the shared look's colors and Chinese face and changes no network or game behavior.</span>
+<span data-boundary-scope>Observable scope: the home screen icon and name, launch, status bar, and page fit.</span></p>
+<p data-modular-boundary data-anchor="boundary-worker"><span data-boundary-responsibility>The offline worker owns saving the published files, answering requests from the saved copy, and replacing the copy when the version changes.</span>
+<span data-boundary-seam>Caller-facing seam: one worker script at the site root, registered by both pages, whose top holds the file list and version.</span>
+<span data-boundary-dependency>Dependency direction: self-contained; it fetches only the site's own files and holds no word, game, or settings logic.</span>
+<span data-boundary-scope>Observable scope: the site working offline and new versions arriving.</span></p>
+<p data-modular-boundary data-anchor="boundary-list-build"><span data-boundary-responsibility>The offline list command owns computing the file list and version from the site directory and writing them into the worker script.</span>
+<span data-boundary-seam>Caller-facing seam: one standard-library command, run after any site change, and the function the tests call to recompute the list.</span>
+<span data-boundary-dependency>Dependency direction: self-contained; it reads the site directory only and runs with no network.</span>
+<span data-boundary-scope>Observable scope: the worker script's list block and the tests that compare it.</span></p>
+<p data-modular-boundary data-anchor="boundary-icon-build"><span data-boundary-responsibility>The icon command owns drawing the icons and launch images from the pinned Noto Sans CJK TC release and the look's colors.</span>
+<span data-boundary-seam>Caller-facing seam: one maintainer command, run only when the icon or colors change, writing the committed images.</span>
+<span data-boundary-dependency>Dependency direction: external provider; like the font command it needs a throwaway environment with an imaging library and the font release cache, never CI.</span>
+<span data-boundary-scope>Observable scope: the committed icon and launch images.</span></p>
+<p data-modular-boundary data-anchor="boundary-app-delivery"><span data-boundary-responsibility>Delivery runs the app tests with the existing suite on every pull request and publishes the app files with the site directory on every merge to main.</span>
+<span data-boundary-seam>Caller-facing seam: the pull request test check and the public address.</span>
+<span data-boundary-dependency>Dependency direction: external provider GitHub Actions and GitHub Pages, unchanged; the site directory is still published unchanged.</span>
+<span data-boundary-scope>Observable scope: check status and the installable live site.</span></p>
 </section>
 
 <section data-anchor="defaults">
@@ -199,7 +219,8 @@
 <li data-anchor="head-common">Both pages carry the same app lines: the manifest link, a 180 pixel home screen icon link, the web-app-capable and app title lines, and a viewport covering the whole screen, so adding from either page gives the same app.</li>
 <li data-anchor="head-color">Each page sets its theme color and an inline background in its head to its own look color, paper for the network and night for the game, and night for both in <a href="hsk-network.spec.html#color-dark">the dark appearance</a>, so the first frame is already the right color and the status bar follows the page.</li>
 <li data-anchor="head-status">The status bar keeps its own area; its text is dark on paper and light on night.</li>
-<li data-anchor="head-launch">Launch images are linked from the network page only, one per iPhone portrait screen size, each a plain image in pairs: a paper one for the light appearance and a night one for the dark appearance, chosen by a prefers-color-scheme media condition on each link; the network's theme color carries the same light and dark pair, so a dark-appearance launch shows night from the first frame with no paper flash, and the light appearance stays paper. The manifest names one color, paper, which iPhone launch never shows because the launch images cover it.</li>
+<li data-anchor="head-launch">Launch images are linked from the network page only, one per iPhone portrait screen size, each a plain image in pairs: a paper one for the light appearance and a night one for the dark appearance, chosen by a prefers-color-scheme media condition on each link; the network's theme color carries the same light and dark pair, so a dark-appearance launch shows night from the first frame with no paper flash, and the light appearance stays paper.
+The manifest names one color, paper, which iPhone launch never shows because the launch images cover it.</li>
 <li data-anchor="head-links">Links between the network and the game stay relative, so they stay inside the scope; links to sources outside the site open over the app and return to it.</li>
 <li data-anchor="head-storage">An installed app keeps its own storage, separate from Safari: the script setting and game settings and best score start fresh in the app; nothing tries to share them.</li>
 </ul>
@@ -212,7 +233,8 @@
 <p class="sec-note" data-anchor="fit-note">The page never moves; only the graph and the game board take gestures.</p>
 </div>
 <ul data-anchor="fit-rules">
-<li data-anchor="fit-safe">The network pads its search bar by the top and side safe areas and its bottom sheet and Sources footer by the bottom safe area; the graph itself runs edge to edge. The game's existing safe-area rules stay.</li>
+<li data-anchor="fit-safe">The network pads its search bar by the top and side safe areas and its bottom sheet and Sources footer by the bottom safe area; the graph itself runs edge to edge.
+The game's existing safe-area rules stay.</li>
 <li data-anchor="fit-height">The network fills the visible screen height, measured as the dynamic viewport, so no strip hides under a toolbar in Safari or shows below the page in the app.</li>
 <li data-anchor="fit-zoom">The page does not zoom: controls ignore double-tap zoom, the graph takes all pinch and pan, and every text input is at least 16px, as the network already requires.</li>
 <li data-anchor="fit-bounce">The page does not scroll or bounce; only the results list, the sheet, and the Sources body scroll, each within itself.</li>
@@ -227,14 +249,16 @@
 <h2 data-anchor="offline-heading">Offline and updates</h2>
 <p class="sec-note" data-anchor="offline-note">One saved copy per version; the version is a hash of every published file.</p>
 </div>
-<ol class="rail" data-anchor="offline-rail">
-<li data-anchor="offline-install">First visit online: the page registers the worker after it has drawn, so saving never delays first paint; the worker saves every listed file into a cache named by the version, and only a complete save counts.</li>
-<li data-anchor="offline-serve">Every later request for a listed file is answered from the saved copy, ignoring the part after # and any query; opening the site root or the game folder answers with that page.</li>
-<li data-anchor="offline-miss">A request for anything not listed goes to the network, and offline it fails as a browser would; an unknown page address offline shows the network.</li>
-<li data-anchor="offline-new">When the site changes, the worker script's version changes, so the browser fetches the new worker on the next visit; it saves the new copy in the background.</li>
-<li data-anchor="offline-switch">Once the new copy is complete, the new worker takes over and deletes older copies; the open page keeps running and is never reloaded, and the next open shows the new version.</li>
-<li data-anchor="offline-fail">If a save is interrupted, the old copy, or the network when there is none, keeps serving, and the next visit tries again.</li>
-</ol>
+<div class="rail-wrap" data-anchor="offline-rail-scroll">
+<div class="rail" data-anchor="offline-rail">
+<div data-anchor="offline-install"><span class="n">01</span>First visit online: the page registers the worker after it has drawn, so saving never delays first paint; the worker saves every listed file into a cache named by the version, and only a complete save counts.</div>
+<div data-anchor="offline-serve"><span class="n">02</span>Every later request for a listed file is answered from the saved copy, ignoring the part after # and any query; opening the site root or the game folder answers with that page.</div>
+<div data-anchor="offline-miss"><span class="n">03</span>A request for anything not listed goes to the network, and offline it fails as a browser would; an unknown page address offline shows the network.</div>
+<div data-anchor="offline-new"><span class="n">04</span>When the site changes, the worker script's version changes, so the browser fetches the new worker on the next visit; it saves the new copy in the background.</div>
+<div data-anchor="offline-switch"><span class="n">05</span>Once the new copy is complete, the new worker takes over and deletes older copies; the open page keeps running and is never reloaded, and the next open shows the new version.</div>
+<div data-anchor="offline-fail"><span class="n">06</span>If a save is interrupted, the old copy, or the network when there is none, keeps serving, and the next visit tries again.</div>
+</div>
+</div>
 <ul data-anchor="offline-rules">
 <li data-anchor="offline-list">The list is every file in the published site directory except the worker script itself, sorted; the version is a short hash over each listed file's path and contents.</li>
 <li data-anchor="offline-block">The list and version are written into a marked block at the top of the worker script by the offline list command, so any site change changes the worker's bytes; a test recomputes both and fails when the block is stale.</li>
@@ -260,7 +284,6 @@
 <li data-anchor="test-file-list">File list: the worker's list and version equal the ones recomputed from the site directory.</li>
 <li data-anchor="test-worker">Worker: a complete install saves every listed file, an interrupted one leaves the old copy serving, activation deletes older copies, and no client is reloaded.</li>
 <li data-anchor="test-static-app">Static: the existing site reference check covers the manifest and the worker.</li>
-<li data-anchor="test-phone">Phone check: a headless phone viewport loads the network and the game, then loads both again offline, with no console error and no request outside the site.</li>
 </ul>
 </section>
 
