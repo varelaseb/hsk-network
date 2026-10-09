@@ -193,6 +193,19 @@ class Credits(unittest.TestCase):
         self.assertIn(f'id="syllable-source" href="{note["url"]}"', line)
         self.assertIn('href="audio/CREDITS.txt"', line)
 
+    def test_bubbles_sources_credit_word_recordings(self):
+        """#acceptance-sources, bubbles #screen-start: the game plays word recordings, so its Sources credit them."""
+        note = build_data.audio_note()
+        sources = re.search(r'<details class="sources">.*?</details>',
+                            (SITE / "bubbles" / "index.html").read_text(encoding="utf-8"), re.S).group(0)
+        line = re.search(r"<p>Pronunciation: word recordings.*?</p>", sources, re.S).group(0)
+        for key in ("speaker", "license", "licenseUrl"):
+            with self.subTest(key=key):
+                self.assertIn(note[key], line)
+        self.assertIn(f'id="audio-source" href="{note["url"]}"', line)
+        self.assertIn('href="../audio/CREDITS.txt"', line)
+        self.assertTrue((SITE / "audio" / "CREDITS.txt").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()
