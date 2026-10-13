@@ -166,17 +166,32 @@ class Switches(HTMLParser):
 
 
 class LevelPanelTest(unittest.TestCase):
-    """Level panel markup (spec #page-levels, #ix-levels)."""
+    """Collection panel markup (spec #page-levels, #ix-levels, #default-level-panel,
+    #acceptance-level, #acceptance-collections-default)."""
 
-    def test_one_switch_per_level_on_at_load(self):
+    def switches(self):
         page = Switches()
         page.feed((SITE / "index.html").read_text(encoding="utf-8"))
-        levels = [(t, a) for t, a in page.switches if "level" in a.get("class", "").split()]
-        self.assertEqual([a.get("data-level") for _, a in levels], ["1", "2"])
-        for tag, a in levels:
-            with self.subTest(level=a.get("data-level")):
+        return [(t, a) for t, a in page.switches if "level" in a.get("class", "").split()]
+
+    def test_one_switch_per_collection_in_order_hsk_on_at_load(self):
+        meta = json.loads((SITE / "data" / "graph.json").read_text(encoding="utf-8"))["meta"]["collections"]
+        switches = self.switches()
+        self.assertEqual([a.get("data-collection") for _, a in switches], [c["key"] for c in meta])
+        for tag, a in switches:
+            with self.subTest(collection=a.get("data-collection")):
                 self.assertEqual(tag, "button")
-                self.assertEqual(a.get("aria-checked"), "true")
+                hsk = a["data-collection"] in ("1", "2")
+                self.assertEqual(a.get("aria-checked"), "true" if hsk else "false")
+
+    def test_chip_shows_mark_and_name(self):
+        html = (SITE / "index.html").read_text(encoding="utf-8")
+        meta = json.loads((SITE / "data" / "graph.json").read_text(encoding="utf-8"))["meta"]["collections"]
+        for c in meta:
+            mark = "l" + c["key"] if c["key"] in ("1", "2") else "pill"
+            with self.subTest(collection=c["key"]):
+                self.assertRegex(html, r'data-collection="%s"><span class="swatch %s"></span>%s</button>'
+                                 % (re.escape(c["key"]), mark, re.escape(c["name"])))
 
     def test_switch_is_at_least_44px_tall(self):
         css = (SITE / "style.css").read_text(encoding="utf-8")
@@ -185,6 +200,11 @@ class LevelPanelTest(unittest.TestCase):
         height = re.search(r"min-height:\s*(\d+)px", rule.group(1))
         self.assertIsNotNone(height)
         self.assertGreaterEqual(int(height.group(1)), 44)
+
+    def test_themed_word_is_hollow_pill(self):
+        # #color-levels: surface fill with a 2px ink outline, no color of its own.
+        css = (SITE / "style.css").read_text(encoding="utf-8")
+        self.assertIn(".word.pill rect { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }", css)
 
 
 class ScriptControlTest(unittest.TestCase):
@@ -297,7 +317,7 @@ def look_tokens():
 
 class DarkColorsTest(unittest.TestCase):
     """#acceptance-dark-colors, #test-dark: on the night page and the dark surface, ink and muted
-    reach 4.5:1, level and hub colors 3:1, where each is used."""
+    reach 4.5:1, level colors, hollow pill outline, and hub 3:1, where each is used."""
 
     def setUp(self):
         _, self.tok, self.dark = look_tokens()
@@ -317,6 +337,9 @@ class DarkColorsTest(unittest.TestCase):
         for bg in (self.dark["paper"], self.dark["surface"]):
             for fg in (self.dark["hsk1"], self.dark["hsk2"]):
                 self.assertGreaterEqual(contrast(fg, bg), 3, (fg, bg))
+        # Hollow pill outline (ink): graph nodes on the night page, chip marks on the dark surface.
+        for bg in (self.dark["paper"], self.dark["surface"]):
+            self.assertGreaterEqual(contrast(self.dark["ink"], bg), 3, bg)
         # Hub: graph nodes on the night page only.
         self.assertGreaterEqual(contrast(self.dark["hub"], self.dark["paper"]), 3)
 

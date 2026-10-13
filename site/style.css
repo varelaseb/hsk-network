@@ -131,7 +131,8 @@ body {
 button { font: inherit; color: inherit; }
 :focus-visible { outline: var(--focus-ring) solid var(--ink); outline-offset: 2px; }
 
-/* Level chips (#page-levels): color dot and name; an off chip shows a hollow dot and muted name. */
+/* Collection chips (#page-levels): mark and name; an off chip shows a hollow dot, or a muted
+   pill outline for a themed collection, and a muted name. */
 .level {
   display: inline-flex;
   align-items: center;
@@ -160,7 +161,10 @@ button { font: inherit; color: inherit; }
 }
 .swatch.l1 { --swatch: var(--hsk1); }
 .swatch.l2 { --swatch: var(--hsk2); }
+/* Themed collection mark (#color-levels): a small hollow pill, surface fill and ink outline. */
+.swatch.pill { width: 18px; border-radius: var(--radius-pill); background: var(--surface); --swatch: var(--ink); }
 .level[aria-checked="false"] .swatch { background: transparent; }
+.level[aria-checked="false"] .swatch.pill { --swatch: var(--muted); }
 
 /* Headword and readings, built by headword.js for both pages (#zhuyin-columns, #pinyin-ruby,
    #zhuyin-fallback); --head sets the headword size; characters Medium, readings Regular (#scale-weights). */
@@ -348,12 +352,13 @@ button { font: inherit; color: inherit; }
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
 }
 .legend {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
-  margin: 0;
+  margin: 0 0 0 auto;
   padding: 0;
   list-style: none;
 }
@@ -445,6 +450,9 @@ button { font: inherit; color: inherit; }
 .word text { font-size: 14px; }
 .word.l1 text { fill: #ffffff; }  /* labels sit on the fixed level and hub fills, in both appearances */
 .word.l2 text { fill: #1b1b1f; }
+/* Themed word (#color-levels): a hollow pill, surface fill with a 2px ink outline. */
+.word.pill rect { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.word.pill text { fill: var(--ink); }
 .hub circle { fill: var(--hub); stroke: var(--paper); stroke-width: 1.5; }
 .hub text { fill: #ffffff; font-size: 10px; }
 
@@ -462,6 +470,7 @@ button { font: inherit; color: inherit; }
 .dimmed .link.lit, .dimmed .node.lit { opacity: 1; }
 .link.lit { stroke: var(--hub); }
 .node.focus rect, .node.focus circle { stroke: var(--ink); stroke-width: 2; }
+.node.focus.pill rect { stroke-width: 3.5; }
 
 /* Card (#page-card-content): beside the node on desktop, a bottom sheet on phones. */
 .card {
@@ -732,8 +741,19 @@ button { font: inherit; color: inherit; }
     gap: 8px;
   }
   .search { flex: none; }
-  .panel { margin-left: 0; gap: 6px; }
-  .legend { gap: 6px; }
+  .panel { gap: 6px; }
+  /* Collection chips on their own row (#page-levels-phone), scrolling sideways within itself. */
+  .legend {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 6px;
+    margin: 0 calc(-1 * max(10px, env(safe-area-inset-right))) 0 calc(-1 * max(10px, env(safe-area-inset-left)));
+    padding: 0 max(10px, env(safe-area-inset-right)) 0 max(10px, env(safe-area-inset-left));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .legend::-webkit-scrollbar { display: none; }
   .level { padding: 0 12px 0 11px; gap: 6px; }
   .script { padding: 0 12px; }
   .voice { padding: 0 11px; }

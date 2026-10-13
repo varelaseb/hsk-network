@@ -32,7 +32,7 @@ const input = document.getElementById("search");
 const resultsEl = document.getElementById("results");
 const scriptBtn = document.getElementById("script");
 const voiceBtn = document.getElementById("voice");
-const levelBtns = Array.from(document.querySelectorAll(".level"));
+const collectionBtns = Array.from(document.querySelectorAll(".legend .level"));
 const sheetQuery = window.matchMedia("(hover: none), (max-width: 600px)");
 const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -46,7 +46,11 @@ let root, linkSel, nodeSel, zoom, sim;
 let pinned = null;          // node whose card is pinned (click, tap, or search)
 let hovered = null;         // word node under the mouse
 let cardFor = null;         // node the card shows
-const levelOn = { 1: true, 2: true };
+// Collections (#schema-collections): on/off per key, read from the page's switches at load
+// (#default-level-panel); place in collection order and name from the data file.
+const collectionOn = {};
+collectionBtns.forEach(function (b) { collectionOn[b.dataset.collection] = b.getAttribute("aria-checked") === "true"; });
+const order = {}, names = {};
 let shown = new Set();      // ids of visible nodes
 let script = readScript();
 
@@ -71,8 +75,9 @@ function init(data, drawingMeta) {
   fillSources(Object.assign({}, data.meta, drawingMeta));
   chars = data.chars;
   voice.useGraph(data);
+  data.meta.collections.forEach(function (c, i) { order[c.key] = i; names[c.key] = c.name; });
   words = data.words.map(function (w) {
-    const n = Object.assign({}, w, wordReading(w, chars), { kind: "word", level: Number(w.collections[0]) });
+    const n = Object.assign({}, w, wordReading(w, chars), { kind: "word", home: w.collections[0] });
     // Traditional and Simplified forms have equal length, so the pill fits both scripts.
     n.width = textWidth(w.trad) + 14;
     n.key = searchKey(n);
@@ -88,7 +93,7 @@ function init(data, drawingMeta) {
     return { source: w, target: h };
   });
   hubWords.forEach(function (ws) {
-    ws.sort(function (a, b) { return a.level - b.level || cmpId(a.id, b.id); });
+    ws.sort(cmpWord);
   });
 
   computeShown();
@@ -114,10 +119,13 @@ function wordReading(w, chars) {
   return { zhuyin: r.zhuyin, defs: r.defs, mw: r.mw };
 }
 
-// A #word=<id> address focuses that word as picking it in search does (spec #page-word-link).
+// A #word=<id> address focuses that word as picking it in search does, first switching
+// its home collection on when every collection holding it is off (spec #page-word-link).
 function openWordLink() {
   const w = linkedWord(location.hash);
-  if (w) pick(w);
+  if (!w) return;
+  if (!holds(w)) setCollection(w.home, true);
+  pick(w);
 }
 
 function linkedWord(hash) {
@@ -135,6 +143,21 @@ function push(map, k, v) {
 
 function cmpId(a, b) {
   return +a.split("-")[1] - +b.split("-")[1];
+}
+
+// Words by home collection in collection order, then list position.
+function cmpWord(a, b) {
+  return order[a.home] - order[b.home] || cmpId(a.id, b.id);
+}
+
+// A word shows while any collection holding it is on (#page-levels-hide).
+function holds(w) {
+  return w.collections.some(function (k) { return collectionOn[k]; });
+}
+
+// Home collection mark (#default-level): an HSK level's color, else a hollow pill.
+function mark(key) {
+  return key === "1" || key === "2" ? "l" + key : "pill";
 }
 
 function textWidth(s) {
@@ -221,7 +244,7 @@ function build() {
 
   nodeSel = root.append("g").attr("class", "nodes")
     .selectAll("g").data(hubs.concat(words), function (d) { return d.id; }).join("g")
-    .attr("class", function (d) { return d.kind === "hub" ? "node hub" : "node word l" + d.level; });
+    .attr("class", function (d) { return d.kind === "hub" ? "node hub" : "node word " + mark(d.home); });
 
   nodeSel.filter(function (d) { return d.kind === "hub"; })
     .call(function (g) {
@@ -523,10 +546,11 @@ function firstGloss(defs) {
   return defs && defs.length ? textOf(renderSense(defs[0], script).pieces) : "";
 }
 
-function levelTag(level) {
+// The home collection's mark and every collection's name, joined by a dot (#page-card-content).
+function collectionsTag(w) {
   const p = el("div", "c-level");
-  p.appendChild(el("span", "swatch l" + level));
-  p.appendChild(document.createTextNode("HSK " + level));
+  p.appendChild(el("span", "swatch " + mark(w.home)));
+  p.appendChild(document.createTextNode(w.collections.map(function (k) { return names[k]; }).join(" · ")));
   return p;
 }
 
@@ -643,7 +667,7 @@ function showCard(d, pin) {
   if (d.kind === "word") {
     card.appendChild(headRow(d, { word: d.trad, audio: d.audio }, wordLabel(d, script)));
     card.appendChild(sensesNode(d.defs, d.mw));
-    card.appendChild(levelTag(d.level));
+    card.appendChild(collectionsTag(d));
   } else {
     const entry = chars[d.char];
     entry.readings.forEach(function (r) {
@@ -663,7 +687,7 @@ function showCard(d, pin) {
       b.appendChild(han(wordLabel(w, script), "w-han"));
       b.appendChild(pieceNode(renderReading(w, script))).classList.add("w-reading");
       b.appendChild(el("span", "w-gloss", firstGloss(w.defs)));
-      b.appendChild(el("span", "swatch l" + w.level));
+      b.appendChild(el("span", "swatch " + mark(w.home)));
       b.addEventListener("click", function () { focusWord(w); });
       ul.appendChild(el("li")).appendChild(b);
     });
@@ -841,11 +865,11 @@ sheetQuery.addEventListener("change", function () {
   if (cardFor) placeCard(cardFor);
 });
 
-// ---------- Level panel ----------
+// ---------- Collection panel (#page-levels) ----------
 
 function computeShown() {
   shown = new Set();
-  words.forEach(function (w) { if (levelOn[w.level]) shown.add(w.id); });
+  words.forEach(function (w) { if (holds(w)) shown.add(w.id); });
   // A hub shows only while two or more of its words show.
   hubs.forEach(function (h) {
     const n = (hubWords.get(h.id) || []).filter(function (w) { return shown.has(w.id); }).length;
@@ -859,20 +883,24 @@ function applyShown() {
   linkSel.classed("off", function (l) { return !shown.has(l.source.id) || !shown.has(l.target.id); });
 }
 
-function syncLevels() {
-  const on = levelBtns.filter(function (b) { return levelOn[b.dataset.level]; });
-  levelBtns.forEach(function (b) {
-    b.setAttribute("aria-checked", levelOn[b.dataset.level] ? "true" : "false");
-    // The last level that is on cannot be switched off.
-    if (on.length === 1 && on[0] === b) b.setAttribute("aria-disabled", "true");
+function onCount() {
+  return collectionBtns.filter(function (b) { return collectionOn[b.dataset.collection]; }).length;
+}
+
+function syncCollections() {
+  const last = onCount() === 1;
+  collectionBtns.forEach(function (b) {
+    const on = collectionOn[b.dataset.collection];
+    b.setAttribute("aria-checked", on ? "true" : "false");
+    // The last collection that is on cannot be switched off (#page-levels-last).
+    if (last && on) b.setAttribute("aria-disabled", "true");
     else b.removeAttribute("aria-disabled");
   });
 }
 
-function toggleLevel(level) {
-  if (levelOn[level] && levelBtns.filter(function (b) { return levelOn[b.dataset.level]; }).length === 1) return;
-  levelOn[level] = !levelOn[level];
-  syncLevels();
+function setCollection(key, on) {
+  collectionOn[key] = on;
+  syncCollections();
   computeShown();
   if (!nodeSel) return;
   applyShown();
@@ -887,10 +915,14 @@ function toggleLevel(level) {
   if (!resultsEl.hidden) refreshResults();
 }
 
-levelBtns.forEach(function (b) {
-  b.addEventListener("click", function () { toggleLevel(b.dataset.level); });
+collectionBtns.forEach(function (b) {
+  b.addEventListener("click", function () {
+    const key = b.dataset.collection;
+    if (collectionOn[key] && onCount() === 1) return;
+    setCollection(key, !collectionOn[key]);
+  });
 });
-syncLevels();
+syncCollections();
 
 // ---------- Search ----------
 
@@ -937,7 +969,7 @@ function search(q, mode) {
   const eq = q.toLowerCase();
   const wordRe = /^[a-z][a-z\s'-]*$/i.test(q) ? new RegExp("(^|[^a-z])" + escapeRe(eq) + "($|[^a-z])") : null;
   words.forEach(function (w) {
-    if (!levelOn[w.level]) return;
+    if (!holds(w)) return;
     let score = 0;
     if (hasHan) {
       if (w.trad === q || w.simp === q) score = 100;
@@ -963,7 +995,7 @@ function search(q, mode) {
     if (score) scored.push({ w: w, score: score });
   });
   scored.sort(function (a, b) {
-    return b.score - a.score || a.w.level - b.w.level || cmpId(a.w.id, b.w.id);
+    return b.score - a.score || cmpWord(a.w, b.w);
   });
   return scored.slice(0, MAX_RESULTS).map(function (s) { return s.w; });
 }
@@ -996,7 +1028,7 @@ function renderResults() {
     li.setAttribute("aria-selected", i === active ? "true" : "false");
     li.appendChild(han(wordLabel(w, script), "r-han"));
     li.appendChild(el("span", "r-def", firstGloss(w.defs)));
-    li.appendChild(el("span", "r-lvl", "HSK " + w.level));
+    li.appendChild(el("span", "r-lvl", names[w.home]));
     li.addEventListener("pointerdown", function (e) { e.preventDefault(); });
     li.addEventListener("click", function () { pick(w); });
     resultsEl.appendChild(li);
@@ -1043,10 +1075,11 @@ input.addEventListener("keydown", function (e) {
 // ---------- Phone fit (hsk-app #fit-zoom, #fit-bounce) ----------
 
 // iOS ignores CSS for pinch and page drags: the graph takes every gesture, and
-// only the results list, the card, and the Sources body scroll, each within itself.
+// only the results list, the card, the Sources body, and the phone's collection row
+// scroll, each within itself (#page-levels-phone).
 document.addEventListener("gesturestart", (e) => e.preventDefault());
 document.addEventListener("touchmove", (e) => {
-  if (!e.target.closest("#graph, .results, .card, .sources-body")) e.preventDefault();
+  if (!e.target.closest("#graph, .results, .card, .sources-body, .legend")) e.preventDefault();
 }, { passive: false });
 
 // ---------- Sources ----------
