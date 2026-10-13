@@ -194,7 +194,7 @@ test("acceptance-offline-recording: every word's recording plays from the saved 
   assert.deepEqual(b.net.log, [], "no request reaches the network");
 });
 
-test("acceptance-offline-game-sound: every popped word is said offline from saved recordings or the device voice", async () => {
+test("acceptance-offline-game-sound: with no device voice, every popped word is said offline from saved recordings alone", async () => {
   const b = browser();
   const w = await installed(b, "v1");
   b.net.online = false;

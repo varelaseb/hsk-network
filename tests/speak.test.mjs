@@ -23,12 +23,13 @@ const APP = readFileSync(site("app.js"), "utf8");
 const syllableSounds = new Function(extract(APP, "syllableSounds") + "; return syllableSounds;")();
 
 // Browser stubs: one recording player, the device voice, storage, a timer.
+const SITE = site("").href; // recording srcs resolve under site/, wherever the checkout is
 const played = [];      // every recording src a player started, in order
 const spoken = [];      // every device voice utterance
 let player = null;
 globalThis.Audio = class {
   constructor() { player = this; this.onended = null; }
-  play() { played.push(new URL(this.src).pathname.split("/site/")[1]); return Promise.resolve(); }
+  play() { played.push(this.src.startsWith(SITE) ? this.src.slice(SITE.length) : this.src); return Promise.resolve(); }
   pause() {}
 };
 globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
