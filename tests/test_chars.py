@@ -1,4 +1,4 @@
-"""#test-chars-once, #acceptance-chars-once: per-character facts stored once (#chars-table, #chars-words)."""
+"""#test-chars-once, #acceptance-chars-once, #acceptance-char-simp: per-character facts stored once (#chars-table, #chars-words)."""
 
 import unittest
 
@@ -125,6 +125,34 @@ class StandardReadingFirst(unittest.TestCase):
         graph = build_data.build(entries, None, hsk, {}, {**NO_CHARS, "mandarin": {"行": "xíng"}})
         self.assertEqual(graph["words"][0]["reading"], 0)
         self.assertEqual(graph["chars"]["行"]["readings"][0]["pinyin"], "xing2")
+
+
+class CharSimp(unittest.TestCase):
+    """#acceptance-char-simp, #stack-script: each character table entry's Simplified form."""
+
+    QIAN = build_data.single_char_index(build_data.parse_cedict(
+        ["乾 干 [gan1] /dry/", "乾 乾 [qian2] /one of the Eight Trigrams/"])[0])
+
+    def test_word_character_takes_the_first_word_writing_it(self):
+        in_words = {}
+        for w in GRAPH["words"]:
+            for t, s in zip(w["trad"], w["simp"]):
+                in_words.setdefault(t, s)
+        self.assertTrue(in_words)
+        for t, s in in_words.items():
+            with self.subTest(char=t):
+                self.assertEqual(CHARS[t]["simp"], s)
+
+    def test_first_word_wins_over_the_dictionary(self):
+        self.assertEqual(build_data.char_simp("乾", self.QIAN, "qián", "干"), "干")
+
+    def test_other_character_takes_its_standard_readings_entry(self):
+        self.assertEqual(build_data.char_simp("乾", self.QIAN, "qián"), "乾")
+        self.assertEqual(build_data.char_simp("乾", self.QIAN, "gān"), "干")
+        self.assertEqual(build_data.char_simp("乾", self.QIAN), "干")  # no kMandarin: dictionary order
+
+    def test_character_with_no_entry_is_itself(self):
+        self.assertEqual(build_data.char_simp("訁", self.QIAN), "訁")
 
 
 if __name__ == "__main__":
