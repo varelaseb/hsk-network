@@ -9,6 +9,7 @@
 import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { extract } from "./extract.mjs";
 import * as voice from "../site/voice.js";
 import { headword } from "../site/senses.js";
 
@@ -18,13 +19,6 @@ const WORDS = new Map(GRAPH.words.map((w) => [w.id, w]));
 const CHARS = GRAPH.chars;
 
 // The real app.js function a card uses for each syllable's sound.
-function extract(src, name) {
-  const start = src.search(new RegExp("^function " + name + "\\(", "m"));
-  let depth = 0;
-  let i = src.indexOf("{", start);
-  do { depth += { "{": 1, "}": -1 }[src[i]] || 0; i++; } while (depth);
-  return src.slice(start, i);
-}
 const APP = readFileSync(site("app.js"), "utf8");
 const syllableSounds = new Function(extract(APP, "syllableSounds") + "; return syllableSounds;")();
 
@@ -105,11 +99,12 @@ test("acceptance-speak-symbol: one Zhuyin symbol plays its own name syllable", (
   voice.setVoice(true);
   const { cells } = headword(DIANNAO, "zhuyin");
   assert.deepEqual(cells.map((c) => c.symbols.join("")), ["ㄉㄧㄢ", "ㄋㄠ"]);
-  tap({ symbol: "ㄉ" });
-  assert.deepEqual(played, ["audio/s/de1.mp3"], "bo for ㄅ, de for ㄉ");
-  for (const sym of cells.flatMap((c) => c.symbols)) {
+  // Names from the spec (#default-symbol-sound, #symbols-initials, #symbols-finals), first tone:
+  // the spec's example ㄅ bo, then each symbol beside 電腦.
+  const SPEC_NAMES = { ㄅ: "bo1", ㄉ: "de1", ㄧ: "yi1", ㄢ: "an1", ㄋ: "ne1", ㄠ: "ao1" };
+  for (const sym of ["ㄅ", ...cells.flatMap((c) => c.symbols)]) {
     tap({ symbol: sym });
-    assert.deepEqual(played, [`audio/s/${voice.SYMBOL_NAMES[sym]}.mp3`], sym);
+    assert.deepEqual(played, [`audio/s/${SPEC_NAMES[sym]}.mp3`], sym);
   }
 });
 

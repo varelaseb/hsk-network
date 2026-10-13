@@ -76,6 +76,10 @@ touch = true
 url = "{site}/bubbles/"
 viewport = { width = 390, height = 844 }
 touch = true
+[entry.stories.story-game-dark]
+url = "{site}/bubbles/"
+viewport = { width = 390, height = 844 }
+touch = true
 [entry.stories.story-quiet]
 url = "{site}/bubbles/"
 viewport = { width = 390, height = 844 }
@@ -283,7 +287,5 @@ path = "/#word=1-17" # 電腦 (dian4 nao3), recorded
 path = "/#word=2-8" # 長 (chang2): hub 長, readings zhang3 then chang2
 
 # Network: Voice setting. acceptance-voice-network and acceptance-voice-off start at the story's site
-# root with Voice on (first visit), so they have no hint. acceptance-voice-shared: its When turns Voice
-# off on the network, then opens the game through the Play link.
-[nav.acceptance-voice-shared]
-path = "/"
+# root with Voice on (first visit), and acceptance-voice-shared turns Voice off there then opens the
+# game through the Play link, so none has a hint.
