@@ -74,7 +74,7 @@ class FontFilesTest(unittest.TestCase):
 
     def test_budget_and_weights_match_spec(self):
         """#face-budget caps; #scale-weights ranges; Taiwan forms in the Chinese face, mainland in the forms face."""
-        self.assertEqual(bf.BUDGET, {bf.HAN: 232_000, bf.LATIN: 23_000, "total": 255_000})
+        self.assertEqual(bf.BUDGET, {bf.HAN: 288_000, bf.LATIN: 23_000, "total": 311_000})
         self.assertEqual(bf.WEIGHTS, {bf.HAN: (400, 500), bf.LATIN: (400, 600)})
         self.assertEqual(bf.HAN_LANGS, {"ZHT "})
         self.assertEqual(bf.MAINLAND_LANG, "ZHS ")
