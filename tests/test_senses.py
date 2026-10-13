@@ -72,10 +72,26 @@ class Rules(unittest.TestCase):
             with self.subTest(bad=bad), self.assertRaisesRegex(ValueError, "unclean sense"):
                 build_data.senses([bad], simp_only={"们"})
 
+    def test_bare_citation(self):  # #sense-cite
+        entries, _ = build_data.parse_cedict([
+            "蘭花 兰花 [lan2 hua1] /orchid/", "木蘭 木兰 [Mu4 lan2] /Mulan/", "木蘭 木兰 [mu4 lan2] /magnolia/",
+            "蘭 兰 [lan2] /orchid (蘭花|兰花 Cymbidium)/thoroughwort (蘭草|兰草 Eupatorium)/magnolia (木蘭|木兰)/"])
+        got = build_data.senses(entries[-1]["defs"], {"兰"}, build_data.citation_pairs(entries))["defs"]
+        self.assertEqual(got, [
+            {"parts": ["orchid (", {"trad": "蘭花", "simp": "兰花", "pinyin": "lan2 hua1",
+                                    "zhuyin": "ㄌㄢˊ ㄏㄨㄚ"}, " Cymbidium)"]},
+            {"parts": ["thoroughwort (", {"trad": "蘭草", "simp": "兰草"}, " Eupatorium)"]},
+            {"parts": ["magnolia (", {"trad": "木蘭", "simp": "木兰", "pinyin": "mu4 lan2",
+                                      "zhuyin": "ㄇㄨˋ ㄌㄢˊ"}, ")"]}])
+        two = build_data.citation_pairs(build_data.parse_cedict(
+            ["長 长 [chang2] /long/", "長 长 [zhang3] /to grow/"])[0])
+        self.assertEqual(build_data.senses(["see 長|长"], pairs=two)["defs"],
+                         [{"parts": ["see ", {"trad": "長", "simp": "长"}]}])
+
     def test_build_fails_naming_the_entry(self):  # #sense-fail
         entries, _ = build_data.parse_cedict(["學生 学生 [xue2 sheng5] /student [T xu4]/",
                                               "學 学 [xue2] /to learn/", "生 生 [sheng1] /to be born/"])
-        hsk = [{"id": "1-1", "level": 1, "simp": "学生", "pinyin": "xué sheng"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "学生", "pinyin": "xué sheng"}]
         with self.assertRaisesRegex(build_data.BuildError, r"1-1 学生 .*unclean sense"):
             build_data.build(entries, RELEASE, hsk, {}, NO_CHARS)
 
@@ -83,14 +99,14 @@ class Rules(unittest.TestCase):
         entries, _ = build_data.parse_cedict([
             "個 个 [ge4] /individual; CL:個|个[ge4]/(coll.) sth/",
             "書 书 [shu1] /book; CL:本[ben3]/", "本 本 [ben3] /root/"])
-        hsk = [{"id": "1-1", "level": 1, "simp": "个", "pinyin": "gè"},
-               {"id": "1-2", "level": 1, "simp": "书本", "pinyin": "shū běn"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "个", "pinyin": "gè"},
+               {"id": "1-2", "collection": "1", "simp": "书本", "pinyin": "shū běn"}]
         entries += build_data.parse_cedict(["書本 书本 [shu1 ben3] /book; CL:本[ben3]/"])[0]
         graph = build_data.build(entries, RELEASE, hsk, {}, NO_CHARS)
         self.assertEqual(graph["chars"]["個"], {"simp": "个", "readings": [
             {"pinyin": "ge4", "zhuyin": "ㄍㄜˋ", "mw": [GE],
              "defs": [{"parts": ["individual"]}, {"tag": "colloquial", "parts": ["something"]}]}]})
-        self.assertEqual(graph["words"][0], {"id": "1-1", "level": 1, "trad": "個", "simp": "个",
+        self.assertEqual(graph["words"][0], {"id": "1-1", "collections": ["1"], "trad": "個", "simp": "个",
                                              "pinyin": "ge4", "reading": 0})
         self.assertEqual(graph["words"][1]["mw"], [ref("本", "本", "ben3", "ㄅㄣˇ")])
         self.assertEqual(graph["chars"]["書"]["simp"], "书")
@@ -121,7 +137,10 @@ class Committed(unittest.TestCase):
                             self.assertNotRegex(p, r"CL:|\||\[|\]|\bsb\b|\bsth\b|[A-Za-z:]+[1-5]\b")
                             self.assertFalse(set(p) & simp_only, p)
                         else:
-                            self.assertIn(set(p), ({"trad", "simp", "pinyin", "zhuyin"}, {"pinyin", "zhuyin"}))
+                            self.assertIn(set(p), ({"trad", "simp", "pinyin", "zhuyin"}, {"pinyin", "zhuyin"},
+                                                   {"trad", "simp"}))  # #sense-cite form reference
+                            if "pinyin" not in p:
+                                continue
                             self.assertEqual(p["zhuyin"], build_data.to_zhuyin(
                                 build_data.normalize_numbered(p["pinyin"].split())))
 

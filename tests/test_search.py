@@ -42,7 +42,8 @@ def run_search(queries, mode="zhuyin"):
         + [extract(src, f) for f in FUNCS]
         + [
             "const data = JSON.parse(fs.readFileSync(%s, 'utf8'));" % json.dumps(str(GRAPH)),
-            "const words = data.words.map(w => Object.assign({}, w, wordReading(w, data.chars)))"
+            "const words = data.words.map(w => Object.assign({}, w, wordReading(w, data.chars),"
+            " { level: Number(w.collections[0]) }))"
             ".map(w => Object.assign(w, { key: searchKey(w) }));",
             "const out = {};",
             "for (const q of %s) out[q] = search(q, %s).map(w => w.id);" % (json.dumps(queries), json.dumps(mode)),

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build site/data/graph.json, site/data/drawing.json, and site/audio/ from the HSK lists, CC-CEDICT, audio-cmn, Unihan, BabelStone IDS, and GlyphWiki.
+"""Build site/data/graph.json, site/data/drawing.json, and site/audio/ from the collection lists, CC-CEDICT, audio-cmn, Unihan, BabelStone IDS, and GlyphWiki.
 
 Spec: docs/specs/hsk-network.spec.html (#data, #match-rules, #zhuyin-tones,
 #schema-example, #schema-sense, #senses-table, #graph-model, #chars-table, #chars-words, #hub-reading, #char-coverage, #breakdown-rules,
@@ -26,6 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 HSK_DIR = ROOT / "data" / "hsk"
+COLLECTIONS = ROOT / "data" / "collections.json"
 AUDIO_NOTE = ROOT / "data" / "audio" / "source.json"
 AUDIO_OUT = ROOT / "site" / "audio"
 AUDIO_CREDITS = AUDIO_OUT / "CREDITS.txt"
@@ -48,7 +49,6 @@ DRAWING_OUT = ROOT / "site" / "data" / "drawing.json"
 DRAWING_LICENSE = ROOT / "site" / "data" / "glyphwiki-LICENSE.txt"
 DOWNLOAD_TIMEOUT = 60  # seconds
 USER_AGENT = "hsk-network-build"  # GlyphWiki's host refuses the default Python agent
-LEVELS = (1, 2)
 POINTER_PREFIXES = ("variant of", "old variant of", "see ", "surname ")
 
 
@@ -248,7 +248,8 @@ def _merge(cands):
 _HAN_CHAR = r"[\u3006\u3007\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\U00020000-\U0003ffff·]"
 _HAN = rf"[0-9A-Za-z]*(?:{_HAN_CHAR}[0-9A-Za-z]*)+"  # a cited form: Han, maybe with digits or Latin
 _CITE = rf"({_HAN})(?:\|({_HAN}))?\[([^\[\]]*)\]"
-_TOKEN = re.compile(rf"{_CITE}|\[([^\[\]]*)\]")
+_BARE_CITE = rf"({_HAN})\|({_HAN})"  # #sense-cite: a Traditional|Simplified pair with no bracket
+_TOKEN = re.compile(rf"{_CITE}|\[([^\[\]]*)\]|{_BARE_CITE}")
 _CL_LIST = rf"CL:\s*{_HAN}(?:\|{_HAN})?\[[^\[\]]*\](?:\s*,\s*{_HAN}(?:\|{_HAN})?\[[^\[\]]*\])*"
 _CL_PAREN = re.compile(rf"\s*\(\s*({_CL_LIST})\s*\)")
 _CL_BARE = re.compile(rf"[\s;,]*({_CL_LIST})")
@@ -296,8 +297,28 @@ def _spell(text):
     return text
 
 
-def parse_sense(definition):
+def citation_pairs(cedict_entries):
+    """#sense-cite: (Traditional, Simplified) -> pinyin of each lowercase entry of that pair."""
+    pairs = {}
+    for e in cedict_entries:
+        if not e["cap"]:
+            pairs.setdefault((e["trad"], e["simp"]), []).append(e["pinyin"])
+    return pairs
+
+
+def _bare_ref(trad, simp, pairs):
+    """#sense-cite: a bare citation -> full reference when CC-CEDICT has exactly one
+    lowercase entry of the pair, else a form reference holding only trad and simp."""
+    found = (pairs or {}).get((trad, simp), [])
+    if len(found) == 1:
+        return {"trad": trad, "simp": simp, "pinyin": found[0], "zhuyin": to_zhuyin(found[0])}
+    return {"trad": trad, "simp": simp}
+
+
+def parse_sense(definition, pairs=None):
     """#senses-table: one CC-CEDICT definition -> (sense or None, measure words).
+
+    pairs: citation_pairs(), resolving bare Traditional|Simplified citations.
 
     sense: {"tag"?, "parts": [text | reference]}; None when nothing is left
     after its "CL:" lists leave (#sense-cl). Measure words are references in
@@ -319,7 +340,10 @@ def parse_sense(definition):
         sense["tag"], text = TAGS[m.group(1)], m.group(2)
     parts, at = [], 0
     for m in _TOKEN.finditer(text):
-        ref = _ref(*m.group(1, 2, 3)) if m.group(1) else _pinyin(m.group(4))
+        if m.group(5):
+            ref = _bare_ref(m.group(5), m.group(6), pairs)
+        else:
+            ref = _ref(*m.group(1, 2, 3)) if m.group(1) else _pinyin(m.group(4))
         if ref is None:
             continue
         if isinstance(ref, tuple):  # #sense-pr: a reading reference
@@ -340,14 +364,14 @@ def simplified_only(cedict_entries):
     return {ch for e in cedict_entries for ch in e["simp"]} - trad
 
 
-def senses(definitions, simp_only=frozenset()):
+def senses(definitions, simp_only=frozenset(), pairs=None):
     """#senses-table, #sense-fail: definitions -> {"defs": [sense], "mw"?: [reference]}.
 
     Raises ValueError naming a sense whose plain text still holds a Simplified-only
     character, a tone-numbered syllable, a vertical bar, or a square bracket."""
     defs, mw = [], []
     for d in definitions:
-        sense, found = parse_sense(d)
+        sense, found = parse_sense(d, pairs)
         mw += [r for r in found if r not in mw]
         if sense is None:
             continue
@@ -419,7 +443,7 @@ def build_links(words):
     return hubs, links
 
 
-def char_readings(char, single, mandarin=None, simp_only=frozenset()):
+def char_readings(char, single, mandarin=None, simp_only=frozenset(), pairs=None):
     """#hub-reading: one reading per distinct pinyin of char's own entries.
 
     single: single_char_index(). Entries by Traditional form, else by Simplified
@@ -441,7 +465,7 @@ def char_readings(char, single, mandarin=None, simp_only=frozenset()):
     standard = mandarin and normalize_toned(mandarin)
     if standard in groups:
         groups = {standard: groups.pop(standard), **groups}
-    return [{"pinyin": py, "zhuyin": to_zhuyin(py), **senses(_merge(cs), simp_only)}
+    return [{"pinyin": py, "zhuyin": to_zhuyin(py), **senses(_merge(cs), simp_only, pairs)}
             for py, cs in groups.items()]
 
 
@@ -459,15 +483,20 @@ def char_simp(char, single, mandarin=None, in_words=None):
     return next((c for c in cands if c["pinyin"] == standard), cands[0])["simp"]
 
 
-def load_hsk():
-    """Return list of {"id", "level", "simp", "pinyin"} in list order."""
+def load_collections(path=COLLECTIONS):
+    """#collection-index: return ([{"key", "name", "list"}], entries).
+
+    entries: every list's {"id", "collection", "simp", "pinyin"}, collections in
+    index order, each list in its order; id is "<key>-<position>" (#schema-id).
+    """
+    collections = json.loads(Path(path).read_text(encoding="utf-8"))
     entries = []
-    for level in LEVELS:
-        rows = json.loads((HSK_DIR / f"hsk-level-{level}.json").read_text(encoding="utf-8"))
+    for c in collections:
+        rows = json.loads((Path(path).parent / c["list"]).read_text(encoding="utf-8"))
         for pos, row in enumerate(rows, 1):
-            entries.append({"id": f"{level}-{pos}", "level": level,
+            entries.append({"id": f"{c['key']}-{pos}", "collection": c["key"],
                             "simp": row["hanzi"], "pinyin": row["pinyin"]})
-    return entries
+    return collections, entries
 
 
 def load_overrides(path=OVERRIDES):
@@ -641,28 +670,37 @@ def hub_breakdown(char, chars, override=None):
     return radical, list(parts), [(rad, rad_meaning), *parts.items()]
 
 
-def build(cedict_entries, release, hsk_entries, overrides, chars):
+def build(cedict_entries, release, list_entries, overrides, chars, collections=()):
+    """list_entries: load_collections() entries, in collection order; collections:
+    its [{"key", "name"}], written to meta (#schema-collections)."""
     index = index_by_simp(cedict_entries)
     simp_only = simplified_only(cedict_entries)
-    words, problems = [], []
-    for e in hsk_entries:
+    pairs = citation_pairs(cedict_entries)
+    words, problems, by_form = [], [], {}
+    for e in list_entries:
         override = overrides.get(e["id"])
         try:
             if override and override["simp"] != e["simp"]:
                 raise ValueError(f"override names {override['simp']}, list has {e['simp']}")
             trad, pinyin, defs = match_entry(e, index, override)
             zhuyin = to_zhuyin(pinyin)
-            cleaned = senses(defs, simp_only)
+            cleaned = senses(defs, simp_only, pairs)
         except ValueError as err:
             problems.append(f"{e['id']} {e['simp']} [{e['pinyin']}]: {err}")
             continue
-        words.append({"id": e["id"], "level": e["level"], "trad": trad,
-                      "simp": e["simp"], "pinyin": pinyin, "zhuyin": zhuyin,
-                      **cleaned})
+        shared = by_form.get((trad, pinyin))  # #model-shared: one node, every collection
+        if shared:
+            if e["collection"] not in shared["collections"]:
+                shared["collections"].append(e["collection"])
+            continue
+        by_form[(trad, pinyin)] = w = {"id": e["id"], "collections": [e["collection"]], "trad": trad,
+                                       "simp": e["simp"], "pinyin": pinyin, "zhuyin": zhuyin,
+                                       **cleaned}
+        words.append(w)
     hub_overrides = {i: o for i, o in overrides.items() if i.startswith("c-")}
-    unused = sorted(i for i in set(overrides) - set(hub_overrides) - {e["id"] for e in hsk_entries}
+    unused = sorted(i for i in set(overrides) - set(hub_overrides) - {e["id"] for e in list_entries}
                     if not i.startswith("s-"))
-    problems += [f"{i}: override names no HSK entry" for i in unused]
+    problems += [f"{i}: override names no collection list entry" for i in unused]
     if problems:
         raise BuildError(problems)
     hubs, links = build_links(words)
@@ -672,7 +710,8 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
     def readings(ch):
         entry = table.setdefault(ch, {})
         if "readings" not in entry:
-            entry["readings"] = char_readings(ch, single, chars.get("mandarin", {}).get(ch), simp_only)
+            entry["readings"] = char_readings(ch, single, chars.get("mandarin", {}).get(ch),
+                                              simp_only, pairs)
         return entry["readings"]
 
     for w in words:  # #chars-words
@@ -720,6 +759,7 @@ def build(cedict_entries, release, hsk_entries, overrides, chars):
     if problems:
         raise BuildError(problems)
     return {"meta": {"cedictRelease": release, "hskSource": hsk_source(),
+                     "collections": [{"key": c["key"], "name": c["name"]} for c in collections],
                      "audioSource": audio_source(), "unihanVersion": chars.get("unihanVersion"),
                      "idsDate": chars.get("idsDate")},
             "words": words, "chars": table, "hubs": hubs, "links": links}
@@ -1100,7 +1140,8 @@ def main(argv=None):
         overrides = load_overrides()
         entries, release = load_cedict(args.cedict, args.refresh)
         chars = load_chars(args.refresh)
-        graph = build(entries, release, load_hsk(), overrides, chars)
+        collections, list_entries = load_collections()
+        graph = build(entries, release, list_entries, overrides, chars, collections)
         glyphs, glyphwiki_date, glyphwiki_license = load_glyphwiki(args.refresh)
         drawing = build_drawing(graph["hubs"], glyphs, chars["rs"], overrides, glyphwiki_date)
         del glyphs

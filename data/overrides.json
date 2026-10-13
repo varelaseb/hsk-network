@@ -192,6 +192,43 @@
   "reason": "㝡 and 冣 are variants"
  },
  {
+  "id": "flora-5",
+  "simp": "春兰",
+  "trad": "春蘭",
+  "pinyin": "chun1 lan2",
+  "defs": [
+   "spring orchid (Cymbidium goeringii)"
+  ],
+  "reason": "absent from CC-CEDICT; definition hand-written, not from CC-CEDICT"
+ },
+ {
+  "id": "flora-6",
+  "simp": "文心兰",
+  "trad": "文心蘭",
+  "pinyin": "wen2 xin1 lan2",
+  "defs": [
+   "dancing-lady orchid (genus Oncidium)"
+  ],
+  "reason": "absent from CC-CEDICT; definition hand-written, not from CC-CEDICT"
+ },
+ {
+  "id": "flora-7",
+  "simp": "嘉德丽雅兰",
+  "trad": "嘉德麗雅蘭",
+  "pinyin": "jia1 de2 li4 ya3 lan2",
+  "defs": [
+   "corsage orchid (genus Cattleya)"
+  ],
+  "reason": "absent from CC-CEDICT; definition hand-written, not from CC-CEDICT"
+ },
+ {
+  "id": "produce-50",
+  "simp": "姜",
+  "trad": "薑",
+  "pinyin": "jiang1",
+  "reason": "姜 is also the surname Jiang and the Traditional 姜 entry; 薑 is ginger"
+ },
+ {
   "id": "c-不",
   "char": "不",
   "parts": [],
@@ -881,6 +918,419 @@
    ]
   },
   "reason": "drawing: its glyph draws loose strokes, the top 一 last; radical 冂 is the frame of 冉"
+ },
+ {
+  "id": "c-茶",
+  "char": "茶",
+  "parts": [
+   {
+    "char": "艹",
+    "meaning": "grass"
+   },
+   {
+    "char": "人",
+    "meaning": "man"
+   },
+   {
+    "char": "木",
+    "meaning": "tree"
+   }
+  ],
+  "strokes": {
+   "parts": {
+    "艹": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "人": [
+     4,
+     5
+    ],
+    "木": [
+     6,
+     7,
+     8,
+     9
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3
+   ]
+  },
+  "reason": "𠆢 is the top form of 人 and has no kDefinition; 朩 is 木 written without its hook; drawing: its glyph draws 人 and 木 as one unnamed component"
+ },
+ {
+  "id": "c-四",
+  "char": "四",
+  "parts": [],
+  "radicalMeaning": "enclosure",
+  "strokes": {
+   "parts": {},
+   "radical": [
+    0,
+    1,
+    2,
+    5
+   ]
+  },
+  "reason": "its inside is split into strokes with no meaning; 囗 is its frame; drawing: radical 囗 is the frame"
+ },
+ {
+  "id": "c-衣",
+  "char": "衣",
+  "parts": [],
+  "reason": "pictograph of a robe with its collar; 𧘇 has no kDefinition"
+ },
+ {
+  "id": "c-月",
+  "char": "月",
+  "parts": [],
+  "reason": "pictograph of the crescent moon; ⺆ has no kDefinition"
+ },
+ {
+  "id": "c-白",
+  "char": "白",
+  "parts": [],
+  "reason": "pictograph; IDS splits off a stroke from 日, which is not its sense"
+ },
+ {
+  "id": "c-球",
+  "char": "球",
+  "parts": [
+   {
+    "char": "玉",
+    "meaning": "jade"
+   },
+   {
+    "char": "求",
+    "meaning": "seek"
+   }
+  ],
+  "strokes": {
+   "parts": {
+    "玉": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "求": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3
+   ]
+  },
+  "reason": "𤣩 is the side form of 玉 jade and has no kDefinition; drawing: its glyph draws 求 as loose strokes"
+ },
+ {
+  "id": "c-紅",
+  "char": "紅",
+  "parts": [
+   {
+    "char": "糸",
+    "meaning": "silk"
+   },
+   {
+    "char": "工",
+    "meaning": "labor"
+   }
+  ],
+  "reason": "糹, the side form of 糸 silk, has a CC-CEDICT reading citing Simplified forms only"
+ },
+ {
+  "id": "c-樂",
+  "char": "樂",
+  "parts": [
+   {
+    "char": "幺",
+    "meaning": "tiny"
+   },
+   {
+    "char": "白",
+    "meaning": "white"
+   },
+   {
+    "char": "木",
+    "meaning": "tree"
+   }
+  ],
+  "strokes": {
+   "parts": {
+    "幺": [
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "白": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "木": [
+     16,
+     17,
+     18,
+     19
+    ]
+   },
+   "radical": [
+    16,
+    17,
+    18,
+    19
+   ]
+  },
+  "reason": "IDS groups 幺白幺 as one unencoded form; a drum with strings on a wooden stand; drawing: its glyph draws 幺, 白, and 幺 as loose strokes"
+ },
+ {
+  "id": "c-牛",
+  "char": "牛",
+  "parts": [],
+  "reason": "pictograph of an ox head with horns; IDS splits it into strokes"
+ },
+ {
+  "id": "c-向",
+  "char": "向",
+  "parts": [],
+  "strokes": {
+   "parts": {},
+   "radical": [
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  "reason": "pictograph of a window in a house; IDS splits off a stroke; drawing: radical 口 is the inner box"
+ },
+ {
+  "id": "c-心",
+  "char": "心",
+  "parts": [],
+  "reason": "pictograph of a heart; IDS splits it into strokes"
+ },
+ {
+  "id": "c-木",
+  "char": "木",
+  "parts": [],
+  "reason": "pictograph of a tree; 十 + 𠆢 is a split by strokes"
+ },
+ {
+  "id": "c-山",
+  "char": "山",
+  "parts": [],
+  "reason": "pictograph of three peaks; 凵 + 丨 is a split by strokes"
+ },
+ {
+  "id": "c-仙",
+  "char": "仙",
+  "parts": [
+   {
+    "char": "人",
+    "meaning": "man"
+   },
+   {
+    "char": "山",
+    "meaning": "mountain"
+   }
+  ],
+  "reason": "亻 is the side form of 人 man and has no kDefinition: a person of the mountains"
+ },
+ {
+  "id": "c-鳳",
+  "char": "鳳",
+  "parts": [],
+  "strokes": {
+   "parts": {},
+   "radical": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ]
+  },
+  "reason": "a bird under 凡; IDS writes both as forms with no kDefinition; drawing: radical 鳥 is everything inside the frame but its top horizontal"
+ },
+ {
+  "id": "c-竹",
+  "char": "竹",
+  "parts": [],
+  "reason": "pictograph of two bamboo stalks; IDS splits it into strokes"
+ },
+ {
+  "id": "c-龍",
+  "char": "龍",
+  "parts": [],
+  "reason": "pictograph of a dragon; IDS splits it into unencoded forms"
+ },
+ {
+  "id": "c-青",
+  "char": "青",
+  "parts": [],
+  "reason": "IDS splits it into 龶, which has no kDefinition, and 月, which is not its sense"
+ },
+ {
+  "id": "c-蔥",
+  "char": "蔥",
+  "parts": [
+   {
+    "char": "艹",
+    "meaning": "grass"
+   },
+   {
+    "char": "悤",
+    "meaning": "agitated"
+   }
+  ],
+  "reason": "IDS splits its bottom as 囪 over 心, which is the character 悤"
+ },
+ {
+  "id": "c-豆",
+  "char": "豆",
+  "parts": [],
+  "reason": "pictograph of a food vessel on a stand; IDS splits it into forms with no kDefinition"
+ },
+ {
+  "id": "c-米",
+  "char": "米",
+  "parts": [],
+  "reason": "pictograph of rice grains; 丷 + 木 is a split by strokes"
+ },
+ {
+  "id": "c-百",
+  "char": "百",
+  "strokes": {
+   "parts": {
+    "一": [
+     0
+    ],
+    "白": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "radical": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
+ },
+ {
+  "id": "c-石",
+  "char": "石",
+  "strokes": {
+   "parts": {
+    "丆": [
+     0,
+     1
+    ],
+    "口": [
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes; radical 石 is the whole character"
+ },
+ {
+  "id": "c-季",
+  "char": "季",
+  "strokes": {
+   "parts": {
+    "禾": [
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "子": [
+     0,
+     1,
+     2,
+     3
+    ]
+   },
+   "radical": [
+    0,
+    1,
+    2,
+    3
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes, 子 first"
+ },
+ {
+  "id": "c-丁",
+  "char": "丁",
+  "strokes": {
+   "parts": {
+    "一": [
+     0
+    ],
+    "亅": [
+     1
+    ]
+   },
+   "radical": [
+    0
+   ]
+  },
+  "reason": "drawing: its glyph draws loose strokes"
  },
  {
   "id": "s-ju4",

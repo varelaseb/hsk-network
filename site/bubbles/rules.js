@@ -100,9 +100,10 @@ export function makeLexicon(words, levels) {
   const entries = new Map();
   for (const w of words) {
     const n = [...w.trad].length;
-    if (!on.has(w.level) || n < 2 || n > 4) continue;
+    const level = w.level ?? Number(w.collections[0]);  // interim: home collection as level
+    if (!on.has(level) || n < 2 || n > 4) continue;
     if (!entries.has(w.trad)) entries.set(w.trad, []);
-    entries.get(w.trad).push(w);
+    entries.get(w.trad).push({ ...w, level });
   }
   return deckLexicon({ entries }, [...entries.keys()]);
 }

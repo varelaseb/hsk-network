@@ -73,5 +73,41 @@ class KnownCharacters(unittest.TestCase):
                     self.assertTrue(r["defs"])
 
 
+# (Traditional, collection key, exact Zhuyin, expected gloss) (#test-collections).
+KNOWN_COLLECTION = [
+    ("蘭花", "flora", "ㄌㄢˊ ㄏㄨㄚ", "orchid"),
+    ("蝴蝶蘭", "flora", "ㄏㄨˊ ㄉㄧㄝˊ ㄌㄢˊ", "moth orchid"),
+    ("玉蘭", "flora", "ㄩˋ ㄌㄢˊ", "magnolia"),
+    ("木蘭", "flora", "ㄇㄨˋ ㄌㄢˊ", "magnolia"),
+    ("牡丹", "flora", "ㄇㄨˇ ˙ㄉㄢ", "peony"),
+    ("鳳梨", "produce", "ㄈㄥˋ ㄌㄧˊ", "pineapple"),
+    ("高麗菜", "produce", "ㄍㄠ ㄌㄧˊ ㄘㄞˋ", "cabbage"),
+]
+
+
+class KnownCollectionWords(unittest.TestCase):
+    def test_reference_collection_words(self):
+        """#acceptance-collection-known."""
+        for trad, key, zhuyin, gloss in KNOWN_COLLECTION:
+            with self.subTest(trad=trad):
+                [w] = [w for w in GRAPH["words"] if w["trad"] == trad]
+                self.assertIn(key, w["collections"])
+                self.assertEqual(word_reading(w)[0], zhuyin)
+                defs = [sense_text(s) for s in word_reading(w)[1]]
+                self.assertTrue(any(gloss in d for d in defs), defs)
+
+    def test_hand_written_orchids(self):
+        """#match-absent, #collection-handwritten: from the override file, reason says so."""
+        overrides = build_data.load_overrides()
+        for trad in ("春蘭", "文心蘭", "嘉德麗雅蘭"):
+            with self.subTest(trad=trad):
+                [w] = [w for w in GRAPH["words"] if w["trad"] == trad]
+                self.assertEqual(w["collections"], ["flora"])
+                o = overrides[w["id"]]
+                self.assertEqual(o["trad"], trad)
+                self.assertIn("not from CC-CEDICT", o["reason"])
+                self.assertIn("orchid", sense_text(word_reading(w)[1][0]))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -22,7 +22,8 @@
 //       null (page shows it smaller and muted before the sense).
 //   renderRef(ref, mode) -> [piece]
 //       a reference: word ref { trad, simp, pinyin, zhuyin } shows characters,
-//       a space, and the reading; reading ref { pinyin, zhuyin } the reading.
+//       a space, and the reading; reading ref { pinyin, zhuyin } the reading;
+//       form ref { trad, simp } (#sense-cite) only the characters, no reading.
 //   renderMeasureWords(mw, mode) -> [piece]
 //       refs joined by " · " text pieces; [] when mw is missing or empty.
 //   renderReading({ pinyin, zhuyin }, mode) -> piece   the reading aid alone.
@@ -104,10 +105,11 @@ export function renderReading(r, mode) {
 }
 
 export function renderRef(ref, mode) {
+  const han = () => ({ kind: "han", text: isPinyin(mode) ? ref.simp || ref.trad : ref.trad, lang: hanLang(mode) });
+  if (!("pinyin" in ref)) return [han()];
   const reading = renderReading(ref, mode);
   if (!("trad" in ref)) return [reading];
-  const text = isPinyin(mode) ? ref.simp || ref.trad : ref.trad;
-  return [{ kind: "han", text, lang: hanLang(mode) }, { kind: "text", text: " " }, reading];
+  return [han(), { kind: "text", text: " " }, reading];
 }
 
 export function renderSense(sense, mode) {
