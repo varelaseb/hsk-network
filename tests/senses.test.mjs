@@ -97,6 +97,14 @@ test("a reading reference shows only the reading", () => {
   assert.equal(textOf(renderSense(sense, "pinyin").pieces), "Taiwan reading tìng");
 });
 
+test("a form reference shows only its characters (#sense-cite)", () => {
+  const sense = { parts: ["fragrant thoroughwort (", { trad: "蘭草", simp: "兰草" }, " Eupatorium fortunei)"] };
+  assert.equal(textOf(renderSense(sense, "zhuyin").pieces), "fragrant thoroughwort (蘭草 Eupatorium fortunei)");
+  const py = renderSense(sense, "pinyin").pieces;
+  assert.equal(textOf(py), "fragrant thoroughwort (兰草 Eupatorium fortunei)");
+  assert.deepEqual(py[1], { kind: "han", text: "兰草", lang: "zh-Hans" });
+});
+
 test("measure words joined by dots", () => {
   assert.equal(textOf(renderMeasureWords(MW, "zhuyin")), "塊 ㄎㄨㄞˋ · 隻 ㄓ · 個 ㄍㄜˋ");
   assert.equal(textOf(renderMeasureWords(MW, "pinyin")), "块 kuài · 只 zhī · 个 gè");
@@ -189,7 +197,7 @@ const addMarked = (pinyin) => {
 for (const w of graph.words) addMarked(w.pinyin);
 for (const item of items()) {
   if (item.reading) addMarked(item.reading.pinyin);
-  item.refs.forEach((r) => addMarked(r.pinyin));
+  item.refs.forEach((r) => r.pinyin && addMarked(r.pinyin));
 }
 const hasMarked = (text) => (NFD(text).toLowerCase().match(/[\p{L}\p{M}]+/gu) || []).some((t) => MARKED.has(t));
 
@@ -203,7 +211,8 @@ test("clean rendering of every sense, measure word, and reading in both modes", 
     if (ZHUYIN.test(py) || MARKUP.test(py)) bad.push(["pinyin", py]);
     if (MARKUP.test(zh) || NUMBERED.test(zh) || hasMarked(zh) || [...zh].some((ch) => SIMP_ONLY.has(ch))) bad.push(["zhuyin", zh]);
     for (const ref of item.refs) {
-      if (!ref.pinyin || ("trad" in ref && !ref.simp)) bad.push(["ref", JSON.stringify(ref)]);
+      const form = !("pinyin" in ref) && ref.trad && ref.simp;  // #sense-cite form reference
+      if (!form && (!ref.pinyin || ("trad" in ref && !ref.simp))) bad.push(["ref", JSON.stringify(ref)]);
     }
   }
   assert.ok(n > 1000, `rendered ${n} items`);

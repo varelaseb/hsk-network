@@ -72,7 +72,7 @@ function init(data, drawingMeta) {
   chars = data.chars;
   voice.useGraph(data);
   words = data.words.map(function (w) {
-    const n = Object.assign({}, w, wordReading(w, chars), { kind: "word" });
+    const n = Object.assign({}, w, wordReading(w, chars), { kind: "word", level: Number(w.collections[0]) });
     // Traditional and Simplified forms have equal length, so the pill fits both scripts.
     n.width = textWidth(w.trad) + 14;
     n.key = searchKey(n);
@@ -514,6 +514,7 @@ function sensesNode(defs, mw) {
 // A reference or measure word as senses.js renders it, its reading one tappable
 // syllable at a time (#speak-line).
 function appendRef(parent, ref) {
+  if (!("pinyin" in ref)) return appendPieces(parent, renderRef(ref, script));  // form ref: no reading
   appendPieces(parent, renderRef(ref, script).slice(0, -1));
   parent.appendChild(lineReading(ref));
 }

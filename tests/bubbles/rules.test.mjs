@@ -399,7 +399,7 @@ test("decks: popping a deck word drops words left by one (acceptance-words-left)
 });
 
 test("spawn: one level gives only that level's characters", () => {
-  const level1 = new Set(GRAPH.words.filter((w) => w.level === 1 && [...w.trad].length > 1).flatMap((w) => [...w.trad]));
+  const level1 = new Set(GRAPH.words.filter((w) => w.collections[0] === "1" && [...w.trad].length > 1).flatMap((w) => [...w.trad]));
   for (let seed = 1; seed <= 10; seed++) {
     const game = createGame({ words: GRAPH.words, levels: [1], seed });
     for (const ch of boardChars(game.board)) assert.ok(level1.has(ch), ch);

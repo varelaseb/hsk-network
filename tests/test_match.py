@@ -87,18 +87,18 @@ class Match(unittest.TestCase):
             ("打籃球", "da3 lan2 qiu2", ["to play basketball"]))
 
     def test_build_names_each_failing_entry(self):
-        hsk = [{"id": "1-1", "level": 1, "simp": "个", "pinyin": "gè"},
-               {"id": "1-2", "level": 1, "simp": "从", "pinyin": "cóng"},
-               {"id": "1-3", "level": 1, "simp": "们", "pinyin": "men"},
-               {"id": "1-4", "level": 1, "simp": "无", "pinyin": "wú"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "个", "pinyin": "gè"},
+               {"id": "1-2", "collection": "1", "simp": "从", "pinyin": "cóng"},
+               {"id": "1-3", "collection": "1", "simp": "们", "pinyin": "men"},
+               {"id": "1-4", "collection": "1", "simp": "无", "pinyin": "wú"}]
         with self.assertRaises(build_data.BuildError) as err:
             build_data.build(ENTRIES, RELEASE, hsk, {}, NO_CHARS)
         failed = [p.split()[0] for p in err.exception.problems]
         self.assertEqual(failed, ["1-1", "1-2", "1-4"])
 
     def test_build_with_overrides_passes(self):
-        hsk = [{"id": "1-1", "level": 1, "simp": "个", "pinyin": "gè"},
-               {"id": "1-2", "level": 1, "simp": "学生", "pinyin": "xué sheng"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "个", "pinyin": "gè"},
+               {"id": "1-2", "collection": "1", "simp": "学生", "pinyin": "xué sheng"}]
         overrides = {"1-1": {"id": "1-1", "simp": "个", "trad": "個", "pinyin": "ge4",
                              "reason": "箇 is a variant"}}
         graph = build_data.build(ENTRIES, RELEASE, hsk, overrides, NO_CHARS)
@@ -106,16 +106,34 @@ class Match(unittest.TestCase):
         self.assertEqual(graph["meta"]["cedictRelease"], "2026-10-01")
 
     def test_build_with_absent_word_override(self):
-        hsk = [{"id": "2-16", "level": 2, "simp": "打篮球", "pinyin": "dá lán qiú"}]
+        hsk = [{"id": "2-16", "collection": "2", "simp": "打篮球", "pinyin": "dá lán qiú"}]
         overrides = {"2-16": {"id": "2-16", "simp": "打篮球", "trad": "打籃球",
                               "pinyin": "da3 lan2 qiu2", "defs": ["to play basketball"],
                               "reason": "absent from CC-CEDICT; definition not from CC-CEDICT"}}
         with self.assertRaisesRegex(build_data.BuildError, "2-16 .*no CC-CEDICT candidate"):
             build_data.build(ENTRIES, RELEASE, hsk, {}, NO_CHARS)
         [word] = build_data.build(ENTRIES, RELEASE, hsk, overrides, NO_CHARS)["words"]
-        self.assertEqual(word, {"id": "2-16", "level": 2, "trad": "打籃球", "simp": "打篮球",
+        self.assertEqual(word, {"id": "2-16", "collections": ["2"], "trad": "打籃球", "simp": "打篮球",
                                 "pinyin": "da3 lan2 qiu2", "zhuyin": "ㄉㄚˇ ㄌㄢˊ ㄑㄧㄡˊ",
                                 "defs": [{"parts": ["to play basketball"]}]})
+
+    def test_shared_entry_is_one_node(self):  # #model-shared, #schema-id
+        lists = [{"id": "1-1", "collection": "1", "simp": "学生", "pinyin": "xué sheng"},
+                 {"id": "flora-1", "collection": "flora", "simp": "王", "pinyin": "wáng"},
+                 {"id": "produce-1", "collection": "produce", "simp": "学生", "pinyin": "xué sheng"}]
+        collections = [{"key": "1", "name": "HSK 1", "list": "x"}, {"key": "flora", "name": "F", "list": "y"},
+                       {"key": "produce", "name": "P", "list": "z"}]
+        graph = build_data.build(ENTRIES, RELEASE, lists, {}, NO_CHARS, collections)
+        self.assertEqual([(w["id"], w["collections"]) for w in graph["words"]],
+                         [("1-1", ["1", "produce"]), ("flora-1", ["flora"])])
+        self.assertEqual(graph["meta"]["collections"],
+                         [{"key": "1", "name": "HSK 1"}, {"key": "flora", "name": "F"},
+                          {"key": "produce", "name": "P"}])
+
+    def test_stale_override_fails_naming_it(self):  # #acceptance-override-stale
+        lists = [{"id": "1-1", "collection": "1", "simp": "学生", "pinyin": "xué sheng"}]
+        with self.assertRaisesRegex(build_data.BuildError, "flora-9: override names no collection list entry"):
+            build_data.build(ENTRIES, RELEASE, lists, {"flora-9": {"id": "flora-9"}}, NO_CHARS)
 
     def test_duplicate_override_id_fails_naming_it(self):
         with tempfile.TemporaryDirectory() as d:
@@ -174,8 +192,8 @@ class HubReading(unittest.TestCase):
         entries = build_data.parse_cedict(["學生 学生 [xue2 sheng5] /student/",
                                            "學校 学校 [xue2 xiao4] /school/",
                                            "校 校 [xiao4] /school/"])[0]
-        hsk = [{"id": "1-1", "level": 1, "simp": "学生", "pinyin": "xué sheng"},
-               {"id": "1-2", "level": 1, "simp": "学校", "pinyin": "xué xiào"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "学生", "pinyin": "xué sheng"},
+               {"id": "1-2", "collection": "1", "simp": "学校", "pinyin": "xué xiào"}]
         with self.assertRaises(build_data.BuildError) as err:
             build_data.build(entries, RELEASE, hsk, {}, NO_CHARS)
         self.assertEqual(err.exception.problems, ["1-1 学生: 學 has no CC-CEDICT entry",
@@ -184,7 +202,7 @@ class HubReading(unittest.TestCase):
                                                   "c-學 學: no kRSUnicode"])
 
     def test_every_word_char_gets_an_entry_hub_or_not(self):
-        hsk = [{"id": "1-1", "level": 1, "simp": "学生", "pinyin": "xué sheng"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "学生", "pinyin": "xué sheng"}]
         graph = build_data.build(ENTRIES, RELEASE, hsk, {}, NO_CHARS)
         self.assertEqual(graph["hubs"], [])
         self.assertEqual(graph["chars"], {
