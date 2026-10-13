@@ -1,10 +1,10 @@
 // Tests for site/voice.js (docs/specs/hsk-network.spec.html #test-voice,
 // #acceptance-speak-choice, #acceptance-speak-choice-unrecorded,
-// #acceptance-symbol-names; hsk-bubbles.spec.html
+// #acceptance-built-rule, #acceptance-symbol-names; hsk-bubbles.spec.html
 // #acceptance-say-source). Run: node --test tests/voice.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SYMBOL_NAMES, syllableKey, localVoice, choose, readVoice, VOICE_KEY } from "../site/voice.js";
+import { SYMBOL_NAMES, syllableKey, localVoice, choose, builtWord, readVoice, VOICE_KEY, BUILT_PAUSE_MS } from "../site/voice.js";
 
 const tw = { name: "Mei-Jia", lang: "zh-TW", localService: true };
 const twAndroid = { name: "zh_TW local", lang: "zh_TW", localService: true };
@@ -96,4 +96,59 @@ test("Voice setting: on at first; stored value wins; the game's earlier choice i
   assert.equal(readVoice(store({ hskBubbles: '{"best":9}' })), true);
   assert.equal(readVoice(store({ hskBubbles: "{bad" })), true);
   assert.equal(readVoice({ getItem() { throw new Error("denied"); } }), true);
+});
+
+// Built word rule (#built-heading). Fixtures: themed words without recordings
+// (the graph has none yet), a syllable set with tones 1 to 4 and a few neutral
+// ones, and a character table with first readings.
+const BSYL = new Set(["hu2", "die2", "lan2", "ju2", "zi3", "mu4", "mei2", "gui4", "hua1", "ba5", "ma1", "le4", "xue2", "sheng1"]);
+const CHARS = {
+  子: { readings: [{ pinyin: "zi3" }, { pinyin: "zi5" }] },
+  了: { readings: [{ pinyin: "le5" }, { pinyin: "liao3" }] },
+  吧: { readings: [{ pinyin: "ba5" }] },
+  麼: { readings: [{ pinyin: "me5" }, { pinyin: "mo2" }] },
+  生: { readings: [{ pinyin: "sheng1" }] },
+};
+const s = (k) => `audio/s/${k}.mp3`;
+
+test("acceptance-built-rule: every syllable recorded plays them in order, dictionary tones, no sandhi", () => {
+  const w = { word: "蝴蝶蘭", pinyin: "hu2 die2 lan2" };
+  assert.deepEqual(choose(w, true, BSYL, [tw], CHARS), { srcs: [s("hu2"), s("die2"), s("lan2")] });
+  assert.deepEqual(choose(w, true, BSYL, [], CHARS), { srcs: [s("hu2"), s("die2"), s("lan2")] });
+  assert.deepEqual(builtWord({ word: "木蘭", pinyin: "mu4 lan2" }, BSYL, CHARS), [s("mu4"), s("lan2")]);
+  // Two third tones stay third (no sandhi); a neutral one with its own recording plays it.
+  assert.deepEqual(builtWord({ word: "子子", pinyin: "zi3 zi3" }, BSYL, CHARS), [s("zi3"), s("zi3")]);
+  assert.deepEqual(builtWord({ word: "花吧", pinyin: "hua1 ba5" }, BSYL, CHARS), [s("hua1"), s("ba5")]);
+  // Voice off: nothing.
+  assert.equal(choose(w, false, BSYL, [tw], CHARS), null);
+  // A short pause sits between syllables.
+  assert.ok(BUILT_PAUSE_MS > 0 && BUILT_PAUSE_MS < 1000);
+});
+
+test("acceptance-built-rule: a neutral syllable with no neutral recording takes its character's first reading tone", () => {
+  assert.deepEqual(choose({ word: "橘子", pinyin: "ju2 zi5" }, true, BSYL, [], CHARS), { srcs: [s("ju2"), s("zi3")] });
+  // The character table is needed for it: without it the syllable is a gap.
+  assert.equal(choose({ word: "橘子", pinyin: "ju2 zi5" }, true, BSYL, [], undefined), null);
+  // The first reading neutral too (了 le5): not covered.
+  assert.equal(builtWord({ word: "樂了", pinyin: "le4 le5" }, BSYL, CHARS), null);
+});
+
+test("acceptance-built-rule: a syllable no recording covers says the whole word by the device voice, else nothing", () => {
+  const gap = { word: "玫瑰花", pinyin: "mei2 gui4 hua4" };  // hua4 not in the set
+  assert.equal(builtWord(gap, BSYL, CHARS), null);
+  assert.deepEqual(choose(gap, true, BSYL, [en, twCloud, tw], CHARS), { voice: tw, text: "玫瑰花" });
+  assert.equal(choose(gap, true, BSYL, [twCloud, cn], CHARS), null);
+  assert.equal(choose(gap, true, BSYL, [], CHARS), null);
+  // A neutral syllable whose character is not in the table, or whose
+  // characters do not line up with its syllables, is a gap too.
+  assert.equal(builtWord({ word: "什麼", pinyin: "shen2 me5" }, BSYL, CHARS), null);
+  assert.equal(builtWord({ word: "哪兒", pinyin: "ma1 zi5 r5" }, BSYL, CHARS), null);
+});
+
+test("built word rule only for words without their own recording, and only with pinyin", () => {
+  assert.deepEqual(choose({ word: "學生", audio: "audio/1-128.mp3", pinyin: "xue2 sheng1" }, true, BSYL, [tw], CHARS), { src: "audio/1-128.mp3" });
+  assert.deepEqual(choose({ word: "學生", pinyin: "xue2 sheng5" }, true, BSYL, [tw], CHARS), { srcs: [s("xue2"), s("sheng1")] });
+  assert.deepEqual(choose({ word: "喜歡" }, true, BSYL, [tw], CHARS), { voice: tw, text: "喜歡" });
+  // Readings and characters are never built: one syllable plays its own recording.
+  assert.deepEqual(choose({ syllable: "zi5", char: "子" }, true, BSYL, [], CHARS), null);
 });
