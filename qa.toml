@@ -275,22 +275,12 @@ path = "/#word=1-85" # 人: not split, its own radical
 path = "/#word=2-28" # 高: parts 亠, 口, 冋
 
 # Network: hearing a card (word ids in site/data/graph.json; Zhuyin is the default script, Voice is on
-# by default). 電腦 (dian4 nao3): word recording, both syllables and its measure word 臺 (tai2)
-# recorded, tones 1 to 4.
+# by default). The syllable, symbol, measure word, and pinyin sounds are no-screen criteria proven by
+# tests/speak.test.mjs, so they have no hint.
 [nav.acceptance-speak-word]
-path = "/#word=1-17" # 電腦
+path = "/#word=1-17" # 電腦 (dian4 nao3), recorded
 [nav.acceptance-speak-reading]
 path = "/#word=2-8" # 長 (chang2): hub 長, readings zhang3 then chang2
-[nav.acceptance-speak-syllable]
-path = "/#word=1-17" # 電腦: second character 腦 (nao3)
-[nav.acceptance-speak-symbol]
-path = "/#word=1-17" # 電腦: columns ㄉㄧㄢˋ and ㄋㄠˇ
-[nav.acceptance-speak-line]
-path = "/#word=1-17" # 電腦: measure word 臺 (tai2)
-# #script switches the default Zhuyin to pinyin with the card open.
-[nav.acceptance-speak-pinyin]
-path = "/#word=1-17" # 電腦
-selectors = ["#script"]
 
 # Network: Voice setting. acceptance-voice-network and acceptance-voice-off start at the story's site
 # root with Voice on (first visit), so they have no hint. acceptance-voice-shared: its When turns Voice
