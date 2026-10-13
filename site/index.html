@@ -41,7 +41,7 @@
 </head>
 <body>
 <main id="stage" class="stage">
-  <svg id="graph" role="img" aria-label="Network of HSK 1 and HSK 2 words linked by shared characters"></svg>
+  <svg id="graph" role="img" aria-label="Network of collection words linked by shared characters"></svg>
   <p id="status" class="status">Loading…</p>
   <aside id="card" class="card" hidden aria-live="polite"></aside>
 </main>
@@ -52,11 +52,13 @@
       aria-controls="results" aria-expanded="false">
     <ul id="results" class="results" role="listbox" hidden></ul>
   </div>
+  <ul class="legend" aria-label="Collections">
+    <li><button type="button" class="level" role="switch" aria-checked="true" data-collection="1"><span class="swatch l1"></span>HSK 1</button></li>
+    <li><button type="button" class="level" role="switch" aria-checked="true" data-collection="2"><span class="swatch l2"></span>HSK 2</button></li>
+    <li><button type="button" class="level" role="switch" aria-checked="false" data-collection="flora"><span class="swatch pill"></span>Flowers and trees</button></li>
+    <li><button type="button" class="level" role="switch" aria-checked="false" data-collection="produce"><span class="swatch pill"></span>Fruit and vegetables</button></li>
+  </ul>
   <div class="panel">
-    <ul class="legend" aria-label="HSK levels">
-      <li><button type="button" class="level" role="switch" aria-checked="true" data-level="1"><span class="swatch l1"></span>HSK 1</button></li>
-      <li><button type="button" class="level" role="switch" aria-checked="true" data-level="2"><span class="swatch l2"></span>HSK 2</button></li>
-    </ul>
     <button type="button" id="script" class="script">Zhuyin</button>
     <button type="button" id="voice" class="voice" role="switch" aria-checked="true" aria-label="Voice">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-note" d="M4 9h3.5L12 5v14l-4.5-4H4z"/><path class="i-wave" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/><path class="i-slash" d="M3.5 3.5l17 17"/></svg>
@@ -75,6 +77,7 @@
         Built from the release of <span id="cedict-release">(unknown)</span>.
         The graph data is shared under the same license.</p>
       <p>Word lists: HSK 2.0 levels 1 and 2 from <a id="hsk-source" href="https://github.com/clem109/hsk-vocabulary" rel="noopener">clem109/hsk-vocabulary</a> (MIT).</p>
+      <p id="collections-source">Themed collections: Flowers and trees and Fruit and vegetables were chosen for this site; their definitions come from CC-CEDICT as above.</p>
       <p>Pronunciation: word recordings by Yue Tan (Université de Caen, Shtooka), via
         <a id="audio-source" href="https://github.com/hugolpz/audio-cmn" rel="noopener">hugolpz/audio-cmn</a>,
         licensed <a href="https://creativecommons.org/licenses/by-sa/3.0/us/" rel="noopener">CC BY-SA 3.0 US</a>;

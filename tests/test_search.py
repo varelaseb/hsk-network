@@ -16,7 +16,8 @@ from graph_data import sense_text, word_reading
 ROOT = Path(__file__).resolve().parent.parent
 APP = ROOT / "site" / "app.js"
 GRAPH = ROOT / "site" / "data" / "graph.json"
-FUNCS = ["wordReading", "zhuyinKey", "pinyinKey", "englishText", "searchKey", "escapeRe", "cmpId", "search"]
+FUNCS = ["wordReading", "zhuyinKey", "pinyinKey", "englishText", "searchKey", "escapeRe", "cmpId", "cmpWord", "holds",
+         "search"]
 NODE = shutil.which("node")
 
 
@@ -30,19 +31,21 @@ def extract(src, name):
             return src[start:i]
 
 
-def run_search(queries, mode="zhuyin"):
+def run_search(queries, mode="zhuyin", on=("1", "2")):
     src = APP.read_text(encoding="utf-8")
     script = "\n".join(
         [
             "const fs = require('fs');",
             "const MAX_RESULTS = %s;" % re.search(r"MAX_RESULTS = (\d+);", src).group(1),
-            "const levelOn = { 1: true, 2: true };",
+            "const collectionOn = %s;" % json.dumps({k: True for k in on}),
             re.search(r"(?m)^const ZY_TONES = .*;", src).group(0),
         ]
         + [extract(src, f) for f in FUNCS]
         + [
             "const data = JSON.parse(fs.readFileSync(%s, 'utf8'));" % json.dumps(str(GRAPH)),
-            "const words = data.words.map(w => Object.assign({}, w, wordReading(w, data.chars)))"
+            "const order = {}; data.meta.collections.forEach((c, i) => { order[c.key] = i; });",
+            "const words = data.words.map(w => Object.assign({}, w, wordReading(w, data.chars),"
+            " { home: w.collections[0] }))"
             ".map(w => Object.assign(w, { key: searchKey(w) }));",
             "const out = {};",
             "for (const q of %s) out[q] = search(q, %s).map(w => w.id);" % (json.dumps(queries), json.dumps(mode)),
@@ -133,6 +136,54 @@ class PinyinSearchTest(unittest.TestCase):
 
     def test_zhuyin_is_not_searched_in_pinyin_mode(self):
         self.assertEqual(self.results["ㄒㄩㄝㄕㄥ"], [])
+
+
+@unittest.skipUnless(NODE, "node not installed")
+class CollectionSearchTest(unittest.TestCase):
+    """Search lists only words of switched-on collections, grouped by home collection in
+    collection order (#ix-search, #acceptance-level-off, #acceptance-collection-on)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.words = {w["id"]: w for w in json.loads(GRAPH.read_text(encoding="utf-8"))["words"]}
+        cls.hsk = run_search(["orchid", "apple", "蘭"])
+        cls.all = run_search(["orchid", "apple", "蘭", "果", "花"], on=("1", "2", "flora", "produce"))
+        cls.hsk1 = run_search(["fruit", "student"], on=("1",))
+
+    def trads(self, res, q):
+        return [self.words[i]["trad"] for i in res[q]]
+
+    def test_themed_off_at_load_lists_none_of_its_words(self):
+        for q in ("orchid", "蘭"):
+            with self.subTest(q=q):
+                self.assertNotIn("蘭花", self.trads(self.hsk, q))
+        for i in self.hsk["apple"]:
+            self.assertTrue(set(self.words[i]["collections"]) & {"1", "2"}, i)
+
+    def test_themed_on_lists_its_words(self):
+        self.assertIn("蘭花", self.trads(self.all, "蘭"))
+        self.assertIn("蝴蝶蘭", self.trads(self.all, "orchid"))
+
+    def test_shared_word_listed_while_any_holding_collection_is_on(self):
+        # 蘋果 is in HSK and Fruit and vegetables, home HSK.
+        self.assertIn("蘋果", self.trads(self.hsk, "apple"))
+
+    def test_hsk2_off_lists_no_hsk2_only_word(self):
+        for q, ids in self.hsk1.items():
+            for i in ids:
+                with self.subTest(q=q, id=i):
+                    self.assertIn("1", self.words[i]["collections"])
+
+    def test_groups_by_home_collection_in_order(self):
+        # Every word containing 果 or 花 (none is the bare character) is one "contains" group.
+        rank = {"1": 0, "2": 1, "flora": 2, "produce": 3}
+        for q in ("果", "花"):
+            ws = [self.words[i] for i in self.all[q]]
+            self.assertNotIn(q, [w["trad"] for w in ws])
+            keys = [(rank[w["collections"][0]], int(w["id"].split("-")[1])) for w in ws]
+            with self.subTest(q=q):
+                self.assertGreater(len({k[0] for k in keys}), 1, keys)
+                self.assertEqual(keys, sorted(keys))
 
 
 if __name__ == "__main__":

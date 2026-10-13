@@ -27,7 +27,7 @@ const FIXTURES = {
 // ---- Settings, remembered on this device only.
 
 const STORE = "hskBubbles";
-const settings = Object.assign({ best: 0, levels: [1, 2], sound: false, hinted: false }, readStore());
+const settings = Object.assign({ best: 0, collections: ["1", "2"], sound: false, hinted: false }, readStore());
 function readStore() {
   try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; }
 }
@@ -67,7 +67,7 @@ const hintEl = $("hint");
 const cardEl = $("wcard");
 const bannerEl = $("banner");
 const playBtn = $("play");
-const levelBtns = [...document.querySelectorAll(".level")];
+const collectionBtns = [...document.querySelectorAll("[data-collection]")];
 const soundBtns = [...document.querySelectorAll("[data-sound]")];
 const sayBtns = [...document.querySelectorAll("[data-say]")];
 const scriptBtns = [...document.querySelectorAll("[data-script]")];
@@ -85,6 +85,9 @@ const NIGHT = tok("--night", "#0f1424");
 const INK_NIGHT = tok("--ink-night", "#f6f4ef");
 const LINE_NIGHT = tok("--line-night", "rgba(255, 255, 255, .14)");
 const LEVEL_COLOR = { 1: tok("--hsk1", "#0072b2"), 2: tok("--hsk2", "#e69f00") };
+// A collection's mark (hsk-network #default-level): an HSK level's color class,
+// else the hollow pill of every themed collection.
+const markClass = (key) => (key in LEVEL_COLOR ? `l${key}` : "themed");
 const DANGER = "#ff6b5e";
 let facesReady = null;  // script whose Chinese faces have loaded; bubbles draw only for it (#face-forms)
 
@@ -513,7 +516,7 @@ function newGame() {
   const seed = Number(params.get("seed")) || (Date.now() ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0;
   game = createGame({
     words,
-    levels: settings.levels,
+    collections: settings.collections,
     seed,
     ...(f && { board: parseBoard(f.rows), deck: f.deck, current: f.current, next: f.next }),
   });
@@ -581,7 +584,7 @@ function gameOver() {
     if (!first) continue;
     const li = el("li");
     // Opens the network page focused on the word (hsk-network spec #page-word-link).
-    const row = el("a", `pw l${first.level}`);
+    const row = el("a", `pw ${markClass(first.collections[0])}`);
     row.href = `../#word=${encodeURIComponent(first.id)}`;
     const label = el("span", "p-word", wordLabel(first, script));
     label.lang = hanLang();
@@ -598,10 +601,6 @@ function gameOver() {
   if (!game.history.length) list.append(el("li", "empty", "No words this time."));
   show("over");
   $("again").focus();
-}
-
-function uniq(v, i, a) {
-  return a.indexOf(v) === i;
 }
 
 // ---- Card text, rendered through ../senses.js in the current script.
@@ -656,15 +655,17 @@ function nextCard() {
   cardResting = false;
   inspecting = false;
   cardGen++;
-  const levels = w.entries.map((e) => e.level).filter(uniq);
-  cardEl.className = `wcard l${levels[0]}`;
+  // Every collection holding the word, in collection order, each named in text.
+  const held = new Set(w.entries.flatMap((e) => e.collections));
+  const keys = collectionNames.filter(([k]) => held.has(k));
+  cardEl.className = `wcard ${markClass(w.entries[0].collections[0])}`;
   cardEl.replaceChildren();
   // One reading per entry sharing this Traditional form.
   fillCard({ trad: w.word, simp: w.entries[0].simp }, w.entries.map((e) => readingOf(e, chars)));
   const lv = el("div", "k-levels");
-  for (const n of levels) {
+  for (const [k, name] of keys) {
     const tag = el("span", "k-level");
-    tag.append(el("span", `swatch l${n}`), `HSK ${n}`);
+    tag.append(el("span", `swatch ${markClass(k)}`), name);
     lv.append(tag);
   }
   cardEl.append(lv);
@@ -778,7 +779,7 @@ function land() {
   let delay = 0;
   const seen = new Set();
   for (const w of events.words) {
-    const color = LEVEL_COLOR[w.entries[0].level] || LEVEL_COLOR[1];
+    const color = LEVEL_COLOR[w.entries[0].collections[0]] || INK_NIGHT;  // themed: no color, light on the night board
     for (const cell of w.cells) {
       const k = `${cell.r},${cell.c}`;
       if (seen.has(k)) continue;
@@ -1033,7 +1034,8 @@ document.addEventListener("touchmove", (e) => {
 // each popped word is said as its card shows.
 
 function say(found) {
-  voice.say({ word: found.word, audio: found.entries.find((e) => e.audio)?.audio });
+  const rec = found.entries.find((e) => e.audio);
+  voice.say({ word: found.word, audio: rec?.audio, pinyin: (rec || found.entries[0]).pinyin });
 }
 
 function renderSay() {
@@ -1145,26 +1147,30 @@ scriptBtns.forEach((b) => b.addEventListener("click", () => {
 // A change on the network page in another tab follows here.
 window.addEventListener("storage", (e) => { if (e.key === SCRIPT_KEY) setScript(readScript()); });
 
-// ---- Level switches: the last one on cannot switch off.
+// ---- Collection switches: the last one on cannot switch off.
 
-function renderLevels() {
-  for (const b of levelBtns) {
-    const on = settings.levels.includes(Number(b.dataset.level));
+// [key, name] in collection order; the start screen's switches until the data names them.
+let collectionNames = collectionBtns.map((b) => [b.dataset.collection, b.textContent.trim()]);
+const inOrder = (on) => collectionNames.map(([k]) => k).filter((k) => on.includes(k));
+
+function renderCollections() {
+  for (const b of collectionBtns) {
+    const on = settings.collections.includes(b.dataset.collection);
     b.setAttribute("aria-checked", on ? "true" : "false");
-    b.setAttribute("aria-disabled", on && settings.levels.length === 1 ? "true" : "false");
+    b.setAttribute("aria-disabled", on && settings.collections.length === 1 ? "true" : "false");
   }
 }
 
-levelBtns.forEach((b) => b.addEventListener("click", () => {
-  const lv = Number(b.dataset.level);
-  if (settings.levels.includes(lv)) {
-    if (settings.levels.length === 1) return;
-    settings.levels = settings.levels.filter((x) => x !== lv);
+collectionBtns.forEach((b) => b.addEventListener("click", () => {
+  const k = b.dataset.collection;
+  if (settings.collections.includes(k)) {
+    if (settings.collections.length === 1) return;
+    settings.collections = settings.collections.filter((x) => x !== k);
   } else {
-    settings.levels = [...settings.levels, lv].sort();
+    settings.collections = inOrder([...settings.collections, k]);
   }
   saveStore();
-  renderLevels();
+  renderCollections();
 }));
 
 // ---- Buttons
@@ -1177,9 +1183,14 @@ $("quit").addEventListener("click", quit);
 
 // ---- Start
 
-settings.levels = [1, 2].filter((x) => settings.levels.includes(x));
-if (!settings.levels.length) settings.levels = [1, 2];
-renderLevels();
+// A store from before collections kept HSK levels as numbers.
+if (Array.isArray(settings.levels)) {
+  if (!("collections" in readStore())) settings.collections = settings.levels;
+  delete settings.levels;
+}
+settings.collections = Array.isArray(settings.collections) ? inOrder(settings.collections.map(String)) : [];
+if (!settings.collections.length) settings.collections = ["1", "2"];
+renderCollections();
 renderSound();
 renderSay();
 renderScript();
@@ -1196,11 +1207,12 @@ Promise.all([data, hanFace])
     words = graph.words;
     voice.useGraph(graph);
     chars = graph.chars;
+    if (graph.meta?.collections) collectionNames = graph.meta.collections.map((c) => [c.key, c.name]);
     $("cedict-release").textContent = graph.meta?.cedictRelease || "(unknown)";
     playBtn.disabled = false;
     playBtn.textContent = "Play";
     // A still board behind the start screen.
-    demoBoard = createGame({ words, levels: [1, 2], seed: 20261006 }).board;
+    demoBoard = createGame({ words, collections: ["1", "2"], seed: 20261006 }).board;
     view = { board: demoBoard, dropAt: null };
     if (startScript === script) facesReady = script; // after a switch, its own load sets it
     draw();

@@ -10,12 +10,13 @@ import {
   roundRows, roundShots, roundDeck, lowestRow, wordReading, charReadings, readingOf,
 } from "../../site/bubbles/rules.js";
 
-const W = (id, level, trad) => ({ id, level, trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
+const W = (id, home, trad, also = []) => ({ id, collections: [String(home), ...also], trad, zhuyin: "", pinyin: "", simp: trad, defs: [trad + " def"] });
 const WORDS = [
   W("a", 1, "學生"), W("b", 1, "學校"), W("c", 2, "喜歡"), W("d", 1, "中國"),
   W("e", 1, "火車站"), W("f", 2, "公共汽車"), W("g", 1, "你"), W("h", 1, "謝謝"), W("i", 2, "車站"),
+  W("j", "produce", "西瓜", ["flora"]), W("k", 1, "蘋果", ["produce"]),
 ];
-const LEX = makeLexicon(WORDS, [1, 2]);
+const LEX = makeLexicon(WORDS, ["1", "2"]);
 const keys = (cells) => [...new Set(cells.map(({ r, c }) => `${r},${c}`))].sort();
 const popped = (board, cell, lex = LEX) => keys(findWords(board, cell, lex).flatMap((w) => w.cells));
 const fixture = (rows, extra = {}) =>
@@ -67,10 +68,28 @@ test("detect: a word not through the shot bubble does not pop", () => {
   assert.deepEqual(popped(b, { r: 0, c: 2 }), []);
 });
 
-test("detect: words of levels switched off do not pop", () => {
+test("detect: words of collections switched off do not pop", () => {
   const b = parseBoard(["喜歡......"]);
   assert.deepEqual(popped(b, { r: 0, c: 1 }), ["0,0", "0,1"]);
-  assert.deepEqual(popped(b, { r: 0, c: 1 }, makeLexicon(WORDS, [1])), []);
+  assert.deepEqual(popped(b, { r: 0, c: 1 }, makeLexicon(WORDS, ["1"])), []);
+  const melon = parseBoard(["西瓜......"]);
+  assert.deepEqual(popped(melon, { r: 0, c: 1 }), []);
+  assert.deepEqual(popped(melon, { r: 0, c: 1 }, makeLexicon(WORDS, ["flora"])), ["0,0", "0,1"]);
+});
+
+test("detect: a word two collections hold is dealt once, with all its collections", () => {
+  for (const on of [["1"], ["produce"], ["1", "produce"], ["1", "2", "flora", "produce"]]) {
+    const lex = makeLexicon(WORDS, on);
+    assert.equal(lex.list.filter((w) => w === "蘋果").length, 1, `${on}`);
+    assert.deepEqual(lex.entries.get("蘋果").map((e) => e.collections), [["1", "produce"]], `${on}`);
+  }
+  const shared = GRAPH.words.filter((w) => w.collections.length > 1 && [...w.trad].length > 1);
+  assert.ok(shared.length > 0);
+  const lex = makeLexicon(GRAPH.words, GRAPH.meta.collections.map((c) => c.key));
+  for (const w of shared) {
+    assert.equal(lex.list.filter((x) => x === w.trad).length, 1, w.trad);
+    assert.equal(lex.entries.get(w.trad).filter((e) => e.id === w.id).length, 1, w.trad);
+  }
 });
 
 test("detect: word entries come from the data for the card", () => {
@@ -149,7 +168,8 @@ test("flight: a shot settles into the cell its guide predicts", () => {
 });
 
 // test-spawn, test-decks
-const LEVELS = [[1], [2], [1, 2]];
+// Each collection choice: each HSK level, both, each themed collection alone, all.
+const CHOICES = [["1"], ["2"], ["1", "2"], ["flora"], ["produce"], ["1", "2", "flora", "produce"]];
 const needed = (game) => new Set(game.left.flatMap((w) => [...w]));
 const assertNoOrphan = (game, tag) => {
   const need = needed(game);
@@ -171,8 +191,8 @@ const assertLauncher = (game, tag) => {
   }
 };
 
-function playRandom(seed, shots, levels, check) {
-  let game = createGame({ words: GRAPH.words, levels, seed });
+function playRandom(seed, shots, collections, check) {
+  let game = createGame({ words: GRAPH.words, collections, seed });
   let s = seed * 7919 + 13;
   const rnd = () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648);
   check(game, null);
@@ -272,10 +292,10 @@ test("spawn: the held next is redrawn when a pop leaves it needed by no word (ac
 test("decks: no board bubble is an orphan after any shot or ceiling drop (acceptance-no-orphan)", () => {
   let drops = 0;
   let shots = 0;
-  for (const levels of LEVELS) {
+  for (const on of CHOICES) {
     for (let seed = 1; seed <= 20; seed++) {
-      playRandom(seed, 30, levels, (game, events) => {
-        assertNoOrphan(game, `levels ${levels} seed ${seed}`);
+      playRandom(seed, 30, on, (game, events) => {
+        assertNoOrphan(game, `collections ${on} seed ${seed}`);
         assert.deepEqual(fallen(game.board), []);
         if (events?.ceilingDrop) drops++;
         shots++;
@@ -288,11 +308,11 @@ test("decks: no board bubble is an orphan after any shot or ceiling drop (accept
 
 test("decks: launcher bubbles are needed characters and the current or next completes (acceptance-spawn)", () => {
   let checked = 0;
-  for (const levels of LEVELS) {
+  for (const on of CHOICES) {
     for (let seed = 1; seed <= 15; seed++) {
-      playRandom(seed, 25, levels, (game) => {
+      playRandom(seed, 25, on, (game) => {
         if (game.over) return;
-        assertLauncher(game, `levels ${levels} seed ${seed}`);
+        assertLauncher(game, `collections ${on} seed ${seed}`);
         checked++;
       });
     }
@@ -304,10 +324,10 @@ test("decks: a test player who pops or extends every shot clears rounds 1 to 7 w
   let rounds = 0;
   let extends_ = 0;
   const SEEDS = 8;
-  for (const levels of LEVELS) {
+  for (const on of CHOICES) {
     for (let seed = 1; seed <= SEEDS; seed++) {
-      let game = createGame({ words: GRAPH.words, levels, seed });
-      const tag = () => `levels ${levels} seed ${seed} round ${game.round}`;
+      let game = createGame({ words: GRAPH.words, collections: on, seed });
+      const tag = () => `collections ${on} seed ${seed} round ${game.round}`;
       while (game.round <= 7) {
         assertNoOrphan(game, tag());
         assertLauncher(game, tag());
@@ -342,22 +362,22 @@ test("decks: a test player who pops or extends every shot clears rounds 1 to 7 w
       }
     }
   }
-  assert.equal(rounds, LEVELS.length * SEEDS * 7);
+  assert.equal(rounds, CHOICES.length * SEEDS * 7);
   assert.ok(extends_ > 0, "no round needed an extension");
 });
 
 test("decks: deck size per round, distinct words, each laid on the new board", () => {
   assert.deepEqual([1, 2, 3, 5, 6, 9].map(roundDeck), [8, 9, 10, 12, 12, 12]);
-  for (const levels of LEVELS) {
+  for (const on of CHOICES) {
     for (let seed = 1; seed <= 20; seed++) {
       for (const round of [1, 4]) {
-        const game = createGame({ words: GRAPH.words, levels, seed, round });
+        const game = createGame({ words: GRAPH.words, collections: on, seed, round });
         assert.equal(game.deck.length, roundDeck(round));
         assert.equal(new Set(game.deck).size, game.deck.length);
         assert.deepEqual(game.left, game.deck);
         for (const w of game.deck) {
           assert.ok([...w].length >= 2 && [...w].length <= 4, w);
-          assert.ok(game.lexicon.entries.get(w).every((e) => levels.includes(e.level)), w);
+          assert.ok(game.lexicon.entries.get(w).every((e) => e.collections.some((k) => on.includes(k))), w);
           assert.ok([...w].every((ch) => boardChars(game.board).includes(ch)), `seed ${seed}: ${w} not laid`);
         }
       }
@@ -398,17 +418,19 @@ test("decks: popping a deck word drops words left by one (acceptance-words-left)
   assert.equal(after.left.length, 2);
 });
 
-test("spawn: one level gives only that level's characters", () => {
-  const level1 = new Set(GRAPH.words.filter((w) => w.level === 1 && [...w.trad].length > 1).flatMap((w) => [...w.trad]));
-  for (let seed = 1; seed <= 10; seed++) {
-    const game = createGame({ words: GRAPH.words, levels: [1], seed });
-    for (const ch of boardChars(game.board)) assert.ok(level1.has(ch), ch);
+test("spawn: one collection gives only that collection's characters", () => {
+  for (const key of ["1", "flora", "produce"]) {
+    const own = new Set(GRAPH.words.filter((w) => w.collections.includes(key) && [...w.trad].length > 1).flatMap((w) => [...w.trad]));
+    for (let seed = 1; seed <= 10; seed++) {
+      const game = createGame({ words: GRAPH.words, collections: [key], seed });
+      for (const ch of [...boardChars(game.board), game.current, game.next]) assert.ok(own.has(ch), `${key}: ${ch}`);
+    }
   }
 });
 
-test("spawn: same seed, levels, and shots replay the same game", () => {
+test("spawn: same seed, collections, and shots replay the same game", () => {
   const run = () => {
-    let game = createGame({ words: GRAPH.words, levels: [1, 2], seed: 42 });
+    let game = createGame({ words: GRAPH.words, collections: ["1", "2"], seed: 42 });
     const log = [];
     for (const a of [80, 100, 45, 135, 90, 60, 120, 30]) {
       const r = shoot(game, a);
@@ -422,7 +444,7 @@ test("spawn: same seed, levels, and shots replay the same game", () => {
 
 test("spawn: new boards are whole deck words, every bubble hangs from the ceiling", () => {
   for (let seed = 1; seed <= 20; seed++) {
-    const game = createGame({ words: GRAPH.words, levels: [1, 2], seed });
+    const game = createGame({ words: GRAPH.words, collections: ["1", "2"], seed });
     assert.deepEqual(fallen(game.board), []);
     assert.equal(lowestRow(game.board), roundRows(1) - 1);
     assertNoOrphan(game, `seed ${seed}`);
@@ -583,7 +605,7 @@ test("inspect: every character of every word has readings with English in the bu
 });
 
 test("shoot events carry word entries with English definitions for the card", () => {
-  const game = createGame({ words: GRAPH.words, levels: [1, 2], seed: 1, board: parseBoard(["..學...."]), current: "生", next: "學" });
+  const game = createGame({ words: GRAPH.words, collections: ["1", "2"], seed: 1, board: parseBoard(["..學...."]), current: "生", next: "學" });
   const { events } = resolveShot(game, { r: 0, c: 3 });
   assert.equal(events.words[0].word, "學生");
   for (const e of events.words[0].entries) assert.ok(wordReading(e, GRAPH.chars).defs[0], "defs[0]");

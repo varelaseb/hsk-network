@@ -72,16 +72,16 @@ NO_CHARS = {"rs": {}, "kdef": {}, "radicals": {}, "ids": {}}
 
 class Build(unittest.TestCase):
     def test_one_character_word_reading_missing_fails_naming_it(self):
-        hsk = [{"id": "1-1", "level": 1, "simp": "王", "pinyin": "Wáng"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "王", "pinyin": "Wáng"}]
         with self.assertRaises(build_data.BuildError) as err:
             build_data.build(CEDICT, None, hsk, {}, NO_CHARS)
         self.assertEqual(err.exception.problems, ["1-1 王: reading wang2 missing from 王's entry"])
 
     def test_one_character_word_points_at_its_reading(self):
-        hsk = [{"id": "1-1", "level": 1, "simp": "王", "pinyin": "wàng"},
-               {"id": "1-2", "level": 1, "simp": "公主", "pinyin": "gōng zhǔ"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "王", "pinyin": "wàng"},
+               {"id": "1-2", "collection": "1", "simp": "公主", "pinyin": "gōng zhǔ"}]
         graph = build_data.build(CEDICT, None, hsk, {}, NO_CHARS)
-        self.assertEqual(graph["words"][0], {"id": "1-1", "level": 1, "trad": "王", "simp": "王",
+        self.assertEqual(graph["words"][0], {"id": "1-1", "collections": ["1"], "trad": "王", "simp": "王",
                                              "pinyin": "wang4", "reading": 0})
         self.assertEqual(graph["chars"]["王"], {"simp": "王", "readings": [
             {"pinyin": "wang4", "zhuyin": "ㄨㄤˋ", "defs": [{"parts": ["to rule"]}]}]})
@@ -121,7 +121,7 @@ class StandardReadingFirst(unittest.TestCase):
 
     def test_build_points_one_character_word_at_reordered_reading(self):
         entries = build_data.parse_cedict(["行 行 [hang2] /row/", "行 行 [xing2] /to walk/"])[0]
-        hsk = [{"id": "1-1", "level": 1, "simp": "行", "pinyin": "xíng"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "行", "pinyin": "xíng"}]
         graph = build_data.build(entries, None, hsk, {}, {**NO_CHARS, "mandarin": {"行": "xíng"}})
         self.assertEqual(graph["words"][0]["reading"], 0)
         self.assertEqual(graph["chars"]["行"]["readings"][0]["pinyin"], "xing2")

@@ -1,0 +1,6 @@
+[
+  { "key": "1", "name": "HSK 1", "list": "hsk/hsk-level-1.json" },
+  { "key": "2", "name": "HSK 2", "list": "hsk/hsk-level-2.json" },
+  { "key": "flora", "name": "Flowers and trees", "list": "collections/flora.json" },
+  { "key": "produce", "name": "Fruit and vegetables", "list": "collections/produce.json" }
+]

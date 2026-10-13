@@ -161,8 +161,8 @@ class Rules(unittest.TestCase):
 
     def test_build_fails_naming_hub_then_override_resolves(self):
         """#acceptance-breakdown-fail."""
-        hsk = [{"id": "1-1", "level": 1, "simp": "电", "pinyin": "diàn"},
-               {"id": "1-2", "level": 1, "simp": "电话", "pinyin": "diàn huà"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "电", "pinyin": "diàn"},
+               {"id": "1-2", "collection": "1", "simp": "电话", "pinyin": "diàn huà"}]
         with self.assertRaises(build_data.BuildError) as err:
             build_data.build(CEDICT, None, hsk, {}, self.chars)
         self.assertEqual(err.exception.problems, ["c-電 電: part {46} has no meaning"])
@@ -184,7 +184,7 @@ class Rules(unittest.TestCase):
         self.assertEqual(parts, ["日", "月"])
 
     def test_override_for_no_hub_fails(self):
-        hsk = [{"id": "1-1", "level": 1, "simp": "电", "pinyin": "diàn"}]
+        hsk = [{"id": "1-1", "collection": "1", "simp": "电", "pinyin": "diàn"}]
         with self.assertRaisesRegex(build_data.BuildError, "c-明: override names no hub"):
             build_data.build(CEDICT, None, hsk, {"c-明": {"id": "c-明", "char": "明", "parts": []}},
                              self.chars)

@@ -1,0 +1,367 @@
+[
+  {
+    "id": 1,
+    "hanzi": "水果",
+    "pinyin": "shuǐ guǒ"
+  },
+  {
+    "id": 2,
+    "hanzi": "苹果",
+    "pinyin": "píng guǒ"
+  },
+  {
+    "id": 3,
+    "hanzi": "香蕉",
+    "pinyin": "xiāng jiāo"
+  },
+  {
+    "id": 4,
+    "hanzi": "橘子",
+    "pinyin": "jú zi"
+  },
+  {
+    "id": 5,
+    "hanzi": "柳丁",
+    "pinyin": "liǔ dīng"
+  },
+  {
+    "id": 6,
+    "hanzi": "橙子",
+    "pinyin": "chéng zi"
+  },
+  {
+    "id": 7,
+    "hanzi": "葡萄",
+    "pinyin": "pú tao"
+  },
+  {
+    "id": 8,
+    "hanzi": "西瓜",
+    "pinyin": "xī guā"
+  },
+  {
+    "id": 9,
+    "hanzi": "草莓",
+    "pinyin": "cǎo méi"
+  },
+  {
+    "id": 10,
+    "hanzi": "芒果",
+    "pinyin": "máng guǒ"
+  },
+  {
+    "id": 11,
+    "hanzi": "凤梨",
+    "pinyin": "fèng lí"
+  },
+  {
+    "id": 12,
+    "hanzi": "桃子",
+    "pinyin": "táo zi"
+  },
+  {
+    "id": 13,
+    "hanzi": "梨",
+    "pinyin": "lí"
+  },
+  {
+    "id": 14,
+    "hanzi": "李子",
+    "pinyin": "lǐ zi"
+  },
+  {
+    "id": 15,
+    "hanzi": "樱桃",
+    "pinyin": "yīng táo"
+  },
+  {
+    "id": 16,
+    "hanzi": "荔枝",
+    "pinyin": "lì zhī"
+  },
+  {
+    "id": 17,
+    "hanzi": "龙眼",
+    "pinyin": "lóng yǎn"
+  },
+  {
+    "id": 18,
+    "hanzi": "芭乐",
+    "pinyin": "bā lè"
+  },
+  {
+    "id": 19,
+    "hanzi": "木瓜",
+    "pinyin": "mù guā"
+  },
+  {
+    "id": 20,
+    "hanzi": "柚子",
+    "pinyin": "yòu zi"
+  },
+  {
+    "id": 21,
+    "hanzi": "柠檬",
+    "pinyin": "níng méng"
+  },
+  {
+    "id": 22,
+    "hanzi": "奇异果",
+    "pinyin": "qí yì guǒ"
+  },
+  {
+    "id": 23,
+    "hanzi": "柿子",
+    "pinyin": "shì zi"
+  },
+  {
+    "id": 24,
+    "hanzi": "杨桃",
+    "pinyin": "yáng táo"
+  },
+  {
+    "id": 25,
+    "hanzi": "释迦",
+    "pinyin": "shì jiā"
+  },
+  {
+    "id": 26,
+    "hanzi": "莲雾",
+    "pinyin": "lián wù"
+  },
+  {
+    "id": 27,
+    "hanzi": "百香果",
+    "pinyin": "bǎi xiāng guǒ"
+  },
+  {
+    "id": 28,
+    "hanzi": "火龙果",
+    "pinyin": "huǒ lóng guǒ"
+  },
+  {
+    "id": 29,
+    "hanzi": "椰子",
+    "pinyin": "yē zi"
+  },
+  {
+    "id": 30,
+    "hanzi": "哈密瓜",
+    "pinyin": "hā mì guā"
+  },
+  {
+    "id": 31,
+    "hanzi": "蓝莓",
+    "pinyin": "lán méi"
+  },
+  {
+    "id": 32,
+    "hanzi": "石榴",
+    "pinyin": "shí liu"
+  },
+  {
+    "id": 33,
+    "hanzi": "枇杷",
+    "pinyin": "pí pa"
+  },
+  {
+    "id": 34,
+    "hanzi": "山竹",
+    "pinyin": "shān zhú"
+  },
+  {
+    "id": 35,
+    "hanzi": "蔬菜",
+    "pinyin": "shū cài"
+  },
+  {
+    "id": 36,
+    "hanzi": "白菜",
+    "pinyin": "bái cài"
+  },
+  {
+    "id": 37,
+    "hanzi": "高丽菜",
+    "pinyin": "gāo lí cài"
+  },
+  {
+    "id": 38,
+    "hanzi": "菠菜",
+    "pinyin": "bō cài"
+  },
+  {
+    "id": 39,
+    "hanzi": "青菜",
+    "pinyin": "qīng cài"
+  },
+  {
+    "id": 40,
+    "hanzi": "空心菜",
+    "pinyin": "kōng xīn cài"
+  },
+  {
+    "id": 41,
+    "hanzi": "青江菜",
+    "pinyin": "qīng jiāng cài"
+  },
+  {
+    "id": 42,
+    "hanzi": "番茄",
+    "pinyin": "fān qié"
+  },
+  {
+    "id": 43,
+    "hanzi": "马铃薯",
+    "pinyin": "mǎ líng shǔ"
+  },
+  {
+    "id": 44,
+    "hanzi": "地瓜",
+    "pinyin": "dì guā"
+  },
+  {
+    "id": 45,
+    "hanzi": "胡萝卜",
+    "pinyin": "hú luó bo"
+  },
+  {
+    "id": 46,
+    "hanzi": "萝卜",
+    "pinyin": "luó bo"
+  },
+  {
+    "id": 47,
+    "hanzi": "洋葱",
+    "pinyin": "yáng cōng"
+  },
+  {
+    "id": 48,
+    "hanzi": "大蒜",
+    "pinyin": "dà suàn"
+  },
+  {
+    "id": 49,
+    "hanzi": "葱",
+    "pinyin": "cōng"
+  },
+  {
+    "id": 50,
+    "hanzi": "姜",
+    "pinyin": "jiāng"
+  },
+  {
+    "id": 51,
+    "hanzi": "黄瓜",
+    "pinyin": "huáng guā"
+  },
+  {
+    "id": 52,
+    "hanzi": "茄子",
+    "pinyin": "qié zi"
+  },
+  {
+    "id": 53,
+    "hanzi": "青椒",
+    "pinyin": "qīng jiāo"
+  },
+  {
+    "id": 54,
+    "hanzi": "辣椒",
+    "pinyin": "là jiāo"
+  },
+  {
+    "id": 55,
+    "hanzi": "玉米",
+    "pinyin": "yù mǐ"
+  },
+  {
+    "id": 56,
+    "hanzi": "南瓜",
+    "pinyin": "nán guā"
+  },
+  {
+    "id": 57,
+    "hanzi": "冬瓜",
+    "pinyin": "dōng guā"
+  },
+  {
+    "id": 58,
+    "hanzi": "苦瓜",
+    "pinyin": "kǔ guā"
+  },
+  {
+    "id": 59,
+    "hanzi": "丝瓜",
+    "pinyin": "sī guā"
+  },
+  {
+    "id": 60,
+    "hanzi": "豆芽",
+    "pinyin": "dòu yá"
+  },
+  {
+    "id": 61,
+    "hanzi": "芹菜",
+    "pinyin": "qín cài"
+  },
+  {
+    "id": 62,
+    "hanzi": "韭菜",
+    "pinyin": "jiǔ cài"
+  },
+  {
+    "id": 63,
+    "hanzi": "花椰菜",
+    "pinyin": "huā yē cài"
+  },
+  {
+    "id": 64,
+    "hanzi": "香菇",
+    "pinyin": "xiāng gū"
+  },
+  {
+    "id": 65,
+    "hanzi": "竹笋",
+    "pinyin": "zhú sǔn"
+  },
+  {
+    "id": 66,
+    "hanzi": "芋头",
+    "pinyin": "yù tou"
+  },
+  {
+    "id": 67,
+    "hanzi": "豌豆",
+    "pinyin": "wān dòu"
+  },
+  {
+    "id": 68,
+    "hanzi": "四季豆",
+    "pinyin": "sì jì dòu"
+  },
+  {
+    "id": 69,
+    "hanzi": "毛豆",
+    "pinyin": "máo dòu"
+  },
+  {
+    "id": 70,
+    "hanzi": "莲藕",
+    "pinyin": "lián ǒu"
+  },
+  {
+    "id": 71,
+    "hanzi": "秋葵",
+    "pinyin": "qiū kuí"
+  },
+  {
+    "id": 72,
+    "hanzi": "芦笋",
+    "pinyin": "lú sǔn"
+  },
+  {
+    "id": 73,
+    "hanzi": "生菜",
+    "pinyin": "shēng cài"
+  }
+]

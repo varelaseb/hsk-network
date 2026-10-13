@@ -34,7 +34,7 @@ HAN, LATIN = "noto-sans-cjk-tc", "geist"
 # mainland glyph, so the shape comes from the face, never the language tag (#face-lang, #face-forms).
 MAINLAND = "noto-sans-cjk-tc-mainland"
 # Bytes, #face-budget; the Chinese budget caps the Chinese face and the mainland forms face together.
-BUDGET = {HAN: 232_000, LATIN: 23_000, "total": 255_000}
+BUDGET = {HAN: 288_000, LATIN: 23_000, "total": 311_000}
 # Variable weight ranges kept (#face-cjk, #face-latin, #scale-weights).
 WEIGHTS = {HAN: (400, 500), LATIN: (400, 600)}
 # OpenType language systems kept in the Chinese face: Taiwan only (#face-subset). Mainland,

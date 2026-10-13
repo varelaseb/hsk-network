@@ -1,6 +1,6 @@
 // HSK bubbles game rules (docs/specs/hsk-bubbles.spec.html, Board and rules).
 // Pure browser ES module: no DOM, timer, Math.random, or storage. The same
-// words, levels, seed, and shots always replay the same game.
+// words, collections, seed, and shots always replay the same game.
 //
 // Units: bubble diameter 1, play width COLS (8). x grows right, y grows down,
 // y 0 is the ceiling. Every other row is offset half a bubble right and holds
@@ -8,8 +8,10 @@
 // flips on each ceiling drop. Cells are { r, c }.
 //
 // Seam for the game page:
-//   createGame({ words, levels, seed, board?, deck?, current?, next?, round? }) -> game
-//       words: graph.json `words`; levels: e.g. [1, 2]; seed: integer.
+//   createGame({ words, collections, seed, board?, deck?, current?, next?, round? }) -> game
+//       words: graph.json `words`; collections: keys switched on, as in
+//       graph.json `meta.collections`, e.g. ["1", "2", "flora"]; seed: integer.
+//       A word is dealt once if any collection holding it is on (#decision-length).
 //       board/deck/current/next/round: optional fixture start; a board
 //       without a deck plays every word with a character on it or in hand.
 //   aim(game, angleDeg) -> { path, hit, end, cell }
@@ -95,12 +97,15 @@ export function wordReading(entry, chars) {
   return { zhuyin: r.zhuyin, defs: r.defs };
 }
 
-export function makeLexicon(words, levels) {
-  const on = new Set(levels.map(Number));
+// Deck words: every 2 to 4 character word any switched-on collection holds,
+// keyed by Traditional form. The build makes a word two collections hold one
+// node, so it enters once (spec #decision-length).
+export function makeLexicon(words, collections) {
+  const on = new Set(collections.map(String));
   const entries = new Map();
   for (const w of words) {
     const n = [...w.trad].length;
-    if (!on.has(w.level) || n < 2 || n > 4) continue;
+    if (!w.collections.some((k) => on.has(k)) || n < 2 || n > 4) continue;
     if (!entries.has(w.trad)) entries.set(w.trad, []);
     entries.get(w.trad).push(w);
   }
@@ -479,8 +484,8 @@ function settleDeck(board, left) {
   }
 }
 
-export function createGame({ words, levels = [1, 2], seed = 1, board, deck, current, next, round = 1, score = 0 }) {
-  const lexicon = makeLexicon(words, levels);
+export function createGame({ words, collections = ["1", "2"], seed = 1, board, deck, current, next, round = 1, score = 0 }) {
+  const lexicon = makeLexicon(words, collections);
   const rng = makeRng(seed);
   // A fixture board without a deck plays every word with a character in play.
   const inPlay = board && new Set([...cells(board).map((x) => x.ch), current, next]);
@@ -490,7 +495,7 @@ export function createGame({ words, levels = [1, 2], seed = 1, board, deck, curr
   const [cur, nxt] = current && next ? [current, next] : launcher(b, lex, rng, current);
   return {
     lexicon,
-    levels: [...levels],
+    collections: [...collections],
     seed: rng.state,
     board: b,
     deck: [...d],
