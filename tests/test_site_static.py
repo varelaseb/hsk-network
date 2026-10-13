@@ -289,6 +289,19 @@ class BreakdownSourcesTest(unittest.TestCase):
         self.assertIn("meta.glyphwikiDate", (SITE / "app.js").read_text(encoding="utf-8"))
 
 
+class CollectionSourcesTest(unittest.TestCase):
+    """#acceptance-sources, #source-collections: the Sources footer says the themed collections were chosen for this site."""
+
+    def test_sources_say_collections_chosen_for_site(self):
+        html = (SITE / "index.html").read_text(encoding="utf-8")
+        footer = re.search(r'<details id="sources">.*?</details>', html, re.S).group(0)
+        line = re.search(r'<p id="collections-source">.*?</p>', footer, re.S)
+        self.assertIsNotNone(line)
+        text = " ".join(line.group(0).split())
+        for phrase in ("Flowers and trees", "Fruit and vegetables", "chosen for this site"):
+            self.assertIn(phrase, text)
+
+
 # Okabe-Ito palette (Okabe and Ito 2008), designed to stay apart under common color blindness.
 OKABE_ITO = {"#e69f00", "#56b4e9", "#009e73", "#f0e442", "#0072b2", "#d55e00", "#cc79a7", "#000000"}
 
