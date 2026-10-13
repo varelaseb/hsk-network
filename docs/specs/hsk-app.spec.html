@@ -40,17 +40,22 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add-from-game">
 <td>Add from game</td>
+<td data-acceptance-scenario>Given a learner on an iPhone viewing the public bubbles game in Safari. When the learner taps Share, then "Add to Home Screen", then "Add", which needs the iPhone Share sheet.</td>
+<td data-acceptance-observable>Then the home screen shows the same app icon under the same home screen name as when the app is added from the network.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-install" data-anchor="acceptance-add-from-game-open">
+<td>Open added from game</td>
 <td data-acceptance-scenario>Given a learner on an iPhone viewing the public bubbles game in Safari. When the learner taps Share, then "Add to Home Screen", then "Add", which needs the iPhone Share sheet, and then taps the new icon.</td>
-<td data-acceptance-observable>Then the same icon and name are added and the app opens on the network.</td>
+<td data-acceptance-observable>Then the app opens on the network.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch">
 <td>Launch</td>
-<td data-acceptance-scenario>Given a learner whose device uses the light appearance who added the app to the home screen. When the learner taps its icon.</td>
+<td data-acceptance-scenario>Given a learner whose device uses the light appearance, with the app on the home screen. When the learner taps its icon.</td>
 <td data-acceptance-observable>Then the network opens full screen with no address bar or browser toolbar, the screen shows the paper color from the first frame with no white flash, and the status bar sits on paper with dark text.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-launch-dark">
 <td>Dark launch</td>
-<td data-acceptance-scenario>Given a learner whose device uses the dark appearance who added the app to the home screen. When the learner taps its icon.</td>
+<td data-acceptance-scenario>Given a learner whose device uses the dark appearance, with the app on the home screen. When the learner taps its icon.</td>
 <td data-acceptance-observable>Then the network opens full screen, the screen shows the night color from the first frame with no paper or white flash, and the status bar text is light.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-play-in-app">
@@ -60,7 +65,7 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-word-in-app">
 <td>Word in app</td>
-<td data-acceptance-scenario>Given a learner in the installed app on the bubbles review screen. When the learner taps a popped word in its list.</td>
+<td data-acceptance-scenario>Given a learner in the installed app on the bubbles start screen, with a board whose lowest bubbles sit one row above the bottom line. When the learner taps Play, pops a word, shoots a bubble that settles below the line, and on the game-over screen taps the popped word in its list.</td>
 <td data-acceptance-observable>Then the network opens inside the app, with no browser bar, focused on that word with its card open.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-safe-area">
@@ -81,7 +86,12 @@
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-page-zoom">
 <td>No page zoom</td>
 <td data-acceptance-scenario>Given a learner on a phone viewing the network. When the learner double-taps the "Play" link area quickly, then pinches outward with two fingers on the search box, which needs a double tap and a two-finger pinch.</td>
-<td data-acceptance-observable>Then the page stays at its normal size with the whole search bar on screen, and only the graph ever zooms.</td>
+<td data-acceptance-observable>Then the page stays at its normal size with the whole search bar on screen.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-page-zoom-graph">
+<td>Only the graph zooms</td>
+<td data-acceptance-scenario>Given a learner on a phone viewing the network. When the learner pinches outward with two fingers on the graph, which needs a two-finger pinch.</td>
+<td data-acceptance-observable>Then the graph zooms in while the search bar stays at its normal size.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-native" data-anchor="acceptance-no-bounce">
 <td>No bounce</td>
@@ -90,27 +100,32 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-network">
 <td>Offline network</td>
-<td data-acceptance-scenario>Given a learner who opened the installed app once with a connection. When the learner turns on airplane mode, opens the app, and taps a word node.</td>
+<td data-acceptance-scenario>Given a learner with the app on the home screen. When the learner opens the app once with a connection, closes it, turns on airplane mode, opens the app again, and taps a word node.</td>
 <td data-acceptance-observable>Then the network loads with its characters in the site's own Chinese face, and the word's card opens.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-game">
 <td>Offline game</td>
-<td data-acceptance-scenario>Given a learner who opened the installed app once with a connection. When the learner turns on airplane mode, opens the app, taps "Play", and plays until a word pops.</td>
-<td data-acceptance-observable>Then the game plays and the popped word is said aloud.</td>
+<td data-acceptance-scenario>Given a learner with the app on the home screen. When the learner opens the app once with a connection, closes it, turns on airplane mode, opens the app again, taps "Play", and plays until a word pops.</td>
+<td data-acceptance-observable>Then the game plays and the popped word's card shows.</td>
+</tr>
+<tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-game-sound">
+<td>Offline game, said aloud</td>
+<td data-acceptance-scenario>Given a learner with the app on the home screen. When the learner opens the app once with a connection, closes it, turns on airplane mode, opens the app again, taps "Play", and plays until a word pops.</td>
+<td data-acceptance-observable>Then the popped word is said aloud, proven by a unit test: no screen shows it.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-site">
 <td>Offline in Safari</td>
-<td data-acceptance-scenario>Given a learner who opened the public network once in phone Safari with a connection. When the learner goes offline and reloads the page.</td>
+<td data-acceptance-scenario>Given a learner on a phone in Safari. When the learner opens the public network once with a connection, goes offline, and reloads the page.</td>
 <td data-acceptance-observable>Then the network loads as it did online.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-update">
 <td>Update</td>
-<td data-acceptance-scenario>Given a learner who installed the app before a new version of the site was published. When the learner opens the app with a connection, waits ten seconds, closes it from the app switcher, and opens it again, which needs a ten-second wait.</td>
+<td data-acceptance-scenario>Given a learner with the app on the home screen, added before a new version of the site was published. When the learner opens the app with a connection, waits ten seconds, closes it from the app switcher, and opens it again, which needs a ten-second wait.</td>
 <td data-acceptance-observable>Then the second open shows the new version.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-update-quiet">
 <td>No reload mid-use</td>
-<td data-acceptance-scenario>Given a learner in the installed app with a word card open while a new version downloads. When the download finishes.</td>
+<td data-acceptance-scenario>Given a learner in the installed app viewing the network while a new version of the site downloads. When the learner taps a word node and the download finishes.</td>
 <td data-acceptance-observable>Then the card stays open and the page is not reloaded, proven by a unit test: no screen shows it.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-fail">
@@ -120,8 +135,8 @@
 </tr>
 <tr data-acceptance-criterion data-story="story-offline" data-anchor="acceptance-offline-recording">
 <td>Recordings offline on an iPhone</td>
-<td data-acceptance-scenario>Given a learner on an iPhone with the installed app saved offline, Voice on, and no connection. When the learner plays the game and pops a word that has a recording.</td>
-<td data-acceptance-observable>Then the word's recording plays from the saved copy.</td>
+<td data-acceptance-scenario>Given a learner on an iPhone with the app on the home screen and Voice on. When the learner opens the app once with a connection, closes it, turns on airplane mode, opens the app again, plays the game, and pops a word that has a recording.</td>
+<td data-acceptance-observable>Then the word's recording plays from the saved copy, proven by a unit test: no screen shows it.</td>
 </tr>
 <tr data-acceptance-criterion data-story="story-fast" data-anchor="acceptance-first-paint">
 <td>First paint</td>
