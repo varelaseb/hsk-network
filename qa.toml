@@ -130,7 +130,7 @@ cannot_host = "needs the public GitHub Pages game address after a merge to main;
 
 # Navigation hints (jev-capture.spec.html#jc-target-nav). Game page address options
 # (site/bubbles/game.js): ?fixture=pop|fall|clear|over starts Play on a fixed board, ?seed=N fixes the
-# seed. Selector #play taps Play so the criterion opens mid-game.
+# seed. Each criterion's When taps Play itself, so no hint selects it.
 
 # Network: word links.
 [nav.acceptance-word-link]
@@ -151,65 +151,80 @@ path = "/#word=1-76" # 朋友 (peng2 you5): neutral second syllable
 # Bubbles: playing a seeded board.
 [nav.acceptance-aim]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-shoot]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-cancel]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-swap]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-ceiling]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-pause]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-sound-on]
 path = "?seed=7"
-selectors = ["#play"]
+# First shot hint: the shot lands on the seeded board, as acceptance-shoot; a reload keeps the seed.
+[nav.acceptance-first-hint-shot]
+path = "?seed=7"
+[nav.acceptance-first-hint-later]
+path = "?seed=7"
+[nav.acceptance-first-hint-mouse-shot]
+path = "?seed=7"
+[nav.acceptance-first-hint-mouse-later]
+path = "?seed=7"
+# Character card closes: the right-click or long press and the dismissal on the seeded board.
+[nav.acceptance-inspect-desktop-close]
+path = "?seed=7"
+[nav.acceptance-inspect-desktop-current-close]
+path = "?seed=7"
+[nav.acceptance-inspect-desktop-next-close]
+path = "?seed=7"
+[nav.acceptance-inspect-touch-close]
+path = "?seed=7"
+[nav.acceptance-inspect-touch-current-close]
+path = "?seed=7"
+[nav.acceptance-inspect-touch-next-close]
+path = "?seed=7"
+# Dark game screens (story-game-dark): each reaches its screen as acceptance-pause, -pop, and -over do.
+# The device's dark appearance itself has no qa.toml option; capture reports it.
+[nav.acceptance-game-dark-pause]
+path = "?seed=7"
 
 # Bubbles: fixed boards. pop: 生 in the launcher completes 學生 with 學 on the board; a shot
 # elsewhere (next to 站, or the empty right cell) spells no word.
 [nav.acceptance-pop]
 path = "?fixture=pop"
-selectors = ["#play"]
 [nav.acceptance-no-word]
 path = "?fixture=pop"
-selectors = ["#play"]
 [nav.acceptance-reduced]
 path = "?fixture=pop"
-selectors = ["#play"]
 [nav.acceptance-game-look]
 path = "?fixture=pop"
-selectors = ["#play"]
+[nav.acceptance-game-dark-card]
+path = "?fixture=pop"
 # First visit: the learner taps Play, then shoots 生 beside 學.
 [nav.acceptance-muted]
 path = "?fixture=pop"
 # fall: 生 beside 學 pops 學生, leaving the bubbles below it hanging.
 [nav.acceptance-fall]
 path = "?fixture=fall"
-selectors = ["#play"]
 # clear: the only word left is 學 plus the launcher's 生.
 [nav.acceptance-round]
 path = "?fixture=clear"
-selectors = ["#play"]
+[nav.acceptance-round-next]
+path = "?fixture=clear"
 # over: the lowest bubbles sit one row above the line, with 學 in the bottom row for 生 to pop;
 # a later shot settling below the line ends the game.
 [nav.acceptance-over]
 path = "?fixture=over"
-selectors = ["#play"]
 [nav.acceptance-best]
 path = "?fixture=over"
-selectors = ["#play"]
 [nav.acceptance-review]
 path = "?fixture=over"
-selectors = ["#play"]
 [nav.acceptance-review-link]
 path = "?fixture=over"
-selectors = ["#play"]
+[nav.acceptance-game-dark-over]
+path = "?fixture=over"
 
 # App shell (docs/specs/hsk-app.spec.html). Every story starts at the network on a phone, with touch.
 # Criteria needing the iPhone Share sheet, the installed home screen app, airplane mode, a notch, or
@@ -231,10 +246,11 @@ touch = true
 # App shell: game starts.
 [nav.acceptance-add-from-game]
 path = "/bubbles/"
+[nav.acceptance-add-from-game-open]
+path = "/bubbles/"
 # Review screen: the over board ends the game, as acceptance-review-link.
 [nav.acceptance-word-in-app]
 path = "/bubbles/?fixture=over"
-selectors = ["#play"]
 
 # Network: hub drawings (word ids in site/data/graph.json, hub data in site/data/drawing.json).
 # Each opens a word whose hub the learner then taps. acceptance-strokes-dark needs the device's dark
@@ -277,8 +293,7 @@ path = "/#word=1-17" # 電腦
 selectors = ["#script"]
 
 # Network: Voice setting. acceptance-voice-network and acceptance-voice-off start at the story's site
-# root with Voice on (first visit), so they have no hint. acceptance-voice-shared: #voice turns Voice
-# off on the network; the learner then opens the game (its When) through the Play link.
+# root with Voice on (first visit), so they have no hint. acceptance-voice-shared: its When turns Voice
+# off on the network, then opens the game through the Play link.
 [nav.acceptance-voice-shared]
 path = "/"
-selectors = ["#voice"]
