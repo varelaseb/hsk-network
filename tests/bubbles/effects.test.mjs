@@ -5,16 +5,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { extract } from "../extract.mjs";
 
 const GAME = readFileSync(new URL("../../site/bubbles/game.js", import.meta.url), "utf8");
 
-function extract(src, name) {
-  const start = src.search(new RegExp("^function " + name + "\\(", "m"));
-  let depth = 0;
-  let i = src.indexOf("{", start);
-  do { depth += { "{": 1, "}": -1 }[src[i]] || 0; i++; } while (depth);
-  return src.slice(start, i);
-}
 
 // A page with the given stored settings: returns the game's effects and what reached the device.
 function page(stored) {

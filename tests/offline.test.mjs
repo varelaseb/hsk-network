@@ -202,15 +202,16 @@ test("acceptance-offline-game-sound: every popped word is said offline from save
   const game = readFileSync(site("bubbles/game.js"), "utf8");
   assert.match(game, /voice\.say\(\{ word: found\.word, audio: rec\?\.audio, pinyin: \(rec \|\| found\.entries\[0\]\)\.pinyin \}\)/);
   const syllables = new Set(GRAPH.syllables);
-  const device = { name: "Mei-Jia", lang: "zh-TW", localService: true };
+  // No device voice: every word must be said from saved recordings alone.
   for (const x of GRAPH.words) {
-    const how = choose({ word: x.trad, audio: x.audio, pinyin: x.pinyin }, true, syllables, [device], GRAPH.chars);
+    const how = choose({ word: x.trad, audio: x.audio, pinyin: x.pinyin }, true, syllables, [], GRAPH.chars);
     assert.ok(how, x.trad);
-    for (const src of how.srcs || (how.src ? [how.src] : [])) {
+    const srcs = how.srcs || [how.src];
+    assert.ok(srcs.length > 0 && srcs.every(Boolean), x.trad);
+    for (const src of srcs) {
       assert.ok(FILES.includes(src), src);
       assert.equal(await text(w.fetch(ROOT + src)), `net:v1:${ROOT}${src}`, src);
     }
-    if (how.voice) assert.equal(how.voice.localService, true, "a device voice needs no network");
   }
   assert.deepEqual(b.net.log, []);
 });
