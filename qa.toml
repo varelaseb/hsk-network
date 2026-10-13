@@ -22,87 +22,56 @@ repo = "hsk-network"
 path = "site/data/graph.json"
 reset = 'test -s "$QA_FIXTURE"'
 
-# Desktop by default: every story starts at the site root.
+# Every user-facing story names its own start (tests/test_qa_target.py checks it), so none falls back
+# to [entry]. Capture narrows a criterion whose Given names a phone to phone width, but never widens
+# one or changes touch (jev-capture.spec.html#jc-ac-viewport), so a story's viewport and touch follow
+# its browser criteria's Givens: desktop when any names a desktop, phone with touch when one names a
+# phone and none a desktop; a network story naming neither is desktop.
 [entry]
 url = "{site}/"
-viewport = { width = 1280, height = 800 }
 
-# Phone in portrait, with touch, for pinch, pan, and tap.
-[entry.stories.story-phone]
-viewport = { width = 390, height = 844 }
-touch = true
-
-# Network word links, on a phone.
-[entry.stories.story-link]
-viewport = { width = 390, height = 844 }
-touch = true
-
-# Look and motion, on a phone. acceptance-glide is driven in story-search and acceptance-sheet in
-# story-phone (each criterion runs in its first listed user-facing story), so both keep their own.
-[entry.stories.story-look]
-viewport = { width = 390, height = 844 }
-touch = true
-# Hub drawings, on a phone: acceptance-strokes-phone runs in story-strokes (its first listed story)
-# and needs portrait, so the whole story keeps it.
-[entry.stories.story-strokes]
-viewport = { width = 390, height = 844 }
-touch = true
-# Hearing a card, on a phone: acceptance-speak-phone runs in story-hear-card (its first listed story)
-# and needs portrait with touch, so the whole story keeps it.
-[entry.stories.story-hear-card]
-viewport = { width = 390, height = 844 }
-touch = true
-# story-read, story-script, and story-voice-setting keep the desktop site root default.
-
-# Bubbles game stories start at the game page on a phone. The network's story-open-game
-# (acceptance-play-link) keeps the desktop site root default.
-[entry.stories.story-play]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-word]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-fall]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-progress]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-review]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-game-dark]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-quiet]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-game-levels]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-hear]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-game-maintain]
-url = "{site}/bubbles/"
-# Character lookup: acceptance-inspect-touch, -touch-current, and -touch-next need a phone with touch.
-# entry has no per-criterion viewport or touch, so the whole story keeps them; the desktop
-# acceptance-inspect-desktop criteria still right-click with the mouse, which the game handles in a
-# touch context too.
-[entry.stories.story-inspect-char]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-# Network story-levels stays at the site root (desktop default).
+[entry.stories]
+# Network (hsk-network.spec.html): the site root.
+story-explore           = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-inspect           = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-breakdown         = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-strokes           = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-search            = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-levels            = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-collections       = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-phone             = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-link              = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-open-game         = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-sources           = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-hear-card         = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-voice-setting     = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-read              = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-script            = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-look              = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-dark              = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-breakdown-sources = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+# Bubbles (hsk-bubbles.spec.html): every story starts at the game page on a phone with touch. Two hold
+# desktop criteria too (story-play's mouse hints, story-inspect-char's right-click); capture cannot
+# widen them, so they run at phone width with touch.
+story-play              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-word              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-inspect-char      = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-fall              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-progress          = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-deck              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-game-levels       = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-review            = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-hear              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-quiet             = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-game-script       = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-game-dark         = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+# App shell (hsk-app.spec.html): the network on a phone with touch; game criteria reach the game
+# through their nav hints below. Criteria needing the iPhone Share sheet, the installed home screen
+# app, airplane mode, a notch, or a phone turn stay as written; capture reports what it cannot drive.
+story-install           = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-native            = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-offline           = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-fast              = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
 
 # Search fill values, all from site/data/graph.json.
 [entry.criteria.acceptance-search-hanzi]
@@ -229,23 +198,6 @@ path = "?fixture=over"
 path = "?fixture=over"
 [nav.acceptance-game-dark-over]
 path = "?fixture=over"
-
-# App shell (docs/specs/hsk-app.spec.html). Every story starts at the network on a phone, with touch.
-# Criteria needing the iPhone Share sheet, the installed home screen app, airplane mode, a notch, or
-# a phone turn stay as written; capture reports what it cannot drive. story-app-maintain criteria are
-# unit-tested (each runs in its first listed story).
-[entry.stories.story-install]
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-native]
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-offline]
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-fast]
-viewport = { width = 390, height = 844 }
-touch = true
 
 # App shell: game starts.
 [nav.acceptance-add-from-game]
