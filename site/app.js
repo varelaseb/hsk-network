@@ -640,7 +640,7 @@ function showCard(d, pin) {
   }
   card.appendChild(el("div", "c-grip")).setAttribute("aria-hidden", "true");
   if (d.kind === "word") {
-    card.appendChild(headRow(d, { word: d.trad, audio: d.audio }, wordLabel(d, script)));
+    card.appendChild(headRow(d, { word: d.trad, audio: d.audio, pinyin: d.pinyin }, wordLabel(d, script)));
     card.appendChild(sensesNode(d.defs, d.mw));
     card.appendChild(levelTag(d.level));
   } else {

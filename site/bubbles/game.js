@@ -1033,7 +1033,8 @@ document.addEventListener("touchmove", (e) => {
 // each popped word is said as its card shows.
 
 function say(found) {
-  voice.say({ word: found.word, audio: found.entries.find((e) => e.audio)?.audio });
+  const rec = found.entries.find((e) => e.audio);
+  voice.say({ word: found.word, audio: rec?.audio, pinyin: (rec || found.entries[0]).pinyin });
 }
 
 function renderSay() {
