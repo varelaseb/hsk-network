@@ -249,6 +249,7 @@ function draw() {
   drawPops();
   if (game && !flight && aimer.on && !aimer.below && !aimer.cancelled && screen === "playing" && !busy) drawGuide();
   drawLauncher();
+  drawHold();
   if (flight) drawFlight();
   drawFalls();
   drawParticles();
@@ -314,6 +315,23 @@ function drawGuide() {
     ctx.stroke();
     ctx.restore();
   }
+}
+
+// A ring fills around a held bubble until its card shows; with reduced
+// motion it shows whole, without filling.
+function drawHold() {
+  if (!press || press.held || screen !== "playing") return;
+  const t = reduced.matches ? 1 : holdProgress(press, performance.now());
+  const { x, y, r } = press.hit;
+  ctx.save();
+  ctx.strokeStyle = INK_NIGHT;
+  ctx.globalAlpha = 0.85;
+  ctx.lineWidth = Math.max(2, L.s * 0.07);
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.arc(X(x), Y(y), L.s * (r + 0.08), -Math.PI / 2, -Math.PI / 2 + t * Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
 }
 
 const NEXT = { x: LAUNCHER.x + 1.5, y: LAUNCHER.y + 0.3, scale: 0.68 };
@@ -531,7 +549,7 @@ function newGame() {
   cards.length = 0;
   hideCard(true);
   inspecting = false;
-  press = null;
+  endPress();
   bannerEl.hidden = true;
   Object.assign(aimer, { on: false, below: false, mouseDown: false, cancelled: false, swapTap: null });
   hintEl.textContent = coarse.matches ? "Drag to aim, lift to shoot" : "Move to aim, click to shoot";
@@ -695,15 +713,16 @@ function dismissCard() {
 }
 
 // ---- Character cards (spec #rule-inspect): right-click, or hold a bubble
-// still for half a second and lift. Never shoots or swaps; the next tap,
-// click, or key closes the card. Shares the word card's place and look.
+// still for half a second (the card shows with the thumb still down). Never
+// shoots or swaps; the next tap, click, or key closes the card. Shares the
+// word card's place and look.
 
 let inspecting = false;
 
 function inspect(p) {
-  if (!game || screen !== "playing" || (cardShowing && !cardResting)) return;
-  const ch = bubbleAt(p);
-  if (!ch) return;
+  if (!game || screen !== "playing" || (cardShowing && !cardResting)) return false;
+  const ch = bubbleAt(p)?.ch;
+  if (!ch) return false;
   cardShowing = false;
   cardResting = false;
   inspecting = true;
@@ -714,6 +733,7 @@ function inspect(p) {
   const entry = chars[ch];
   fillCard({ trad: ch, simp: entry.simp || ch }, entry.readings.map((_, reading) => readingOf({ trad: ch, reading }, chars)));
   cardEl.hidden = false;
+  return true;
 }
 
 function closeInspect() {
@@ -723,14 +743,15 @@ function closeInspect() {
   return true;
 }
 
-// The character under a point: a board bubble, the current, or the next one.
+// The bubble under a point: a board bubble, the current, or the next one,
+// as { ch, x, y, r } in bubble units.
 function bubbleAt(p) {
   if (!view) return null;
-  if (game.current && Math.hypot(p.x - LAUNCHER.x, p.y - LAUNCHER.y) < 0.5) return game.current;
-  if (game.next && Math.hypot(p.x - NEXT.x, p.y - NEXT.y) < NEXT.scale / 2 + 0.05) return game.next;
+  if (game.current && Math.hypot(p.x - LAUNCHER.x, p.y - LAUNCHER.y) < 0.5) return { ch: game.current, x: LAUNCHER.x, y: LAUNCHER.y, r: 0.5 };
+  if (game.next && Math.hypot(p.x - NEXT.x, p.y - NEXT.y) < NEXT.scale / 2 + 0.05) return { ch: game.next, x: NEXT.x, y: NEXT.y, r: NEXT.scale / 2 };
   for (const b of cells(view.board)) {
     const c = center(view.board, b);
-    if (Math.hypot(p.x - c.x, p.y - c.y) < 0.5) return b.ch;
+    if (Math.hypot(p.x - c.x, p.y - c.y) < 0.5) return { ch: b.ch, x: c.x, y: c.y, r: 0.5 };
   }
   return null;
 }
@@ -866,11 +887,39 @@ function doSwap() {
 }
 
 // ---- Input: press and drag to aim, lift to shoot; mouse hovers to aim.
-// A touch held still on a bubble for HOLD_MS, then lifted, inspects instead.
+// A touch held still on a bubble for HOLD_MS inspects with the thumb still
+// down; from then on that pointer's move and lift do nothing.
 
 const HOLD_MS = 500;
-const HOLD_SLOP = 0.3; // bubble units a held thumb may drift
-let press = null;      // { id, x, y, at } touch press that may become an inspect
+const HOLD_SLOP_PX = 16; // CSS px a resting thumb may drift and still hold
+let press = null;        // { id, x, y, at, hit, timer, held } touch press on a bubble that may become an inspect
+
+// Whether a press moved to p (bubble units, s px per unit) is still a hold.
+function stillHolding(press, p, s) {
+  return Math.hypot(p.x - press.x, p.y - press.y) * s <= HOLD_SLOP_PX;
+}
+
+// How far the hold ring has filled at time now, 0 to 1.
+function holdProgress(press, now) {
+  return Math.min(1, Math.max(0, (now - press.at) / HOLD_MS));
+}
+
+// The hold timer ran out: show the card, then drop that pointer's aim and
+// swap so its move and lift do nothing.
+function holdInspect() {
+  if (!press || press.held) return;
+  press.timer = null;
+  if (!inspect(press)) { press = null; return; }
+  press.held = true;
+  if (aimer.swapTap && aimer.swapTap.id === press.id) aimer.swapTap = null;
+  if (aimer.id === press.id) { aimer.id = null; aimer.on = false; }
+  aimer.cancelled = false;
+}
+
+function endPress() {
+  if (press) clearTimeout(press.timer);
+  press = null;
+}
 
 // The tap, click, or key that closes a character card does nothing else.
 document.addEventListener("pointerdown", (e) => {
@@ -898,7 +947,9 @@ canvas.addEventListener("pointerdown", (e) => {
   if (e.pointerType === "mouse" && e.button !== 0) return;
   const p = toUnits(e);
   aimer.cancelled = false;
-  press = e.pointerType === "mouse" ? null : { id: e.pointerId, x: p.x, y: p.y, at: performance.now() };
+  endPress();
+  const hit = e.pointerType === "mouse" ? null : bubbleAt(p);
+  if (hit) press = { id: e.pointerId, x: p.x, y: p.y, at: performance.now(), hit, timer: setTimeout(holdInspect, HOLD_MS), held: false };
   if (onLauncher(p)) {
     aimer.swapTap = { id: e.pointerId, x: p.x, y: p.y };
     canvas.setPointerCapture(e.pointerId);
@@ -921,7 +972,10 @@ canvas.addEventListener("pointerdown", (e) => {
 canvas.addEventListener("pointermove", (e) => {
   if (screen !== "playing") return;
   const p = toUnits(e);
-  if (press && press.id === e.pointerId && Math.hypot(p.x - press.x, p.y - press.y) > HOLD_SLOP) press = null;
+  if (press && press.id === e.pointerId) {
+    if (press.held) return;
+    if (!stillHolding(press, p, L.s)) endPress();
+  }
   const tap = aimer.swapTap;
   if (tap && tap.id === e.pointerId) {
     // Dragging up off the launcher turns the press into aiming.
@@ -945,15 +999,10 @@ canvas.addEventListener("pointermove", (e) => {
 canvas.addEventListener("pointerup", (e) => {
   if (screen !== "playing") return;
   const p = toUnits(e);
-  const held = press && press.id === e.pointerId && performance.now() - press.at >= HOLD_MS && bubbleAt(press) ? press : null;
-  if (press && press.id === e.pointerId) press = null;
-  if (held) {
-    // A still hold inspects: no shot, no swap.
-    if (aimer.swapTap && aimer.swapTap.id === e.pointerId) aimer.swapTap = null;
-    if (aimer.id === e.pointerId) { aimer.id = null; aimer.on = false; }
-    aimer.cancelled = false;
-    inspect(held);
-    return;
+  if (press && press.id === e.pointerId) {
+    const held = press.held;
+    endPress();
+    if (held) return; // the card already showed: no shot, no swap
   }
   const tap = aimer.swapTap;
   if (tap && tap.id === e.pointerId) {
@@ -981,7 +1030,7 @@ canvas.addEventListener("pointerup", (e) => {
 });
 
 canvas.addEventListener("pointercancel", (e) => {
-  press = null;
+  endPress();
   if (aimer.id === e.pointerId) aimer.id = null;
   aimer.on = false;
   aimer.swapTap = null;
@@ -992,7 +1041,7 @@ canvas.addEventListener("pointerleave", (e) => {
 });
 canvas.addEventListener("contextmenu", (e) => {
   e.preventDefault();
-  // A phone long-press also fires contextmenu; its lift inspects instead.
+  // A phone long-press also fires contextmenu; its hold timer inspects instead.
   if (press || (e.pointerType && e.pointerType !== "mouse")) return;
   inspect(toUnits(e));
 });
