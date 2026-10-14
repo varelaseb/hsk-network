@@ -1,5 +1,5 @@
 // Offline worker tests (docs/specs/hsk-app.spec.html #test-worker, #acceptance-update-quiet,
-// #acceptance-offline-fail): site/sw.js run with a stubbed cache, fetch, and clients.
+// #acceptance-offline-fail, #acceptance-offline-recording, #acceptance-offline-game-sound): site/sw.js run with a stubbed cache, fetch, and clients.
 // Run: node --test tests/offline.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -170,4 +170,48 @@ test("both pages register the worker and never reload when a new version arrives
     assert.ok(src.includes(`navigator.serviceWorker?.register(${url})`), page);
     assert.ok(!/controllerchange|location\.reload|\.reload\(/.test(src), page);
   }
+});
+
+// Sound offline (#acceptance-offline-recording, #acceptance-offline-game-sound): every recording
+// a word or a popped word plays is in the saved copy and answers from it with no network, whole
+// or by the byte range an iPhone asks for.
+const GRAPH = JSON.parse(readFileSync(site("data/graph.json"), "utf8"));
+const { choose } = await import("../site/voice.js");
+
+test("acceptance-offline-recording: every word's recording plays from the saved copy offline", async () => {
+  const b = browser();
+  const w = await installed(b, "v1");
+  b.net.online = false;
+  b.net.log.length = 0;
+  const recorded = GRAPH.words.filter((x) => x.audio);
+  assert.ok(recorded.length > 0);
+  for (const x of recorded) {
+    assert.ok(FILES.includes(x.audio), x.audio);
+    assert.equal(await text(w.fetch(ROOT + x.audio)), `net:v1:${ROOT}${x.audio}`, x.audio);
+  }
+  const res = await w.fetch(ROOT + recorded[0].audio, { range: "bytes=0-1" });
+  assert.equal(res.status, 206);
+  assert.deepEqual(b.net.log, [], "no request reaches the network");
+});
+
+test("acceptance-offline-game-sound: with no device voice, every popped word is said offline from saved recordings alone", async () => {
+  const b = browser();
+  const w = await installed(b, "v1");
+  b.net.online = false;
+  b.net.log.length = 0;
+  const game = readFileSync(site("bubbles/game.js"), "utf8");
+  assert.match(game, /voice\.say\(\{ word: found\.word, audio: rec\?\.audio, pinyin: \(rec \|\| found\.entries\[0\]\)\.pinyin \}\)/);
+  const syllables = new Set(GRAPH.syllables);
+  // No device voice: every word must be said from saved recordings alone.
+  for (const x of GRAPH.words) {
+    const how = choose({ word: x.trad, audio: x.audio, pinyin: x.pinyin }, true, syllables, [], GRAPH.chars);
+    assert.ok(how, x.trad);
+    const srcs = how.srcs || [how.src];
+    assert.ok(srcs.length > 0 && srcs.every(Boolean), x.trad);
+    for (const src of srcs) {
+      assert.ok(FILES.includes(src), src);
+      assert.equal(await text(w.fetch(ROOT + src)), `net:v1:${ROOT}${src}`, src);
+    }
+  }
+  assert.deepEqual(b.net.log, []);
 });

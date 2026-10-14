@@ -189,6 +189,14 @@ class Rules(unittest.TestCase):
             build_data.build(CEDICT, None, hsk, {"c-明": {"id": "c-明", "char": "明", "parts": []}},
                              self.chars)
 
+    def test_override_naming_another_hub_character_fails_naming_it(self):  # #acceptance-override-mismatch
+        hsk = [{"id": "1-1", "collection": "1", "simp": "电", "pinyin": "diàn"},
+               {"id": "1-2", "collection": "1", "simp": "电话", "pinyin": "diàn huà"}]
+        wrong = {"c-電": {"id": "c-電", "char": "明", "reason": "x", "parts": []}}
+        with self.assertRaises(build_data.BuildError) as err:
+            build_data.build(CEDICT, None, hsk, wrong, self.chars)
+        self.assertEqual(err.exception.problems, ["c-電 電: override names 明"])
+
 
 if __name__ == "__main__":
     unittest.main()

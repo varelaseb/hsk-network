@@ -22,83 +22,56 @@ repo = "hsk-network"
 path = "site/data/graph.json"
 reset = 'test -s "$QA_FIXTURE"'
 
-# Desktop by default: every story starts at the site root.
+# Every user-facing story names its own start (tests/test_qa_target.py checks it), so none falls back
+# to [entry]. Capture narrows a criterion whose Given names a phone to phone width, but never widens
+# one or changes touch (jev-capture.spec.html#jc-ac-viewport), so a story's viewport and touch follow
+# its browser criteria's Givens: desktop when any names a desktop, phone with touch when one names a
+# phone and none a desktop; a network story naming neither is desktop.
 [entry]
 url = "{site}/"
-viewport = { width = 1280, height = 800 }
 
-# Phone in portrait, with touch, for pinch, pan, and tap.
-[entry.stories.story-phone]
-viewport = { width = 390, height = 844 }
-touch = true
-
-# Network word links, on a phone.
-[entry.stories.story-link]
-viewport = { width = 390, height = 844 }
-touch = true
-
-# Look and motion, on a phone. acceptance-glide is driven in story-search and acceptance-sheet in
-# story-phone (each criterion runs in its first listed user-facing story), so both keep their own.
-[entry.stories.story-look]
-viewport = { width = 390, height = 844 }
-touch = true
-# Hub drawings, on a phone: acceptance-strokes-phone runs in story-strokes (its first listed story)
-# and needs portrait, so the whole story keeps it.
-[entry.stories.story-strokes]
-viewport = { width = 390, height = 844 }
-touch = true
-# Hearing a card, on a phone: acceptance-speak-phone runs in story-hear-card (its first listed story)
-# and needs portrait with touch, so the whole story keeps it.
-[entry.stories.story-hear-card]
-viewport = { width = 390, height = 844 }
-touch = true
-# story-read, story-script, and story-voice-setting keep the desktop site root default.
-
-# Bubbles game stories start at the game page on a phone. The network's story-open-game
-# (acceptance-play-link) keeps the desktop site root default.
-[entry.stories.story-play]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-word]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-fall]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-progress]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-review]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-quiet]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-game-levels]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-hear]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-game-maintain]
-url = "{site}/bubbles/"
-# Character lookup: acceptance-inspect-touch, -touch-current, and -touch-next need a phone with touch.
-# entry has no per-criterion viewport or touch, so the whole story keeps them; the desktop
-# acceptance-inspect-desktop criteria still right-click with the mouse, which the game handles in a
-# touch context too.
-[entry.stories.story-inspect-char]
-url = "{site}/bubbles/"
-viewport = { width = 390, height = 844 }
-touch = true
-# Network story-levels stays at the site root (desktop default).
+[entry.stories]
+# Network (hsk-network.spec.html): the site root.
+story-explore           = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-inspect           = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-breakdown         = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-strokes           = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-search            = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-levels            = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-collections       = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-phone             = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-link              = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-open-game         = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-sources           = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-hear-card         = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-voice-setting     = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-read              = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-script            = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-look              = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+story-dark              = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-breakdown-sources = { url = "{site}/", viewport = { width = 1280, height = 800 } }
+# Bubbles (hsk-bubbles.spec.html): every story starts at the game page on a phone with touch. Two hold
+# desktop criteria too (story-play's mouse hints, story-inspect-char's right-click); capture cannot
+# widen them, so they run at phone width with touch.
+story-play              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-word              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-inspect-char      = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-fall              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-progress          = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-deck              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-game-levels       = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-review            = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-hear              = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-quiet             = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-game-script       = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+story-game-dark         = { url = "{site}/bubbles/", viewport = { width = 390, height = 844 }, touch = true }
+# App shell (hsk-app.spec.html): the network on a phone with touch; game criteria reach the game
+# through their nav hints below. Criteria needing the iPhone Share sheet, the installed home screen
+# app, airplane mode, a notch, or a phone turn stay as written; capture reports what it cannot drive.
+story-install           = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-native            = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-offline           = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
+story-fast              = { url = "{site}/", viewport = { width = 390, height = 844 }, touch = true }
 
 # Search fill values, all from site/data/graph.json.
 [entry.criteria.acceptance-search-hanzi]
@@ -130,7 +103,7 @@ cannot_host = "needs the public GitHub Pages game address after a merge to main;
 
 # Navigation hints (jev-capture.spec.html#jc-target-nav). Game page address options
 # (site/bubbles/game.js): ?fixture=pop|fall|clear|over starts Play on a fixed board, ?seed=N fixes the
-# seed. Selector #play taps Play so the criterion opens mid-game.
+# seed. Each criterion's When taps Play itself, so no hint selects it.
 
 # Network: word links.
 [nav.acceptance-word-link]
@@ -151,90 +124,89 @@ path = "/#word=1-76" # 朋友 (peng2 you5): neutral second syllable
 # Bubbles: playing a seeded board.
 [nav.acceptance-aim]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-shoot]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-cancel]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-swap]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-ceiling]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-pause]
 path = "?seed=7"
-selectors = ["#play"]
 [nav.acceptance-sound-on]
 path = "?seed=7"
-selectors = ["#play"]
+# First shot hint: the shot lands on the seeded board, as acceptance-shoot; a reload keeps the seed.
+[nav.acceptance-first-hint-shot]
+path = "?seed=7"
+[nav.acceptance-first-hint-later]
+path = "?seed=7"
+[nav.acceptance-first-hint-mouse-shot]
+path = "?seed=7"
+[nav.acceptance-first-hint-mouse-later]
+path = "?seed=7"
+# Character card closes: the right-click or long press and the dismissal on the seeded board.
+[nav.acceptance-inspect-desktop-close]
+path = "?seed=7"
+[nav.acceptance-inspect-desktop-current-close]
+path = "?seed=7"
+[nav.acceptance-inspect-desktop-next-close]
+path = "?seed=7"
+[nav.acceptance-inspect-touch-close]
+path = "?seed=7"
+[nav.acceptance-inspect-touch-current-close]
+path = "?seed=7"
+[nav.acceptance-inspect-touch-next-close]
+path = "?seed=7"
+# Dark game screens (story-game-dark): each reaches its screen as acceptance-pause, -pop, and -over do.
+# The device's dark appearance itself has no qa.toml option; capture reports it.
+[nav.acceptance-game-dark-pause]
+path = "?seed=7"
 
 # Bubbles: fixed boards. pop: 生 in the launcher completes 學生 with 學 on the board; a shot
 # elsewhere (next to 站, or the empty right cell) spells no word.
 [nav.acceptance-pop]
 path = "?fixture=pop"
-selectors = ["#play"]
 [nav.acceptance-no-word]
 path = "?fixture=pop"
-selectors = ["#play"]
 [nav.acceptance-reduced]
 path = "?fixture=pop"
-selectors = ["#play"]
 [nav.acceptance-game-look]
 path = "?fixture=pop"
-selectors = ["#play"]
+[nav.acceptance-game-dark-card]
+path = "?fixture=pop"
 # First visit: the learner taps Play, then shoots 生 beside 學.
 [nav.acceptance-muted]
 path = "?fixture=pop"
 # fall: 生 beside 學 pops 學生, leaving the bubbles below it hanging.
 [nav.acceptance-fall]
 path = "?fixture=fall"
-selectors = ["#play"]
 # clear: the only word left is 學 plus the launcher's 生.
 [nav.acceptance-round]
 path = "?fixture=clear"
-selectors = ["#play"]
+[nav.acceptance-round-next]
+path = "?fixture=clear"
 # over: the lowest bubbles sit one row above the line, with 學 in the bottom row for 生 to pop;
 # a later shot settling below the line ends the game.
 [nav.acceptance-over]
 path = "?fixture=over"
-selectors = ["#play"]
 [nav.acceptance-best]
 path = "?fixture=over"
-selectors = ["#play"]
 [nav.acceptance-review]
 path = "?fixture=over"
-selectors = ["#play"]
 [nav.acceptance-review-link]
 path = "?fixture=over"
-selectors = ["#play"]
-
-# App shell (docs/specs/hsk-app.spec.html). Every story starts at the network on a phone, with touch.
-# Criteria needing the iPhone Share sheet, the installed home screen app, airplane mode, a notch, or
-# a phone turn stay as written; capture reports what it cannot drive. story-app-maintain criteria are
-# unit-tested (each runs in its first listed story).
-[entry.stories.story-install]
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-native]
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-offline]
-viewport = { width = 390, height = 844 }
-touch = true
-[entry.stories.story-fast]
-viewport = { width = 390, height = 844 }
-touch = true
+[nav.acceptance-game-dark-over]
+path = "?fixture=over"
 
 # App shell: game starts.
 [nav.acceptance-add-from-game]
 path = "/bubbles/"
+[nav.acceptance-add-from-game-open]
+path = "/bubbles/"
 # Review screen: the over board ends the game, as acceptance-review-link.
 [nav.acceptance-word-in-app]
 path = "/bubbles/?fixture=over"
-selectors = ["#play"]
 
 # Network: hub drawings (word ids in site/data/graph.json, hub data in site/data/drawing.json).
 # Each opens a word whose hub the learner then taps. acceptance-strokes-dark needs the device's dark
@@ -259,26 +231,13 @@ path = "/#word=1-85" # 人: not split, its own radical
 path = "/#word=2-28" # 高: parts 亠, 口, 冋
 
 # Network: hearing a card (word ids in site/data/graph.json; Zhuyin is the default script, Voice is on
-# by default). 電腦 (dian4 nao3): word recording, both syllables and its measure word 臺 (tai2)
-# recorded, tones 1 to 4.
+# by default). The syllable, symbol, measure word, and pinyin sounds are no-screen criteria proven by
+# tests/speak.test.mjs, so they have no hint.
 [nav.acceptance-speak-word]
-path = "/#word=1-17" # 電腦
+path = "/#word=1-17" # 電腦 (dian4 nao3), recorded
 [nav.acceptance-speak-reading]
 path = "/#word=2-8" # 長 (chang2): hub 長, readings zhang3 then chang2
-[nav.acceptance-speak-syllable]
-path = "/#word=1-17" # 電腦: second character 腦 (nao3)
-[nav.acceptance-speak-symbol]
-path = "/#word=1-17" # 電腦: columns ㄉㄧㄢˋ and ㄋㄠˇ
-[nav.acceptance-speak-line]
-path = "/#word=1-17" # 電腦: measure word 臺 (tai2)
-# #script switches the default Zhuyin to pinyin with the card open.
-[nav.acceptance-speak-pinyin]
-path = "/#word=1-17" # 電腦
-selectors = ["#script"]
 
 # Network: Voice setting. acceptance-voice-network and acceptance-voice-off start at the story's site
-# root with Voice on (first visit), so they have no hint. acceptance-voice-shared: #voice turns Voice
-# off on the network; the learner then opens the game (its When) through the Play link.
-[nav.acceptance-voice-shared]
-path = "/"
-selectors = ["#voice"]
+# root with Voice on (first visit), and acceptance-voice-shared turns Voice off there then opens the
+# game through the Play link, so none has a hint.

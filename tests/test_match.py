@@ -135,6 +135,14 @@ class Match(unittest.TestCase):
         with self.assertRaisesRegex(build_data.BuildError, "flora-9: override names no collection list entry"):
             build_data.build(ENTRIES, RELEASE, lists, {"flora-9": {"id": "flora-9"}}, NO_CHARS)
 
+    def test_mismatched_override_fails_naming_it(self):  # #acceptance-override-mismatch
+        lists = [{"id": "1-1", "collection": "1", "simp": "学生", "pinyin": "xué sheng"},
+                 {"id": "1-2", "collection": "1", "simp": "个", "pinyin": "gè"}]
+        wrong = {"1-2": {"id": "1-2", "simp": "箇", "trad": "個", "pinyin": "ge4", "reason": "x"}}
+        with self.assertRaises(build_data.BuildError) as err:
+            build_data.build(ENTRIES, RELEASE, lists, wrong, NO_CHARS)
+        self.assertEqual(err.exception.problems, ["1-2 个 [gè]: override names 箇, list has 个"])
+
     def test_duplicate_override_id_fails_naming_it(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "overrides.json"
